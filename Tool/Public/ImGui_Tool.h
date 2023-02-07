@@ -53,7 +53,6 @@ private:
 private:
 	ID3D11Device* m_pDevice;
 	ID3D11DeviceContext* m_pContext;
-	CGameInstance* m_pGameInstance = nullptr;
 	CCalculator* m_pCaculator = nullptr;
 	CVIBuffer_Terrain* m_pBuffer_Terain = nullptr;
 	CTransform* m_pTransform = nullptr;

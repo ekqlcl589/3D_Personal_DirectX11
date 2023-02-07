@@ -24,10 +24,6 @@ HRESULT CCalculator::Initialize(void * pArg)
 {
 	__super::Initialize(pArg);
 
-	if (true == m_bPicking)
-		RELEASE_INSTANCE(CGameInstance);
-
-
 	return S_OK;
 }
 
@@ -82,6 +78,8 @@ _bool CCalculator::Picking_OnTerrain(HWND hWnd, CVIBuffer * pTerrainVtxCom,  CTr
 	vRayPos = XMVector3TransformCoord(vRayPos, matWorld);
 	vRayDir = XMVector3TransformNormal(vRayDir, matWorld);
 
+	RELEASE_INSTANCE(CGameInstance);
+
 	_ulong dwNumVerticesZ = dynamic_cast<CVIBuffer_Terrain*>(pTerrainVtxCom)->Get_Vtx(2);
 	_ulong dwNumVerticesX = dynamic_cast<CVIBuffer_Terrain*>(pTerrainVtxCom)->Get_Vtx(0);
 	_float Min_Distance = 9999.f;
@@ -119,7 +117,7 @@ _bool CCalculator::Picking_OnTerrain(HWND hWnd, CVIBuffer * pTerrainVtxCom,  CTr
 				m_Picking.vRayPos = j;
 				//XMStoreFloat3(&m_fPickingPos, vRayPos);
 				//m_bPicking = true;
-				RELEASE_INSTANCE(CGameInstance);
+				//RELEASE_INSTANCE(CGameInstance);
 
 				return m_Picking.bPicking;
 			}
@@ -138,7 +136,7 @@ _bool CCalculator::Picking_OnTerrain(HWND hWnd, CVIBuffer * pTerrainVtxCom,  CTr
 				m_Picking.bPicking = true;
 				_vector j = vRayPos + XMVector3Normalize(vRayDir) * fDistance;
 				m_Picking.vRayPos = j;
-				RELEASE_INSTANCE(CGameInstance);
+				//RELEASE_INSTANCE(CGameInstance);
 
 				return m_Picking.bPicking;
 			}

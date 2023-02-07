@@ -192,6 +192,9 @@ void CCube::Free(void)
 {
 	__super::Free();
 
+	Safe_Release(m_pVIBuffer_Terrain);
+	Safe_Release(m_pCCalculatorCom);
+	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pBufferCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pRendererCom);

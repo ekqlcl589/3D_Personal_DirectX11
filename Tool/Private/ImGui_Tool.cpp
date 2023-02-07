@@ -23,10 +23,10 @@ CImGui_Tool::CImGui_Tool()
 
 void CImGui_Tool::Initialize_ImGui(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-
 	m_pDevice = pDevice;
 	m_pContext = pContext;
-
+	Safe_AddRef(m_pDevice);
+	Safe_AddRef(m_pContext);
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 
@@ -38,8 +38,6 @@ void CImGui_Tool::Initialize_ImGui(ID3D11Device* pDevice, ID3D11DeviceContext* p
 	ImGui_ImplWin32_Init(g_hWnd);
 	ImGui_ImplDX11_Init(m_pDevice, m_pContext);
 	
-	//Ready_Prototypes();
-
 }
 
 void CImGui_Tool::Tick_ImGui(_double TimeDelta)
@@ -170,6 +168,11 @@ HRESULT CImGui_Tool::Create_Cube()
 _bool CImGui_Tool::Picking()
 {
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	//CGameObject* pObj = nullptr;
+	//if (FAILED(pObj->Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Terrain"),
+	//	TEXT("Com_VIBuffer_Terrain"), (CComponent**)&m_pBuffer_Terain)))
+	//	return E_FAIL;
+
 	m_pBuffer_Terain = CVIBuffer_Terrain::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/Height.bmp"));
 	m_pTransform = CTransform::Create(m_pDevice, m_pContext);
 	m_pCaculator = CCalculator::Create(m_pDevice, m_pContext);
@@ -193,10 +196,10 @@ _bool CImGui_Tool::Picking()
 		RELEASE_INSTANCE(CGameInstance);
 
 		m_vecCubeData.push_back(state);
-
 		return m_pCaculator->Get_PickingState().bPicking;	
 
 	}
+
 }
 
 HRESULT CImGui_Tool::Open_Level(LEVELID eLevelID)
@@ -283,8 +286,12 @@ void CImGui_Tool::LoadData()
 
 void CImGui_Tool::Free()
 {
+	//CGameInstance::GetInstance()->DestroyInstance();
+
 	Safe_Release(m_pBuffer_Terain);
 	Safe_Release(m_pTransform);
 	Safe_Release(m_pCaculator);
-	CGameInstance::GetInstance()->DestroyInstance();
+
+	Safe_Release(m_pContext);
+	Safe_Release(m_pDevice);
 }
