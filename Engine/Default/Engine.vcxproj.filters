@@ -58,12 +58,6 @@
     <Filter Include="01.Utillity\03. Component\90.Shader">
       <UniqueIdentifier>{c218b098-26f1-485d-8ff1-b3be4f56bac4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utillity\03. Component\03.Texture">
-      <UniqueIdentifier>{c37c8616-1fbf-456e-86c2-b3beef5cf654}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utillity\03. Component\04. Transform">
-      <UniqueIdentifier>{ab6b6ba1-1e6d-435f-a4b2-fd4c3cbb172a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Utillity\02. GameObject\00. Camera">
       <UniqueIdentifier>{64b5b287-0aac-4375-8372-ad6f30ad8445}</UniqueIdentifier>
     </Filter>
@@ -90,6 +84,18 @@
     </Filter>
     <Filter Include="01.Utillity\06. Lights\Mgr">
       <UniqueIdentifier>{32139a44-bbf9-4f28-a100-2b645a00fcc2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utillity\03. Component\02. Texture">
+      <UniqueIdentifier>{c37c8616-1fbf-456e-86c2-b3beef5cf654}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utillity\03. Component\03. Transform">
+      <UniqueIdentifier>{ab6b6ba1-1e6d-435f-a4b2-fd4c3cbb172a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utillity\03. Component\04. Model">
+      <UniqueIdentifier>{99b7a473-0fc7-471c-b390-cf3397d9702a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utillity\03. Component\04. Model\00. Mesh">
+      <UniqueIdentifier>{1127233f-882c-4f2b-b0d0-da69b16dabc6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -151,13 +157,13 @@
       <Filter>01.Utillity\03. Component\90.Shader</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Texture.h">
-      <Filter>01.Utillity\03. Component\03.Texture</Filter>
+      <Filter>01.Utillity\03. Component\02. Texture</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\VIBuffer_Terrain.h">
       <Filter>01.Utillity\03. Component\01. VIBuffer\02.Terrain</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Transform.h">
-      <Filter>01.Utillity\03. Component\04. Transform</Filter>
+      <Filter>01.Utillity\03. Component\03. Transform</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Camera.h">
       <Filter>01.Utillity\02. GameObject\00. Camera</Filter>
@@ -188,6 +194,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\Light_Mgr.h">
       <Filter>01.Utillity\06. Lights\Mgr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Model.h">
+      <Filter>01.Utillity\03. Component\04. Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Mesh.h">
+      <Filter>01.Utillity\03. Component\04. Model\00. Mesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -237,13 +249,13 @@
       <Filter>99.Defines</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Texture.cpp">
-      <Filter>01.Utillity\03. Component\03.Texture</Filter>
+      <Filter>01.Utillity\03. Component\02. Texture</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\VIBuffer_Terrain.cpp">
       <Filter>01.Utillity\03. Component\01. VIBuffer\02.Terrain</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Transform.cpp">
-      <Filter>01.Utillity\03. Component\04. Transform</Filter>
+      <Filter>01.Utillity\03. Component\03. Transform</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Camera.cpp">
       <Filter>01.Utillity\02. GameObject\00. Camera</Filter>
@@ -274,6 +286,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Light_Mgr.cpp">
       <Filter>01.Utillity\06. Lights\Mgr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Model.cpp">
+      <Filter>01.Utillity\03. Component\04. Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Mesh.cpp">
+      <Filter>01.Utillity\03. Component\04. Model\00. Mesh</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

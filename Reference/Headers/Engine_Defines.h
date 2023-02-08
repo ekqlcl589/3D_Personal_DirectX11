@@ -15,8 +15,15 @@
 #include "DirectXTK/DDSTextureLoader.h"
 #include "DirectXTK/WICTextureLoader.h"
 #include "DirectXTK/ScreenGrab.h"
+
 #include <typeinfo.h>
 //#include <typeinfo>
+
+// 모델 로드 테스트용 나중에는 빼야함 
+#include "assimp/scene.h"
+#include "assimp/Importer.hpp"
+#include "assimp/postprocess.h"
+//
 
 #include <vector>
 #include <list>

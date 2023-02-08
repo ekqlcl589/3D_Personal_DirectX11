@@ -80,6 +80,21 @@ namespace Engine
 
 
 	}LIGHT_DESC;
+
+	typedef struct tagVertex_NonAnim_Model
+	{
+		XMFLOAT3		vPosition;
+		XMFLOAT3		vNormal;
+		XMFLOAT2		vTexUV;
+		XMFLOAT3		vTangent;
+	}VTXNONANIMMODEL;
+
+	typedef struct ENGINE_DLL tagVertexx_tagVertex_NonAnim_Model_Decleartion
+	{
+		const static unsigned int iNumElements = 4;
+		static D3D11_INPUT_ELEMENT_DESC Element[4];
+	}VTXNONANIMMODEL_DELARATION;
+
 }
 
 
