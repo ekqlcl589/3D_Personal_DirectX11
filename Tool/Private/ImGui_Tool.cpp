@@ -187,7 +187,7 @@ _bool CImGui_Tool::Picking()
 		XMStoreFloat3(&state.fPos, m_vPos);
 
 		state.transformDesc.fSpeed = 5.f;
-		state.transformDesc.fRotation = 0.f;
+		state.transformDesc.fRotation = XMConvertToRadians(10);
 		state.iCubeNum = iNum++;
 		//state.fScale = 툴에서 정한값;
 		if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Cube"), TEXT("Layer_Cube"), &state)))
