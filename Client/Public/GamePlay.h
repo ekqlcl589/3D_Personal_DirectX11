@@ -22,6 +22,8 @@ public:
 
 	HRESULT Ready_Light();
 
+	HRESULT Ready_UI(const _tchar* pLayerTag);
+
 	void LoadData(_tchar* szFilePath);
 
 public:

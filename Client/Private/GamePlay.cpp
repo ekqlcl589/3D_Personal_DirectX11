@@ -21,6 +21,9 @@ HRESULT CGamePlay::Initialize()
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
+	if (FAILED(Ready_UI(TEXT("Layer_UI"))))
+		return E_FAIL;
+
 	LoadData(L"../Data/Cube/Cube.dat");
 
 	return S_OK;
@@ -90,6 +93,18 @@ HRESULT CGamePlay::Ready_Light()
 	LightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
 
 	if (FAILED(pGameInstance->Add_Lights(m_pDevice, m_pContext, LightDesc)))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CGamePlay::Ready_UI(const _tchar * pLayerTag)
+{
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI"), pLayerTag)))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);

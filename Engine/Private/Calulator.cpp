@@ -100,24 +100,19 @@ _bool CCalculator::Picking_OnTerrain(HWND hWnd, CVIBuffer * pTerrainVtxCom,  CTr
 			pIndices[0] = iIndices[0];
 			pIndices[1] = iIndices[1];
 			pIndices[2] = iIndices[2];
-
-			_vector vTemp = XMVector3Normalize(vRayDir);
 			
 			_float3* fPos = dynamic_cast<CVIBuffer_Terrain*>(pTerrainVtxCom)->Get_VtxPos();
-			_vector a = XMLoadFloat3(&fPos[iIndex + dwNumVerticesX]);
+
 			if (TriangleTests::Intersects(vRayPos, XMVector3Normalize(vRayDir), XMLoadFloat3(&fPos[iIndex + dwNumVerticesX]), XMLoadFloat3(&fPos[iIndex + dwNumVerticesX + 1]), XMLoadFloat3(&fPos[iIndex + 1]), fDistance))
 			{
-				//if (Min_Distance > fDistance)
-					//Min_Distance = fDistance;
 				m_Picking.vRayDir = vRayDir;
 				m_Picking.fMousePos = fMouse;
 				m_Picking.fDist = fDistance;
 				m_Picking.bPicking = true;
 				_vector j = vRayPos + XMVector3Normalize(vRayDir) * fDistance;
 				m_Picking.vRayPos = j;
-				//XMStoreFloat3(&m_fPickingPos, vRayPos);
-				//m_bPicking = true;
-				//RELEASE_INSTANCE(CGameInstance);
+
+				RELEASE_INSTANCE(CGameInstance);
 
 				return m_Picking.bPicking;
 			}
@@ -125,8 +120,6 @@ _bool CCalculator::Picking_OnTerrain(HWND hWnd, CVIBuffer * pTerrainVtxCom,  CTr
 			pIndices[0] = iIndices[0];
 			pIndices[1] = iIndices[2];
 			pIndices[2] = iIndices[3];
-
-			_vector vTemp2 = XMVector3Normalize(vRayDir);
 
 			if (TriangleTests::Intersects(vRayPos, XMVector3Normalize(vRayDir), XMLoadFloat3(&fPos[iIndex + dwNumVerticesX]), XMLoadFloat3(&fPos[iIndex + 1]), XMLoadFloat3(&fPos[iIndex]), fDistance))
 			{
@@ -136,7 +129,8 @@ _bool CCalculator::Picking_OnTerrain(HWND hWnd, CVIBuffer * pTerrainVtxCom,  CTr
 				m_Picking.bPicking = true;
 				_vector j = vRayPos + XMVector3Normalize(vRayDir) * fDistance;
 				m_Picking.vRayPos = j;
-				//RELEASE_INSTANCE(CGameInstance);
+
+				RELEASE_INSTANCE(CGameInstance);
 
 				return m_Picking.bPicking;
 			}

@@ -97,6 +97,9 @@
     <Filter Include="01.Utillity\03. Component\04. Model\00. Mesh">
       <UniqueIdentifier>{1127233f-882c-4f2b-b0d0-da69b16dabc6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utillity\02. GameObject\01. UI">
+      <UniqueIdentifier>{a76ccfba-45aa-4a8f-a923-b65b8ea24013}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -201,6 +204,9 @@
     <ClInclude Include="..\Public\Mesh.h">
       <Filter>01.Utillity\03. Component\04. Model\00. Mesh</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI.h">
+      <Filter>01.Utillity\02. GameObject\01. UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\GameInstance.cpp">
@@ -292,6 +298,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Mesh.cpp">
       <Filter>01.Utillity\03. Component\04. Model\00. Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI.cpp">
+      <Filter>01.Utillity\02. GameObject\01. UI</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

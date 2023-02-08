@@ -93,6 +93,9 @@
     <ClInclude Include="..\Public\Cube.h">
       <Filter>02.GameObject\03.Cube</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\PlayerHPBar.h">
+      <Filter>02.GameObject\04. UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -127,6 +130,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Cube.cpp">
       <Filter>02.GameObject\03.Cube</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PlayerHPBar.cpp">
+      <Filter>02.GameObject\04. UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

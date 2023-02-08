@@ -113,10 +113,6 @@ void CImGui_Tool::Create_Terrain()
 		Pos.y = io.MousePos.y;
 		ImGui::Text("Mouse pos: (%g, %g)", io.MousePos.x, io.MousePos.y);
 
-		if (ImGui::IsMouseClicked(0))
-		{
-			ImGui::Text("Picking pos: (%g, %g)", io.MousePos.x, io.MousePos.y);
-		}
 	}
 	ImGui::End();
 }
@@ -151,10 +147,7 @@ HRESULT CImGui_Tool::Create_Cube()
 	{
 		if (ImGui::BeginMenu("Cube"))
 		{
-			if (ImGui::MenuItem("Create"))
-			{
-
-			}
+			//ImGui::Text("pos%f", m_pCaculator->Get_PickingState().vRayPos);
 
 			ImGui::EndMenu();
 		}
@@ -168,15 +161,12 @@ HRESULT CImGui_Tool::Create_Cube()
 _bool CImGui_Tool::Picking()
 {
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-	//CGameObject* pObj = nullptr;
-	//if (FAILED(pObj->Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Terrain"),
-	//	TEXT("Com_VIBuffer_Terrain"), (CComponent**)&m_pBuffer_Terain)))
-	//	return E_FAIL;
 
 	m_pBuffer_Terain = CVIBuffer_Terrain::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/Height.bmp"));
 	m_pTransform = CTransform::Create(m_pDevice, m_pContext);
 	m_pCaculator = CCalculator::Create(m_pDevice, m_pContext);
 	m_pCaculator->Picking_OnTerrain(g_hWnd, m_pBuffer_Terain, m_pTransform);
+
 	if (true == m_pCaculator->Get_PickingState().bPicking)
 	{
 		m_vPos = m_pCaculator->Get_PickingState().vRayPos;
@@ -190,6 +180,7 @@ _bool CImGui_Tool::Picking()
 		state.transformDesc.fRotation = XMConvertToRadians(10);
 		state.iCubeNum = iNum++;
 		//state.fScale = 툴에서 정한값;
+
 		if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Cube"), TEXT("Layer_Cube"), &state)))
 			return E_FAIL;
 
