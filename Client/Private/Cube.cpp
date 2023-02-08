@@ -44,7 +44,7 @@ HRESULT CCube::Initialize(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVector3Normalize(vRight));
 	m_pTransformCom->Set_State(CTransform::STATE_UP, XMVector3Normalize(vUp));
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, XMVector3Normalize(vLook));
-
+	 
 	return S_OK;
 }
 
