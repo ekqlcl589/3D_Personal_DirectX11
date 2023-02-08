@@ -68,10 +68,6 @@ HRESULT CTerrain::Render()
 	return S_OK;
 }
 
-_bool CTerrain::Check_Picking()
-{
-	return m_pCaCom->Picking_OnTerrain(g_hWnd, m_pVIBuffer_Terrain, m_pTransformCom);
-}
 
 HRESULT CTerrain::Add_Components()
 {
@@ -97,12 +93,12 @@ HRESULT CTerrain::Add_Components()
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Calculator"),
-		TEXT("Com_cacul"), (CComponent**)&m_pCaCom)))
-		return E_FAIL;
-
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain"),
 		TEXT("Com_Texture"), (CComponent**)&m_pMultiTextureCom[TEX_DIFFUSE])))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Brush"),
+		TEXT("Com_Brush"), (CComponent**)&m_pMultiTextureCom[TEX_BRUSH])))
 		return E_FAIL;
 
 	/* For.Com_Filter */
@@ -130,37 +126,33 @@ HRESULT CTerrain::SetUp_ShaderResource()
 	if (FAILED(m_pShaderCom->Set_RawValue("g_vCamPosition", &pGameInstance->Get_CamPos(), sizeof(_float4))))
 		return E_FAIL;
 
-	// 툴 완성 되면 데이터를 받아 오는걸로 CGamePlay 클래스에서 
-	/* For.Com_Brush_Picking */
-	if (true == m_pCaCom->Get_PickingState().bPicking)
-	{
-		_float4 fff;
-		XMStoreFloat4(&fff, m_pCaCom->Get_PickingState().vRayPos);
-		if (FAILED(m_pShaderCom->Set_RawValue("g_vBrushPos", &fff, sizeof(_float4))))
-			return E_FAIL;
+	const LIGHT_DESC* pLightDesc = pGameInstance->Get_Light(0);
+	if (nullptr == pLightDesc)
+		return E_FAIL;
 
-		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Brush"),
-			TEXT("Com_Brush"), (CComponent**)&m_pMultiTextureCom[TEX_BRUSH])))
-			return E_FAIL;
-
-		if (FAILED(m_pMultiTextureCom[TEX_BRUSH]->SetUp_ShaderResource(m_pShaderCom, "g_BrushTexture", 0)))
-			return E_FAIL;
-
-		m_pCaCom->Set_PickingState();
-	}
-
+	if (FAILED(m_pShaderCom->Set_RawValue("g_vLightDir", &pLightDesc->vDirection, sizeof(_float4))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Set_RawValue("g_vLightDiffuse", &pLightDesc->vDiffuse, sizeof(_float4))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Set_RawValue("g_vLightSpecular", &pLightDesc->vSpecular, sizeof(_float4))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Set_RawValue("g_vLightAmbient", &pLightDesc->vAmbient, sizeof(_float4))))
+		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
+
+	_float4 fff = { 10.f, 0.f, 10.f, 1.f };
+	if (FAILED(m_pShaderCom->Set_RawValue("g_vBrushPos", &fff, sizeof(_float4))))
+		return E_FAIL;
 
 	//if (FAILED(m_pTextureCom->SetUp_ShaderResource(m_pShaderCom, "g_DiffuseTexture", 0)))
 	//	return E_FAIL;
 	if (FAILED(m_pMultiTextureCom[TEX_DIFFUSE]->SetUp_ShaderResourceArray(m_pShaderCom, "g_DiffuseMultiTexture")))
 		return E_FAIL;
+	if (FAILED(m_pMultiTextureCom[TEX_BRUSH]->SetUp_ShaderResource(m_pShaderCom, "g_BrushTexture", 0)))
+		return E_FAIL;
 	if (FAILED(m_pMultiTextureCom[TEX_FILTER]->SetUp_ShaderResource(m_pShaderCom, "g_FilterTexture", 0)))
 		return E_FAIL;
-
-	//if (FAILED(m_pShaderCom->Set_RawValue("g_Check", &bbbb, sizeof(_bool))))
-	//	return E_FAIL;
 
 	return S_OK;
 }
@@ -200,7 +192,6 @@ void CTerrain::Free()
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pTransformCom);
-	Safe_Release(m_pCaCom);
 
 	for(_uint i = 0; i < TEX_END; i++)
 		Safe_Release(m_pMultiTextureCom[i]);

@@ -48,7 +48,7 @@ private:
 private:
 	HRESULT Add_Components();
 	HRESULT SetUp_ShaderResource();
-	HRESULT Create_FilterTexture(); // 마스크맵을 코드로 제작하기 위한 함수 쓸지는 모르겠음 
+	HRESULT Create_FilterTexture(); // 마스크맵을 코드로 제작하기 위한 함수, 쓸지는 모르겠음 
 
 public:
 	/* 원형객체를 생성 */

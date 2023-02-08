@@ -12,6 +12,9 @@ CGamePlay::CGamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 
 HRESULT CGamePlay::Initialize()
 {
+	if (FAILED(Ready_Light()))
+		return E_FAIL;
+
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_Terrain"))))
 		return E_FAIL;
 
@@ -53,8 +56,8 @@ HRESULT CGamePlay::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CCamera::CAMERADESC CameraDesc;
 	ZeroMemory(&CameraDesc, sizeof CameraDesc);
 
-	CameraDesc.vEye = _float3(64.f, 100.f, 0.f);
-	CameraDesc.vAt = _float3(64.f, 0.f, 64.f);
+	CameraDesc.vEye = _float3(0.f, 10.f, -9.f);
+	CameraDesc.vAt = _float3(0.f, 0.f, 0.f);
 	CameraDesc.vAxisY = _float3(0.f, 1.f, 0.f);
 
 	CameraDesc.vFov = XMConvertToRadians(60.f);
@@ -70,6 +73,27 @@ HRESULT CGamePlay::Ready_Layer_Camera(const _tchar * pLayerTag)
 
 	Safe_Release(pGameInstance);
 	
+	return S_OK;
+}
+
+HRESULT CGamePlay::Ready_Light()
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	LIGHT_DESC LightDesc;
+	ZeroMemory(&LightDesc, sizeof LightDesc);
+
+	LightDesc.eLightType = LIGHT_DESC::LIGHT_DIRECTIONAL;
+	LightDesc.vDirection = _float4(0.f, -1.f, 1.f, 0.f);//대각선 아래로 
+	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
+
+	if (FAILED(pGameInstance->Add_Lights(m_pDevice, m_pContext, LightDesc)))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(CGameInstance);
+
 	return S_OK;
 }
 

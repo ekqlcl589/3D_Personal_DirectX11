@@ -131,6 +131,7 @@ void CMainApp::Free()
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pGameInstance);
 
+	CKeyMgr::GetInstance()->DestroyInstance();
 	CGameInstance::Release_Engine();
 }
 

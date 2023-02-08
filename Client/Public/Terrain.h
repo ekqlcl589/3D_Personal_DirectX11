@@ -29,8 +29,6 @@ public:
 	virtual void LateTick(_double TimeDelta) override;
 	virtual HRESULT Render() override;
 
-public:
-	_bool Check_Picking();
 
 private:
 	CShader* m_pShaderCom = { nullptr };
@@ -39,7 +37,6 @@ private:
 	CTexture* m_pTextureCom = { nullptr };
 	CTexture* m_pMultiTextureCom[TEX_END] = { nullptr };
 	CTransform* m_pTransformCom = { nullptr };
-	CCalculator* m_pCaCom = { nullptr };
 
 private:
 	HRESULT Add_Components();

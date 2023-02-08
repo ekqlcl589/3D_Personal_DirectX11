@@ -20,6 +20,8 @@ public:
 
 	HRESULT Ready_Layer_Camera(const _tchar* pLayerTag);
 
+	HRESULT Ready_Light();
+
 	void LoadData(_tchar* szFilePath);
 
 public:
