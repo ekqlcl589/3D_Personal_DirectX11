@@ -46,6 +46,9 @@
     <Filter Include="ShaderFiles">
       <UniqueIdentifier>{0c3d59ff-bf1c-49eb-8ba2-67bade029779}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03.Object\00. Monster">
+      <UniqueIdentifier>{47a1faa0-cde8-4446-8f2c-98d1b1dc478d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -120,6 +123,9 @@
     <ClInclude Include="..\Public\GamePlay.h">
       <Filter>02.Levels\02. Obj</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Monster.h">
+      <Filter>03.Object\00. Monster</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -178,6 +184,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\GamePlay.cpp">
       <Filter>02.Levels\02. Obj</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster.cpp">
+      <Filter>03.Object\00. Monster</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -140,12 +140,7 @@ _bool CCalculator::Picking_OnTerrain(HWND hWnd, CVIBuffer * pTerrainVtxCom,  CTr
 
 	RELEASE_INSTANCE(CGameInstance);
 
-	return m_bPicking;
-}
-
-_float3 CCalculator::Get_PickingPos()
-{
-	return m_fPickingPos;
+	return m_Picking.bPicking;
 }
 
 CCalculator * CCalculator::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)

@@ -32,16 +32,11 @@ public:
 	// 지형 태우는건 일단 보류
 	_bool Picking_OnTerrain(HWND hWnd, CVIBuffer* pTerrainVtxCom, CTransform* pTerrainTransform);
 
-	_float3 Get_PickingPos();
-	_bool Get_Picking() { return m_bPicking; }
-
 public:
 	PICKING Get_PickingState() { return m_Picking; }
 	void Set_PickingState() { m_Picking.bPicking = false; }
 
 private:
-	_bool m_bPicking = false;
-	_float3 m_fPickingPos;
 	PICKING m_Picking;
 public:
 	static CCalculator*	Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext);

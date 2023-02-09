@@ -44,8 +44,11 @@ void CImGui_Tool::Tick_ImGui(_double TimeDelta)
 {
 	// 추후 ImGui_Tool 은 Manager 형식으로 사용되고 레벨값에 따라 불리는 툴을 따로 배치해서 
 	// 배치되는 툴이 불렸을 때 클릭을 통해 피킹 하는 식으로 사용
-	if (CKeyMgr::GetInstance()->Key_Down(VK_RBUTTON))
-		Picking();
+	if (true == m_bCheck)
+	{
+		if (CKeyMgr::GetInstance()->Key_Down(VK_RBUTTON))
+			Picking();
+	}
 
 }
 
@@ -62,8 +65,8 @@ void CImGui_Tool::Render_ImGui()
 	Create_Cube();
 
 
-	bool bDebo = true;
-	ImGui::ShowDemoWindow(&bDebo);
+	//bool bDebo = true;
+	//ImGui::ShowDemoWindow(&bDebo);
 
 	ImGui::Render();
 
@@ -148,7 +151,7 @@ HRESULT CImGui_Tool::Create_Cube()
 		if (ImGui::BeginMenu("Cube"))
 		{
 			//ImGui::Text("pos%f", m_pCaculator->Get_PickingState().vRayPos);
-
+			m_bCheck = true;
 			ImGui::EndMenu();
 		}
 		ImGui::EndMenuBar();
@@ -166,7 +169,7 @@ _bool CImGui_Tool::Picking()
 	m_pTransform = CTransform::Create(m_pDevice, m_pContext);
 	m_pCaculator = CCalculator::Create(m_pDevice, m_pContext);
 	m_pCaculator->Picking_OnTerrain(g_hWnd, m_pBuffer_Terain, m_pTransform);
-
+	//피킹 횟수를 체크 해서 횟수 만큼 free에서 루프를 돌려서 해제시킨다?
 	if (true == m_pCaculator->Get_PickingState().bPicking)
 	{
 		m_vPos = m_pCaculator->Get_PickingState().vRayPos;
@@ -187,9 +190,10 @@ _bool CImGui_Tool::Picking()
 		RELEASE_INSTANCE(CGameInstance);
 
 		m_vecCubeData.push_back(state);
-		return m_pCaculator->Get_PickingState().bPicking;	
-
+		m_bCheck = m_pCaculator->Get_PickingState().bPicking;
+		//return m_pCaculator->Get_PickingState().bPicking;	
 	}
+		return m_bCheck;
 
 }
 

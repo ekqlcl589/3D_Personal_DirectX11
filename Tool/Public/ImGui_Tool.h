@@ -11,6 +11,7 @@ BEGIN(Engine)
 class CVIBuffer_Terrain;
 class CTransform;
 class CGameInstance;
+
 END
 
 
@@ -49,6 +50,7 @@ private:
 
 private:
 	_vector m_vPos = { 0.f, 0.f, 0.f };
+	_bool m_bCheck = false;
 
 private:
 	ID3D11Device* m_pDevice;
