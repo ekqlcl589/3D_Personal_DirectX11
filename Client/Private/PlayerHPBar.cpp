@@ -39,8 +39,6 @@ HRESULT CPlayerHPBar::Initialize(void * pArg)
 	m_fX = g_iWinSizeX >> 1;
 	m_fY = g_iWinSizeY >> 1;
 
-	_float3 fPos = { 640.f, 600.f, 0.f };
-
 	XMStoreFloat4x4(&m_WorldMatrix,
 		XMMatrixScaling(540.f, 20.f, 1.f) * XMMatrixTranslation(m_fX - g_iWinSizeX * 0.5f, -m_fY + 100.f, 0.f));
 

@@ -166,6 +166,7 @@
     <ClInclude Include="..\Public\Loading.h" />
     <ClInclude Include="..\Public\Logo.h" />
     <ClInclude Include="..\public\MainApp.h" />
+    <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\Public\PlayerHPBar.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="Client.h" />
@@ -182,6 +183,7 @@
     <ClCompile Include="..\Private\Loading.cpp" />
     <ClCompile Include="..\Private\Logo.cpp" />
     <ClCompile Include="..\Private\MainApp.cpp" />
+    <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\Private\PlayerHPBar.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="Client.cpp" />
@@ -200,6 +202,7 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxModel.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTerrain.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTex.hlsl" />
   </ItemGroup>

@@ -200,5 +200,8 @@
     <FxCompile Include="..\..\Client\Bin\ShaderFiles\Shader_VtxTex.hlsl">
       <Filter>ShaderFiles</Filter>
     </FxCompile>
+    <FxCompile Include="..\..\Client\Bin\ShaderFiles\Shader_VtxModel.hlsl">
+      <Filter>ShaderFiles</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

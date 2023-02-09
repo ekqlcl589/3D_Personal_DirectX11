@@ -214,6 +214,7 @@
     <Image Include="Tool.ico" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\..\Client\Bin\ShaderFiles\Shader_VtxModel.hlsl" />
     <FxCompile Include="..\..\Client\Bin\ShaderFiles\Shader_VtxTerrain.hlsl" />
     <FxCompile Include="..\..\Client\Bin\ShaderFiles\Shader_VtxTex.hlsl" />
   </ItemGroup>

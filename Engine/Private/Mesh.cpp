@@ -14,6 +14,7 @@ CMesh::CMesh(const CMesh & rhs)
 
 HRESULT CMesh::Initialize_Prototype(const aiMesh * pAiMesh)
 {
+	m_iMaterialIndex = pAiMesh->mMaterialIndex;
 	m_iStride = sizeof(VTXNONANIMMODEL);
 	m_iNumVertices = pAiMesh->mNumVertices;
 	m_iIndicesSize = sizeof(FACEINDICES32);
@@ -96,6 +97,7 @@ HRESULT CMesh::Initialize(void * pArg)
 CMesh * CMesh::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const aiMesh* pAiMesh)
 {
 	CMesh * pInstance = new CMesh(pDevice, pContext);
+
 	if (FAILED(pInstance->Initialize_Prototype(pAiMesh)))
 	{
 		MSG_BOX("CMesh Create Fail");

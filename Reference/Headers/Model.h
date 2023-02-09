@@ -14,12 +14,19 @@ private:
 	virtual ~CModel() = default;
 
 public:
+	_uint Get_NumMeshes() const { return m_iNumMeshes; }
+
+public:
 	virtual HRESULT Initialize_Prototype(const char* pModelFilePath, MODEL_TYPE eType);
 	virtual HRESULT Initialize(void* pArg);
 
-	virtual HRESULT Render();
+	virtual HRESULT Render(_uint iMeshIndex);
+	HRESULT SetUp_ShaderMaterialResource(class CShader* pShaderCom, const char* pConstantName, _uint iMeshIndex, aiTextureType eType);
 
+private:
 	HRESULT Ready_Meshes();
+	HRESULT Ready_Materials(const char* pModelFilePath);
+
 
 private:
 	Assimp::Importer m_Importer;
@@ -30,8 +37,8 @@ private:
 	vector<class CMesh*> m_vecMesh;
 
 private:
-	ID3D11Device* m_pDevice;
-	ID3D11DeviceContext* m_pContext;
+	_uint m_iNumMaterial = { 0 };
+	vector<MODEL_MATERIAL> m_vecMaterial;
 
 public:
 	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const char* pModelFilePath, MODEL_TYPE eType);

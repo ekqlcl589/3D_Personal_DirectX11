@@ -95,6 +95,11 @@ namespace Engine
 		static D3D11_INPUT_ELEMENT_DESC Element[4];
 	}VTXNONANIMMODEL_DELARATION;
 
+	typedef struct tagModelMaterial
+	{
+		class CTexture* pMaterialTexture[AI_TEXTURE_TYPE_MAX] = { nullptr };
+	}MODEL_MATERIAL;
+
 }
 
 

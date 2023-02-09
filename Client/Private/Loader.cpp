@@ -7,6 +7,7 @@
 #include "Terrain.h"
 #include "Calulator.h"
 #include "Cube.h"
+#include "Player.h"
 #include "PlayerHPBar.h"
 
 CLoader::CLoader(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -141,10 +142,21 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CVIBuffer_Cube::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	lstrcpy(m_szLoadingText, TEXT("모델를 로딩중입니다."));
+	/* For.Prototype_Component_Model_Player */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Player"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Fiona/Fiona.fbx", CModel::MODEL_NONANIM))))
+		return E_FAIL;
+
 	lstrcpy(m_szLoadingText, TEXT("셰이더를 로딩중입니다."));
 	/* For.Prototype_Component_Terrain_Shader */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Terrain_Shader"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/shader_VtxTerrain.hlsl"), VTXNORTEX_DELARATION::Element, VTXNORTEX_DELARATION::iNumElements))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Shader_VtxModel */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModel"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/shader_VtxModel.hlsl"), VTXNONANIMMODEL_DELARATION::Element, VTXNONANIMMODEL_DELARATION::iNumElements))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Cube_Shader"),
@@ -166,6 +178,12 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Cube"),
 		CCube::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Player */
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player"),
+		CPlayer::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI"),
