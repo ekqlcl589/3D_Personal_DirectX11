@@ -27,7 +27,8 @@ CModel::CModel(const CModel & rhs)
 
 HRESULT CModel::Initialize_Prototype(const char * pModelFilePath, MODEL_TYPE eType)
 {
-	_uint			iFlag = { aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast };
+	_uint iFlag = { aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast };// | aiProcess_GlobalScale}; //이거 플래그값 1/100 아닌듯?
+
 
 	if (MODEL_NONANIM == eType)	
 		iFlag |= aiProcess_PreTransformVertices;	

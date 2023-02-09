@@ -1,28 +1,26 @@
 #include "stdafx.h"
-#include "..\Public\Player.h"
-
+#include "..\Public\Monster.h"
 #include "GameInstance.h"
 
-CPlayer::CPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CMonster::CMonster(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
 {
 }
 
-CPlayer::CPlayer(const CPlayer & rhs)
+CMonster::CMonster(const CMonster & rhs)
 	: CGameObject(rhs)
 {
 }
 
-HRESULT CPlayer::Initialize_Prototype()
+HRESULT CMonster::Initialize_Prototype()
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
 
-
 	return S_OK;
 }
 
-HRESULT CPlayer::Initialize(void * pArg)
+HRESULT CMonster::Initialize(void * pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -30,24 +28,24 @@ HRESULT CPlayer::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	//_float3 vScale = m_pTransformCom->Get_Scale();
-	//_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
-	//_vector vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
-	//_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+	_float3 vScale = m_pTransformCom->Get_Scale();
+	_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+	_vector vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
+	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 
-	//m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight * (vScale.x / 100.f));
-	//m_pTransformCom->Set_State(CTransform::STATE_UP, vUp* (vScale.y / 100.f));
-	//m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook* (vScale.z / 100.f));
-	// 일단은 모델에서 플래그 값으로 1 / 100 값으로 줄여서 사용하는 중인데 이상하다 싶으면 활성화 ㄱㄱ
+	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight * (vScale.x / 100.f));
+	m_pTransformCom->Set_State(CTransform::STATE_UP, vUp* (vScale.y / 100.f));
+	m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook* (vScale.z / 100.f));
+
 	return S_OK;
 }
 
-void CPlayer::Tick(_double TimeDelta)
+void CMonster::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 }
 
-void CPlayer::LateTick(_double TimeDelta)
+void CMonster::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
 
@@ -55,7 +53,7 @@ void CPlayer::LateTick(_double TimeDelta)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 }
 
-HRESULT CPlayer::Render()
+HRESULT CMonster::Render()
 {
 	if (FAILED(__super::Render()))
 		return E_FAIL;
@@ -70,7 +68,7 @@ HRESULT CPlayer::Render()
 		m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
 		/*m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);
 		m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);*/
-	
+
 		m_pShaderCom->Begin(0);
 
 		m_pModelCom->Render(i);
@@ -78,7 +76,7 @@ HRESULT CPlayer::Render()
 	return S_OK;
 }
 
-HRESULT CPlayer::Add_Components()
+HRESULT CMonster::Add_Components()
 {
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"),
 		TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom)))
@@ -94,7 +92,7 @@ HRESULT CPlayer::Add_Components()
 		TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Player"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Boss0"),
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
@@ -105,7 +103,7 @@ HRESULT CPlayer::Add_Components()
 	return S_OK;
 }
 
-HRESULT CPlayer::SetUp_ShaderResources()
+HRESULT CMonster::SetUp_ShaderResources()
 {
 	if (nullptr == m_pShaderCom)
 		return E_FAIL;
@@ -125,33 +123,33 @@ HRESULT CPlayer::SetUp_ShaderResources()
 	return S_OK;
 }
 
-CPlayer * CPlayer::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CMonster * CMonster::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {
-	CPlayer*		pInstance = new CPlayer(pDevice, pContext);
+	CMonster*		pInstance = new CMonster(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Created : CPlayer");
+		MSG_BOX("Failed to Created : CMonster");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject * CPlayer::Clone(void * pArg)
+CGameObject * CMonster::Clone(void * pArg)
 {
-	CPlayer*		pInstance = new CPlayer(*this);
+	CMonster*		pInstance = new CMonster(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CPlayer");
+		MSG_BOX("Failed to Cloned : CMonster");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CPlayer::Free()
+void CMonster::Free()
 {
 	__super::Free();
 

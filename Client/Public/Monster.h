@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Client_Defines.h"
 #include "GameObject.h"
-
+#include "Client_Defines.h"
+// 추후 몬스터들의 부모로 사용하고 지금은 테스트 용으로 만들어 둠
 BEGIN(Engine)
 class CShader;
 class CRenderer;
@@ -12,12 +12,12 @@ END
 
 BEGIN(Client)
 
-class CPlayer final : public CGameObject
+class CMonster final :	public CGameObject
 {
 private:
-	CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CPlayer(const CPlayer& rhs);
-	virtual ~CPlayer() = default;
+	CMonster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CMonster(const CMonster& rhs);
+	virtual ~CMonster() = default;
 
 public:
 	virtual	HRESULT Initialize_Prototype() override;
@@ -37,9 +37,10 @@ private:
 	HRESULT SetUp_ShaderResources();
 
 public:
-	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CMonster* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;
 	virtual void Free() override;
+
 };
 
 END
