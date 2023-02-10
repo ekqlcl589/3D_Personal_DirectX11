@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Monster.h"
 #include "GameInstance.h"
+#include "ImGui_Tool.h"
 
 CMonster::CMonster(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -28,14 +29,23 @@ HRESULT CMonster::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	_float3 vScale = m_pTransformCom->Get_Scale();
-	_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
-	_vector vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
-	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+	ZeroMemory(&m_MonsterState, sizeof(MONSTERSTATE));
 
-	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight * (vScale.x / 100.f));
-	m_pTransformCom->Set_State(CTransform::STATE_UP, vUp* (vScale.y / 100.f));
-	m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook* (vScale.z / 100.f));
+	memcpy(&m_MonsterState, pArg, sizeof m_MonsterState);
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_MonsterState.fPos));
+
+	_vector vRight, vUp, vLook;// 라업룩은 항등오로 초기화
+
+	vRight = XMVectorSet(1.f, 0.f, 0.f, 0.f);
+	vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	vLook = XMVectorSet(0.f, 0.f, 1.f, 0.f);
+
+	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVector3Normalize(vRight));
+	m_pTransformCom->Set_State(CTransform::STATE_UP, XMVector3Normalize(vUp));
+	m_pTransformCom->Set_State(CTransform::STATE_LOOK, XMVector3Normalize(vLook));
+
+	iId = CImGui_Tool::iNum++;
 
 	return S_OK;
 }
@@ -119,7 +129,24 @@ HRESULT CMonster::SetUp_ShaderResources()
 	if (FAILED(m_pShaderCom->Set_Matrix("g_ProjMatrix", &pInstance->Get_Transformfloat4x4(CPipeLine::TS_PROJ))))
 		return E_FAIL;
 
+	if (FAILED(m_pShaderCom->Set_RawValue("g_vCamPosition", &pInstance->Get_CamPos(), sizeof(_float4))))
+		return E_FAIL;
+
+	const LIGHT_DESC* pLightDesc = pInstance->Get_Light(0);
+	if (nullptr == pLightDesc)
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Set_RawValue("g_vLightDir", &pLightDesc->vDirection, sizeof(_float4))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Set_RawValue("g_vLightDiffuse", &pLightDesc->vDiffuse, sizeof(_float4))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Set_RawValue("g_vLightSpecular", &pLightDesc->vSpecular, sizeof(_float4))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Set_RawValue("g_vLightAmbient", &pLightDesc->vAmbient, sizeof(_float4))))
+		return E_FAIL;
+	
 	RELEASE_INSTANCE(CGameInstance);
+
 	return S_OK;
 }
 

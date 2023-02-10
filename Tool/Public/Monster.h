@@ -1,7 +1,8 @@
 #pragma once
 
-#include "GameObject.h"
 #include "Tool_Defines.h"
+#include "GameObject.h"
+#include "Transform.h"
 // 추후 몬스터들의 부모로 사용하고 지금은 테스트 용으로 만들어 둠
 BEGIN(Engine)
 class CShader;
@@ -14,6 +15,16 @@ BEGIN(Tool)
 
 class CMonster final :	public CGameObject
 {
+public:
+	typedef struct MonsterState
+	{
+		_float3 fPos;
+		_uint iMonsterNum;
+		_float3 fScale;
+
+		CTransform::TRANSFORM_DESC transformDesc;
+	}MONSTERSTATE;
+
 private:
 	CMonster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CMonster(const CMonster& rhs);
@@ -35,6 +46,10 @@ private:
 private:
 	HRESULT Add_Components();
 	HRESULT SetUp_ShaderResources();
+
+private:
+	MONSTERSTATE m_MonsterState;
+	_uint iId = { 0 };
 
 public:
 	static CMonster* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

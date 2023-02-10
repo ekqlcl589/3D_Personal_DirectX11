@@ -5,6 +5,7 @@
 #include "Base.h"
 #include "Cube.h"
 #include "Calulator.h"
+#include "Monster.h"
 
 BEGIN(Engine)
 
@@ -37,6 +38,8 @@ public:
 	HRESULT Create_Cube();
 
 	_bool Picking();
+	_bool MonsterPicking();
+
 	HRESULT Open_Level(LEVELID eLevelID);
 	void SaveData();
 	void LoadData();
@@ -45,12 +48,15 @@ public:
 	static int iNum;
 
 private:
-	CCube* m_CubeState = nullptr;
 	vector<CCube::CUBESTATE> m_vecCubeData;
+
+private:
+	vector<CMonster::MONSTERSTATE> m_vecMonsterData;
 
 private:
 	_vector m_vPos = { 0.f, 0.f, 0.f };
 	_bool m_bCheck = false;
+	_bool m_bMonster = false;
 
 private:
 	ID3D11Device* m_pDevice;

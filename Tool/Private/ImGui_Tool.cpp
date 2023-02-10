@@ -37,6 +37,11 @@ void CImGui_Tool::Initialize_ImGui(ID3D11Device* pDevice, ID3D11DeviceContext* p
 	ImGui::StyleColorsDark();
 	ImGui_ImplWin32_Init(g_hWnd);
 	ImGui_ImplDX11_Init(m_pDevice, m_pContext);
+
+	m_pBuffer_Terain = CVIBuffer_Terrain::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/Height.bmp"));
+	m_pTransform = CTransform::Create(m_pDevice, m_pContext);
+	m_pCaculator = CCalculator::Create(m_pDevice, m_pContext);
+
 	
 }
 
@@ -50,6 +55,11 @@ void CImGui_Tool::Tick_ImGui(_double TimeDelta)
 			Picking();
 	}
 
+	if (true == m_bMonster)
+	{
+		if (CKeyMgr::GetInstance()->Key_Down(VK_LBUTTON))
+			MonsterPicking();
+	}
 }
 
 void CImGui_Tool::Render_ImGui()
@@ -154,7 +164,15 @@ HRESULT CImGui_Tool::Create_Cube()
 			m_bCheck = true;
 			ImGui::EndMenu();
 		}
+
+		if (ImGui::BeginMenu("Monster"))
+		{
+			//ImGui::Text("pos%f", m_pCaculator->Get_PickingState().vRayPos);
+			m_bMonster = true;
+			ImGui::EndMenu();
+		}
 		ImGui::EndMenuBar();
+
 	}
 
 	ImGui::End();
@@ -163,11 +181,7 @@ HRESULT CImGui_Tool::Create_Cube()
 
 _bool CImGui_Tool::Picking()
 {
-	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-
-	m_pBuffer_Terain = CVIBuffer_Terrain::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/Height.bmp"));
-	m_pTransform = CTransform::Create(m_pDevice, m_pContext);
-	m_pCaculator = CCalculator::Create(m_pDevice, m_pContext);
+	m_bMonster = false;
 	m_pCaculator->Picking_OnTerrain(g_hWnd, m_pBuffer_Terain, m_pTransform);
 	//피킹 횟수를 체크 해서 횟수 만큼 free에서 루프를 돌려서 해제시킨다?
 	if (true == m_pCaculator->Get_PickingState().bPicking)
@@ -184,6 +198,8 @@ _bool CImGui_Tool::Picking()
 		state.iCubeNum = iNum++;
 		//state.fScale = 툴에서 정한값;
 
+		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
 		if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Cube"), TEXT("Layer_Cube"), &state)))
 			return E_FAIL;
 
@@ -195,6 +211,38 @@ _bool CImGui_Tool::Picking()
 	}
 		return m_bCheck;
 
+}
+
+_bool CImGui_Tool::MonsterPicking()
+{
+	m_bCheck = false;
+	m_pCaculator->Picking_OnTerrain(g_hWnd, m_pBuffer_Terain, m_pTransform);
+
+	if (true == m_pCaculator->Get_PickingState().bPicking)
+	{
+		m_vPos = m_pCaculator->Get_PickingState().vRayPos;
+
+		CMonster::MONSTERSTATE eState;
+		ZeroMemory(&eState, sizeof(CMonster::MONSTERSTATE));
+
+		XMStoreFloat3(&eState.fPos, m_vPos);
+		//eState.fScale;
+		eState.iMonsterNum = iNum++; // 이거 지금 큐브랑 같이 쓰는데 나중에 수정 ㄱㄱ
+		eState.transformDesc.fSpeed = 5.f;
+		eState.transformDesc.fRotation = 0.f;
+
+		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+		if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster"), TEXT("Layer_Monster"), &eState)))
+			return E_FAIL;
+
+		RELEASE_INSTANCE(CGameInstance);
+
+		m_vecMonsterData.push_back(eState);
+		m_bMonster = m_pCaculator->Get_PickingState().bPicking;
+
+	}
+	return m_bMonster;
 }
 
 HRESULT CImGui_Tool::Open_Level(LEVELID eLevelID)
