@@ -3,7 +3,7 @@
 #include "Texture.h"
 
 CModel::CModel(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
-	:CComponent(pDevice, pContext)
+	: CComponent(pDevice, pContext)
 {
 }
 
@@ -14,14 +14,17 @@ CModel::CModel(const CModel & rhs)
 	, m_iNumMeshes(rhs.m_iNumMeshes)
 	, m_vecMaterial(rhs.m_vecMaterial)
 	, m_iNumMaterial(rhs.m_iNumMaterial)
+	, m_LocalMatrix(rhs.m_LocalMatrix)
 {
 	for (auto& pMesh : m_vecMesh)
 		Safe_AddRef(pMesh);
 
 	for (auto& pMaterial : m_vecMaterial)
 	{
-		for (_uint i = 0; i < AI_TEXTURE_TYPE_MAX; i++)
+		for (_uint i = 0; i < AI_TEXTURE_TYPE_MAX; ++i)
+		{
 			Safe_AddRef(pMaterial.pMaterialTexture[i]);
+		}
 	}
 }
 
@@ -38,6 +41,8 @@ HRESULT CModel::Initialize_Prototype(const char * pModelFilePath, MODEL_TYPE eTy
 	if (nullptr == m_pAiScene)
 		return E_FAIL;
 	
+	XMStoreFloat4x4(&m_LocalMatrix, LocalMatrix);
+
 	if (FAILED(Ready_Meshes(LocalMatrix)))
 		return E_FAIL;
 
@@ -69,7 +74,7 @@ HRESULT CModel::Ready_Meshes(_fmatrix LocalMatrix)
 
 	m_iNumMeshes = m_pAiScene->mNumMeshes;
 
-	for (_uint i = 0; i < m_iNumMeshes; i++)
+	for (_uint i = 0; i < m_iNumMeshes; ++i)
 	{
 		CMesh* pMesh = CMesh::Create(m_pDevice, m_pContext, m_pAiScene->mMeshes[i], LocalMatrix);
 
@@ -86,15 +91,16 @@ HRESULT CModel::Ready_Materials(const char* pModelFilePath)
 {
 	m_iNumMaterial = m_pAiScene->mNumMaterials;
 
-	for (_uint i = 0; i < m_iNumMaterial; i++)
+	for (_uint i = 0; i < m_iNumMaterial; ++i)
 	{
 		MODEL_MATERIAL ModelMaterial;
 		ZeroMemory(&ModelMaterial, sizeof(MODEL_MATERIAL));
 
 		aiMaterial* pMaterial = m_pAiScene->mMaterials[i];
-		for (_uint j = 0; j < AI_TEXTURE_TYPE_MAX; j++)
+		for (_uint j = 1; j < AI_TEXTURE_TYPE_MAX; ++j)
 		{
 			aiString strPath;
+
 			if (FAILED(pMaterial->GetTexture(aiTextureType(j), 0, &strPath)))
 				continue;
 			// 여기서 break를 걸면 모델들이 가지고 있는 머테리얼이 다 불리기 전에 없으면 튕겨져 나가서 전부 불러오지 못함

@@ -1,9 +1,9 @@
 #include "..\Public\VIBuffer.h"
 
-
 CVIBuffer::CVIBuffer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	:CComponent(pDevice, pContext)
 {
+
 }
 
 CVIBuffer::CVIBuffer(const CVIBuffer & rhs)
@@ -38,8 +38,8 @@ HRESULT CVIBuffer::Render()
 	if (nullptr == m_pContext)
 		return E_FAIL;
 
-	ID3D11Buffer* pVertexBuffers[] = { m_pVB };
-	_uint iStrides[] = { m_iStride };
+	ID3D11Buffer* pVertexBuffers[] = { m_pVB, };
+	_uint iStrides[] = { m_iStride, };
 	_uint iOffseets[] = { 0, };
 
 	m_pContext->IASetVertexBuffers(0, m_iNumVertexBuffers, pVertexBuffers, iStrides, iOffseets);

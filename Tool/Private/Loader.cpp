@@ -147,6 +147,7 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더를 로딩중입니다."));
 
+
 	/* For.Prototype_Component_Shader_VtxModel */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModel"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/shader_VtxModel.hlsl"), VTXNONANIMMODEL_DELARATION::Element, VTXNONANIMMODEL_DELARATION::iNumElements))))

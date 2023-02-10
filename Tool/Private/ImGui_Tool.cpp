@@ -104,6 +104,17 @@ void CImGui_Tool::Setting_Terrain()
 
 			if (ImGui::MenuItem("CubeLoad"))
 				LoadData();
+
+			ImGui::Separator();
+
+			if (ImGui::MenuItem("MonsterSave"))
+				MonsterSave();
+
+			ImGui::Separator();
+
+			if (ImGui::MenuItem("MonsterLoad"))
+				MonsterLoad();
+
 			ImGui::EndMenu();
 
 		}
@@ -143,7 +154,8 @@ void CImGui_Tool::LoadTerrain()
 		if (ImGui::BeginMenu("Terrain"))
 		{
 			if (ImGui::MenuItem("Create"))
-				Open_Level(LEVEL_GAMEPLAY);
+				if (FAILED(Open_Level(LEVEL_GAMEPLAY)))
+					return;
 
 			ImGui::EndMenu();
 		}
@@ -181,33 +193,38 @@ HRESULT CImGui_Tool::Create_Cube()
 
 _bool CImGui_Tool::Picking()
 {
-	m_bMonster = false;
-	m_pCaculator->Picking_OnTerrain(g_hWnd, m_pBuffer_Terain, m_pTransform);
-	//피킹 횟수를 체크 해서 횟수 만큼 free에서 루프를 돌려서 해제시킨다?
-	if (true == m_pCaculator->Get_PickingState().bPicking)
+	if (ImGui::IsMousePosValid())
 	{
-		m_vPos = m_pCaculator->Get_PickingState().vRayPos;
+		m_bMonster = false;
+		m_pCaculator->Picking_OnTerrain(g_hWnd, m_pBuffer_Terain, m_pTransform);
+		//피킹 횟수를 체크 해서 횟수 만큼 free에서 루프를 돌려서 해제시킨다?
+		if (true == m_pCaculator->Get_PickingState().bPicking)
+		{
+			m_vPos = m_pCaculator->Get_PickingState().vRayPos;
 
-		CCube::CUBESTATE state;
-		ZeroMemory(&state, sizeof(CCube::CUBESTATE));
+			CCube::CUBESTATE state;
+			ZeroMemory(&state, sizeof(CCube::CUBESTATE));
 
-		XMStoreFloat3(&state.fPos, m_vPos);
+			XMStoreFloat3(&state.fPos, m_vPos);
 
-		state.transformDesc.fSpeed = 5.f;
-		state.transformDesc.fRotation = XMConvertToRadians(10);
-		state.iCubeNum = iNum++;
-		//state.fScale = 툴에서 정한값;
+			state.transformDesc.fSpeed = 5.f;
+			state.transformDesc.fRotation = XMConvertToRadians(10);
+			state.iCubeNum = iNum++;
+			//state.fScale = 툴에서 정한값;
 
-		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+			CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-		if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Cube"), TEXT("Layer_Cube"), &state)))
-			return E_FAIL;
+			if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Cube"), TEXT("Layer_Cube"), &state)))
+				return E_FAIL;
+
+
+			m_vecCubeData.push_back(state);
+			m_bCheck = m_pCaculator->Get_PickingState().bPicking;
+			//return m_pCaculator->Get_PickingState().bPicking;	
+		}
 
 		RELEASE_INSTANCE(CGameInstance);
 
-		m_vecCubeData.push_back(state);
-		m_bCheck = m_pCaculator->Get_PickingState().bPicking;
-		//return m_pCaculator->Get_PickingState().bPicking;	
 	}
 		return m_bCheck;
 
@@ -215,32 +232,37 @@ _bool CImGui_Tool::Picking()
 
 _bool CImGui_Tool::MonsterPicking()
 {
-	m_bCheck = false;
-	m_pCaculator->Picking_OnTerrain(g_hWnd, m_pBuffer_Terain, m_pTransform);
-
-	if (true == m_pCaculator->Get_PickingState().bPicking)
+	if (ImGui::IsMousePosValid())
 	{
-		m_vPos = m_pCaculator->Get_PickingState().vRayPos;
 
-		CMonster::MONSTERSTATE eState;
-		ZeroMemory(&eState, sizeof(CMonster::MONSTERSTATE));
+		m_bCheck = false;
+		m_pCaculator->Picking_OnTerrain(g_hWnd, m_pBuffer_Terain, m_pTransform);
 
-		XMStoreFloat3(&eState.fPos, m_vPos);
-		//eState.fScale;
-		eState.iMonsterNum = iNum++; // 이거 지금 큐브랑 같이 쓰는데 나중에 수정 ㄱㄱ
-		eState.transformDesc.fSpeed = 5.f;
-		eState.transformDesc.fRotation = 0.f;
+		if (true == m_pCaculator->Get_PickingState().bPicking)
+		{
+			m_vPos = m_pCaculator->Get_PickingState().vRayPos;
 
-		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+			CMonster::MONSTERSTATE eState;
+			ZeroMemory(&eState, sizeof(CMonster::MONSTERSTATE));
 
-		if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster"), TEXT("Layer_Monster"), &eState)))
-			return E_FAIL;
+			XMStoreFloat3(&eState.fPos, m_vPos);
+			//eState.fScale;
+			eState.iMonsterNum = iNum++; // 이거 지금 큐브랑 같이 쓰는데 나중에 수정 ㄱㄱ
+			eState.transformDesc.fSpeed = 5.f;
+			eState.transformDesc.fRotation = 0.f;
+
+			CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+			if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster"), TEXT("Layer_Monster"), &eState)))
+				return E_FAIL;
+
+
+			m_vecMonsterData.push_back(eState);
+			m_bMonster = m_pCaculator->Get_PickingState().bPicking;
+
+		}
 
 		RELEASE_INSTANCE(CGameInstance);
-
-		m_vecMonsterData.push_back(eState);
-		m_bMonster = m_pCaculator->Get_PickingState().bPicking;
-
 	}
 	return m_bMonster;
 }
@@ -270,6 +292,7 @@ HRESULT CImGui_Tool::Open_Level(LEVELID eLevelID)
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
+
 	return S_OK;
 }
 
@@ -323,6 +346,60 @@ void CImGui_Tool::LoadData()
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
 		pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Cube"), TEXT("Layer_Cube"), &iter);
+		RELEASE_INSTANCE(CGameInstance);
+	}
+}
+
+void CImGui_Tool::MonsterSave()
+{
+	HANDLE hFile = CreateFile(L"../Data/Monster.dat", GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	if (INVALID_HANDLE_VALUE == hFile)
+	{
+		MSG_BOX("Monster Save Fail");
+		return;
+	}
+
+	DWORD dwByte = 0;
+
+	for (auto& iter : m_vecMonsterData)
+	{
+		WriteFile(hFile, &iter, sizeof(CMonster::MONSTERSTATE), &dwByte, nullptr);
+	}
+
+	CloseHandle(hFile);
+
+}
+
+void CImGui_Tool::MonsterLoad()
+{
+	HANDLE hFile = CreateFile(L"../Data/Monster.dat", GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	if (INVALID_HANDLE_VALUE == hFile)
+	{
+		MSG_BOX("Monster Load Fail");
+		return;
+	}
+
+	DWORD dwByte = 0;
+	CMonster::MONSTERSTATE MonsterData;
+	while (true)
+	{
+		ReadFile(hFile, &MonsterData, sizeof(CMonster::MONSTERSTATE), &dwByte, nullptr);
+
+		if (0 == dwByte)
+			break;
+
+		m_vecMonsterData.push_back(MonsterData);
+	}
+
+	CloseHandle(hFile);
+
+	for (auto& iter : m_vecMonsterData)
+	{
+		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+		pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster"), TEXT("Layer_Monster"), &iter);
 		RELEASE_INSTANCE(CGameInstance);
 	}
 }

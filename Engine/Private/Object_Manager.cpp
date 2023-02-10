@@ -14,7 +14,7 @@ HRESULT CObject_Manager::Reserve_Manager(_uint iNumLevels)
 	if (nullptr != m_pLayers)
 		return E_FAIL;
 
-	m_pLayers = new LAYERS[iNumLevels]; // ÀÌ°Å °¹¼ö ¾È ´Ã¸®¸é »ý¼ºµÈ °´Ã¼ ¸¸Å­ ·Îµå°¡ ¾È µÊ 
+	m_pLayers = new LAYERS[iNumLevels]; 
 
 	m_iNumLevels = iNumLevels;
 
@@ -92,8 +92,6 @@ void CObject_Manager::Clear(_uint iLevelIndex)
 CGameObject * CObject_Manager::Find_Prototype(const _tchar * pPrototypeTag)
 {
 	_tchar szTag[MAX_PATH] = TEXT("");
-
-	CTag_Finder TagFinder(pPrototypeTag);
 
 	auto iter = find_if(m_Prototypes.begin(), m_Prototypes.end(), CTag_Finder(pPrototypeTag));
 	

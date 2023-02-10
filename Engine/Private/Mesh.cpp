@@ -30,7 +30,7 @@ HRESULT CMesh::Initialize_Prototype(const aiMesh * pAiMesh, _fmatrix LocalMatrix
 
 	m_BufferDesc.ByteWidth = m_iStride * m_iNumVertices;
 
-	m_BufferDesc.Usage = D3D11_USAGE_DEFAULT ;
+	m_BufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	m_BufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	m_BufferDesc.StructureByteStride = m_iStride;
 	m_BufferDesc.CPUAccessFlags = 0;
@@ -41,7 +41,7 @@ HRESULT CMesh::Initialize_Prototype(const aiMesh * pAiMesh, _fmatrix LocalMatrix
 	VTXNONANIMMODEL* pVertices = new VTXNONANIMMODEL[m_iNumVertices];
 	ZeroMemory(pVertices, sizeof(VTXNONANIMMODEL) * m_iNumVertices);
 
-	for (_uint i = 0; i < m_iNumVertices; i++)
+	for (_uint i = 0; i < m_iNumVertices; ++i)
 	{
 		memcpy(&pVertices[i].vPosition, &pAiMesh->mVertices[i], sizeof(_float3));
 		XMStoreFloat3(&pVertices[i].vPosition, XMVector3TransformCoord(XMLoadFloat3(&pVertices[i].vPosition), LocalMatrix));
@@ -79,7 +79,7 @@ HRESULT CMesh::Initialize_Prototype(const aiMesh * pAiMesh, _fmatrix LocalMatrix
 	FACEINDICES32* pIndices = new FACEINDICES32[m_iNumPrimitive];
 	ZeroMemory(pIndices, sizeof(FACEINDICES32) * m_iNumPrimitive);
 
-	for (_uint i = 0; i < m_iNumPrimitive; i++)
+	for (_uint i = 0; i < m_iNumPrimitive; ++i)
 	{
 		pIndices[i]._0 = pAiMesh->mFaces[i].mIndices[0];
 		pIndices[i]._1 = pAiMesh->mFaces[i].mIndices[1];
@@ -92,6 +92,8 @@ HRESULT CMesh::Initialize_Prototype(const aiMesh * pAiMesh, _fmatrix LocalMatrix
 		return E_FAIL;
 
 	Safe_Delete_Array(pIndices);
+	
+	return S_OK;
 }
 
 HRESULT CMesh::Initialize(void * pArg)

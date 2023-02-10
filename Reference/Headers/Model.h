@@ -40,6 +40,9 @@ private:
 	_uint m_iNumMaterial = { 0 };
 	vector<MODEL_MATERIAL> m_vecMaterial;
 
+private:
+	_float4x4 m_LocalMatrix;
+
 public:
 	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const char* pModelFilePath, MODEL_TYPE eType, _fmatrix LocalMatrix);
 	virtual CComponent* Clone(void* pArg)override;

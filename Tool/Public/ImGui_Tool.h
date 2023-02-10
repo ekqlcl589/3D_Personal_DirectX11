@@ -41,8 +41,12 @@ public:
 	_bool MonsterPicking();
 
 	HRESULT Open_Level(LEVELID eLevelID);
+	
+public:
 	void SaveData();
 	void LoadData();
+	void MonsterSave();
+	void MonsterLoad();
 
 public:
 	static int iNum;
