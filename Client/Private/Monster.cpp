@@ -28,6 +28,26 @@ HRESULT CMonster::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
+	//ZeroMemory(&m_MonsterState, sizeof(MONSTERSTATE));
+
+	//memcpy(&m_MonsterState, pArg, sizeof m_MonsterState);
+
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_MonsterState.fPos));
+
+	//_vector vRight, vUp, vLook;// 라업룩은 항등오로 초기화
+
+	//vRight = XMVectorSet(1.f, 0.f, 0.f, 0.f);
+	//vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	//vLook = XMVectorSet(0.f, 0.f, 1.f, 0.f);
+
+	//m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVector3Normalize(vRight));
+	//m_pTransformCom->Set_State(CTransform::STATE_UP, XMVector3Normalize(vUp));
+	//m_pTransformCom->Set_State(CTransform::STATE_LOOK, XMVector3Normalize(vLook));
+
+	//iId = iId++;
+	// 클라에서 몬스터 데이터를 불러올 때 로더에서 생성 하는 트렌스 폼이랑 각종 여러 가지 생각 해서 다시 로드 기능 구현 
+	// 일단 사본 객체를 게임 플레이 레벨에서 생성하면 안 될듯
+
 	return S_OK;
 }
 

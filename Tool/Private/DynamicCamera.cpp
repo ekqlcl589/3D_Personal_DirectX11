@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\DynamicCamera.h"
 #include "GameInstance.h"
+#include "KeyMgr.h"
 
 CDynamicCamera::CDynamicCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	:CCamera(pDevice, pContext)
@@ -63,7 +64,7 @@ void CDynamicCamera::Key_Input(_double TimeDelta)
 	if (m_pInstance->Get_DIKeyState(DIK_D))
 		m_Transform->Go_Right(TimeDelta);
 
-
+	
 	if (m_pInstance->Get_DIKeyState(DIK_TAB))
 	{
 		if (m_bCheck)

@@ -27,6 +27,7 @@ public:
 	HRESULT Ready_Layer_Player(const _tchar* pLayerTag);
 
 	void LoadData(_tchar* szFilePath);
+	void LoadMonster(_tchar* szFilePath);
 
 public:
 	static CGamePlay* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

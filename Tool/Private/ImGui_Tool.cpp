@@ -27,6 +27,7 @@ void CImGui_Tool::Initialize_ImGui(ID3D11Device* pDevice, ID3D11DeviceContext* p
 	m_pContext = pContext;
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pContext);
+
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 
@@ -41,7 +42,6 @@ void CImGui_Tool::Initialize_ImGui(ID3D11Device* pDevice, ID3D11DeviceContext* p
 	m_pBuffer_Terain = CVIBuffer_Terrain::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/Height.bmp"));
 	m_pTransform = CTransform::Create(m_pDevice, m_pContext);
 	m_pCaculator = CCalculator::Create(m_pDevice, m_pContext);
-
 	
 }
 
@@ -49,16 +49,22 @@ void CImGui_Tool::Tick_ImGui(_double TimeDelta)
 {
 	// 추후 ImGui_Tool 은 Manager 형식으로 사용되고 레벨값에 따라 불리는 툴을 따로 배치해서 
 	// 배치되는 툴이 불렸을 때 클릭을 통해 피킹 하는 식으로 사용
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 	if (true == m_bCheck)
 	{
-		if (CKeyMgr::GetInstance()->Key_Down(VK_RBUTTON))
+		//if (CKeyMgr::GetInstance()->Key_Down(VK_RBUTTON))
+		if(CKeyMgr::GetInstance()->Key_Down(VK_RBUTTON))
 			Picking();
 	}
-
-	if (true == m_bMonster)
+	else if (true == m_bMonster)
 	{
-		if (CKeyMgr::GetInstance()->Key_Down(VK_LBUTTON))
+		if (CKeyMgr::GetInstance()->Key_Down(VK_RBUTTON))
 			MonsterPicking();
+	}
+	else
+	{
+		m_bCheck = false;
+		m_bMonster = false;
 	}
 }
 
@@ -88,8 +94,8 @@ void CImGui_Tool::Render_ImGui()
 void CImGui_Tool::Setting_Terrain()
 {
 	ImGui::GetIO().NavActive = false;
-	//ImGui::GetIO().WantCaptureMouse = true;
-	//ImGui::GetIO().WantCaptureKeyboard = true;
+	ImGui::GetIO().WantCaptureMouse = true;
+	ImGui::GetIO().WantCaptureKeyboard = true;
 
 	ImGui::Begin("Terrain Setting", NULL, ImGuiWindowFlags_MenuBar);
 
@@ -193,9 +199,8 @@ HRESULT CImGui_Tool::Create_Cube()
 
 _bool CImGui_Tool::Picking()
 {
-	if (ImGui::IsMousePosValid())
-	{
 		m_bMonster = false;
+		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 		m_pCaculator->Picking_OnTerrain(g_hWnd, m_pBuffer_Terain, m_pTransform);
 		//피킹 횟수를 체크 해서 횟수 만큼 free에서 루프를 돌려서 해제시킨다?
 		if (true == m_pCaculator->Get_PickingState().bPicking)
@@ -212,29 +217,23 @@ _bool CImGui_Tool::Picking()
 			state.iCubeNum = iNum++;
 			//state.fScale = 툴에서 정한값;
 
-			CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
 			if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Cube"), TEXT("Layer_Cube"), &state)))
 				return E_FAIL;
 
+			RELEASE_INSTANCE(CGameInstance);
 
 			m_vecCubeData.push_back(state);
 			m_bCheck = m_pCaculator->Get_PickingState().bPicking;
-			//return m_pCaculator->Get_PickingState().bPicking;	
+			return m_pCaculator->Get_PickingState().bPicking;	
 		}
 
-		RELEASE_INSTANCE(CGameInstance);
-
-	}
-		return m_bCheck;
 
 }
 
 _bool CImGui_Tool::MonsterPicking()
 {
-	if (ImGui::IsMousePosValid())
-	{
-
+		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 		m_bCheck = false;
 		m_pCaculator->Picking_OnTerrain(g_hWnd, m_pBuffer_Terain, m_pTransform);
 
@@ -251,20 +250,17 @@ _bool CImGui_Tool::MonsterPicking()
 			eState.transformDesc.fSpeed = 5.f;
 			eState.transformDesc.fRotation = 0.f;
 
-			CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-
 			if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster"), TEXT("Layer_Monster"), &eState)))
 				return E_FAIL;
 
+			RELEASE_INSTANCE(CGameInstance);
 
 			m_vecMonsterData.push_back(eState);
 			m_bMonster = m_pCaculator->Get_PickingState().bPicking;
+			return m_pCaculator->Get_PickingState().bPicking;
 
 		}
 
-		RELEASE_INSTANCE(CGameInstance);
-	}
-	return m_bMonster;
 }
 
 HRESULT CImGui_Tool::Open_Level(LEVELID eLevelID)
@@ -406,7 +402,6 @@ void CImGui_Tool::MonsterLoad()
 
 void CImGui_Tool::Free()
 {
-	//CGameInstance::GetInstance()->DestroyInstance();
 
 	Safe_Release(m_pBuffer_Terain);
 	Safe_Release(m_pTransform);
@@ -414,4 +409,7 @@ void CImGui_Tool::Free()
 
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);
+	RELEASE_INSTANCE(CGameInstance);
+
+	CGameInstance::GetInstance()->DestroyInstance();
 }

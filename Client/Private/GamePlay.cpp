@@ -4,6 +4,7 @@
 #include "GameInstance.h"
 #include "DynamicCamera.h"
 #include "Cube.h"
+#include "Monster.h"
 
 CGamePlay::CGamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	:CLevel(pDevice, pContext)
@@ -21,6 +22,7 @@ HRESULT CGamePlay::Initialize()
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
+//	LoadMonster(L"../Data/Monster.dat");
 	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
 
@@ -152,6 +154,35 @@ void CGamePlay::LoadData(_tchar * szFilePath)
 			break;
 
 		pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Cube"), TEXT("Layer_Cube"), &DataFile);
+		RELEASE_INSTANCE(CGameInstance);
+
+	}
+
+	CloseHandle(hFile);
+}
+
+void CGamePlay::LoadMonster(_tchar * szFilePath)
+{
+	HANDLE        hFile = CreateFile(szFilePath, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+	if (INVALID_HANDLE_VALUE == hFile)
+	{
+		MSG_BOX("Monster Load Fail");
+		return;
+	}
+
+	DWORD        dwByte = 0;
+	CMonster::MONSTERSTATE        DataFile;
+
+	while (true)
+	{
+		ReadFile(hFile, &DataFile, sizeof(CCube::CUBESTATE), &dwByte, nullptr);
+
+		if (0 == dwByte)
+			break;
+
+		pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster"), TEXT("Layer_Player"), &DataFile);
 		RELEASE_INSTANCE(CGameInstance);
 
 	}
