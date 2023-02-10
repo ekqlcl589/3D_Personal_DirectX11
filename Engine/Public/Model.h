@@ -17,14 +17,14 @@ public:
 	_uint Get_NumMeshes() const { return m_iNumMeshes; }
 
 public:
-	virtual HRESULT Initialize_Prototype(const char* pModelFilePath, MODEL_TYPE eType);
+	virtual HRESULT Initialize_Prototype(const char* pModelFilePath, MODEL_TYPE eType, _fmatrix LocalMatrix);
 	virtual HRESULT Initialize(void* pArg);
 
 	virtual HRESULT Render(_uint iMeshIndex);
 	HRESULT SetUp_ShaderMaterialResource(class CShader* pShaderCom, const char* pConstantName, _uint iMeshIndex, aiTextureType eType);
 
 private:
-	HRESULT Ready_Meshes();
+	HRESULT Ready_Meshes(_fmatrix LocalMatrix);
 	HRESULT Ready_Materials(const char* pModelFilePath);
 
 
@@ -41,7 +41,7 @@ private:
 	vector<MODEL_MATERIAL> m_vecMaterial;
 
 public:
-	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const char* pModelFilePath, MODEL_TYPE eType);
+	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const char* pModelFilePath, MODEL_TYPE eType, _fmatrix LocalMatrix);
 	virtual CComponent* Clone(void* pArg)override;
 	virtual void Free()override;
 };

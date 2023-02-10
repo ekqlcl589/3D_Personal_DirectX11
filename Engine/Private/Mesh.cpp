@@ -12,7 +12,7 @@ CMesh::CMesh(const CMesh & rhs)
 {
 }
 
-HRESULT CMesh::Initialize_Prototype(const aiMesh * pAiMesh)
+HRESULT CMesh::Initialize_Prototype(const aiMesh * pAiMesh, _fmatrix LocalMatrix)
 {
 	m_iMaterialIndex = pAiMesh->mMaterialIndex;
 	m_iStride = sizeof(VTXNONANIMMODEL);
@@ -44,8 +44,13 @@ HRESULT CMesh::Initialize_Prototype(const aiMesh * pAiMesh)
 	for (_uint i = 0; i < m_iNumVertices; i++)
 	{
 		memcpy(&pVertices[i].vPosition, &pAiMesh->mVertices[i], sizeof(_float3));
+		XMStoreFloat3(&pVertices[i].vPosition, XMVector3TransformCoord(XMLoadFloat3(&pVertices[i].vPosition), LocalMatrix));
+
 		memcpy(&pVertices[i].vNormal, &pAiMesh->mNormals[i], sizeof(_float3));
+		XMStoreFloat3(&pVertices[i].vNormal, XMVector3TransformNormal(XMLoadFloat3(&pVertices[i].vNormal), LocalMatrix));
+		
 		memcpy(&pVertices[i].vTexUV, &pAiMesh->mTextureCoords[0][i], sizeof(_float2));
+		
 		memcpy(&pVertices[i].vTangent, &pAiMesh->mTangents[i], sizeof(_float3));
 
 	}
@@ -94,11 +99,11 @@ HRESULT CMesh::Initialize(void * pArg)
 	return S_OK;
 }
 
-CMesh * CMesh::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const aiMesh* pAiMesh)
+CMesh * CMesh::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const aiMesh* pAiMesh, _fmatrix LocalMatrix)
 {
 	CMesh * pInstance = new CMesh(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype(pAiMesh)))
+	if (FAILED(pInstance->Initialize_Prototype(pAiMesh, LocalMatrix)))
 	{
 		MSG_BOX("CMesh Create Fail");
 		Safe_Release(pInstance);

@@ -25,7 +25,7 @@ CModel::CModel(const CModel & rhs)
 	}
 }
 
-HRESULT CModel::Initialize_Prototype(const char * pModelFilePath, MODEL_TYPE eType)
+HRESULT CModel::Initialize_Prototype(const char * pModelFilePath, MODEL_TYPE eType, _fmatrix LocalMatrix)
 {
 	_uint iFlag = { aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast };// | aiProcess_GlobalScale}; //이거 플래그값 1/100 아닌듯?
 
@@ -38,7 +38,7 @@ HRESULT CModel::Initialize_Prototype(const char * pModelFilePath, MODEL_TYPE eTy
 	if (nullptr == m_pAiScene)
 		return E_FAIL;
 	
-	if (FAILED(Ready_Meshes()))
+	if (FAILED(Ready_Meshes(LocalMatrix)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Materials(pModelFilePath)))
@@ -62,7 +62,7 @@ HRESULT CModel::Render(_uint iMeshIndex)
 	return S_OK;
 }
 
-HRESULT CModel::Ready_Meshes()
+HRESULT CModel::Ready_Meshes(_fmatrix LocalMatrix)
 {
 	if (nullptr == m_pAiScene)
 		return E_FAIL;
@@ -71,7 +71,7 @@ HRESULT CModel::Ready_Meshes()
 
 	for (_uint i = 0; i < m_iNumMeshes; i++)
 	{
-		CMesh* pMesh = CMesh::Create(m_pDevice, m_pContext, m_pAiScene->mMeshes[i]);
+		CMesh* pMesh = CMesh::Create(m_pDevice, m_pContext, m_pAiScene->mMeshes[i], LocalMatrix);
 
 		if (nullptr == pMesh)
 			return E_FAIL;
@@ -135,10 +135,10 @@ HRESULT CModel::SetUp_ShaderMaterialResource(CShader * pShaderCom, const char * 
 	return m_vecMaterial[m_vecMesh[iMeshIndex]->Get_MaterialIndex()].pMaterialTexture[eType]->SetUp_ShaderResource(pShaderCom, pConstantName);
 }
 
-CModel * CModel::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const char * pModelFilePath, MODEL_TYPE eType)
+CModel * CModel::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const char * pModelFilePath, MODEL_TYPE eType, _fmatrix LocalMatrix)
 {
 	CModel * pInstance = new CModel(pDevice, pContext);
-	if (FAILED(pInstance->Initialize_Prototype(pModelFilePath, eType)))
+	if (FAILED(pInstance->Initialize_Prototype(pModelFilePath, eType, LocalMatrix)))
 	{
 		MSG_BOX("Model Create Fail");
 		Safe_Release(pInstance);

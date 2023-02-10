@@ -11,7 +11,7 @@ private:
 	virtual ~CMesh() = default;
 
 public:
-	HRESULT Initialize_Prototype(const aiMesh* pAiMesh);
+	HRESULT Initialize_Prototype(const aiMesh* pAiMesh, _fmatrix LocalMatrix);
 	HRESULT Initialize(void* pArg);
 
 public:
@@ -21,7 +21,7 @@ private:
 	_uint m_iMaterialIndex = { 0 };
 
 public:
-	static CMesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const aiMesh* pAiMesh);
+	static CMesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const aiMesh* pAiMesh, _fmatrix LocalMatrix);
 	virtual CComponent* Clone(void* pArg = nullptr)override;
 	virtual void Free()override;
 };

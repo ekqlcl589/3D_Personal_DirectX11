@@ -2,6 +2,7 @@
 #include "..\Public\Player.h"
 
 #include "GameInstance.h"
+#include "KeyMgr.h"
 
 CPlayer::CPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -44,6 +45,8 @@ HRESULT CPlayer::Initialize(void * pArg)
 
 void CPlayer::Tick(_double TimeDelta)
 {
+	Key_Input(TimeDelta);
+
 	__super::Tick(TimeDelta);
 }
 
@@ -76,6 +79,21 @@ HRESULT CPlayer::Render()
 		m_pModelCom->Render(i);
 	}
 	return S_OK;
+}
+
+void CPlayer::Key_Input(_double TimeDelta)
+{
+	if (CKeyMgr::GetInstance()->Key_Pressing(VK_UP))
+		m_pTransformCom->Go_Straight(TimeDelta);
+
+	if (CKeyMgr::GetInstance()->Key_Pressing(VK_DOWN))
+		m_pTransformCom->Go_Back(TimeDelta);
+
+	if (CKeyMgr::GetInstance()->Key_Pressing(VK_LEFT))
+		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * -1.f);
+
+	if (CKeyMgr::GetInstance()->Key_Pressing(VK_RIGHT))
+		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta);
 }
 
 HRESULT CPlayer::Add_Components()
@@ -119,6 +137,22 @@ HRESULT CPlayer::SetUp_ShaderResources()
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Set_Matrix("g_ProjMatrix", &pInstance->Get_Transformfloat4x4(CPipeLine::TS_PROJ))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Set_RawValue("g_vCamPosition", &pInstance->Get_CamPos(), sizeof(_float4))))
+		return E_FAIL;
+
+	const LIGHT_DESC* pLightDesc = pInstance->Get_Light(0);
+	if (nullptr == pLightDesc)
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Set_RawValue("g_vLightDir", &pLightDesc->vDirection, sizeof(_float4))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Set_RawValue("g_vLightDiffuse", &pLightDesc->vDiffuse, sizeof(_float4))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Set_RawValue("g_vLightSpecular", &pLightDesc->vSpecular, sizeof(_float4))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Set_RawValue("g_vLightAmbient", &pLightDesc->vAmbient, sizeof(_float4))))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);

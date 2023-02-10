@@ -27,6 +27,8 @@ public:
 	void Set_State(STATE eState, _fvector vState);
 
 	_float3 Get_Scale();
+	void Set_Scale(const _float3& vScale);
+	void Scaling(const _float3 & vScale);
 
 	void Set_TransformDesc(const TRANSFORM_DESC& TransformDesc)
 	{

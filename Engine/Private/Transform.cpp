@@ -30,6 +30,22 @@ _float3 CTransform::Get_Scale()
 	return _float3(XMVectorGetX(XMVector3Length(vRight)), XMVectorGetX(XMVector3Length(vUp)), XMVectorGetX(XMVector3Length(vLook)));
 }
 
+/* x,y,z로 절대 스케일을 셋팅하겠다. */
+void CTransform::Set_Scale(const _float3 & vScale)
+{
+	Set_State(CTransform::STATE_RIGHT, XMVector3Normalize(Get_State(CTransform::STATE_RIGHT)) * vScale.x);
+	Set_State(CTransform::STATE_UP, XMVector3Normalize(Get_State(CTransform::STATE_UP)) * vScale.y);
+	Set_State(CTransform::STATE_LOOK, XMVector3Normalize(Get_State(CTransform::STATE_LOOK)) * vScale.z);
+}
+
+/* x,y,z로 상대 스케일을 셋팅하겠다. */
+void CTransform::Scaling(const _float3 & vScale)
+{
+	Set_State(CTransform::STATE_RIGHT, Get_State(CTransform::STATE_RIGHT) * vScale.x);
+	Set_State(CTransform::STATE_UP, Get_State(CTransform::STATE_UP) * vScale.y);
+	Set_State(CTransform::STATE_LOOK, Get_State(CTransform::STATE_LOOK) * vScale.z);
+}
+
 HRESULT CTransform::Initialize_Prototype()
 {
 	XMStoreFloat4x4(&m_WorldMatrix, XMMatrixIdentity());
