@@ -28,11 +28,11 @@ HRESULT CMonster::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	//ZeroMemory(&m_MonsterState, sizeof(MONSTERSTATE));
+	ZeroMemory(&m_MonsterState, sizeof(MONSTERSTATE));
 
-	//memcpy(&m_MonsterState, pArg, sizeof m_MonsterState);
+	memcpy(&m_MonsterState, pArg, sizeof m_MonsterState);
 
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_MonsterState.fPos));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_MonsterState.fPos));
 
 	//_vector vRight, vUp, vLook;// 라업룩은 항등오로 초기화
 

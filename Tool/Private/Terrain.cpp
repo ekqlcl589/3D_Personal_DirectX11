@@ -216,25 +216,6 @@ HRESULT CTerrain::SetUp_ShaderResource()
 	if (FAILED(m_pShaderCom->Set_RawValue("g_vCamPosition", &pGameInstance->Get_CamPos(), sizeof(_float4))))
 		return E_FAIL;
 
-
-	/* For.Com_Brush */
-	/*if (true == m_pCaCom->Get_PickingState().bPicking)
-	{
-		_float4 fff;
-		XMStoreFloat4(&fff, m_pCaCom->Get_PickingState().vRayPos);
-		if (FAILED(m_pShaderCom->Set_RawValue("g_vBrushPos", &fff, sizeof(_float4))))
-			return E_FAIL;
-
-		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Brush"),
-			TEXT("Com_Brush"), (CComponent**)&m_pMultiTextureCom[TEX_BRUSH])))
-			return E_FAIL;
-
-		if (FAILED(m_pMultiTextureCom[TEX_BRUSH]->SetUp_ShaderResource(m_pShaderCom, "g_BrushTexture", 0)))
-			return E_FAIL;
-
-		m_pCaCom->Set_PickingState();
-	}*/
-
 	const LIGHT_DESC* pLightDesc = pGameInstance->Get_Light(0);
 	if (nullptr == pLightDesc)
 		return E_FAIL;

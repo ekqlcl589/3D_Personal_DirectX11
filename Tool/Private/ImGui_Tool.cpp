@@ -201,6 +201,8 @@ HRESULT CImGui_Tool::Create_Cube()
 
 _bool CImGui_Tool::Picking()
 {
+	if (ImGui::IsMousePosValid())
+	{
 		m_bMonster = false;
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 		m_pCaculator->Picking_OnTerrain(g_hWnd, m_pBuffer_Terain, m_pTransform);
@@ -227,14 +229,16 @@ _bool CImGui_Tool::Picking()
 
 			m_vecCubeData.push_back(state);
 			m_bCheck = m_pCaculator->Get_PickingState().bPicking;
-			return m_pCaculator->Get_PickingState().bPicking;	
+			return m_pCaculator->Get_PickingState().bPicking;
 		}
-
+	}
 
 }
 
 _bool CImGui_Tool::MonsterPicking()
 {
+	if (ImGui::IsMousePosValid())
+	{
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 		m_bCheck = false;
 		m_pCaculator->Picking_OnTerrain(g_hWnd, m_pBuffer_Terain, m_pTransform);
@@ -262,7 +266,7 @@ _bool CImGui_Tool::MonsterPicking()
 			return m_pCaculator->Get_PickingState().bPicking;
 
 		}
-
+	}
 }
 
 HRESULT CImGui_Tool::Open_Level(LEVELID eLevelID)

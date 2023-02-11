@@ -22,7 +22,7 @@ HRESULT CGamePlay::Initialize()
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
-//	LoadMonster(L"../Data/Monster.dat");
+	LoadMonster(L"../Data/Monster.dat");
 	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
 
@@ -124,8 +124,8 @@ HRESULT CGamePlay::Ready_Layer_Player(const _tchar * pLayerTag)
 	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Player"), pLayerTag)))
 		return E_FAIL;
 
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster"), pLayerTag)))
-		return E_FAIL;
+	//if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster"), pLayerTag)))
+	//	return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
 
