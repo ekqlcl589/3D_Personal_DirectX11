@@ -53,12 +53,12 @@ void CImGui_Tool::Tick_ImGui(_double TimeDelta)
 	if (true == m_bCheck)
 	{
 		//if (CKeyMgr::GetInstance()->Key_Down(VK_RBUTTON))
-		if(CKeyMgr::GetInstance()->Key_Down(VK_RBUTTON))
+		if(CKeyMgr::GetInstance()->Key_Down(DIMK_LB))
 			Picking();
 	}
 	else if (true == m_bMonster)
 	{
-		if (CKeyMgr::GetInstance()->Key_Down(VK_RBUTTON))
+		if (CKeyMgr::GetInstance()->Key_Down(DIMK_LB))
 			MonsterPicking();
 	}
 	else
@@ -66,6 +66,8 @@ void CImGui_Tool::Tick_ImGui(_double TimeDelta)
 		m_bCheck = false;
 		m_bMonster = false;
 	}
+	RELEASE_INSTANCE(CGameInstance);
+
 }
 
 void CImGui_Tool::Render_ImGui()
@@ -409,7 +411,6 @@ void CImGui_Tool::Free()
 
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);
-	RELEASE_INSTANCE(CGameInstance);
 
 	CGameInstance::GetInstance()->DestroyInstance();
 }

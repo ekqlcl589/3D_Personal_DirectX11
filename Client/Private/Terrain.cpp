@@ -35,13 +35,6 @@ HRESULT CTerrain::Initialize(void * pArg)
 
 void CTerrain::Tick(_double TimeDelta)
 {
-	//CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-	//
-	//if(CKeyMgr::GetInstance()->Key_Down(VK_LBUTTON))
-	//	Check_Picking();
-	//
-	//RELEASE_INSTANCE(CGameInstance);
-	// Tool 에서만 적용 시키고 Client 에서는 적용 하면 안 됨 
 	__super::Tick(TimeDelta);
 }
 

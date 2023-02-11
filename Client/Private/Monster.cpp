@@ -133,6 +133,7 @@ HRESULT CMonster::SetUp_ShaderResources()
 	if (FAILED(m_pShaderCom->Set_RawValue("g_vCamPosition", &pInstance->Get_CamPos(), sizeof(_float4))))
 		return E_FAIL;
 
+
 	const LIGHT_DESC* pLightDesc = pInstance->Get_Light(0);
 	if (nullptr == pLightDesc)
 		return E_FAIL;

@@ -68,7 +68,7 @@ private:
 	CCalculator* m_pCaculator = nullptr;
 	CVIBuffer_Terrain* m_pBuffer_Terain = nullptr;
 	CTransform* m_pTransform = nullptr;
-	CGameInstance* pInstance = nullptr;
+	//CGameInstance* m_pInstance = nullptr;
 public:
 	virtual void Free()override;
 };

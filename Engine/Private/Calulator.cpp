@@ -112,7 +112,7 @@ _bool CCalculator::Picking_OnTerrain(HWND hWnd, CVIBuffer * pTerrainVtxCom,  CTr
 				_vector j = vRayPos + XMVector3Normalize(vRayDir) * fDistance;
 				m_Picking.vRayPos = j;
 
-				RELEASE_INSTANCE(CGameInstance);
+				//RELEASE_INSTANCE(CGameInstance);
 
 				return m_Picking.bPicking;
 			}
@@ -130,7 +130,7 @@ _bool CCalculator::Picking_OnTerrain(HWND hWnd, CVIBuffer * pTerrainVtxCom,  CTr
 				_vector j = vRayPos + XMVector3Normalize(vRayDir) * fDistance;
 				m_Picking.vRayPos = j;
 
-				RELEASE_INSTANCE(CGameInstance);
+				//RELEASE_INSTANCE(CGameInstance);
 
 				return m_Picking.bPicking;
 			}
@@ -138,7 +138,7 @@ _bool CCalculator::Picking_OnTerrain(HWND hWnd, CVIBuffer * pTerrainVtxCom,  CTr
 		}
 	}
 
-	RELEASE_INSTANCE(CGameInstance);
+	//RELEASE_INSTANCE(CGameInstance);
 
 	return m_Picking.bPicking;
 }

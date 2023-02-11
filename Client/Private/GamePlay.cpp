@@ -154,9 +154,9 @@ void CGamePlay::LoadData(_tchar * szFilePath)
 			break;
 
 		pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Cube"), TEXT("Layer_Cube"), &DataFile);
-		RELEASE_INSTANCE(CGameInstance);
 
 	}
+	RELEASE_INSTANCE(CGameInstance);
 
 	CloseHandle(hFile);
 }
@@ -183,9 +183,9 @@ void CGamePlay::LoadMonster(_tchar * szFilePath)
 			break;
 
 		pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster"), TEXT("Layer_Player"), &DataFile);
-		RELEASE_INSTANCE(CGameInstance);
 
 	}
+	RELEASE_INSTANCE(CGameInstance);
 
 	CloseHandle(hFile);
 }

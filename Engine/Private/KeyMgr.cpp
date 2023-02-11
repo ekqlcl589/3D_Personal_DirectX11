@@ -39,7 +39,7 @@ void CKeyMgr::Key_Update()
 	for (_int i = 0; i < VK_MAX; ++i)
 	{
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-		if (pInstance->Get_DIKeyState(i) & 0x80) //현재눌린키 체크
+		if (pInstance->Get_DIMouseState(DIMK_LB) & 0x80) //현재눌린키 체크
 			m_bCurKeyState[i] = true;
 		else
 			m_bCurKeyState[i] = false;
@@ -60,10 +60,11 @@ void CKeyMgr::Key_Update()
 			m_bKeyUp[i] = false;
 
 
-		if (pInstance->Get_DIKeyState(i) & 0x80) //이전에 눌린키체크
+		if (pInstance->Get_DIMouseState(DIMK_LB) & 0x80) //이전에 눌린키체크
 			m_bPreKeyState[i] = true;
 		else
 			m_bPreKeyState[i] = false;
+
 		RELEASE_INSTANCE(CGameInstance);
 	}
 }
