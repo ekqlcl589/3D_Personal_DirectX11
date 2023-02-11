@@ -38,6 +38,8 @@ HRESULT CModel::Initialize_Prototype(const char * pModelFilePath, MODEL_TYPE eTy
 
 	m_pAiScene = m_Importer.ReadFile(pModelFilePath, iFlag);
 
+	//DataSave(m_pAiScene);
+
 	if (nullptr == m_pAiScene)
 		return E_FAIL;
 	
@@ -131,6 +133,54 @@ HRESULT CModel::Ready_Materials(const char* pModelFilePath)
 		m_vecMaterial.push_back(ModelMaterial);
 	}
 	return S_OK;
+}
+
+void CModel::DataSave(const aiScene* pAiScene)
+{
+	HANDLE hFile = CreateFile(L"../Data/Model/Model.bin", GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	if (INVALID_HANDLE_VALUE == hFile)
+	{
+		MSG_BOX("Model Save Fail");
+		return;
+	}
+
+	DWORD dwByte = 0;
+
+	for (_uint i = 0; i < pAiScene->mMeshes[0]->mNumVertices; i++)
+	{
+		WriteFile(hFile, &pAiScene->mMeshes[0]->mVertices[i], sizeof(aiVector3D), &dwByte, nullptr);
+	
+		m_vecVertices.push_back(pAiScene->mMeshes[0]->mVertices[i]);
+	}
+
+	CloseHandle(hFile);
+}
+
+void CModel::DataLoad(_tchar* szFilePath)
+{
+	HANDLE hFile = CreateFile(szFilePath, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	if (INVALID_HANDLE_VALUE == hFile)
+	{
+		MSG_BOX("Model Load Fail");
+		return;
+	}
+
+	DWORD dwByte = 0;
+	aiVector3D vecVertices;
+
+	while (true)
+	{
+		ReadFile(hFile, &vecVertices, sizeof(aiVector3D), &dwByte, nullptr);
+
+		if (0 == dwByte)
+			break;
+		
+		m_vecVertices.push_back(vecVertices);
+
+	}
+	CloseHandle(hFile);
 }
 
 HRESULT CModel::SetUp_ShaderMaterialResource(CShader * pShaderCom, const char * pConstantName, _uint iMeshIndex, aiTextureType eType)

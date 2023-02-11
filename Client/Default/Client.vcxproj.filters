@@ -55,6 +55,9 @@
     <Filter Include="02.GameObject\06. Monster\Boss_00">
       <UniqueIdentifier>{4cc3b2b5-099f-4446-a959-5bfb64114b67}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\TileMesh">
+      <UniqueIdentifier>{0fc7bcd6-04a7-4d24-86b2-2e3261b77692}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -111,6 +114,9 @@
     <ClInclude Include="..\Public\Monster.h">
       <Filter>02.GameObject\06. Monster</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\TestTile.h">
+      <Filter>02.GameObject\TileMesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -154,6 +160,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Monster.cpp">
       <Filter>02.GameObject\06. Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TestTile.cpp">
+      <Filter>02.GameObject\TileMesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

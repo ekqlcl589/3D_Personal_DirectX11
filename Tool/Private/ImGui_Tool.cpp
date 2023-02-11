@@ -11,6 +11,7 @@
 #include "Object_Manager.h"
 #include "Loading.h"
 #include "Terrain.h"
+#include "TestTile.h"
 #include "Cube.h"
 #include "KeyMgr.h"
 
@@ -61,11 +62,12 @@ void CImGui_Tool::Tick_ImGui(_double TimeDelta)
 		if (CKeyMgr::GetInstance()->Key_Down(DIMK_LB))
 			MonsterPicking();
 	}
-	else
+	else if(true == m_bTile)
 	{
-		m_bCheck = false;
-		m_bMonster = false;
+		if (CKeyMgr::GetInstance()->Key_Down(DIMK_LB))
+			TilePicking();
 	}
+
 	RELEASE_INSTANCE(CGameInstance);
 
 }
@@ -182,13 +184,26 @@ HRESULT CImGui_Tool::Create_Cube()
 		{
 			//ImGui::Text("pos%f", m_pCaculator->Get_PickingState().vRayPos);
 			m_bCheck = true;
+			m_bMonster = false;
+			m_bTile = false;
+
 			ImGui::EndMenu();
 		}
 
-		if (ImGui::BeginMenu("Monster"))
+		else if (ImGui::BeginMenu("Monster"))
 		{
 			//ImGui::Text("pos%f", m_pCaculator->Get_PickingState().vRayPos);
+			m_bCheck = false;
 			m_bMonster = true;
+			m_bTile = false;
+			ImGui::EndMenu();
+		}
+
+		else if (ImGui::BeginMenu("Tile"))
+		{
+			m_bCheck = false;
+			m_bMonster = false;
+			m_bTile = true;
 			ImGui::EndMenu();
 		}
 		ImGui::EndMenuBar();
@@ -203,7 +218,6 @@ _bool CImGui_Tool::Picking()
 {
 	if (ImGui::IsMousePosValid())
 	{
-		m_bMonster = false;
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 		m_pCaculator->Picking_OnTerrain(g_hWnd, m_pBuffer_Terain, m_pTransform);
 		//피킹 횟수를 체크 해서 횟수 만큼 free에서 루프를 돌려서 해제시킨다?
@@ -240,7 +254,6 @@ _bool CImGui_Tool::MonsterPicking()
 	if (ImGui::IsMousePosValid())
 	{
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-		m_bCheck = false;
 		m_pCaculator->Picking_OnTerrain(g_hWnd, m_pBuffer_Terain, m_pTransform);
 
 		if (true == m_pCaculator->Get_PickingState().bPicking)
@@ -267,6 +280,39 @@ _bool CImGui_Tool::MonsterPicking()
 
 		}
 	}
+}
+
+_bool CImGui_Tool::TilePicking()
+{
+	if (ImGui::IsMousePosValid())
+	{
+		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+		m_pCaculator->Picking_OnTerrain(g_hWnd, m_pBuffer_Terain, m_pTransform);
+		//피킹 횟수를 체크 해서 횟수 만큼 free에서 루프를 돌려서 해제시킨다?
+		if (true == m_pCaculator->Get_PickingState().bPicking)
+		{
+			m_vPos = m_pCaculator->Get_PickingState().vRayPos;
+
+			CTestTile::TILESTATE eState;
+			ZeroMemory(&eState, sizeof(CTestTile::TILESTATE));
+
+			XMStoreFloat3(&eState.fPos, m_vPos);
+
+
+			if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_TestTile"), TEXT("Layer_Tile"), &eState)))
+				return E_FAIL;
+
+			RELEASE_INSTANCE(CGameInstance);
+
+			//m_vecCubeData.push_back(state);
+			m_bTile = m_pCaculator->Get_PickingState().bPicking;
+			return m_pCaculator->Get_PickingState().bPicking;
+		}
+	}
+}
+
+void CImGui_Tool::Delete_Object()
+{
 }
 
 HRESULT CImGui_Tool::Open_Level(LEVELID eLevelID)

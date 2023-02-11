@@ -37,9 +37,15 @@ public:
 	void LoadTerrain();
 	HRESULT Create_Cube();
 
+public:
 	_bool Picking();
 	_bool MonsterPicking();
+	_bool TilePicking();
 
+public:
+	void Delete_Object();
+
+private:
 	HRESULT Open_Level(LEVELID eLevelID);
 	
 public:
@@ -61,6 +67,7 @@ private:
 	_vector m_vPos = { 0.f, 0.f, 0.f };
 	_bool m_bCheck = false;
 	_bool m_bMonster = false;
+	_bool m_bTile = false;
 
 private:
 	ID3D11Device* m_pDevice;

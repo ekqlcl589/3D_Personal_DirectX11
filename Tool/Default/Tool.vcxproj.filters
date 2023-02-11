@@ -49,6 +49,9 @@
     <Filter Include="03.Object\00. Monster">
       <UniqueIdentifier>{47a1faa0-cde8-4446-8f2c-98d1b1dc478d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03.Object\TestTile">
+      <UniqueIdentifier>{c59bb8ac-773b-4dd9-8b86-e96f4f32b7da}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -126,6 +129,9 @@
     <ClInclude Include="..\Public\Monster.h">
       <Filter>03.Object\00. Monster</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\TestTile.h">
+      <Filter>03.Object\TestTile</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -187,6 +193,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Monster.cpp">
       <Filter>03.Object\00. Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TestTile.cpp">
+      <Filter>03.Object\TestTile</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

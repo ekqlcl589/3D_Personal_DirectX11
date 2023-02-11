@@ -9,6 +9,8 @@
 #include "Model.h"
 #include "Cube.h"
 
+#include "TestTile.h"
+
 CLoader::CLoader(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: m_pDevice(pDevice)
 	, m_pContext(pContext)
@@ -145,6 +147,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/NonAnim.fbx", CModel::MODEL_NONANIM, LocalMatrix))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Tile"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Tile/Test.fbx", CModel::MODEL_NONANIM, LocalMatrix))))
+		return E_FAIL;
+
 	lstrcpy(m_szLoadingText, TEXT("셰이더를 로딩중입니다."));
 
 
@@ -184,6 +190,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CMonster::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	// Test Tile
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_TestTile"),
+		CTestTile::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 

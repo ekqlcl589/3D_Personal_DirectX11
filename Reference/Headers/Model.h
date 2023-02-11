@@ -27,10 +27,15 @@ private:
 	HRESULT Ready_Meshes(_fmatrix LocalMatrix);
 	HRESULT Ready_Materials(const char* pModelFilePath);
 
+private:
+	void DataSave(const aiScene* pAiScene);
+	void DataLoad(_tchar* szFilePath);
 
 private:
 	Assimp::Importer m_Importer;
 	const aiScene* m_pAiScene = { nullptr };
+
+	vector<aiVector3D> m_vecVertices;
 
 private:
 	_uint m_iNumMeshes = { 0 };
