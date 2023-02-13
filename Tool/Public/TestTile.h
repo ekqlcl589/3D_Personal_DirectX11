@@ -19,7 +19,7 @@ public:
 	typedef struct tagTileState
 	{
 		_float3 fPos;
-		_int iCubeNum;
+		_int iTileNum;
 		_float3 fScale;
 
 		CTransform::TRANSFORM_DESC transformDesc;

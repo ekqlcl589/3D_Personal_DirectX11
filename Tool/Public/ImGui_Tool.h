@@ -56,10 +56,13 @@ public:
 	void LoadData();
 	void MonsterSave();
 	void MonsterLoad();
+	void TileSave();
+	void TileLoad();
 
 public:
-	static int iNum;
-
+	static int iCubeNum;
+	static int iMonsterNum;
+	static int iTileNum;
 private:
 	vector<CCube::CUBESTATE> m_vecCubeData;
 
@@ -67,13 +70,19 @@ private:
 	vector<CMonster::MONSTERSTATE> m_vecMonsterData;
 
 private:
-	_vector m_vPos = { 0.f, 0.f, 0.f };
+	_vector m_vCubePos = { 0.f, 0.f, 0.f };
+	_float3 fCubePosition = { 0.f, 0.f, 0.f };
 	_bool m_bCheck = false;
+
+	_vector m_vMonsterPos = { 0.f, 0.f, 0.f };
+	_float3 fMonPosition = { 0.f, 0.f, 0.f };
 	_bool m_bMonster = false;
+
+	_vector m_vTilePos = { 0.f, 0.f, 0.f };
+	_float3 fTilePosition = { 0.f, 0.f, 0.f };
 	_bool m_bTile = false;
 
 private:
-	_float3 fPosition = { 0.f, 0.f, 0.f };
 	_float fff;
 	int* iCount = { 0 };
 
@@ -83,7 +92,7 @@ private:
 	CCalculator* m_pCaculator = nullptr;
 	CVIBuffer_Terrain* m_pBuffer_Terain = nullptr;
 	CTransform* m_pTransform = nullptr;
-	//CGameInstance* m_pInstance = nullptr;
+
 public:
 	virtual void Free()override;
 };

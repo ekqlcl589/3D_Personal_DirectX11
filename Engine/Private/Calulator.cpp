@@ -134,7 +134,7 @@ _bool CCalculator::Picking_OnTerrain(HWND hWnd, CVIBuffer * pTerrainVtxCom,  CTr
 		}
 	}
 
-	return m_Picking.bPicking;
+	return false;
 }
 
 CCalculator * CCalculator::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)

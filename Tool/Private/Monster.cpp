@@ -45,7 +45,7 @@ HRESULT CMonster::Initialize(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_UP, XMVector3Normalize(vUp));
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, XMVector3Normalize(vLook));
 
-	iId = CImGui_Tool::iNum++;
+	iId = CImGui_Tool::iMonsterNum++;
 
 	return S_OK;
 }

@@ -17,7 +17,9 @@
 #include "Layer.h"
 
 IMPLEMENT_SINGLETON(CImGui_Tool)
-int CImGui_Tool::iNum = 0;
+int CImGui_Tool::iCubeNum = 0;
+int CImGui_Tool::iMonsterNum = 0;
+int CImGui_Tool::iTileNum = 0;
 
 CImGui_Tool::CImGui_Tool()
 {
@@ -67,6 +69,13 @@ void CImGui_Tool::Tick_ImGui(_double TimeDelta)
 	{
 		if (CKeyMgr::GetInstance()->Key_Down(DIMK_LB))
 			TilePicking();
+	}
+	
+	if (CKeyMgr::GetInstance()->Key_Down(DIMK_RB))
+	{
+		m_bCheck = false;
+		m_bMonster = false;
+		m_bTile = false;
 	}
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -125,6 +134,16 @@ void CImGui_Tool::Setting_Terrain()
 
 			if (ImGui::MenuItem("MonsterLoad"))
 				MonsterLoad();
+
+			ImGui::Separator();
+
+			if (ImGui::MenuItem("TileSave"))
+				TileSave();
+
+			ImGui::Separator();
+
+			if (ImGui::MenuItem("TileLoad"))
+				TileLoad();
 
 			ImGui::EndMenu();
 
@@ -218,19 +237,18 @@ _bool CImGui_Tool::Picking()
 	{
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 		m_pCaculator->Picking_OnTerrain(g_hWnd, m_pBuffer_Terain, m_pTransform);
-		//피킹 횟수를 체크 해서 횟수 만큼 free에서 루프를 돌려서 해제시킨다?
-		if (true == m_pCaculator->Get_PickingState().bPicking)
+		if (true == m_bCheck)
 		{
-			m_vPos = m_pCaculator->Get_PickingState().vRayPos;
+			m_vCubePos = m_pCaculator->Get_PickingState().vRayPos;
 
 			CCube::CUBESTATE state;
 			ZeroMemory(&state, sizeof(CCube::CUBESTATE));
 
-			XMStoreFloat3(&state.fPos, m_vPos);
+			XMStoreFloat3(&state.fPos, m_vCubePos);
 
 			state.transformDesc.fSpeed = 5.f;
 			state.transformDesc.fRotation = XMConvertToRadians(10);
-			state.iCubeNum = ++iNum;
+			state.iCubeNum += iCubeNum;
 			//state.fScale = 툴에서 정한값;
 
 
@@ -241,7 +259,8 @@ _bool CImGui_Tool::Picking()
 
 			m_vecCubeData.push_back(state);
 			m_bCheck = m_pCaculator->Get_PickingState().bPicking;
-			return m_pCaculator->Get_PickingState().bPicking;
+			m_bCheck = false;
+			return m_bCheck;
 		}
 	}
 
@@ -251,7 +270,6 @@ _bool CImGui_Tool::MonsterPicking()
 {
 	m_bCheck = false;
 	m_bTile = false;
-
 	CMonster::MONSTERSTATE eState;
 	ZeroMemory(&eState, sizeof(CMonster::MONSTERSTATE));
 
@@ -262,12 +280,11 @@ _bool CImGui_Tool::MonsterPicking()
 
 		if (true == m_pCaculator->Get_PickingState().bPicking)
 		{
-			m_vPos = m_pCaculator->Get_PickingState().vRayPos;
+			m_vMonsterPos = m_pCaculator->Get_PickingState().vRayPos;
 
-
-			XMStoreFloat3(&eState.fPos, m_vPos);
+			XMStoreFloat3(&eState.fPos, m_vMonsterPos);
 			//eState.fScale;
-			eState.iMonsterNum += iNum; // 이거 지금 큐브랑 같이 쓰는데 나중에 수정 ㄱㄱ
+			eState.iMonsterNum += iMonsterNum; 
 			eState.transformDesc.fSpeed = 5.f;
 			eState.transformDesc.fRotation = 0.f;
 
@@ -293,17 +310,15 @@ _bool CImGui_Tool::TilePicking()
 	{
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 		m_pCaculator->Picking_OnTerrain(g_hWnd, m_pBuffer_Terain, m_pTransform);
-		//피킹 횟수를 체크 해서 횟수 만큼 free에서 루프를 돌려서 해제시킨다?
 		if (true == m_pCaculator->Get_PickingState().bPicking)
 		{
-			m_vPos = m_pCaculator->Get_PickingState().vRayPos;
+			m_vTilePos = m_pCaculator->Get_PickingState().vRayPos;
 
 			CTestTile::TILESTATE eState;
 			ZeroMemory(&eState, sizeof(CTestTile::TILESTATE));
 
-			XMStoreFloat3(&eState.fPos, m_vPos);
-
-
+			XMStoreFloat3(&eState.fPos, m_vTilePos);
+			eState.iTileNum += iTileNum;
 			if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_TestTile"), TEXT("Layer_Tile"), &eState)))
 				return E_FAIL;
 
@@ -320,12 +335,29 @@ void CImGui_Tool::ObjectSetting()
 {
 	ImGui::Begin("Setting");
 
-	XMStoreFloat3(&fPosition, m_vPos);
-	_float fPositions[3] = { fPosition.x, fPosition.y, fPosition.z };
+	// 큐브
+	XMStoreFloat3(&fCubePosition, m_vCubePos);
+	_float fPositionss[3] = { fCubePosition.x, fCubePosition.y, fCubePosition.z };
+	ImGui::InputFloat3("Position", fPositionss);
+	ImGui::InputFloat3("Scale", fPositionss);
+	ImGui::Text("Cube : %d", iCubeNum);
 
+	//몬스터
+	ImGui::Separator();
+	XMStoreFloat3(&fMonPosition, m_vMonsterPos);
+	_float fPositions[3] = { fMonPosition.x, fMonPosition.y, fMonPosition.z };
 	ImGui::InputFloat3("Position", fPositions);
 	ImGui::InputFloat3("Scale", fPositions);
-	ImGui::Text("Obj : %d", iNum);
+	ImGui::Text("Monster : %d", iMonsterNum);
+
+	//타일
+	ImGui::Separator();
+	XMStoreFloat3(&fTilePosition, m_vTilePos);
+	_float fPositionsss[3] = { fTilePosition.x, fTilePosition.y, fTilePosition.z };
+	ImGui::InputFloat3("Position", fPositionsss);
+	ImGui::InputFloat3("Scale", fPositionsss);
+	ImGui::Text("Tile : %d", iTileNum);
+
 
 	ImGui::End();
 
@@ -333,6 +365,7 @@ void CImGui_Tool::ObjectSetting()
 
 void CImGui_Tool::Delete_Object()
 {
+	ImGui::Button("Delete");
 
 }
 
@@ -471,6 +504,14 @@ void CImGui_Tool::MonsterLoad()
 		pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster"), TEXT("Layer_Monster"), &iter);
 		RELEASE_INSTANCE(CGameInstance);
 	}
+}
+
+void CImGui_Tool::TileSave()
+{
+}
+
+void CImGui_Tool::TileLoad()
+{
 }
 
 void CImGui_Tool::Free()
