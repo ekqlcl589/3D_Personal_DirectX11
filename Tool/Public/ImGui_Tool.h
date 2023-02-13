@@ -43,6 +43,9 @@ public:
 	_bool TilePicking();
 
 public:
+	void ObjectSetting();
+
+public:
 	void Delete_Object();
 
 private:
@@ -68,6 +71,11 @@ private:
 	_bool m_bCheck = false;
 	_bool m_bMonster = false;
 	_bool m_bTile = false;
+
+private:
+	_float3 fPosition = { 0.f, 0.f, 0.f };
+	_float fff;
+	int* iCount = { 0 };
 
 private:
 	ID3D11Device* m_pDevice;

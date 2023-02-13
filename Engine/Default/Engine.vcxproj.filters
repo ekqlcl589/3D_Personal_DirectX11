@@ -100,6 +100,9 @@
     <Filter Include="01.Utillity\02. GameObject\01. UI">
       <UniqueIdentifier>{a76ccfba-45aa-4a8f-a923-b65b8ea24013}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utillity\03. Component\04. Model\01. Bone">
+      <UniqueIdentifier>{546932ea-af9d-4998-b3fc-835dc084d5c6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -207,6 +210,9 @@
     <ClInclude Include="..\Public\UI.h">
       <Filter>01.Utillity\02. GameObject\01. UI</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Bone.h">
+      <Filter>01.Utillity\03. Component\04. Model\01. Bone</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\GameInstance.cpp">
@@ -301,6 +307,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI.cpp">
       <Filter>01.Utillity\02. GameObject\01. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Bone.cpp">
+      <Filter>01.Utillity\03. Component\04. Model\01. Bone</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

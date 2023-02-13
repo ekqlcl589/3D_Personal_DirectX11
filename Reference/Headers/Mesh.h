@@ -1,5 +1,6 @@
 #pragma once
 #include "VIBuffer.h"
+#include "Model.h"
 
 BEGIN(Engine)
 
@@ -11,17 +12,25 @@ private:
 	virtual ~CMesh() = default;
 
 public:
-	HRESULT Initialize_Prototype(const aiMesh* pAiMesh, _fmatrix LocalMatrix);
-	HRESULT Initialize(void* pArg);
+	_uint Get_MaterialIndex() const { return m_iMaterialIndex; }
 
 public:
-	_uint Get_MaterialIndex() const { return m_iMaterialIndex; }
+	HRESULT Initialize_Prototype(CModel::MODEL_TYPE eType, const aiMesh* pAiMesh, _fmatrix LocalMatrix);
+	HRESULT Initialize(void* pArg);
+
+private:
+	HRESULT Ready_VertexBuffer_For_NonAnim(const aiMesh* pAIMesh, _fmatrix LocalMatrix);
+	HRESULT Ready_VertexBuffer_For_Anim(const aiMesh* pAIMesh);
 
 private:
 	_uint m_iMaterialIndex = { 0 };
 
+	_uint m_iNumBones = { 0 }; //메시에 영향을 주는 뼈의 갯수
+
+	vector<class CBone*> m_vecBones; // 메시에 영향을 주는 뼈들
+
 public:
-	static CMesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const aiMesh* pAiMesh, _fmatrix LocalMatrix);
+	static CMesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CModel::MODEL_TYPE eType, const aiMesh* pAiMesh, _fmatrix LocalMatrix);
 	virtual CComponent* Clone(void* pArg = nullptr)override;
 	virtual void Free()override;
 };

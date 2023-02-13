@@ -26,10 +26,7 @@ public:
 private:
 	HRESULT Ready_Meshes(_fmatrix LocalMatrix);
 	HRESULT Ready_Materials(const char* pModelFilePath);
-
-private:
-	void DataSave(const aiScene* pAiScene);
-	void DataLoad(_tchar* szFilePath);
+	HRESULT Ready_Bones(aiNode* pAINode);
 
 private:
 	Assimp::Importer m_Importer;
@@ -40,6 +37,9 @@ private:
 private:
 	_uint m_iNumMeshes = { 0 };
 	vector<class CMesh*> m_vecMesh;
+
+private:
+	vector<class CBone*> m_vecBones; // 모델에 정의 되어 있는 전체 뼈 
 
 private:
 	_uint m_iNumMaterial = { 0 };

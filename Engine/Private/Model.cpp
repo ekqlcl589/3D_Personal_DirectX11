@@ -1,5 +1,6 @@
 #include "..\Public\Model.h"
 #include "Mesh.h"
+#include "Bone.h"
 #include "Texture.h"
 
 CModel::CModel(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -38,12 +39,13 @@ HRESULT CModel::Initialize_Prototype(const char * pModelFilePath, MODEL_TYPE eTy
 
 	m_pAiScene = m_Importer.ReadFile(pModelFilePath, iFlag);
 
-	//DataSave(m_pAiScene);
-
 	if (nullptr == m_pAiScene)
 		return E_FAIL;
 	
 	XMStoreFloat4x4(&m_LocalMatrix, LocalMatrix);
+
+	if (FAILED(Ready_Bones(m_pAiScene->mRootNode)))
+		return E_FAIL;
 
 	if (FAILED(Ready_Meshes(LocalMatrix)))
 		return E_FAIL;
@@ -78,7 +80,7 @@ HRESULT CModel::Ready_Meshes(_fmatrix LocalMatrix)
 
 	for (_uint i = 0; i < m_iNumMeshes; ++i)
 	{
-		CMesh* pMesh = CMesh::Create(m_pDevice, m_pContext, m_pAiScene->mMeshes[i], LocalMatrix);
+		CMesh* pMesh = CMesh::Create(m_pDevice, m_pContext, MODEL_NONANIM, m_pAiScene->mMeshes[i], LocalMatrix);
 
 		if (nullptr == pMesh)
 			return E_FAIL;
@@ -135,52 +137,18 @@ HRESULT CModel::Ready_Materials(const char* pModelFilePath)
 	return S_OK;
 }
 
-void CModel::DataSave(const aiScene* pAiScene)
+HRESULT CModel::Ready_Bones(aiNode * pAINode)
 {
-	HANDLE hFile = CreateFile(L"../Data/Model/Model.bin", GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	CBone* pBone = CBone::Create(pAINode);
+	if (nullptr == pBone)
+		return E_FAIL;
 
-	if (INVALID_HANDLE_VALUE == hFile)
-	{
-		MSG_BOX("Model Save Fail");
-		return;
-	}
+	m_vecBones.push_back(pBone);
 
-	DWORD dwByte = 0;
+	for (_uint i = 0; i < pAINode->mNumChildren; i++)
+		Ready_Bones(pAINode->mChildren[i]); // 재귀 호출을 통해 자식의 갯수만큼 루프를 돌면서 자식들을 채워줌
 
-	for (_uint i = 0; i < pAiScene->mMeshes[0]->mNumVertices; i++)
-	{
-		WriteFile(hFile, &pAiScene->mMeshes[0]->mVertices[i], sizeof(aiVector3D), &dwByte, nullptr);
-	
-		m_vecVertices.push_back(pAiScene->mMeshes[0]->mVertices[i]);
-	}
-
-	CloseHandle(hFile);
-}
-
-void CModel::DataLoad(_tchar* szFilePath)
-{
-	HANDLE hFile = CreateFile(szFilePath, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-
-	if (INVALID_HANDLE_VALUE == hFile)
-	{
-		MSG_BOX("Model Load Fail");
-		return;
-	}
-
-	DWORD dwByte = 0;
-	aiVector3D vecVertices;
-
-	while (true)
-	{
-		ReadFile(hFile, &vecVertices, sizeof(aiVector3D), &dwByte, nullptr);
-
-		if (0 == dwByte)
-			break;
-		
-		m_vecVertices.push_back(vecVertices);
-
-	}
-	CloseHandle(hFile);
+	return S_OK;
 }
 
 HRESULT CModel::SetUp_ShaderMaterialResource(CShader * pShaderCom, const char * pConstantName, _uint iMeshIndex, aiTextureType eType)
@@ -229,5 +197,8 @@ void CModel::Free()
 
 	for (auto& pMesh : m_vecMesh)
 		Safe_Release(pMesh);
+
+	for (auto& pBone : m_vecBones)
+		Safe_Release(pBone);
 
 }

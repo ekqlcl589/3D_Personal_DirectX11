@@ -89,11 +89,28 @@ namespace Engine
 		XMFLOAT3		vTangent;
 	}VTXNONANIMMODEL;
 
-	typedef struct ENGINE_DLL tagVertexx_tagVertex_NonAnim_Model_Decleartion
+	typedef struct ENGINE_DLL tagVertexx_NonAnim_Model_Decleartion
 	{
 		const static unsigned int iNumElements = 4;
 		static D3D11_INPUT_ELEMENT_DESC Element[4];
 	}VTXNONANIMMODEL_DELARATION;
+
+	typedef struct tagVertex_Anim_Model
+	{
+		XMFLOAT3		vPosition;
+		XMFLOAT3		vNormal;
+		XMFLOAT2		vTexUV;
+		XMFLOAT3		vTangent;
+
+		XMUINT4			vBlendIndices; // 최대 4개 까지 뼈의 순서를 저장 시키는 인덱스 
+		XMFLOAT4		vBlendWeights; // 첫 번째 블렌드 인덱스에 해당하는 뼈를 몇 퍼센트 이용할 건지를 담아주는 인자값
+	}VTXANIMMODEL;
+
+	typedef struct ENGINE_DLL tagVertexx_Anim_Model_Decleartion
+	{
+		const static unsigned int iNumElements = 6;
+		static D3D11_INPUT_ELEMENT_DESC Element[6];
+	}VTXANIMMODEL_DELARATION;
 
 	typedef struct tagModelMaterial
 	{

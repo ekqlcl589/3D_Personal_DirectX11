@@ -14,6 +14,7 @@
 #include "TestTile.h"
 #include "Cube.h"
 #include "KeyMgr.h"
+#include "Layer.h"
 
 IMPLEMENT_SINGLETON(CImGui_Tool)
 int CImGui_Tool::iNum = 0;
@@ -83,7 +84,7 @@ void CImGui_Tool::Render_ImGui()
 	Setting_Terrain();
 	Create_Terrain();
 	Create_Cube();
-
+	ObjectSetting();
 
 	//bool bDebo = true;
 	//ImGui::ShowDemoWindow(&bDebo);
@@ -184,8 +185,6 @@ HRESULT CImGui_Tool::Create_Cube()
 		{
 			//ImGui::Text("pos%f", m_pCaculator->Get_PickingState().vRayPos);
 			m_bCheck = true;
-			m_bMonster = false;
-			m_bTile = false;
 
 			ImGui::EndMenu();
 		}
@@ -193,16 +192,12 @@ HRESULT CImGui_Tool::Create_Cube()
 		else if (ImGui::BeginMenu("Monster"))
 		{
 			//ImGui::Text("pos%f", m_pCaculator->Get_PickingState().vRayPos);
-			m_bCheck = false;
 			m_bMonster = true;
-			m_bTile = false;
 			ImGui::EndMenu();
 		}
 
 		else if (ImGui::BeginMenu("Tile"))
 		{
-			m_bCheck = false;
-			m_bMonster = false;
 			m_bTile = true;
 			ImGui::EndMenu();
 		}
@@ -216,6 +211,9 @@ HRESULT CImGui_Tool::Create_Cube()
 
 _bool CImGui_Tool::Picking()
 {
+	m_bMonster = false;
+	m_bTile = false;
+
 	if (ImGui::IsMousePosValid())
 	{
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
@@ -232,7 +230,7 @@ _bool CImGui_Tool::Picking()
 
 			state.transformDesc.fSpeed = 5.f;
 			state.transformDesc.fRotation = XMConvertToRadians(10);
-			state.iCubeNum = iNum++;
+			state.iCubeNum = ++iNum;
 			//state.fScale = 툴에서 정한값;
 
 
@@ -251,6 +249,12 @@ _bool CImGui_Tool::Picking()
 
 _bool CImGui_Tool::MonsterPicking()
 {
+	m_bCheck = false;
+	m_bTile = false;
+
+	CMonster::MONSTERSTATE eState;
+	ZeroMemory(&eState, sizeof(CMonster::MONSTERSTATE));
+
 	if (ImGui::IsMousePosValid())
 	{
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
@@ -260,12 +264,10 @@ _bool CImGui_Tool::MonsterPicking()
 		{
 			m_vPos = m_pCaculator->Get_PickingState().vRayPos;
 
-			CMonster::MONSTERSTATE eState;
-			ZeroMemory(&eState, sizeof(CMonster::MONSTERSTATE));
 
 			XMStoreFloat3(&eState.fPos, m_vPos);
 			//eState.fScale;
-			eState.iMonsterNum = iNum++; // 이거 지금 큐브랑 같이 쓰는데 나중에 수정 ㄱㄱ
+			eState.iMonsterNum += iNum; // 이거 지금 큐브랑 같이 쓰는데 나중에 수정 ㄱㄱ
 			eState.transformDesc.fSpeed = 5.f;
 			eState.transformDesc.fRotation = 0.f;
 
@@ -284,6 +286,9 @@ _bool CImGui_Tool::MonsterPicking()
 
 _bool CImGui_Tool::TilePicking()
 {
+	m_bCheck = false;
+	m_bMonster = false;
+
 	if (ImGui::IsMousePosValid())
 	{
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
@@ -306,13 +311,29 @@ _bool CImGui_Tool::TilePicking()
 
 			//m_vecCubeData.push_back(state);
 			m_bTile = m_pCaculator->Get_PickingState().bPicking;
-			return m_pCaculator->Get_PickingState().bPicking;
+			return m_bTile;
 		}
 	}
 }
 
+void CImGui_Tool::ObjectSetting()
+{
+	ImGui::Begin("Setting");
+
+	XMStoreFloat3(&fPosition, m_vPos);
+	_float fPositions[3] = { fPosition.x, fPosition.y, fPosition.z };
+
+	ImGui::InputFloat3("Position", fPositions);
+	ImGui::InputFloat3("Scale", fPositions);
+	ImGui::Text("Obj : %d", iNum);
+
+	ImGui::End();
+
+}
+
 void CImGui_Tool::Delete_Object()
 {
+
 }
 
 HRESULT CImGui_Tool::Open_Level(LEVELID eLevelID)

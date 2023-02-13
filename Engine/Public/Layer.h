@@ -15,6 +15,9 @@ public:
 	void Tick(_double TimeDelta);
 	void LateTick(_double TimeDelta);
 
+public:
+	list<class CGameObject*> Get_GameObject() { return m_GameObject; }
+
 private:
 	list<class CGameObject*> m_GameObject;
 	typedef list<class CGameObject*> GAMEOBJECT;
