@@ -11,8 +11,6 @@
 #include "Object_Manager.h"
 #include "Loading.h"
 #include "Terrain.h"
-#include "TestTile.h"
-#include "Cube.h"
 #include "KeyMgr.h"
 #include "Layer.h"
 
@@ -245,12 +243,10 @@ _bool CImGui_Tool::Picking()
 			ZeroMemory(&state, sizeof(CCube::CUBESTATE));
 
 			XMStoreFloat3(&state.fPos, m_vCubePos);
-
+			state.fScale = fCubeScale;
 			state.transformDesc.fSpeed = 5.f;
 			state.transformDesc.fRotation = XMConvertToRadians(10);
-			state.iCubeNum += iCubeNum;
-			//state.fScale = 툴에서 정한값;
-
+			state.iCubeNum = iCubeNum;
 
 			if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Cube"), TEXT("Layer_Cube"), &state)))
 				return E_FAIL;
@@ -283,8 +279,8 @@ _bool CImGui_Tool::MonsterPicking()
 			m_vMonsterPos = m_pCaculator->Get_PickingState().vRayPos;
 
 			XMStoreFloat3(&eState.fPos, m_vMonsterPos);
-			//eState.fScale;
-			eState.iMonsterNum += iMonsterNum; 
+			eState.fScale = fMonScale;
+			eState.iMonsterNum = iMonsterNum; 
 			eState.transformDesc.fSpeed = 5.f;
 			eState.transformDesc.fRotation = 0.f;
 
@@ -314,17 +310,19 @@ _bool CImGui_Tool::TilePicking()
 		{
 			m_vTilePos = m_pCaculator->Get_PickingState().vRayPos;
 
-			CTestTile::TILESTATE eState;
-			ZeroMemory(&eState, sizeof(CTestTile::TILESTATE));
+			CTestTile::TILESTATE TileState;
+			ZeroMemory(&TileState, sizeof(CTestTile::TILESTATE));
 
-			XMStoreFloat3(&eState.fPos, m_vTilePos);
-			eState.iTileNum += iTileNum;
-			if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_TestTile"), TEXT("Layer_Tile"), &eState)))
+			XMStoreFloat3(&TileState.fPos, m_vTilePos);
+			TileState.iTileNum = iTileNum;
+			TileState.fScale = fTileScale;
+
+			if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_TestTile"), TEXT("Layer_Tile"), &TileState)))
 				return E_FAIL;
 
 			RELEASE_INSTANCE(CGameInstance);
 
-			//m_vecCubeData.push_back(state);
+			m_vecTileData.push_back(TileState);
 			m_bTile = m_pCaculator->Get_PickingState().bPicking;
 			return m_bTile;
 		}
@@ -337,25 +335,28 @@ void CImGui_Tool::ObjectSetting()
 
 	// 큐브
 	XMStoreFloat3(&fCubePosition, m_vCubePos);
-	_float fPositionss[3] = { fCubePosition.x, fCubePosition.y, fCubePosition.z };
-	ImGui::InputFloat3("Position", fPositionss);
-	ImGui::InputFloat3("Scale", fPositionss);
+	_float fCubePositions[3] = { fCubePosition.x, fCubePosition.y, fCubePosition.z };
+	ImGui::InputFloat3("CubePosition", fCubePositions);
+	_float fCubeScales[3] = { fCubeScale.x, fCubeScale.y, fCubeScale.z };
+	ImGui::InputFloat3("CubeScale", fCubeScales);
 	ImGui::Text("Cube : %d", iCubeNum);
 
 	//몬스터
 	ImGui::Separator();
 	XMStoreFloat3(&fMonPosition, m_vMonsterPos);
-	_float fPositions[3] = { fMonPosition.x, fMonPosition.y, fMonPosition.z };
-	ImGui::InputFloat3("Position", fPositions);
-	ImGui::InputFloat3("Scale", fPositions);
+	_float fMonPositions[3] = { fMonPosition.x, fMonPosition.y, fMonPosition.z };
+	ImGui::InputFloat3("MonPosition", fMonPositions);
+	_float MonScale[3] = { fMonScale.x, fMonScale.y, fMonScale.z };
+	ImGui::InputFloat3("MonScale", MonScale);
 	ImGui::Text("Monster : %d", iMonsterNum);
 
 	//타일
 	ImGui::Separator();
 	XMStoreFloat3(&fTilePosition, m_vTilePos);
 	_float fPositionsss[3] = { fTilePosition.x, fTilePosition.y, fTilePosition.z };
-	ImGui::InputFloat3("Position", fPositionsss);
-	ImGui::InputFloat3("Scale", fPositionsss);
+	ImGui::InputFloat3("TilePosition", fPositionsss);
+	_float TileSclae[3] = { fTileScale.x, fTileScale.y, fTileScale.z };
+	ImGui::InputFloat3("TileScale", TileSclae);
 	ImGui::Text("Tile : %d", iTileNum);
 
 
@@ -508,10 +509,55 @@ void CImGui_Tool::MonsterLoad()
 
 void CImGui_Tool::TileSave()
 {
+	HANDLE hFile = CreateFile(L"../Data/Tile/Tile.dat", GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	if (INVALID_HANDLE_VALUE == hFile)
+	{
+		MSG_BOX("Tile Save Fail");
+		return;
+	}
+
+	DWORD dwByte = 0;
+
+	for (auto& iter : m_vecTileData)
+	{
+		WriteFile(hFile, &iter, sizeof(CTestTile::TILESTATE), &dwByte, nullptr);
+	}
+
+	CloseHandle(hFile);
 }
 
 void CImGui_Tool::TileLoad()
 {
+	HANDLE hFile = CreateFile(L"../Data/Tile/Tile.dat", GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	if (INVALID_HANDLE_VALUE == hFile)
+	{
+		MSG_BOX("Monster Load Fail");
+		return;
+	}
+
+	DWORD dwByte = 0;
+	CTestTile::TILESTATE TileData;
+	while (true)
+	{
+		ReadFile(hFile, &TileData, sizeof(CTestTile::TILESTATE), &dwByte, nullptr);
+
+		if (0 == dwByte)
+			break;
+
+		m_vecTileData.push_back(TileData);
+	}
+
+	CloseHandle(hFile);
+
+	for (auto& iter : m_vecTileData)
+	{
+		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+		pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_TestTile"), TEXT("Layer_Tile"), &iter);
+		RELEASE_INSTANCE(CGameInstance);
+	}
 }
 
 void CImGui_Tool::Free()

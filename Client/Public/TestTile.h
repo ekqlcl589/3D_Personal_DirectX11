@@ -2,6 +2,7 @@
 
 #include "GameObject.h"
 #include "Client_Defines.h"
+#include "Transform.h"
 
 BEGIN(Engine)
 class CShader;
@@ -14,6 +15,16 @@ BEGIN(Client)
 
 class CTestTile : public CGameObject
 {
+public:
+	typedef struct tagTileState
+	{
+		_float3 fPos;
+		_int iTileNum;
+		_float3 fScale;
+
+		CTransform::TRANSFORM_DESC transformDesc;
+	}TILESTATE;
+
 public:
 	CTestTile(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CTestTile(const CTestTile& rhs);
@@ -31,6 +42,8 @@ private:
 	CRenderer* m_pRendererCom = { nullptr };
 	CTransform*	m_pTransformCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
+
+	TILESTATE m_TileState;
 
 private:
 	HRESULT Add_Components();

@@ -35,17 +35,9 @@ HRESULT CMonster::Initialize(void * pArg)
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_MonsterState.fPos));
 
-	_vector vRight, vUp, vLook;// 라업룩은 항등오로 초기화
+	m_pTransformCom->Set_Scale(m_MonsterState.fScale);
 
-	vRight = XMVectorSet(1.f, 0.f, 0.f, 0.f);
-	vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-	vLook = XMVectorSet(0.f, 0.f, 1.f, 0.f);
-
-	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVector3Normalize(vRight));
-	m_pTransformCom->Set_State(CTransform::STATE_UP, XMVector3Normalize(vUp));
-	m_pTransformCom->Set_State(CTransform::STATE_LOOK, XMVector3Normalize(vLook));
-
-	iId = CImGui_Tool::iMonsterNum++;
+	m_MonsterState.iMonsterNum = CImGui_Tool::iMonsterNum++;
 
 	return S_OK;
 }

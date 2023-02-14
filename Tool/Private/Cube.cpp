@@ -39,17 +39,9 @@ HRESULT CCube::Initialize(void * pArg)
 	// pArg에 있는 정보중 트랜스폼 정보를 m_CubeState에 넘겨서 큐브 좌표 세팅
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_CubeState.fPos));
 	
-	_vector vRight, vUp, vLook;// 라업룩은 항등오로 초기화
+	m_pTransformCom->Set_Scale(m_CubeState.fScale);
 
-	vRight = XMVectorSet(1.f, 0.f, 0.f, 0.f);
-	vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-	vLook = XMVectorSet(0.f, 0.f, 1.f, 0.f);
-
-	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVector3Normalize(vRight));
-	m_pTransformCom->Set_State(CTransform::STATE_UP, XMVector3Normalize(vUp));
-	m_pTransformCom->Set_State(CTransform::STATE_LOOK, XMVector3Normalize(vLook));
-
-	iId = CubeId++;
+	m_CubeState.iCubeNum = CImGui_Tool::iCubeNum++;
 
 	return S_OK;
 }

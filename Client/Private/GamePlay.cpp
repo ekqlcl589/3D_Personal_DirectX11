@@ -5,6 +5,7 @@
 #include "DynamicCamera.h"
 #include "Cube.h"
 #include "Monster.h"
+#include "TestTile.h"
 
 CGamePlay::CGamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	:CLevel(pDevice, pContext)
@@ -21,6 +22,8 @@ HRESULT CGamePlay::Initialize()
 
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
+
+	//6LoadMeshTile(L"../Data/Tile/Tile.dat");
 
 	LoadMonster(L"../Data/Monster.dat");
 	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
@@ -51,8 +54,8 @@ HRESULT CGamePlay::Ready_Layer_BackGround(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Terrain"), pLayerTag)))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_TestTile"), pLayerTag)))
-		return E_FAIL;
+	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_TestTile"), pLayerTag)))
+	//	return E_FAIL;
 
 	Safe_Release(pGameInstance);
 
@@ -180,12 +183,41 @@ void CGamePlay::LoadMonster(_tchar * szFilePath)
 
 	while (true)
 	{
-		ReadFile(hFile, &DataFile, sizeof(CCube::CUBESTATE), &dwByte, nullptr);
+		ReadFile(hFile, &DataFile, sizeof(CMonster::MONSTERSTATE), &dwByte, nullptr);
 
 		if (0 == dwByte)
 			break;
 
 		pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster"), TEXT("Layer_Player"), &DataFile);
+
+	}
+	RELEASE_INSTANCE(CGameInstance);
+
+	CloseHandle(hFile);
+}
+
+void CGamePlay::LoadMeshTile(_tchar * szFilePath)
+{
+	HANDLE        hFile = CreateFile(szFilePath, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+	if (INVALID_HANDLE_VALUE == hFile)
+	{
+		MSG_BOX("Tile Load Fail");
+		return;
+	}
+
+	DWORD        dwByte = 0;
+	CTestTile::TILESTATE        DataFile;
+
+	while (true)
+	{
+		ReadFile(hFile, &DataFile, sizeof(CTestTile::TILESTATE), &dwByte, nullptr);
+
+		if (0 == dwByte)
+			break;
+
+		pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_TestTile"), TEXT("Layer_Tile"), &DataFile);
 
 	}
 	RELEASE_INSTANCE(CGameInstance);

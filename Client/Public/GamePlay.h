@@ -28,6 +28,7 @@ public:
 
 	void LoadData(_tchar* szFilePath);
 	void LoadMonster(_tchar* szFilePath);
+	void LoadMeshTile(_tchar* szFilePath);
 
 public:
 	static CGamePlay* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

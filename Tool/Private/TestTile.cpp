@@ -2,6 +2,7 @@
 #include "..\Public\TestTile.h"
 
 #include "GameInstance.h"
+#include "ImGui_Tool.h"
 
 CTestTile::CTestTile(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	:CGameObject(pDevice, pContext)
@@ -34,6 +35,10 @@ HRESULT CTestTile::Initialize(void * pArg)
 	memcpy(&m_TileState, pArg, sizeof m_TileState);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_TileState.fPos));
+
+	m_pTransformCom->Set_Scale(m_TileState.fScale);
+
+	m_TileState.iTileNum = CImGui_Tool::iTileNum++;
 
 	return S_OK;
 }

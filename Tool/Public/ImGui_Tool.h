@@ -6,6 +6,7 @@
 #include "Cube.h"
 #include "Calulator.h"
 #include "Monster.h"
+#include "TestTile.h"
 
 BEGIN(Engine)
 
@@ -66,25 +67,25 @@ public:
 private:
 	vector<CCube::CUBESTATE> m_vecCubeData;
 
+	_vector m_vCubePos = { 0.f, 0.f, 0.f };
+	_float3 fCubePosition = { 0.f, 0.f, 0.f };
+	_float3 fCubeScale = { 1.f, 1.f, 1.f };
+	_bool m_bCheck = false;
+
 private:
 	vector<CMonster::MONSTERSTATE> m_vecMonsterData;
 
-private:
-	_vector m_vCubePos = { 0.f, 0.f, 0.f };
-	_float3 fCubePosition = { 0.f, 0.f, 0.f };
-	_bool m_bCheck = false;
-
 	_vector m_vMonsterPos = { 0.f, 0.f, 0.f };
 	_float3 fMonPosition = { 0.f, 0.f, 0.f };
+	_float3 fMonScale = { 1.f, 1.f, 1.f };
 	_bool m_bMonster = false;
+private:
+	vector<CTestTile::TILESTATE> m_vecTileData;
 
 	_vector m_vTilePos = { 0.f, 0.f, 0.f };
 	_float3 fTilePosition = { 0.f, 0.f, 0.f };
+	_float3 fTileScale = { 1.f, 1.f, 1.f };
 	_bool m_bTile = false;
-
-private:
-	_float fff;
-	int* iCount = { 0 };
 
 private:
 	ID3D11Device* m_pDevice;

@@ -19,6 +19,7 @@ HRESULT CTestTile::Initialize_Prototype()
 		return E_FAIL;
 
 	return S_OK;
+
 }
 
 HRESULT CTestTile::Initialize(void * pArg)
@@ -28,6 +29,16 @@ HRESULT CTestTile::Initialize(void * pArg)
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
+
+	ZeroMemory(&m_TileState, sizeof(TILESTATE));
+
+	memcpy(&m_TileState, pArg, sizeof m_TileState);
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_TileState.fPos));
+
+	m_pTransformCom->Set_Scale(m_TileState.fScale);
+
+	//m_TileState.iTileNum = CImGui_Tool::iTileNum++;
 
 	return S_OK;
 }
