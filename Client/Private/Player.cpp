@@ -74,6 +74,8 @@ HRESULT CPlayer::Render()
 		/*m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);
 		m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);*/
 	
+		m_pModelCom->SetUp_BoneMatrices(m_pShaderCom, "g_BoneMatrix", i);
+
 		m_pShaderCom->Begin(0);
 
 		m_pModelCom->Render(i);

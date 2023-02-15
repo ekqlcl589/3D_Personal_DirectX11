@@ -16,35 +16,45 @@ private:
 public:
 	_uint Get_NumMeshes() const { return m_iNumMeshes; }
 
+	class CBone* Get_BonePtr(const char* pBoneName);
+
 public:
 	virtual HRESULT Initialize_Prototype(const char* pModelFilePath, MODEL_TYPE eType, _fmatrix LocalMatrix);
 	virtual HRESULT Initialize(void* pArg);
 
-	virtual HRESULT Render(_uint iMeshIndex);
+public:
 	HRESULT SetUp_ShaderMaterialResource(class CShader* pShaderCom, const char* pConstantName, _uint iMeshIndex, aiTextureType eType);
+	HRESULT SetUp_BoneMatrices(class CShader* pShaderCom, const char* pConstantName, _uint iMeshIndex);
+	HRESULT Render(_uint iMeshIndex);
 
 private:
 	HRESULT Ready_Meshes(_fmatrix LocalMatrix);
 	HRESULT Ready_Materials(const char* pModelFilePath);
 	HRESULT Ready_Bones(aiNode* pAINode);
+	HRESULT Ready_Animation();
 
 private:
 	Assimp::Importer m_Importer;
 	const aiScene* m_pAiScene = { nullptr };
 
-	vector<aiVector3D> m_vecVertices;
+private:
+	MODEL_TYPE m_eType = { MODEL_END };
 
 private:
 	_uint m_iNumMeshes = { 0 };
 	vector<class CMesh*> m_vecMesh;
 
 private:
+	_uint m_iNumBones = { 0 };
 	vector<class CBone*> m_vecBones; // 모델에 정의 되어 있는 전체 뼈 
 
 private:
 	_uint m_iNumMaterial = { 0 };
 	vector<MODEL_MATERIAL> m_vecMaterial;
 
+private:
+	_uint m_iNumAnimations = { 0 };
+	vector<class CAnimation*> m_vecAnimations;
 private:
 	_float4x4 m_LocalMatrix;
 

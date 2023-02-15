@@ -101,6 +101,23 @@ HRESULT CShader::Set_Matrix(const char* pConstantName, const _float4x4* pMatrix)
 	return pMatrixVariable->SetMatrix((_float*)pMatrix);
 }
 
+HRESULT CShader::Set_MatrixArray(const char * pConstantName, const _float4x4 * pMatrix, _uint iNumMatrices)
+{
+	if (nullptr == m_pEffect)
+		return E_FAIL;
+
+	/* 내가 전달해준 문자열과 같은 이름을 가진 셰이더 전역변수의 핸들을 얻어온다.  */
+	ID3DX11EffectVariable*		pVariable = m_pEffect->GetVariableByName(pConstantName);
+	if (nullptr == pVariable)
+		return E_FAIL;
+
+	ID3DX11EffectMatrixVariable*	pMatrixVariable = pVariable->AsMatrix();
+	if (nullptr == pMatrixVariable)
+		return E_FAIL;
+
+	return pMatrixVariable->SetMatrixArray((_float*)pMatrix, 0, iNumMatrices);
+}
+
 HRESULT CShader::Set_RawValue(const char * pConstantName, const void * pData, _uint iSize)
 {
 	//텍스처 정보는 던지지 못하지만 void*를 이용해서 타입에 구애 받지 않고 셰이더에 값을 던져줌

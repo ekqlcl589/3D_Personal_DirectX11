@@ -14,13 +14,15 @@ private:
 public:
 	_uint Get_MaterialIndex() const { return m_iMaterialIndex; }
 
+	void Get_BoneMatrices(_float4x4* pMeshBoneMatrices);
+
 public:
-	HRESULT Initialize_Prototype(CModel::MODEL_TYPE eType, const aiMesh* pAiMesh, _fmatrix LocalMatrix);
+	HRESULT Initialize_Prototype(CModel::MODEL_TYPE eType, const aiMesh* pAiMesh, class CModel* pModel, _fmatrix LocalMatrix);
 	HRESULT Initialize(void* pArg);
 
 private:
 	HRESULT Ready_VertexBuffer_For_NonAnim(const aiMesh* pAIMesh, _fmatrix LocalMatrix);
-	HRESULT Ready_VertexBuffer_For_Anim(const aiMesh* pAIMesh);
+	HRESULT Ready_VertexBuffer_For_Anim(const aiMesh* pAIMesh, class CModel* pModel);
 
 private:
 	_uint m_iMaterialIndex = { 0 };
@@ -30,7 +32,7 @@ private:
 	vector<class CBone*> m_vecBones; // 메시에 영향을 주는 뼈들
 
 public:
-	static CMesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CModel::MODEL_TYPE eType, const aiMesh* pAiMesh, _fmatrix LocalMatrix);
+	static CMesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CModel::MODEL_TYPE eType, const aiMesh* pAiMesh, class CModel* pModel, _fmatrix LocalMatrix);
 	virtual CComponent* Clone(void* pArg = nullptr)override;
 	virtual void Free()override;
 };

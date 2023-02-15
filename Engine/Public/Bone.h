@@ -13,11 +13,14 @@ private:
 public:
 	HRESULT Initialize(aiNode* pAINode);
 
+public:
+	const char* Get_Name() const { return m_szName; }
+
+	_float4x4 Get_CombinedTransformMatrix() const { return m_CombinedTransformationMatrix; }
+
 private:
 	_float4x4 m_TransformationMatrix; // 내 뼈 만의 행렬
 	_float4x4 m_CombinedTransformationMatrix; // 내 뼈 * 부모 뼈의 행렬 
-
-private:
 	char m_szName[MAX_PATH] = ""; // 특정 뼈를 찾기 위한 캐릭터형 변수 -> 무기 를 몸통의 "웨폰핸드"에 붙인다
 
 public:

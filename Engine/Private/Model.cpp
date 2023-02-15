@@ -1,7 +1,9 @@
 #include "..\Public\Model.h"
 #include "Mesh.h"
 #include "Bone.h"
+#include "Shader.h"
 #include "Texture.h"
+#include "Animation.h"
 
 CModel::CModel(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CComponent(pDevice, pContext)
@@ -16,6 +18,7 @@ CModel::CModel(const CModel & rhs)
 	, m_vecMaterial(rhs.m_vecMaterial)
 	, m_iNumMaterial(rhs.m_iNumMaterial)
 	, m_LocalMatrix(rhs.m_LocalMatrix)
+	, m_eType(rhs.m_eType)
 {
 	for (auto& pMesh : m_vecMesh)
 		Safe_AddRef(pMesh);
@@ -27,6 +30,15 @@ CModel::CModel(const CModel & rhs)
 			Safe_AddRef(pMaterial.pMaterialTexture[i]);
 		}
 	}
+}
+
+CBone * CModel::Get_BonePtr(const char * pBoneName)
+{
+	auto iter = find_if(m_vecBones.begin(), m_vecBones.end(), [&](CBone* pBone)
+	{
+		return !strcmp(pBone->Get_Name(), pBoneName);
+	});
+	return *iter;
 }
 
 HRESULT CModel::Initialize_Prototype(const char * pModelFilePath, MODEL_TYPE eType, _fmatrix LocalMatrix)
@@ -42,15 +54,21 @@ HRESULT CModel::Initialize_Prototype(const char * pModelFilePath, MODEL_TYPE eTy
 	if (nullptr == m_pAiScene)
 		return E_FAIL;
 	
+	m_eType = eType;
+
 	XMStoreFloat4x4(&m_LocalMatrix, LocalMatrix);
 
 	if (FAILED(Ready_Bones(m_pAiScene->mRootNode)))
 		return E_FAIL;
+	m_iNumBones = m_vecBones.size();
 
 	if (FAILED(Ready_Meshes(LocalMatrix)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Materials(pModelFilePath)))
+		return E_FAIL;
+
+	if (FAILED(Ready_Animation()))
 		return E_FAIL;
 
 	return S_OK;
@@ -80,7 +98,7 @@ HRESULT CModel::Ready_Meshes(_fmatrix LocalMatrix)
 
 	for (_uint i = 0; i < m_iNumMeshes; ++i)
 	{
-		CMesh* pMesh = CMesh::Create(m_pDevice, m_pContext, MODEL_NONANIM, m_pAiScene->mMeshes[i], LocalMatrix);
+		CMesh* pMesh = CMesh::Create(m_pDevice, m_pContext, MODEL_NONANIM, m_pAiScene->mMeshes[i], this, LocalMatrix);
 
 		if (nullptr == pMesh)
 			return E_FAIL;
@@ -151,12 +169,43 @@ HRESULT CModel::Ready_Bones(aiNode * pAINode)
 	return S_OK;
 }
 
+HRESULT CModel::Ready_Animation()
+{
+	m_iNumAnimations = m_pAiScene->mNumAnimations;
+
+	for (_uint i = 0; i < m_iNumAnimations; i++)
+	{
+		CAnimation* pAnimation = CAnimation::Create(m_pAiScene->mAnimations[i]);
+		if (nullptr == pAnimation)
+			return E_FAIL;
+
+		m_vecAnimations.push_back(pAnimation);
+	}
+
+	return S_OK;
+}
+
 HRESULT CModel::SetUp_ShaderMaterialResource(CShader * pShaderCom, const char * pConstantName, _uint iMeshIndex, aiTextureType eType)
 {
 	if (iMeshIndex >= m_iNumMeshes)
 		return E_FAIL;
 
 	return m_vecMaterial[m_vecMesh[iMeshIndex]->Get_MaterialIndex()].pMaterialTexture[eType]->SetUp_ShaderResource(pShaderCom, pConstantName);
+}
+
+HRESULT CModel::SetUp_BoneMatrices(CShader * pShaderCom, const char * pConstantName, _uint iMeshIndex)
+{
+	if (iMeshIndex >= m_iNumMeshes)
+		return E_FAIL;
+
+	_float4x4 MeshBoneMatrices[256];
+
+	m_vecMesh[iMeshIndex]->Get_BoneMatrices(MeshBoneMatrices);
+
+	if (FAILED(pShaderCom->Set_MatrixArray(pConstantName, MeshBoneMatrices, 256)))
+		return E_FAIL;
+
+	return S_OK;
 }
 
 CModel * CModel::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const char * pModelFilePath, MODEL_TYPE eType, _fmatrix LocalMatrix)

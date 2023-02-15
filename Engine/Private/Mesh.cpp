@@ -1,5 +1,5 @@
 #include "..\Public\Mesh.h"
-
+#include "Bone.h"
 
 
 CMesh::CMesh(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -12,7 +12,18 @@ CMesh::CMesh(const CMesh & rhs)
 {
 }
 
-HRESULT CMesh::Initialize_Prototype(CModel::MODEL_TYPE eType, const aiMesh * pAiMesh, _fmatrix LocalMatrix)
+void CMesh::Get_BoneMatrices(_float4x4 * pMeshBoneMatrices)
+{
+	_uint iIndex = 0;
+
+	//나중에 좀 더 배우고 바꿔야 함
+	for (auto& pBone : m_vecBones)
+	{
+		pMeshBoneMatrices[iIndex++] = pBone->Get_CombinedTransformMatrix();
+	}
+}
+
+HRESULT CMesh::Initialize_Prototype(CModel::MODEL_TYPE eType, const aiMesh * pAiMesh, class CModel* pModel, _fmatrix LocalMatrix)
 {
 	m_iMaterialIndex = pAiMesh->mMaterialIndex;
 	m_iNumVertices = pAiMesh->mNumVertices;
@@ -24,7 +35,7 @@ HRESULT CMesh::Initialize_Prototype(CModel::MODEL_TYPE eType, const aiMesh * pAi
 	m_eTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
 	HRESULT hr = CModel::MODEL_NONANIM == eType ? 
-		Ready_VertexBuffer_For_NonAnim(pAiMesh, LocalMatrix) : Ready_VertexBuffer_For_Anim(pAiMesh);
+		Ready_VertexBuffer_For_NonAnim(pAiMesh, LocalMatrix) : Ready_VertexBuffer_For_Anim(pAiMesh, pModel);
 	
 	if (FAILED(hr))
 		return E_FAIL;
@@ -113,7 +124,7 @@ HRESULT CMesh::Ready_VertexBuffer_For_NonAnim(const aiMesh * pAIMesh, _fmatrix L
 	return S_OK;
 }
 
-HRESULT CMesh::Ready_VertexBuffer_For_Anim(const aiMesh * pAIMesh)
+HRESULT CMesh::Ready_VertexBuffer_For_Anim(const aiMesh * pAIMesh, class CModel* pModel)
 {
 	m_iStride = sizeof(VTXANIMMODEL);
 
@@ -136,10 +147,8 @@ HRESULT CMesh::Ready_VertexBuffer_For_Anim(const aiMesh * pAIMesh)
 	for (_uint i = 0; i < m_iNumVertices; ++i)
 	{
 		memcpy(&pVertices[i].vPosition, &pAIMesh->mVertices[i], sizeof(_float3));
-		//XMStoreFloat3(&pVertices[i].vPosition, XMVector3TransformCoord(XMLoadFloat3(&pVertices[i].vPosition)));
 
 		memcpy(&pVertices[i].vNormal, &pAIMesh->mNormals[i], sizeof(_float3));
-		//XMStoreFloat3(&pVertices[i].vNormal, XMVector3TransformNormal(XMLoadFloat3(&pVertices[i].vNormal)));
 
 		memcpy(&pVertices[i].vTexUV, &pAIMesh->mTextureCoords[0][i], sizeof(_float2));
 
@@ -153,7 +162,14 @@ HRESULT CMesh::Ready_VertexBuffer_For_Anim(const aiMesh * pAIMesh)
 	{
 		// 메시에 영향을 주는 뼈들 중 i번 째 뼈
 		aiBone* pAIBone = pAIMesh->mBones[i];
-		pAIBone->mName.data; // 이건 뭐임 그냥 뼈 이름 확인 하려고 넣은건가;
+
+		CBone* pBone = pModel->Get_BonePtr(pAIBone->mName.data);
+
+		if (nullptr == pBone)
+			return E_FAIL;
+
+		m_vecBones.push_back(pBone);
+		Safe_AddRef(pBone);
 
 		// 이 뼈가 영향을 주는 정점들의 갯수 
 		for (_uint j = 0; j < pAIBone->mNumWeights; j++)
@@ -193,11 +209,11 @@ HRESULT CMesh::Ready_VertexBuffer_For_Anim(const aiMesh * pAIMesh)
 	return S_OK;
 }
 
-CMesh * CMesh::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, CModel::MODEL_TYPE eType, const aiMesh* pAiMesh, _fmatrix LocalMatrix)
+CMesh * CMesh::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, CModel::MODEL_TYPE eType, const aiMesh* pAiMesh, class CModel* pModel, _fmatrix LocalMatrix)
 {
 	CMesh * pInstance = new CMesh(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype(eType, pAiMesh, LocalMatrix)))
+	if (FAILED(pInstance->Initialize_Prototype(eType, pAiMesh, pModel, LocalMatrix)))
 	{
 		MSG_BOX("CMesh Create Fail");
 		Safe_Release(pInstance);
@@ -219,4 +235,9 @@ CComponent * CMesh::Clone(void * pArg)
 void CMesh::Free()
 {
 	__super::Free();
+
+	for (auto& pBone : m_vecBones)
+		Safe_Release(pBone);
+
+	m_vecBones.clear();
 }

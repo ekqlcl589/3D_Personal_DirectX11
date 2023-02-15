@@ -117,6 +117,14 @@ namespace Engine
 		class CTexture* pMaterialTexture[AI_TEXTURE_TYPE_MAX] = { nullptr };
 	}MODEL_MATERIAL;
 
+
+	typedef struct tagKeyFrame
+	{
+		XMFLOAT3 vScale;
+		XMFLOAT4 vRotation;
+		XMFLOAT3 vPosition;
+		double Time;
+	}KEYFRAME;
 }
 
 
