@@ -37,6 +37,8 @@ HRESULT CCube::Initialize(void * pArg)
 
 	memcpy(&m_CubeState, pArg, sizeof m_CubeState);
 	// pArg에 있는 정보중 트랜스폼 정보를 m_CubeState에 넘겨서 큐브 좌표 세팅
+	m_vPos = XMLoadFloat3(&m_CubeState.fPos);
+
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_CubeState.fPos));
 	
 	m_pTransformCom->Set_Scale(m_CubeState.fScale);
@@ -48,9 +50,6 @@ HRESULT CCube::Initialize(void * pArg)
 
 void CCube::Tick(_double TimeDelta)
 {
-	//if (CKeyMgr::GetInstance()->Key_Down(VK_LBUTTON))
-	//	Check_Picking();
-
 	__super::Tick(TimeDelta);
 }
 
@@ -63,6 +62,9 @@ void CCube::LateTick(_double TimeDelta)
 
 HRESULT CCube::Render(void)
 {
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vPos);
+
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 
@@ -79,12 +81,6 @@ HRESULT CCube::Render(void)
 void CCube::Debug()
 {
 	
-}
-
-void CCube::Set_CubeState(CUBESTATE Cube, _vector vPos)
-{
-	XMStoreFloat3(&m_CubeState.fPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	m_CubeState.fPos = { 1.f, 1.f, 100.f };
 }
 
 HRESULT CCube::Add_Components(void)
@@ -143,15 +139,6 @@ HRESULT CCube::SetUp_ShaderResource()
 	
 	return S_OK;
 }
-
-_vector CCube::Check_Picking()
-{
-	m_pCCalculatorCom->Picking_OnTerrain(g_hWnd, m_pVIBuffer_Terrain, m_pTransformCom);
-	m_vPos = m_pCCalculatorCom->Get_PickingState().vRayPos;
-
-	return m_vPos;
-}
-
 
 CCube* CCube::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {

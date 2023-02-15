@@ -64,7 +64,9 @@ public:
 	static int iCubeNum;
 	static int iMonsterNum;
 	static int iTileNum;
+
 private:
+	CCube::CUBESTATE m_CubeState;
 	vector<CCube::CUBESTATE> m_vecCubeData;
 
 	_vector m_vCubePos = { 0.f, 0.f, 0.f };

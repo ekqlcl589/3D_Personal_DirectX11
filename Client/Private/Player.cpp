@@ -19,6 +19,13 @@ HRESULT CPlayer::Initialize_Prototype()
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
 
+	ZeroMemory(&m_tInfo, sizeof(PLAYERINFO));
+
+	m_tInfo._Lv = 1;
+	m_tInfo._ATK = 100;
+	m_tInfo._MaxHp = 100.f;
+	m_tInfo._Hp = 100.f;
+
 
 	return S_OK;
 }
@@ -31,15 +38,6 @@ HRESULT CPlayer::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	//_float3 vScale = m_pTransformCom->Get_Scale();
-	//_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
-	//_vector vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
-	//_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
-
-	//m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight * (vScale.x / 100.f));
-	//m_pTransformCom->Set_State(CTransform::STATE_UP, vUp* (vScale.y / 100.f));
-	//m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook* (vScale.z / 100.f));
-	// 일단은 모델에서 플래그 값으로 1 / 100 값으로 줄여서 사용하는 중인데 이상하다 싶으면 활성화 ㄱㄱ
 	return S_OK;
 }
 
@@ -96,6 +94,10 @@ void CPlayer::Key_Input(_double TimeDelta)
 
 	if (CKeyMgr::GetInstance()->Key_Pressing(VK_RIGHT))
 		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta);
+}
+
+void CPlayer::Hit(const _int & _Damage)
+{
 }
 
 HRESULT CPlayer::Add_Components()

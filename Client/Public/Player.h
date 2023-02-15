@@ -29,6 +29,16 @@ public:
 public:
 	void Key_Input(_double TimeDelta);
 
+public:
+	PLAYERINFO& Get_Info() { return m_tInfo; }
+
+public:
+	void	Hit(const _int& _Damage);
+	void	Add_Exp(const _int& _Exp)
+	{
+		m_tInfo._AddExp += _Exp;
+	}
+
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CRenderer* m_pRendererCom = { nullptr };
@@ -38,6 +48,9 @@ private:
 private:
 	HRESULT Add_Components();
 	HRESULT SetUp_ShaderResources();
+
+private:
+	PLAYERINFO m_tInfo;
 
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

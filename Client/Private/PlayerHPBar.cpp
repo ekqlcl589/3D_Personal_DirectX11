@@ -5,6 +5,8 @@
 #include "Shader.h"
 #include "Texture.h"
 
+#include "Player.h"
+
 CPlayerHPBar::CPlayerHPBar(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CUI(pDevice, pContext)
 {
@@ -60,6 +62,22 @@ void CPlayerHPBar::Tick(_double TimeDelta)
 void CPlayerHPBar::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
+
+	//_float VertexHpY = 0.f;
+	//_float TexHpY = 0.f;
+	//CGameInstance* p = GET_INSTANCE(CGameInstance);
+	//CGameObject* pPlayer = nullptr;
+	//
+	//pPlayer = p->Find_Prototype(L"Prototype_GameObject_Player");
+
+	//_float MaxHP = static_cast<CPlayer*>(pPlayer)->Get_Info()._MaxHp;
+	//_float HP = static_cast<CPlayer*>(pPlayer)->Get_Info()._Hp;
+
+	//TexHpY = 1.f - HP / MaxHP;
+	//VertexHpY = 1 - (2 * TexHpY);
+
+	//m_pVIBuffer_Rect->Set_Buffer(TexHpY, VertexHpY);
+	//RELEASE_INSTANCE(CGameInstance);
 }
 
 HRESULT CPlayerHPBar::Render()

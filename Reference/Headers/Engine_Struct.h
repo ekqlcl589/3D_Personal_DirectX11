@@ -125,6 +125,22 @@ namespace Engine
 		XMFLOAT3 vPosition;
 		double Time;
 	}KEYFRAME;
+
+	typedef struct tagPlayerInfo
+	{
+		_uint _Lv;
+		_float _MaxHp;
+		_float _Hp;
+		_float _MaxMp;
+		_float _Mp;
+		_float _MaxExp;
+		_float _Exp;
+		_float _AddExp;
+
+		_uint _ATK;
+		_uint _DEF;
+
+	}PLAYERINFO;
 }
 
 

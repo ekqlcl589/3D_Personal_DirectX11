@@ -58,6 +58,9 @@
     <Filter Include="02.GameObject\TileMesh">
       <UniqueIdentifier>{0fc7bcd6-04a7-4d24-86b2-2e3261b77692}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\07. SkyBox">
+      <UniqueIdentifier>{267a53e6-12d7-4b74-9d4c-f0a4a5a0595c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

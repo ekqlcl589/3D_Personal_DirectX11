@@ -44,13 +44,11 @@ public:
 	void Debug();
 
 public:
-	void Set_CubeState(CUBESTATE Cube, _vector vPos);
 	CUBESTATE Get_CubeState() { return m_CubeState; }
 
 private:
 	HRESULT	Add_Components(void);
 	HRESULT SetUp_ShaderResource();
-	_vector Check_Picking();
 
 private:
 	CVIBuffer_Cube* m_pBufferCom = nullptr;

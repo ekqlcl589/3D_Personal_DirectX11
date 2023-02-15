@@ -99,6 +99,33 @@ HRESULT CVIBuffer_Rect::Initialize(void * pArg)
 	return S_OK;
 }
 
+void CVIBuffer_Rect::Set_Buffer(_float x, _float y)
+{
+	ZeroMemory(&m_SubResourceData, sizeof m_SubResourceData);
+
+	VTXTEX*		pVertices = new VTXTEX[m_iNumVertices];
+	ZeroMemory(pVertices, sizeof(VTXTEX) * m_iNumVertices);
+
+	pVertices[0].vPosition = { 0.5f, y , 0.f };
+	pVertices[0].vTexUV = { 0.f, x };
+
+	pVertices[1].vPosition = { 0.5f, y, 0.f };
+	pVertices[1].vTexUV = { 0.5f, x };
+
+	pVertices[2].vPosition = { 0.5f, -0.5f, 0.f };
+	pVertices[2].vTexUV = { 0.5f, 0.5f };
+
+	pVertices[3].vPosition = { -0.5f, -0.5f, 0.f };
+	pVertices[3].vTexUV = { 0.f, 0.5f };
+
+	m_SubResourceData.pSysMem = pVertices;
+
+	if (FAILED(__super::Create_VertexBuffer()))
+		return;
+
+	Safe_Delete_Array(pVertices);
+
+}
 
 CVIBuffer_Rect * CVIBuffer_Rect::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {

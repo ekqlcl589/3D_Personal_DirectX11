@@ -238,22 +238,22 @@ _bool CImGui_Tool::Picking()
 		if (true == m_bCheck)
 		{
 			m_vCubePos = m_pCaculator->Get_PickingState().vRayPos;
-
+			XMStoreFloat3(&fCubePosition, m_vCubePos);
 			CCube::CUBESTATE state;
-			ZeroMemory(&state, sizeof(CCube::CUBESTATE));
+			ZeroMemory(&m_CubeState, sizeof(CCube::CUBESTATE));
 
-			XMStoreFloat3(&state.fPos, m_vCubePos);
-			state.fScale = fCubeScale;
-			state.transformDesc.fSpeed = 5.f;
-			state.transformDesc.fRotation = XMConvertToRadians(10);
-			state.iCubeNum = iCubeNum;
+			XMStoreFloat3(&m_CubeState.fPos, m_vCubePos);
+			m_CubeState.fScale = fCubeScale;
+			m_CubeState.transformDesc.fSpeed = 5.f;
+			m_CubeState.transformDesc.fRotation = XMConvertToRadians(10);
+			m_CubeState.iCubeNum = iCubeNum;
 
-			if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Cube"), TEXT("Layer_Cube"), &state)))
+			if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Cube"), TEXT("Layer_Cube"), &m_CubeState)))
 				return E_FAIL;
 
 			RELEASE_INSTANCE(CGameInstance);
 
-			m_vecCubeData.push_back(state);
+			m_vecCubeData.push_back(m_CubeState);
 			m_bCheck = m_pCaculator->Get_PickingState().bPicking;
 			m_bCheck = false;
 			return m_bCheck;
@@ -334,7 +334,7 @@ void CImGui_Tool::ObjectSetting()
 	ImGui::Begin("Setting");
 
 	// Å¥ºê
-	XMStoreFloat3(&fCubePosition, m_vCubePos);
+	fCubePosition = m_CubeState.fPos;
 	_float fCubePositions[3] = { fCubePosition.x, fCubePosition.y, fCubePosition.z };
 	ImGui::InputFloat3("CubePosition", fCubePositions);
 	_float fCubeScales[3] = { fCubeScale.x, fCubeScale.y, fCubeScale.z };

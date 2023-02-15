@@ -32,7 +32,7 @@ private: //»çº»°´Ã¼
 private:
 	_uint m_iNumLevels = { 0 };
 
-private:
+public:
 	class CGameObject* Find_Prototype(const _tchar* pPrototypeTag);
 	class CLayer* Find_Layer(_uint iLevelIndex,const _tchar* pLayerTag);
 public:
