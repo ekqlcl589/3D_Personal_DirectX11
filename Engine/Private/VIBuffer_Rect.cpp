@@ -101,22 +101,32 @@ HRESULT CVIBuffer_Rect::Initialize(void * pArg)
 
 void CVIBuffer_Rect::Set_Buffer(_float x, _float y)
 {
+	ZeroMemory(&m_BufferDesc, sizeof m_BufferDesc);
+
+	m_BufferDesc.ByteWidth = m_iStride * m_iNumVertices;
+
+	m_BufferDesc.Usage = D3D11_USAGE_DEFAULT /*D3D11_USAGE_DYNAMIC*/;
+	m_BufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	m_BufferDesc.StructureByteStride = m_iStride;
+	m_BufferDesc.CPUAccessFlags = 0;
+	m_BufferDesc.MiscFlags = 0;
+
 	ZeroMemory(&m_SubResourceData, sizeof m_SubResourceData);
 
 	VTXTEX*		pVertices = new VTXTEX[m_iNumVertices];
 	ZeroMemory(pVertices, sizeof(VTXTEX) * m_iNumVertices);
 
-	pVertices[0].vPosition = { 0.5f, y , 0.f };
-	pVertices[0].vTexUV = { 0.f, x };
+	pVertices[0].vPosition = { -0.5f, 0.5f , 0.f };
+	pVertices[0].vTexUV = { 0.f, 0.f };
 
-	pVertices[1].vPosition = { 0.5f, y, 0.f };
-	pVertices[1].vTexUV = { 0.5f, x };
+	pVertices[1].vPosition = { y, 0.5f, 0.f };
+	pVertices[1].vTexUV = { x, 0.f };
 
-	pVertices[2].vPosition = { 0.5f, -0.5f, 0.f };
-	pVertices[2].vTexUV = { 0.5f, 0.5f };
+	pVertices[2].vPosition = { y, -0.5f, 0.f };
+	pVertices[2].vTexUV = { x, 1.f };
 
 	pVertices[3].vPosition = { -0.5f, -0.5f, 0.f };
-	pVertices[3].vTexUV = { 0.f, 0.5f };
+	pVertices[3].vTexUV = { 0.f, 1.f };
 
 	m_SubResourceData.pSysMem = pVertices;
 

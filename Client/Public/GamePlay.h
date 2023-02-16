@@ -25,6 +25,7 @@ public:
 	HRESULT Ready_UI(const _tchar* pLayerTag);
 
 	HRESULT Ready_Layer_Player(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_Monster(const _tchar* pLayerTag);
 
 	void LoadData(_tchar* szFilePath);
 	void LoadMonster(_tchar* szFilePath);

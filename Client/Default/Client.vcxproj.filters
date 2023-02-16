@@ -61,7 +61,22 @@
     <Filter Include="02.GameObject\07. SkyBox">
       <UniqueIdentifier>{267a53e6-12d7-4b74-9d4c-f0a4a5a0595c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\04. UI\HPBar">
+    <Filter Include="02.GameObject\04. UI\Player">
+      <UniqueIdentifier>{1aae8731-1076-4542-84fd-486c5beadc93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04. UI\Player\Rage_Skill">
+      <UniqueIdentifier>{87fac159-4765-4435-a15a-36fea5feea0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04. UI\Player\Skill">
+      <UniqueIdentifier>{4a926acd-8be4-4ac8-b19d-330076179336}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04. UI\Player\RoundUI">
+      <UniqueIdentifier>{fc9f83ad-dc9b-4487-bbd0-492131dca5a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04. UI\Player\MPBar">
+      <UniqueIdentifier>{a9e4b8ad-41a8-450a-805e-9faef2b45e7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04. UI\Player\HPBar">
       <UniqueIdentifier>{7ee254bc-6f93-4650-94bf-b1446450f330}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -121,7 +136,13 @@
       <Filter>02.GameObject\TileMesh</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\PlayerHPBar.h">
-      <Filter>02.GameObject\04. UI\HPBar</Filter>
+      <Filter>02.GameObject\04. UI\Player\HPBar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PlayerMPBar.h">
+      <Filter>02.GameObject\04. UI\Player\MPBar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PlayerRageSkill.h">
+      <Filter>02.GameObject\04. UI\Player\Rage_Skill</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -168,7 +189,13 @@
       <Filter>02.GameObject\TileMesh</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\PlayerHPBar.cpp">
-      <Filter>02.GameObject\04. UI\HPBar</Filter>
+      <Filter>02.GameObject\04. UI\Player\HPBar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PlayerMPBar.cpp">
+      <Filter>02.GameObject\04. UI\Player\MPBar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PlayerRageSkill.cpp">
+      <Filter>02.GameObject\04. UI\Player\Rage_Skill</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

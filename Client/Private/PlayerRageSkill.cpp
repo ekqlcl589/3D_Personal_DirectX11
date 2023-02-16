@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "..\Public\PlayerHPBar.h"
+#include "..\Public\PlayerRageSkill.h"
 
 #include "GameInstance.h"
 #include "Shader.h"
@@ -7,17 +7,17 @@
 #include "Layer.h"
 #include "Player.h"
 
-CPlayerHPBar::CPlayerHPBar(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CPlayerRageSkill::CPlayerRageSkill(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CUI(pDevice, pContext)
 {
 }
 
-CPlayerHPBar::CPlayerHPBar(const CPlayerHPBar & rhs)
+CPlayerRageSkill::CPlayerRageSkill(const CPlayerRageSkill & rhs)
 	: CUI(rhs)
 {
 }
 
-HRESULT CPlayerHPBar::Initialize_Prototype()
+HRESULT CPlayerRageSkill::Initialize_Prototype()
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
@@ -25,7 +25,7 @@ HRESULT CPlayerHPBar::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CPlayerHPBar::Initialize(void * pArg)
+HRESULT CPlayerRageSkill::Initialize(void * pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -42,7 +42,7 @@ HRESULT CPlayerHPBar::Initialize(void * pArg)
 	m_fY = g_iWinSizeY >> 1;
 
 	XMStoreFloat4x4(&m_WorldMatrix,
-		XMMatrixScaling(340.f, 20.f, 1.f) * XMMatrixTranslation(m_fX - g_iWinSizeX * 0.5f, -m_fY + 100.f, 0.f));
+		XMMatrixScaling(175.f, 175.f, 1.f) * XMMatrixTranslation(m_fX - 175.f, -m_fY + 100.f, 0.f));
 
 	XMStoreFloat4x4(&m_ViewMatrix,
 		XMMatrixIdentity());
@@ -54,43 +54,19 @@ HRESULT CPlayerHPBar::Initialize(void * pArg)
 	return S_OK;
 }
 
-void CPlayerHPBar::Tick(_double TimeDelta)
+void CPlayerRageSkill::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 
 }
 
-void CPlayerHPBar::LateTick(_double TimeDelta)
+void CPlayerRageSkill::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
 
-	_float VertexHpY = 0.f;
-	_float TexHpY = 0.f;
-
-	CGameInstance* p = GET_INSTANCE(CGameInstance);
-	CGameObject* pPlayer = nullptr;
-
-	//pPlayer = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Player"), TEXT("Layer_Player"));
-	pPlayer = p->Find_Prototype(TEXT("Prototype_GameObject_Player"));
-
-	_float MaxHP = static_cast<CPlayer*>(pPlayer)->Get_Info()._MaxHp;
-	_float HP = static_cast<CPlayer*>(pPlayer)->Get_Info()._Hp;
-
-	if (HP > MaxHP)
-		HP = MaxHP;
-
-	if (HP <= 0)
-		HP = 0;
-
-	TexHpY = 1.f - HP / MaxHP;
-	VertexHpY = 1.f - (2 * TexHpY);
-
-	m_pVIBuffer_Rect->Set_Buffer(TexHpY, VertexHpY);
-
-	RELEASE_INSTANCE(CGameInstance);
 }
 
-HRESULT CPlayerHPBar::Render()
+HRESULT CPlayerRageSkill::Render()
 {
 	if (FAILED(SetUp_ShaderResource()))
 		return E_FAIL;
@@ -103,7 +79,7 @@ HRESULT CPlayerHPBar::Render()
 	return S_OK;
 }
 
-HRESULT CPlayerHPBar::Add_Components()
+HRESULT CPlayerRageSkill::Add_Components()
 {
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"),
 		TEXT("Com_Renderer"), (CComponent**)&m_pRenderer)))
@@ -121,14 +97,14 @@ HRESULT CPlayerHPBar::Add_Components()
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_HPBar"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_RageSkill"),
 		TEXT("Com_Texture"), (CComponent**)&m_pTexture)))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CPlayerHPBar::SetUp_ShaderResource()
+HRESULT CPlayerRageSkill::SetUp_ShaderResource()
 {
 	if (nullptr == m_pShaderCom)
 		return E_FAIL;
@@ -146,29 +122,29 @@ HRESULT CPlayerHPBar::SetUp_ShaderResource()
 	return S_OK;
 }
 
-CPlayerHPBar * CPlayerHPBar::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CPlayerRageSkill * CPlayerRageSkill::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {
-	CPlayerHPBar * pInstance = new CPlayerHPBar(pDevice, pContext);
+	CPlayerRageSkill * pInstance = new CPlayerRageSkill(pDevice, pContext);
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("HPBar Create Fail");
+		MSG_BOX("RageSkill Create Fail");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-CGameObject * CPlayerHPBar::Clone(void * pArg)
+CGameObject * CPlayerRageSkill::Clone(void * pArg)
 {
-	CPlayerHPBar * pInstance = new CPlayerHPBar(*this);
+	CPlayerRageSkill * pInstance = new CPlayerRageSkill(*this);
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("HPBar Clone Fail");
+		MSG_BOX("RageSkill Clone Fail");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CPlayerHPBar::Free()
+void CPlayerRageSkill::Free()
 {
 	Safe_Release(m_pShaderCom);
 	__super::Free();

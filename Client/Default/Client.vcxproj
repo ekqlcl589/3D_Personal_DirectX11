@@ -169,6 +169,8 @@
     <ClInclude Include="..\Public\Monster.h" />
     <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\Public\PlayerHPBar.h" />
+    <ClInclude Include="..\Public\PlayerMPBar.h" />
+    <ClInclude Include="..\Public\PlayerRageSkill.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\TestTile.h" />
     <ClInclude Include="Client.h" />
@@ -188,6 +190,8 @@
     <ClCompile Include="..\Private\Monster.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\Private\PlayerHPBar.cpp" />
+    <ClCompile Include="..\Private\PlayerMPBar.cpp" />
+    <ClCompile Include="..\Private\PlayerRageSkill.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\Private\TestTile.cpp" />
     <ClCompile Include="Client.cpp" />

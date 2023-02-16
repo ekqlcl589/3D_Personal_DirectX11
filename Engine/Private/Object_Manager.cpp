@@ -89,10 +89,30 @@ void CObject_Manager::Clear(_uint iLevelIndex)
 	m_pLayers[iLevelIndex].clear();
 }
 
+CGameObject * CObject_Manager::Find_GameObject(_uint iLevelIndex, const _tchar * pPrototypeTag, const _tchar * pLayerTag, void* pArg)
+{
+	CGameObject* pPrototype = Find_Prototype(pPrototypeTag);
+
+	if (nullptr == pPrototype)
+		return nullptr;
+
+	CGameObject* pGameObject = pPrototype->Clone(pArg);
+	
+	if (nullptr == pGameObject)
+		return nullptr;
+
+	CLayer* pLayer = Find_Layer(iLevelIndex, pLayerTag);
+
+	auto& iter = find_if(m_pLayers[iLevelIndex].begin(), m_pLayers[iLevelIndex].end(), CTag_Finder(pLayerTag));
+
+	if (iter == m_pLayers[iLevelIndex].end())
+		return nullptr;
+
+	return pGameObject;
+}
+
 CGameObject * CObject_Manager::Find_Prototype(const _tchar * pPrototypeTag)
 {
-	_tchar szTag[MAX_PATH] = TEXT("");
-
 	auto iter = find_if(m_Prototypes.begin(), m_Prototypes.end(), CTag_Finder(pPrototypeTag));
 	
 	if (iter == m_Prototypes.end())

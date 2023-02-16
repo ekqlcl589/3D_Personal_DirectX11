@@ -31,6 +31,8 @@ public: /* Obj_Mgr */
 	class CGameObject* Find_Prototype(const _tchar* pPrototypeTag);
 	class CLayer* Find_Layer(_uint iLevelIndex, const _tchar* pLayerTag);
 
+	class CGameObject* Find_GameObject(_uint iLevelIndex, const _tchar* pPrototypeTag, const _tchar* pLayerTag, void* pArg = nullptr);
+
 public: /* For.Component_Manager */
 	HRESULT Add_Prototype(_uint iLevelIndex, const _tchar* pPrototypeTag, class CComponent* pPrototype);
 	class CComponent* Clone_Component(_uint iLevelIndex, const _tchar* pPrototypeTag, void* pArg = nullptr);

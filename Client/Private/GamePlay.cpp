@@ -29,6 +29,9 @@ HRESULT CGamePlay::Initialize()
 	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
 
+	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
+		return E_FAIL;
+
 	if (FAILED(Ready_UI(TEXT("Layer_UI"))))
 		return E_FAIL;
 
@@ -115,9 +118,14 @@ HRESULT CGamePlay::Ready_UI(const _tchar * pLayerTag)
 {
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_UI"), pLayerTag)))
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_HPBar"), pLayerTag)))
 		return E_FAIL;
 
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_MPBar"), pLayerTag)))
+		return E_FAIL;
+
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_RageSkill"), pLayerTag)))
+		return E_FAIL;
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
@@ -130,6 +138,14 @@ HRESULT CGamePlay::Ready_Layer_Player(const _tchar * pLayerTag)
 	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Player"), pLayerTag)))
 		return E_FAIL;
 
+	RELEASE_INSTANCE(CGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CGamePlay::Ready_Layer_Monster(const _tchar * pLayerTag)
+{
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster"), pLayerTag)))
 		return E_FAIL;
 

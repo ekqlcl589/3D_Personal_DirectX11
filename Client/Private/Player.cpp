@@ -11,6 +11,7 @@ CPlayer::CPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 
 CPlayer::CPlayer(const CPlayer & rhs)
 	: CGameObject(rhs)
+	, m_tInfo(rhs.m_tInfo)
 {
 }
 
@@ -20,12 +21,12 @@ HRESULT CPlayer::Initialize_Prototype()
 		return E_FAIL;
 
 	ZeroMemory(&m_tInfo, sizeof(PLAYERINFO));
-
 	m_tInfo._Lv = 1;
 	m_tInfo._ATK = 100;
 	m_tInfo._MaxHp = 100.f;
 	m_tInfo._Hp = 100.f;
-
+	m_tInfo._MaxMp = 100.f;
+	m_tInfo._Mp = 100;
 
 	return S_OK;
 }
@@ -72,7 +73,7 @@ HRESULT CPlayer::Render()
 		/*m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);
 		m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);*/
 	
-		m_pModelCom->SetUp_BoneMatrices(m_pShaderCom, "g_BoneMatrix", i);
+		//m_pModelCom->SetUp_BoneMatrices(m_pShaderCom, "g_BoneMatrix", i);
 
 		m_pShaderCom->Begin(0);
 
@@ -94,6 +95,10 @@ void CPlayer::Key_Input(_double TimeDelta)
 
 	if (CKeyMgr::GetInstance()->Key_Pressing(VK_RIGHT))
 		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta);
+
+	if (CKeyMgr::GetInstance()->Key_Pressing('Q'))
+		m_tInfo._Mp -= 10.f;
+
 }
 
 void CPlayer::Hit(const _int & _Damage)

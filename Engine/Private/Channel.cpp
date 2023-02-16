@@ -14,7 +14,7 @@ HRESULT CChannel::Initialize(aiNodeAnim * pAIChannel, CModel* pModel)
 	m_pBone = pModel->Get_BonePtr(m_szName);
 	Safe_AddRef(m_pBone);
 
-	m_iNumKeyFrames = max(pAIChannel->mNumScalingKeys, pAIChannel->mNumRotationKeys, pAIChannel->mNumPositionKeys);
+	m_iNumKeyFrames = max(pAIChannel->mNumScalingKeys, pAIChannel->mNumRotationKeys);
 	m_iNumKeyFrames = max(m_iNumKeyFrames, pAIChannel->mNumPositionKeys);
 
 	_float3 vScale;
