@@ -5,7 +5,7 @@ CAnimation::CAnimation()
 {
 }
 
-HRESULT CAnimation::Initialize(aiAnimation * pAIAnimation)
+HRESULT CAnimation::Initialize(aiAnimation * pAIAnimation, CModel* pModel)
 {
 	strcpy_s(m_szName, pAIAnimation->mName.data);
 
@@ -17,7 +17,7 @@ HRESULT CAnimation::Initialize(aiAnimation * pAIAnimation)
 
 	for (_uint i = 0; i < m_iNumChannels; i++)
 	{
-		CChannel* pChannel = CChannel::Create(pAIAnimation->mChannels[i]);
+		CChannel* pChannel = CChannel::Create(pAIAnimation->mChannels[i], pModel);
 		if (nullptr == pChannel)
 			return E_FAIL;
 
@@ -27,11 +27,32 @@ HRESULT CAnimation::Initialize(aiAnimation * pAIAnimation)
 	return S_OK;
 }
 
-CAnimation * CAnimation::Create(aiAnimation * pAIAnimation)
+void CAnimation::Play_Animation(_double TimeDelta)
+{
+	m_TimeAcc += m_TickPerSecond * TimeDelta;
+
+	if (m_TimeAcc >= m_Duration)
+	{
+		if (true == m_isLoop)
+		{
+			m_TimeAcc = 0.0;
+			m_isFinished = true;
+		}
+		else
+		{
+			m_isFinished = true;
+		}
+	}
+
+	for (auto& pChannel : m_vecChannel)
+		pChannel->Invalidate_Transform(m_TimeAcc);
+}
+
+CAnimation * CAnimation::Create(aiAnimation * pAIAnimation, CModel* pModel)
 {
 	CAnimation*		pInstance = new CAnimation();
 
-	if (FAILED(pInstance->Initialize(pAIAnimation)))
+	if (FAILED(pInstance->Initialize(pAIAnimation, pModel)))
 	{
 		MSG_BOX("Failed to Created : CAnimation");
 		Safe_Release(pInstance);
@@ -42,5 +63,9 @@ CAnimation * CAnimation::Create(aiAnimation * pAIAnimation)
 
 void CAnimation::Free()
 {
+	for (auto& pChannel : m_vecChannel)
+		Safe_Release(pChannel);
+
+	m_vecChannel.clear();
 }
 

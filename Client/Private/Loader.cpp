@@ -148,6 +148,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 	_matrix		LocalMatrix = XMMatrixIdentity();
 	LocalMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
 
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Fiona"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Fiona/Fiona.fbx", CModel::MODEL_ANIM, LocalMatrix))))
+		return E_FAIL;
+
 	/* For.Prototype_Component_Model_Player */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Player"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Test/Head.fbx", CModel::MODEL_NONANIM, LocalMatrix))))
@@ -155,7 +159,7 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 	/* For.Prototype_Component_Model_TestMonster */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Boss0"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Ancient_Ston_Golem.fbx", CModel::MODEL_NONANIM, LocalMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Ancient_Ston_Golem.fbx", CModel::MODEL_ANIM, LocalMatrix))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Tile"),

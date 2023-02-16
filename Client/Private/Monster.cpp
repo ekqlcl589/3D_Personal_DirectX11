@@ -28,11 +28,17 @@ HRESULT CMonster::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	ZeroMemory(&m_MonsterState, sizeof(MONSTERSTATE));
+	//ZeroMemory(&m_MonsterState, sizeof(MONSTERSTATE));
+	//
+	//memcpy(&m_MonsterState, pArg, sizeof m_MonsterState);
+	//
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_MonsterState.fPos));
 
-	memcpy(&m_MonsterState, pArg, sizeof m_MonsterState);
-
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_MonsterState.fPos));
+	m_pTransformCom->Set_Scale(_float3(0.01f, 0.01f, 0.01f));
+	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(270.0f));
+	// 지금 애니메이션 모델은 LocalWorld가 안 잡혀 있어서 임시로 넣은 값
+	
+	m_pModelCom->SetUp_Animation(0);
 
 	return S_OK;
 }
@@ -45,6 +51,8 @@ void CMonster::Tick(_double TimeDelta)
 void CMonster::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
+
+	m_pModelCom->Play_Animation(TimeDelta);
 
 	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
@@ -87,6 +95,7 @@ HRESULT CMonster::Add_Components()
 	TransformDesc.fSpeed = 5.f;
 	TransformDesc.fRotation = XMConvertToRadians(90.0f);
 
+
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Transform"),
 		TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))
 		return E_FAIL;
@@ -95,7 +104,7 @@ HRESULT CMonster::Add_Components()
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModel"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxAnimModel"),
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 

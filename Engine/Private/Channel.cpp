@@ -1,12 +1,18 @@
 #include "..\Public\Channel.h"
+#include "Model.h"
+#include "Bone.h"
 
 CChannel::CChannel()
 {
 }
 
-HRESULT CChannel::Initialize(aiNodeAnim * pAIChannel)
+
+HRESULT CChannel::Initialize(aiNodeAnim * pAIChannel, CModel* pModel)
 {
 	strcpy_s(m_szName, pAIChannel->mNodeName.data);
+
+	m_pBone = pModel->Get_BonePtr(m_szName);
+	Safe_AddRef(m_pBone);
 
 	m_iNumKeyFrames = max(pAIChannel->mNumScalingKeys, pAIChannel->mNumRotationKeys, pAIChannel->mNumPositionKeys);
 	m_iNumKeyFrames = max(m_iNumKeyFrames, pAIChannel->mNumPositionKeys);
@@ -52,11 +58,54 @@ HRESULT CChannel::Initialize(aiNodeAnim * pAIChannel)
 	return S_OK;
 }
 
-CChannel * CChannel::Create(aiNodeAnim * pAIChannel)
+void CChannel::Invalidate_Transform(_double TrackPosition)
+{
+	_vector vScale;
+	_vector vRotation;
+	_vector vPosition;
+
+	KEYFRAME LastKeyFrame = m_vecKeyFrame.back();
+	if (TrackPosition >= LastKeyFrame.Time)
+	{
+		vScale = XMLoadFloat3(&LastKeyFrame.vScale);
+		vRotation = XMLoadFloat4(&LastKeyFrame.vRotation);
+		vPosition = XMLoadFloat3(&LastKeyFrame.vPosition);
+	}
+	else
+	{
+		if (TrackPosition >= m_vecKeyFrame[m_iCurrKeyFrame + 1].Time)
+			m_iCurrKeyFrame++; //한 프레임 넘겨줌
+
+		_double Ratio = (TrackPosition - m_vecKeyFrame[m_iCurrKeyFrame].Time / 
+			(m_vecKeyFrame[m_iCurrKeyFrame + 1].Time - m_vecKeyFrame[m_iCurrKeyFrame].Time));
+	
+		_vector	vSourScale, vDestScale;
+		_vector	vSourRotation, vDestRotation;
+		_vector	vSourPosition, vDestPosition;
+
+		vSourScale = XMLoadFloat3(&m_vecKeyFrame[m_iCurrKeyFrame].vScale);
+		vSourRotation = XMLoadFloat4(&m_vecKeyFrame[m_iCurrKeyFrame].vRotation);
+		vSourPosition = XMLoadFloat3(&m_vecKeyFrame[m_iCurrKeyFrame].vPosition);
+
+		vDestScale = XMLoadFloat3(&m_vecKeyFrame[m_iCurrKeyFrame + 1].vScale);
+		vDestRotation = XMLoadFloat4(&m_vecKeyFrame[m_iCurrKeyFrame + 1].vRotation);
+		vDestPosition = XMLoadFloat3(&m_vecKeyFrame[m_iCurrKeyFrame + 1].vPosition);
+	
+		vScale = XMVectorLerp(vSourScale, vDestScale, (_float)Ratio);
+		vRotation = XMQuaternionSlerp(vSourRotation, vDestRotation, (_float)Ratio);
+		vPosition = XMVectorLerp(vSourPosition, vDestPosition, (_float)Ratio);
+	}
+
+	_matrix TransformationMatrix = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
+
+	m_pBone->Set_TransformationMatrix(TransformationMatrix);
+}
+
+CChannel * CChannel::Create(aiNodeAnim * pAIChannel, CModel* pModel)
 {
 	CChannel* pInstance = new CChannel();
 
-	if (FAILED(pInstance->Initialize(pAIChannel)))
+	if (FAILED(pInstance->Initialize(pAIChannel, pModel)))
 	{
 		MSG_BOX("Failed to Created : CChannel");
 		Safe_Release(pInstance);
@@ -67,5 +116,8 @@ CChannel * CChannel::Create(aiNodeAnim * pAIChannel)
 
 void CChannel::Free()
 {
+	Safe_Release(m_pBone);
+
+	m_vecKeyFrame.clear();
 }
 

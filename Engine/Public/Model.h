@@ -25,12 +25,14 @@ public:
 public:
 	HRESULT SetUp_ShaderMaterialResource(class CShader* pShaderCom, const char* pConstantName, _uint iMeshIndex, aiTextureType eType);
 	HRESULT SetUp_BoneMatrices(class CShader* pShaderCom, const char* pConstantName, _uint iMeshIndex);
+	HRESULT SetUp_Animation(_uint iAnimationIndex);
+	HRESULT Play_Animation(_double TimeDelta);
 	HRESULT Render(_uint iMeshIndex);
 
 private:
 	HRESULT Ready_Meshes(_fmatrix LocalMatrix);
 	HRESULT Ready_Materials(const char* pModelFilePath);
-	HRESULT Ready_Bones(aiNode* pAINode);
+	HRESULT Ready_Bones(aiNode* pAINode, class CBone* pParent);
 	HRESULT Ready_Animation();
 
 private:
@@ -54,6 +56,7 @@ private:
 
 private:
 	_uint m_iNumAnimations = { 0 };
+	_uint m_iCurrAnimation = { 0 };
 	vector<class CAnimation*> m_vecAnimations;
 private:
 	_float4x4 m_LocalMatrix;

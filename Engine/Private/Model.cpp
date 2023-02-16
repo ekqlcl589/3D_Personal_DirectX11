@@ -19,9 +19,20 @@ CModel::CModel(const CModel & rhs)
 	, m_iNumMaterial(rhs.m_iNumMaterial)
 	, m_LocalMatrix(rhs.m_LocalMatrix)
 	, m_eType(rhs.m_eType)
+	, m_vecBones(rhs.m_vecBones)
+	, m_iNumBones(rhs.m_iNumBones)
+	, m_vecAnimations(rhs.m_vecAnimations)
+	, m_iNumAnimations(rhs.m_iNumAnimations)
+
 {
 	for (auto& pMesh : m_vecMesh)
 		Safe_AddRef(pMesh);
+
+	for (auto& pBones : m_vecBones)
+		Safe_AddRef(pBones);
+
+	for (auto& pAnimations : m_vecAnimations)
+		Safe_AddRef(pAnimations);
 
 	for (auto& pMaterial : m_vecMaterial)
 	{
@@ -58,8 +69,9 @@ HRESULT CModel::Initialize_Prototype(const char * pModelFilePath, MODEL_TYPE eTy
 
 	XMStoreFloat4x4(&m_LocalMatrix, LocalMatrix);
 
-	if (FAILED(Ready_Bones(m_pAiScene->mRootNode)))
+	if (FAILED(Ready_Bones(m_pAiScene->mRootNode, nullptr))) //RootNode는 제일 처음 불리는 모델이라서 부모가 없음 
 		return E_FAIL;
+
 	m_iNumBones = m_vecBones.size();
 
 	if (FAILED(Ready_Meshes(LocalMatrix)))
@@ -76,6 +88,51 @@ HRESULT CModel::Initialize_Prototype(const char * pModelFilePath, MODEL_TYPE eTy
 
 HRESULT CModel::Initialize(void * pArg)
 {
+	return S_OK;
+}
+
+HRESULT CModel::SetUp_ShaderMaterialResource(CShader * pShaderCom, const char * pConstantName, _uint iMeshIndex, aiTextureType eType)
+{
+	if (iMeshIndex >= m_iNumMeshes)
+		return E_FAIL;
+
+	return m_vecMaterial[m_vecMesh[iMeshIndex]->Get_MaterialIndex()].pMaterialTexture[eType]->SetUp_ShaderResource(pShaderCom, pConstantName);
+}
+
+HRESULT CModel::SetUp_BoneMatrices(CShader * pShaderCom, const char * pConstantName, _uint iMeshIndex)
+{
+	if (iMeshIndex >= m_iNumMeshes)
+		return E_FAIL;
+
+	_float4x4 MeshBoneMatrices[256];
+
+	m_vecMesh[iMeshIndex]->Get_BoneMatrices(MeshBoneMatrices);
+
+	if (FAILED(pShaderCom->Set_MatrixArray(pConstantName, MeshBoneMatrices, 256)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CModel::SetUp_Animation(_uint iAnimationIndex)
+{
+	if (iAnimationIndex >= m_iNumAnimations)
+		return E_FAIL;
+
+	m_iCurrAnimation = iAnimationIndex;
+
+	return S_OK;
+}
+
+HRESULT CModel::Play_Animation(_double TimeDelta)
+{
+	m_vecAnimations[m_iCurrAnimation]->Play_Animation(TimeDelta);
+
+	for (auto& pBone : m_vecBones)
+	{
+		pBone->Invalidate_CombinedMatrix();
+	}
+
 	return S_OK;
 }
 
@@ -98,7 +155,7 @@ HRESULT CModel::Ready_Meshes(_fmatrix LocalMatrix)
 
 	for (_uint i = 0; i < m_iNumMeshes; ++i)
 	{
-		CMesh* pMesh = CMesh::Create(m_pDevice, m_pContext, MODEL_NONANIM, m_pAiScene->mMeshes[i], this, LocalMatrix);
+		CMesh* pMesh = CMesh::Create(m_pDevice, m_pContext, m_eType, m_pAiScene->mMeshes[i], this, LocalMatrix);
 
 		if (nullptr == pMesh)
 			return E_FAIL;
@@ -155,16 +212,16 @@ HRESULT CModel::Ready_Materials(const char* pModelFilePath)
 	return S_OK;
 }
 
-HRESULT CModel::Ready_Bones(aiNode * pAINode)
+HRESULT CModel::Ready_Bones(aiNode * pAINode, CBone* pParent)
 {
-	CBone* pBone = CBone::Create(pAINode);
+	CBone* pBone = CBone::Create(pAINode, pParent);
 	if (nullptr == pBone)
 		return E_FAIL;
 
 	m_vecBones.push_back(pBone);
 
 	for (_uint i = 0; i < pAINode->mNumChildren; i++)
-		Ready_Bones(pAINode->mChildren[i]); // 재귀 호출을 통해 자식의 갯수만큼 루프를 돌면서 자식들을 채워줌
+		Ready_Bones(pAINode->mChildren[i], pBone); // 재귀 호출을 통해 자식의 갯수만큼 루프를 돌면서 자식들을 채워줌
 
 	return S_OK;
 }
@@ -175,7 +232,7 @@ HRESULT CModel::Ready_Animation()
 
 	for (_uint i = 0; i < m_iNumAnimations; i++)
 	{
-		CAnimation* pAnimation = CAnimation::Create(m_pAiScene->mAnimations[i]);
+		CAnimation* pAnimation = CAnimation::Create(m_pAiScene->mAnimations[i], this);
 		if (nullptr == pAnimation)
 			return E_FAIL;
 
@@ -185,28 +242,6 @@ HRESULT CModel::Ready_Animation()
 	return S_OK;
 }
 
-HRESULT CModel::SetUp_ShaderMaterialResource(CShader * pShaderCom, const char * pConstantName, _uint iMeshIndex, aiTextureType eType)
-{
-	if (iMeshIndex >= m_iNumMeshes)
-		return E_FAIL;
-
-	return m_vecMaterial[m_vecMesh[iMeshIndex]->Get_MaterialIndex()].pMaterialTexture[eType]->SetUp_ShaderResource(pShaderCom, pConstantName);
-}
-
-HRESULT CModel::SetUp_BoneMatrices(CShader * pShaderCom, const char * pConstantName, _uint iMeshIndex)
-{
-	if (iMeshIndex >= m_iNumMeshes)
-		return E_FAIL;
-
-	_float4x4 MeshBoneMatrices[256];
-
-	m_vecMesh[iMeshIndex]->Get_BoneMatrices(MeshBoneMatrices);
-
-	if (FAILED(pShaderCom->Set_MatrixArray(pConstantName, MeshBoneMatrices, 256)))
-		return E_FAIL;
-
-	return S_OK;
-}
 
 CModel * CModel::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const char * pModelFilePath, MODEL_TYPE eType, _fmatrix LocalMatrix)
 {
@@ -247,7 +282,15 @@ void CModel::Free()
 	for (auto& pMesh : m_vecMesh)
 		Safe_Release(pMesh);
 
+	m_vecMesh.clear();
+
 	for (auto& pBone : m_vecBones)
 		Safe_Release(pBone);
 
+	m_vecBones.clear();
+
+	for (auto& pAnim : m_vecAnimations)
+		Safe_Release(pAnim);
+
+	m_vecAnimations.clear();
 }

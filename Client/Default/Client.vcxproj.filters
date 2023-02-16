@@ -61,6 +61,9 @@
     <Filter Include="02.GameObject\07. SkyBox">
       <UniqueIdentifier>{267a53e6-12d7-4b74-9d4c-f0a4a5a0595c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04. UI\HPBar">
+      <UniqueIdentifier>{7ee254bc-6f93-4650-94bf-b1446450f330}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -108,9 +111,6 @@
     <ClInclude Include="..\Public\Cube.h">
       <Filter>02.GameObject\03.Cube</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\PlayerHPBar.h">
-      <Filter>02.GameObject\04. UI</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Player.h">
       <Filter>02.GameObject\05. Player</Filter>
     </ClInclude>
@@ -119,6 +119,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\TestTile.h">
       <Filter>02.GameObject\TileMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PlayerHPBar.h">
+      <Filter>02.GameObject\04. UI\HPBar</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -155,9 +158,6 @@
     <ClCompile Include="..\Private\Cube.cpp">
       <Filter>02.GameObject\03.Cube</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\PlayerHPBar.cpp">
-      <Filter>02.GameObject\04. UI</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Player.cpp">
       <Filter>02.GameObject\05. Player</Filter>
     </ClCompile>
@@ -166,6 +166,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\TestTile.cpp">
       <Filter>02.GameObject\TileMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PlayerHPBar.cpp">
+      <Filter>02.GameObject\04. UI\HPBar</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
