@@ -60,6 +60,9 @@ HRESULT CChannel::Initialize(aiNodeAnim * pAIChannel, CModel* pModel)
 
 void CChannel::Invalidate_Transform(_double TrackPosition)
 {
+	if (0.0 == TrackPosition)
+		m_iCurrKeyFrame = 0;
+
 	_vector vScale;
 	_vector vRotation;
 	_vector vPosition;
@@ -74,10 +77,10 @@ void CChannel::Invalidate_Transform(_double TrackPosition)
 	else
 	{
 		if (TrackPosition >= m_vecKeyFrame[m_iCurrKeyFrame + 1].Time)
-			m_iCurrKeyFrame++; //한 프레임 넘겨줌
+			++m_iCurrKeyFrame; //한 프레임 넘겨줌
 
-		_double Ratio = (TrackPosition - m_vecKeyFrame[m_iCurrKeyFrame].Time / 
-			(m_vecKeyFrame[m_iCurrKeyFrame + 1].Time - m_vecKeyFrame[m_iCurrKeyFrame].Time));
+		_double Ratio = (TrackPosition - m_vecKeyFrame[m_iCurrKeyFrame].Time) / 
+			(m_vecKeyFrame[m_iCurrKeyFrame + 1].Time - m_vecKeyFrame[m_iCurrKeyFrame].Time);
 	
 		_vector	vSourScale, vDestScale;
 		_vector	vSourRotation, vDestRotation;

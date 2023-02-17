@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "..\Public\PlayerRageSkill.h"
+#include "..\Public\PlayerSkill.h"
 
 #include "GameInstance.h"
 #include "Shader.h"
@@ -7,17 +7,17 @@
 #include "Layer.h"
 #include "Player.h"
 
-CPlayerRageSkill::CPlayerRageSkill(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CPlayerSkill::CPlayerSkill(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CUI(pDevice, pContext)
 {
 }
 
-CPlayerRageSkill::CPlayerRageSkill(const CPlayerRageSkill & rhs)
+CPlayerSkill::CPlayerSkill(const CPlayerSkill & rhs)
 	: CUI(rhs)
 {
 }
 
-HRESULT CPlayerRageSkill::Initialize_Prototype()
+HRESULT CPlayerSkill::Initialize_Prototype()
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
@@ -25,7 +25,7 @@ HRESULT CPlayerRageSkill::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CPlayerRageSkill::Initialize(void * pArg)
+HRESULT CPlayerSkill::Initialize(void * pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -54,19 +54,19 @@ HRESULT CPlayerRageSkill::Initialize(void * pArg)
 	return S_OK;
 }
 
-void CPlayerRageSkill::Tick(_double TimeDelta)
+void CPlayerSkill::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 
 }
 
-void CPlayerRageSkill::LateTick(_double TimeDelta)
+void CPlayerSkill::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
 
 }
 
-HRESULT CPlayerRageSkill::Render()
+HRESULT CPlayerSkill::Render()
 {
 	if (FAILED(SetUp_ShaderResource()))
 		return E_FAIL;
@@ -79,7 +79,7 @@ HRESULT CPlayerRageSkill::Render()
 	return S_OK;
 }
 
-HRESULT CPlayerRageSkill::Add_Components()
+HRESULT CPlayerSkill::Add_Components()
 {
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"),
 		TEXT("Com_Renderer"), (CComponent**)&m_pRenderer)))
@@ -104,7 +104,7 @@ HRESULT CPlayerRageSkill::Add_Components()
 	return S_OK;
 }
 
-HRESULT CPlayerRageSkill::SetUp_ShaderResource()
+HRESULT CPlayerSkill::SetUp_ShaderResource()
 {
 	if (nullptr == m_pShaderCom)
 		return E_FAIL;
@@ -122,9 +122,9 @@ HRESULT CPlayerRageSkill::SetUp_ShaderResource()
 	return S_OK;
 }
 
-CPlayerRageSkill * CPlayerRageSkill::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CPlayerSkill * CPlayerSkill::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {
-	CPlayerRageSkill * pInstance = new CPlayerRageSkill(pDevice, pContext);
+	CPlayerSkill * pInstance = new CPlayerSkill(pDevice, pContext);
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
 		MSG_BOX("RageSkill Create Fail");
@@ -133,9 +133,9 @@ CPlayerRageSkill * CPlayerRageSkill::Create(ID3D11Device * pDevice, ID3D11Device
 	return pInstance;
 }
 
-CGameObject * CPlayerRageSkill::Clone(void * pArg)
+CGameObject * CPlayerSkill::Clone(void * pArg)
 {
-	CPlayerRageSkill * pInstance = new CPlayerRageSkill(*this);
+	CPlayerSkill * pInstance = new CPlayerSkill(*this);
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
 		MSG_BOX("RageSkill Clone Fail");
@@ -144,7 +144,7 @@ CGameObject * CPlayerRageSkill::Clone(void * pArg)
 	return pInstance;
 }
 
-void CPlayerRageSkill::Free()
+void CPlayerSkill::Free()
 {
 	Safe_Release(m_pShaderCom);
 	__super::Free();

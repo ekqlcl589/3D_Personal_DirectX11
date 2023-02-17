@@ -1,21 +1,21 @@
 #include "stdafx.h"
-#include "..\Public\Player.h"
+#include "..\Public\Player_Body.h"
 
 #include "GameInstance.h"
 #include "KeyMgr.h"
 
-CPlayer::CPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CPlayer_Body::CPlayer_Body(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
 {
 }
 
-CPlayer::CPlayer(const CPlayer & rhs)
+CPlayer_Body::CPlayer_Body(const CPlayer_Body & rhs)
 	: CGameObject(rhs)
 	, m_tInfo(rhs.m_tInfo)
 {
 }
 
-HRESULT CPlayer::Initialize_Prototype()
+HRESULT CPlayer_Body::Initialize_Prototype()
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
@@ -31,7 +31,7 @@ HRESULT CPlayer::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CPlayer::Initialize(void * pArg)
+HRESULT CPlayer_Body::Initialize(void * pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -39,23 +39,31 @@ HRESULT CPlayer::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
+	m_animation = m_pModelCom->Get_Animations();
+
+	m_pModelCom->SetUp_Animation(9);
+
 	return S_OK;
 }
 
-void CPlayer::Tick(_double TimeDelta)
+void CPlayer_Body::Tick(_double TimeDelta)
 {
+	Key_Input(TimeDelta);
+
 	__super::Tick(TimeDelta);
 }
 
-void CPlayer::LateTick(_double TimeDelta)
+void CPlayer_Body::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
+
+	m_pModelCom->Play_Animation(TimeDelta);
 
 	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 }
 
-HRESULT CPlayer::Render()
+HRESULT CPlayer_Body::Render()
 {
 	if (FAILED(__super::Render()))
 		return E_FAIL;
@@ -71,7 +79,7 @@ HRESULT CPlayer::Render()
 		/*m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);
 		m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);*/
 	
-		//m_pModelCom->SetUp_BoneMatrices(m_pShaderCom, "g_BoneMatrix", i);
+		m_pModelCom->SetUp_BoneMatrices(m_pShaderCom, "g_BoneMatrix", i);
 
 		m_pShaderCom->Begin(0);
 
@@ -80,27 +88,43 @@ HRESULT CPlayer::Render()
 	return S_OK;
 }
 
-void CPlayer::Key_Input(_double TimeDelta)
+void CPlayer_Body::Key_Input(_double TimeDelta)
 {
-	if (CKeyMgr::GetInstance()->Key_Pressing(VK_UP))
-		m_pTransformCom->Go_Straight(TimeDelta);
 
 	if (CKeyMgr::GetInstance()->Key_Pressing(VK_DOWN))
 		m_pTransformCom->Go_Back(TimeDelta);
 
 	if (CKeyMgr::GetInstance()->Key_Pressing(VK_LEFT))
+	{
 		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * -1.f);
+		m_pModelCom->SetUp_Animation(4);
+	}
 
 	if (CKeyMgr::GetInstance()->Key_Pressing(VK_RIGHT))
+	{
 		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta);
+		m_pModelCom->SetUp_Animation(5);
+	}
+
+	if (CKeyMgr::GetInstance()->Key_Pressing(VK_UP))
+	{
+		m_pTransformCom->Go_Straight(TimeDelta);
+		m_pModelCom->SetUp_Animation(3);
+	}
+
+	else
+	{
+		m_pModelCom->SetUp_Animation(9);
+
+	}
 
 }
 
-void CPlayer::Hit(const _int & _Damage)
+void CPlayer_Body::Hit(const _int & _Damage)
 {
 }
 
-HRESULT CPlayer::Add_Components()
+HRESULT CPlayer_Body::Add_Components()
 {
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"),
 		TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom)))
@@ -116,18 +140,18 @@ HRESULT CPlayer::Add_Components()
 		TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Player"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Player_Body"),
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModel"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxAnimModel"),
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CPlayer::SetUp_ShaderResources()
+HRESULT CPlayer_Body::SetUp_ShaderResources()
 {
 	if (nullptr == m_pShaderCom)
 		return E_FAIL;
@@ -163,33 +187,33 @@ HRESULT CPlayer::SetUp_ShaderResources()
 	return S_OK;
 }
 
-CPlayer * CPlayer::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CPlayer_Body * CPlayer_Body::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {
-	CPlayer*		pInstance = new CPlayer(pDevice, pContext);
+	CPlayer_Body*		pInstance = new CPlayer_Body(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Created : CPlayer");
+		MSG_BOX("Failed to Created : CPlayer_Body");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject * CPlayer::Clone(void * pArg)
+CGameObject * CPlayer_Body::Clone(void * pArg)
 {
-	CPlayer*		pInstance = new CPlayer(*this);
+	CPlayer_Body*		pInstance = new CPlayer_Body(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CPlayer");
+		MSG_BOX("Failed to Cloned : CPlayer_Body");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CPlayer::Free()
+void CPlayer_Body::Free()
 {
 	__super::Free();
 

@@ -29,6 +29,9 @@ public:
 	HRESULT Play_Animation(_double TimeDelta);
 	HRESULT Render(_uint iMeshIndex);
 
+public:
+	_uint Get_Animations() { return m_iNumAnimations; }
+
 private:
 	HRESULT Ready_Meshes(_fmatrix LocalMatrix);
 	HRESULT Ready_Materials(const char* pModelFilePath);

@@ -12,19 +12,20 @@ CMesh::CMesh(const CMesh & rhs)
 {
 }
 
-void CMesh::Get_BoneMatrices(_float4x4 * pMeshBoneMatrices)
+void CMesh::Get_BoneMatrices(_float4x4 * pMeshBoneMatrices, _fmatrix LocalMatrix)
 {
 	_uint iIndex = 0;
 
-	//나중에 좀 더 배우고 바꿔야 함
 	for (auto& pBone : m_vecBones)
 	{
-		XMStoreFloat4x4(&pMeshBoneMatrices[iIndex++], XMLoadFloat4x4(&pBone->Get_OffsetMatrix()) * XMLoadFloat4x4(&pBone->Get_CombinedTransformMatrix()));
+		XMStoreFloat4x4(&pMeshBoneMatrices[iIndex++], XMLoadFloat4x4(&pBone->Get_OffsetMatrix()) * XMLoadFloat4x4(&pBone->Get_CombinedTransformMatrix()) * LocalMatrix);
 	}
 }
 
 HRESULT CMesh::Initialize_Prototype(CModel::MODEL_TYPE eType, const aiMesh * pAiMesh, class CModel* pModel, _fmatrix LocalMatrix)
 {
+	strcpy_s(m_szName, pAiMesh->mName.data);
+
 	m_iMaterialIndex = pAiMesh->mMaterialIndex;
 	m_iNumVertices = pAiMesh->mNumVertices;
 	m_iIndicesSize = sizeof(FACEINDICES32);
@@ -212,6 +213,21 @@ HRESULT CMesh::Ready_VertexBuffer_For_Anim(const aiMesh * pAIMesh, class CModel*
 
 	Safe_Delete_Array(pVertices);
 
+	// 내 게임에서 이게 꼭 필요한지는 모르겠음
+	// 외부 모델을 플레이어 뼈에 붙이는 행위를 할 떄 참고 하면 됨
+	if (0 == m_iNumBones)
+	{
+		m_iNumBones = 1;
+
+		CBone* pBone = { nullptr };
+
+		pBone = pModel->Get_BonePtr(m_szName);
+
+		if (nullptr == pBone)
+			return E_FAIL;
+
+		m_vecBones.push_back(pBone);
+	}
 #pragma endregion VERTEXBUFFER
 
 	return S_OK;

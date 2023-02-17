@@ -79,6 +79,33 @@
     <Filter Include="02.GameObject\04. UI\Player\HPBar">
       <UniqueIdentifier>{7ee254bc-6f93-4650-94bf-b1446450f330}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05. Player\Part">
+      <UniqueIdentifier>{4554f805-b6bc-4f62-995a-bd86f0032b6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05. Player\Part\Body">
+      <UniqueIdentifier>{15a14a08-9bd9-48df-9d13-5ec96e0c619f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05. Player\Part\Hair">
+      <UniqueIdentifier>{4e259dc7-bcc7-477d-abba-0edf187ebb1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05. Player\Part\Top">
+      <UniqueIdentifier>{2aa72054-64ab-49e3-ade1-7fa8e840cef7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05. Player\Part\Pant">
+      <UniqueIdentifier>{559dee5a-9b7d-4bca-ae84-a6ec4213eb41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05. Player\Part\Hair\Back">
+      <UniqueIdentifier>{68aa2a80-84be-4924-9cf6-f28cf589c78c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05. Player\Part\Hair\Front">
+      <UniqueIdentifier>{56e1880a-bcf1-4070-9065-542438678b5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05. Player\Part\Hair\Side">
+      <UniqueIdentifier>{f4137206-59ee-4f79-afd2-e802b4abb71e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05. Player\Part\Hair\Tail">
+      <UniqueIdentifier>{7bf5a3b6-93bf-4ce2-a321-0a8b2e48d3e5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -144,6 +171,12 @@
     <ClInclude Include="..\Public\PlayerRageSkill.h">
       <Filter>02.GameObject\04. UI\Player\Rage_Skill</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\PlayerSkill.h">
+      <Filter>02.GameObject\04. UI\Player\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Player_Body.h">
+      <Filter>02.GameObject\05. Player\Part\Body</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -196,6 +229,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\PlayerRageSkill.cpp">
       <Filter>02.GameObject\04. UI\Player\Rage_Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PlayerSkill.cpp">
+      <Filter>02.GameObject\04. UI\Player\Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Player_Body.cpp">
+      <Filter>02.GameObject\05. Player\Part\Body</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

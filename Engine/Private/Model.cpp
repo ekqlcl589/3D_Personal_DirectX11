@@ -106,7 +106,7 @@ HRESULT CModel::SetUp_BoneMatrices(CShader * pShaderCom, const char * pConstantN
 
 	_float4x4 MeshBoneMatrices[256];
 
-	m_vecMesh[iMeshIndex]->Get_BoneMatrices(MeshBoneMatrices);
+	m_vecMesh[iMeshIndex]->Get_BoneMatrices(MeshBoneMatrices, XMLoadFloat4x4(&m_LocalMatrix));
 
 	if (FAILED(pShaderCom->Set_MatrixArray(pConstantName, MeshBoneMatrices, 256)))
 		return E_FAIL;
@@ -279,18 +279,18 @@ void CModel::Free()
 
 	m_vecMaterial.clear();
 
-	for (auto& pMesh : m_vecMesh)
-		Safe_Release(pMesh);
+	for (auto& pAnim : m_vecAnimations)
+		Safe_Release(pAnim);
 
-	m_vecMesh.clear();
+	m_vecAnimations.clear();
 
 	for (auto& pBone : m_vecBones)
 		Safe_Release(pBone);
 
 	m_vecBones.clear();
 
-	for (auto& pAnim : m_vecAnimations)
-		Safe_Release(pAnim);
+	for (auto& pMesh : m_vecMesh)
+		Safe_Release(pMesh);
 
-	m_vecAnimations.clear();
+	m_vecMesh.clear();
 }

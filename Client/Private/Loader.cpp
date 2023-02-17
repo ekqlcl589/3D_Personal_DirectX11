@@ -3,16 +3,21 @@
 #include "..\Public\Loader.h"
 #include "GameInstance.h"
 #include "BackGround.h"
+#include "Calulator.h"
 #include "Texture.h"
 #include "Terrain.h"
-#include "Calulator.h"
 #include "Cube.h"
+
 #include "Player.h"
+#include "Player_Body.h"
+
+#include "Monster.h"
+
+#include "TestTile.h"
+
 #include "PlayerHPBar.h"
 #include "PlayerMPBar.h"
 #include "PlayerRageSkill.h"
-#include "Monster.h"
-#include "TestTile.h"
 
 CLoader::CLoader(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: m_pDevice(pDevice)
@@ -172,13 +177,20 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 	/* For.Prototype_Component_Model_Player */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Player"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Test/Head.fbx", CModel::MODEL_NONANIM, LocalMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Head/Head.fbx", CModel::MODEL_NONANIM, LocalMatrix))))
+		return E_FAIL;
+
+	_matrix		LocalMatrix2 = XMMatrixIdentity();
+	LocalMatrix2 = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(270.0f));
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Player_Body"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Body/Test2.fbx", CModel::MODEL_ANIM, LocalMatrix2))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_TestMonster */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Boss0"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Ancient_Ston_Golem.fbx", CModel::MODEL_ANIM, LocalMatrix))))
-		return E_FAIL;
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Boss0"),
+	//	CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Ancient_Ston_Golem.fbx", CModel::MODEL_ANIM, LocalMatrix))))
+	//	return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Tile"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Tile/Test.fbx", CModel::MODEL_NONANIM, LocalMatrix))))
@@ -226,6 +238,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CPlayer::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player_Body"),
+		CPlayer_Body::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_HPBar"),
 		CPlayerHPBar::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -238,9 +254,9 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CPlayerRageSkill::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster"),
-		CMonster::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
+	//if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster"),
+	//	CMonster::Create(m_pDevice, m_pContext))))
+	//	return E_FAIL;
 	
 	// Test Tile
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_TestTile"),

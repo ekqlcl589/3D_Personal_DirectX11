@@ -44,8 +44,14 @@ void CAnimation::Play_Animation(_double TimeDelta)
 		}
 	}
 
-	for (auto& pChannel : m_vecChannel)
-		pChannel->Invalidate_Transform(m_TimeAcc);
+	if (false == m_isFinished || true == m_isLoop)
+	{
+		for (auto& pChannel : m_vecChannel)
+			pChannel->Invalidate_Transform(m_TimeAcc);
+	}
+
+	if (true == m_isLoop)
+		m_isFinished = false;
 }
 
 CAnimation * CAnimation::Create(aiAnimation * pAIAnimation, CModel* pModel)

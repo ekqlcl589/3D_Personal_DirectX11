@@ -85,7 +85,7 @@ void CPlayerMPBar::LateTick(_double TimeDelta)
 	TexHpY = 1.f - HP / MaxHP;
 	VertexHpY = 1.f - (2 * TexHpY);
 
-	m_pVIBuffer_Rect->Set_Buffer(TexHpY, VertexHpY);
+	//m_pVIBuffer_Rect->Set_Buffer(TexHpY, VertexHpY);
 
 	RELEASE_INSTANCE(CGameInstance);
 }
@@ -171,5 +171,6 @@ CGameObject * CPlayerMPBar::Clone(void * pArg)
 void CPlayerMPBar::Free()
 {
 	Safe_Release(m_pShaderCom);
+
 	__super::Free();
 }

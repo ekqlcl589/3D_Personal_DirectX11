@@ -14,7 +14,7 @@ private:
 public:
 	_uint Get_MaterialIndex() const { return m_iMaterialIndex; }
 
-	void Get_BoneMatrices(_float4x4* pMeshBoneMatrices);
+	void Get_BoneMatrices(_float4x4* pMeshBoneMatrices, _fmatrix LocalMatrix);
 
 public:
 	HRESULT Initialize_Prototype(CModel::MODEL_TYPE eType, const aiMesh* pAiMesh, class CModel* pModel, _fmatrix LocalMatrix);
@@ -25,6 +25,7 @@ private:
 	HRESULT Ready_VertexBuffer_For_Anim(const aiMesh* pAIMesh, class CModel* pModel);
 
 private:
+	char m_szName[MAX_PATH] = "";
 	_uint m_iMaterialIndex = { 0 };
 
 	_uint m_iNumBones = { 0 }; //메시에 영향을 주는 뼈의 갯수
