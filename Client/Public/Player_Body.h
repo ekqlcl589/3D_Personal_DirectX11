@@ -51,6 +51,9 @@ private:
 
 private:
 	PLAYERINFO m_tInfo;
+	
+	_double m_AnimDuration = { 0.0 };
+	_double m_AnimTimeAcc = { 0.0 };
 
 	_uint m_animation = { 0 };
 

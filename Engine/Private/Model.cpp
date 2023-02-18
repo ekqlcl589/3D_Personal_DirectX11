@@ -146,6 +146,7 @@ HRESULT CModel::Render(_uint iMeshIndex)
 	return S_OK;
 }
 
+
 HRESULT CModel::Ready_Meshes(_fmatrix LocalMatrix)
 {
 	if (nullptr == m_pAiScene)
@@ -240,6 +241,16 @@ HRESULT CModel::Ready_Animation()
 	}
 
 	return S_OK;
+}
+
+_double CModel::Get_AnimDuration()
+{
+	return m_vecAnimations[m_iCurrAnimation]->Get_Duration();
+}
+
+_double CModel::Get_AnimTimeAcc()
+{
+	return	m_vecAnimations[m_iCurrAnimation]->Get_TimeAcc();
 }
 
 

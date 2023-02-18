@@ -14,6 +14,8 @@ public:
 
 public:
 	void Play_Animation(_double TimeDelta);
+	_double Get_Duration() { return m_Duration; }
+	_double Get_TimeAcc() { return m_TimeAcc; }
 
 private:
 	char m_szName[MAX_PATH] = "";

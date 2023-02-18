@@ -38,6 +38,11 @@ private:
 	HRESULT Ready_Bones(aiNode* pAINode, class CBone* pParent);
 	HRESULT Ready_Animation();
 
+public:
+	vector<class CAnimation*>* Get_Anim() { return &m_vecAnimations; }
+	_double Get_AnimDuration();
+	_double Get_AnimTimeAcc();
+
 private:
 	Assimp::Importer m_Importer;
 	const aiScene* m_pAiScene = { nullptr };

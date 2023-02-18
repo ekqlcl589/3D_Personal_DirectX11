@@ -41,7 +41,9 @@ HRESULT CPlayer_Body::Initialize(void * pArg)
 
 	m_animation = m_pModelCom->Get_Animations();
 
+
 	m_pModelCom->SetUp_Animation(9);
+	m_AnimDuration = m_pModelCom->Get_AnimDuration();
 
 	return S_OK;
 }
@@ -49,6 +51,8 @@ HRESULT CPlayer_Body::Initialize(void * pArg)
 void CPlayer_Body::Tick(_double TimeDelta)
 {
 	Key_Input(TimeDelta);
+	m_pModelCom->Play_Animation(TimeDelta);
+	m_AnimTimeAcc = m_pModelCom->Get_AnimTimeAcc();
 
 	__super::Tick(TimeDelta);
 }
@@ -56,8 +60,6 @@ void CPlayer_Body::Tick(_double TimeDelta)
 void CPlayer_Body::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
-
-	m_pModelCom->Play_Animation(TimeDelta);
 
 	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
@@ -90,33 +92,50 @@ HRESULT CPlayer_Body::Render()
 
 void CPlayer_Body::Key_Input(_double TimeDelta)
 {
+	//if (m_AnimTimeAcc >= m_AnimDuration)
+	//{
+		if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_LB))
+			m_pModelCom->SetUp_Animation(11);
+	
+		if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_DOWN))
+			m_pTransformCom->Go_Back(TimeDelta);
 
-	if (CKeyMgr::GetInstance()->Key_Pressing(VK_DOWN))
-		m_pTransformCom->Go_Back(TimeDelta);
+		if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_LEFT))
+		{
+			m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * -1.f);
+			m_pModelCom->SetUp_Animation(3);
+		}
+		//else
+		//{
+		//	m_pModelCom->SetUp_Animation(6);
+		//}
 
-	if (CKeyMgr::GetInstance()->Key_Pressing(VK_LEFT))
-	{
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * -1.f);
-		m_pModelCom->SetUp_Animation(4);
-	}
+		if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_RIGHT))
+		{
+			m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta);
+			m_pModelCom->SetUp_Animation(3);
+		}
+		//else
+		//{
+		//	
+		//}
+		if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_UP))
+		{
+			m_pTransformCom->Go_Straight(TimeDelta);
+			m_pModelCom->SetUp_Animation(3);
+		}
 
-	if (CKeyMgr::GetInstance()->Key_Pressing(VK_RIGHT))
-	{
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta);
-		m_pModelCom->SetUp_Animation(5);
-	}
+		else
+			m_pModelCom->SetUp_Animation(9);
+	//}
+	//else
+	//{
+	//	m_pModelCom->SetUp_Animation(9);
+	//
+	//}
 
-	if (CKeyMgr::GetInstance()->Key_Pressing(VK_UP))
-	{
-		m_pTransformCom->Go_Straight(TimeDelta);
-		m_pModelCom->SetUp_Animation(3);
-	}
 
-	else
-	{
-		m_pModelCom->SetUp_Animation(9);
 
-	}
 
 }
 

@@ -1,32 +1,35 @@
 #pragma once
 #include "Base.h"
+#include "Engine_Defines.h"
 
 BEGIN(Engine)
 
-
-class ENGINE_DLL CKeyMgr : public CBase
+class ENGINE_DLL CKeyMgr final : public CBase
 {
-	DECLARE_SINGLETON(CKeyMgr)
+	DECLARE_SINGLETON(CKeyMgr);
 
 private:
-	explicit CKeyMgr();
-	virtual ~CKeyMgr();
+	CKeyMgr();
+	virtual ~CKeyMgr() = default;
 
 public:
-	_bool Key_Pressing (_int _iKey);
-	_bool Key_Down(_int _iKey);
-	_bool Key_Up (_int _iKey);
+	bool Key_Pressing(_ulong _dwKey);
+	bool Key_Down(_ulong _dwKey);
+	bool Key_Up(_ulong _dwKey);
+	void Update_KeyState();
 
-	void Key_Update(void);
+	bool Mouse_Pressing(MOUSEKEYSTATE _eMouse);
+	bool Mouse_Down(MOUSEKEYSTATE _eMouse);
+	bool Mouse_Up(MOUSEKEYSTATE _eMouse);
+	void Update_MouseState();
 
 private:
-	_bool m_bCurKeyState[VK_MAX];
-	_bool m_bPreKeyState[VK_MAX];
-	_bool m_bKeyDown[VK_MAX];
-	_bool m_bKeyUp[VK_MAX];
+	bool m_arrbKeyState[KEY_MAX];
+	bool m_arrMouseState[DIMK_END];
 
-public:
-	virtual	void Free(void)	override;
+private:
+	virtual void	Free(void) override;
 };
 
 END
+

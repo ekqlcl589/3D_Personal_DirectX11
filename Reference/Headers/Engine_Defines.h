@@ -40,6 +40,7 @@ using namespace DirectX;
 #include "Engine_Struct.h"
 
 
+#define KEY_MAX 0xff
 namespace Engine
 {
 	enum MOUSEKEYSTATE { DIMK_LB, DIMK_RB, DIMK_WHEEL, DIMK_END };

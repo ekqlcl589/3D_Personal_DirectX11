@@ -43,7 +43,8 @@ void CMainApp::Tick(_double TimeDelta)
 	if (nullptr == m_pGameInstance)
 		return;
 
-	CKeyMgr::GetInstance()->Key_Update();
+	CKeyMgr::GetInstance()->Update_KeyState();
+	CKeyMgr::GetInstance()->Update_MouseState();
 
 	m_pGameInstance->Tick_Engine(TimeDelta);
 }
