@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "..\Public\DynamicCamera.h"
 #include "GameInstance.h"
+#include "Transform.h"
+#include "Player_Body.h"
 
 CDynamicCamera::CDynamicCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	:CCamera(pDevice, pContext)
@@ -29,8 +31,8 @@ HRESULT CDynamicCamera::Initialize(void * pArg)
 
 void CDynamicCamera::Tick(_double TimeDelta)
 {
+	//Target_Renewal();
 	Key_Input(TimeDelta);
-
 	__super::Tick(TimeDelta);
 
 }
@@ -83,6 +85,38 @@ void CDynamicCamera::Key_Input(_double TimeDelta)
 	if (false == m_bFix)
 		return;
 
+}
+
+void CDynamicCamera::Target_Renewal()
+{
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+	CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Find_Prototype(TEXT("Prototype_GameObject_Player"))->Get_Component(TEXT("Prototype_Component_Transform")));
+	//원본이 아니라 사본을 찾는걸 만들어서 적용해야 함
+
+	_vector vLook;
+	pPlayerTransform->Set_State(CTransform::STATE_LOOK, vLook);
+
+	 XMStoreFloat3(&m_CameraDesc.vEye, vLook);
+	 XMVector3Normalize(XMLoadFloat3(&m_CameraDesc.vEye));
+	 m_CameraDesc.vEye.y = 1.f;
+	 //_float3 f = {1.f, 1.f, 1.f};
+	 //m_CameraDesc.vEye *  f; // 이건 나중에 휠로 조절할 수 있게 변수로 받아야 함
+
+	 _vector vRight;
+	 memcpy(&vRight, &pPlayerTransform->Get_WorldMatrix().r[0], sizeof(_vector));
+
+	 //_matrix matRot;
+	 //XMMatrixRotationAxis()
+
+	 _float3 fPosition;
+	 XMStoreFloat3(&fPosition, pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+	 m_CameraDesc.vEye.x += fPosition.x;
+	 m_CameraDesc.vEye.y += fPosition.y;
+	 m_CameraDesc.vEye.z += fPosition.z;
+	 XMStoreFloat3(&m_CameraDesc.vAt, pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+
+	 RELEASE_INSTANCE(CGameInstance);
 }
 
 void CDynamicCamera::Mouse_Check(_double TimeDelta)

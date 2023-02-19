@@ -126,6 +126,8 @@ namespace Engine
 		double Time;
 	}KEYFRAME;
 
+	enum PLAYERANIMSTATE { ANIM_IDEL, ANIM_RUN, ANIM_RUN_L, ANIM_RUN_R, ANIM_RUN_END, ANIM_ATTACK, ANIM_ATTACK_COMBO, ANIM_END};
+
 	typedef struct tagPlayerInfo
 	{
 		_uint _Lv;
@@ -139,6 +141,9 @@ namespace Engine
 
 		_uint _ATK;
 		_uint _DEF;
+
+		PLAYERANIMSTATE CurrAnimState;
+		PLAYERANIMSTATE prevAnimState;
 
 	}PLAYERINFO;
 }

@@ -29,10 +29,10 @@ public:
 
 private:
 	CShader* m_pShaderCom = { nullptr };
-
+	_float3 m_fPosition = { 0.f, 0.f, 0.f };
 
 public:
-	static CPlayerSkill* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext);
+	static CPlayerSkill* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, _float3 fPos);
 	virtual CGameObject * Clone(void * pArg) override;
 	virtual void Free()override;
 

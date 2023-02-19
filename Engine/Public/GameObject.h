@@ -30,6 +30,7 @@ public:
 	HRESULT Add_Component(_uint iLevelIndex, const _tchar* pPrototypeTag, const _tchar* pComponentTag, class CComponent** ppOut, void* pArg = nullptr);
 
 	class CComponent* Find_Component(const _tchar* pComponentTag);
+	class CComponent* Get_Component(const _tchar* pComponentTag);
 
 public:
 	virtual CGameObject* Clone(void* pArg = nullptr) = 0;

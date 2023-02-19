@@ -70,8 +70,7 @@ void CPlayerHPBar::LateTick(_double TimeDelta)
 	CGameInstance* p = GET_INSTANCE(CGameInstance);
 	CGameObject* pPlayer = nullptr;
 
-	//pPlayer = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Player"), TEXT("Layer_Player"));
-	pPlayer = p->Find_Prototype(TEXT("Prototype_GameObject_Player"));
+	pPlayer = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
 
 	_float MaxHP = static_cast<CPlayer*>(pPlayer)->Get_Info()._MaxHp;
 	_float HP = static_cast<CPlayer*>(pPlayer)->Get_Info()._Hp;
@@ -82,10 +81,10 @@ void CPlayerHPBar::LateTick(_double TimeDelta)
 	if (HP <= 0)
 		HP = 0;
 
-	TexHpY = 1.f - HP / MaxHP;
-	VertexHpY = 1.f - (2 * TexHpY);
+	TexHpY = 0.5f - abs(HP / MaxHP);
+	VertexHpY = (-TexHpY);
 
-	//m_pVIBuffer_Rect->Set_Buffer(TexHpY, VertexHpY);
+	m_pVIBuffer_Rect->Set_Buffer(TexHpY, VertexHpY);
 
 	RELEASE_INSTANCE(CGameInstance);
 }

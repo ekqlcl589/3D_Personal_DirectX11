@@ -34,8 +34,8 @@ HRESULT CMonster::Initialize(void * pArg)
 	//
 	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_MonsterState.fPos));
 
-	m_pTransformCom->Set_Scale(_float3(0.01f, 0.01f, 0.01f));
-	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.0f));
+	//m_pTransformCom->Set_Scale(_float3(0.01f, 0.01f, 0.01f));
+	//m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.0f));
 	// 지금 애니메이션 모델은 LocalWorld가 안 잡혀 있어서 임시로 넣은 값
 	
 	m_pModelCom->SetUp_Animation(0);

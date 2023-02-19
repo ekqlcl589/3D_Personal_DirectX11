@@ -27,6 +27,8 @@ HRESULT CPlayer_Body::Initialize_Prototype()
 	m_tInfo._Hp = 100.f;
 	m_tInfo._MaxMp = 100.f;
 	m_tInfo._Mp = 100;
+	m_tInfo.CurrAnimState = ANIM_IDEL;
+	m_tInfo.prevAnimState = ANIM_END;
 
 	return S_OK;
 }
@@ -42,19 +44,19 @@ HRESULT CPlayer_Body::Initialize(void * pArg)
 	m_animation = m_pModelCom->Get_Animations();
 
 
-	m_pModelCom->SetUp_Animation(9);
-	m_AnimDuration = m_pModelCom->Get_AnimDuration();
+	//m_pModelCom->SetUp_Animation(9);
 
 	return S_OK;
 }
 
 void CPlayer_Body::Tick(_double TimeDelta)
 {
-	Key_Input(TimeDelta);
-	m_pModelCom->Play_Animation(TimeDelta);
-	m_AnimTimeAcc = m_pModelCom->Get_AnimTimeAcc();
-
 	__super::Tick(TimeDelta);
+
+
+	m_pModelCom->Play_Animation(TimeDelta);
+
+
 }
 
 void CPlayer_Body::LateTick(_double TimeDelta)
@@ -63,6 +65,15 @@ void CPlayer_Body::LateTick(_double TimeDelta)
 
 	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
+
+	Animation_State(m_tInfo.CurrAnimState, TimeDelta);
+	Key_Input(TimeDelta);
+
+	m_AnimDuration = m_pModelCom->Get_AnimDuration();
+
+	m_AnimTimeAcc = m_pModelCom->Get_AnimTimeAcc();
+
+
 }
 
 HRESULT CPlayer_Body::Render()
@@ -92,55 +103,138 @@ HRESULT CPlayer_Body::Render()
 
 void CPlayer_Body::Key_Input(_double TimeDelta)
 {
-	//if (m_AnimTimeAcc >= m_AnimDuration)
-	//{
-		if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_LB))
-			m_pModelCom->SetUp_Animation(11);
-	
-		if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_DOWN))
-			m_pTransformCom->Go_Back(TimeDelta);
+	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_UP))
+	{
+		m_pTransformCom->Go_Straight(TimeDelta);
+		m_tInfo.CurrAnimState = ANIM_RUN;
+	}
+	else if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_UP))
+		m_tInfo.CurrAnimState = ANIM_RUN_END;
 
-		if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_LEFT))
-		{
-			m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * -1.f);
-			m_pModelCom->SetUp_Animation(3);
-		}
-		//else
-		//{
-		//	m_pModelCom->SetUp_Animation(6);
-		//}
+	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_DOWN))
+		m_pTransformCom->Go_Back(TimeDelta);
 
-		if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_RIGHT))
-		{
-			m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta);
-			m_pModelCom->SetUp_Animation(3);
-		}
-		//else
-		//{
-		//	
-		//}
-		if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_UP))
-		{
-			m_pTransformCom->Go_Straight(TimeDelta);
-			m_pModelCom->SetUp_Animation(3);
-		}
 
-		else
-			m_pModelCom->SetUp_Animation(9);
-	//}
+	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_LEFT))
+	{
+		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * -1.f);
+		m_tInfo.CurrAnimState = ANIM_RUN_L;
+	}
+	else if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_LEFT))
+		m_tInfo.CurrAnimState = ANIM_RUN_END;
+
+
+	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_RIGHT))
+	{
+		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta);
+		m_tInfo.CurrAnimState = ANIM_RUN_R;
+	}
+	else if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_RIGHT))
+		m_tInfo.CurrAnimState = ANIM_RUN_END;
+
+
+	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_D))
+	{
+		Attack();
+	}
+	//else if (CKeyMgr::GetInstance()->Mouse_Up(DIMK_LB))
+	//	m_tInfo.CurrAnimState = ANIM_IDEL;
+
 	//else
-	//{
-	//	m_pModelCom->SetUp_Animation(9);
-	//
-	//}
+	//	m_tInfo.CurrAnimState = ANIM_IDEL;
 
+	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_Q))
+		m_tInfo._Hp -= 10.f;
+}
 
+void CPlayer_Body::Animation_State(PLAYERANIMSTATE eType, _double TimeDelta)
+{
+	if (m_tInfo.prevAnimState != m_tInfo.CurrAnimState)
+	{
+		switch (eType)
+		{
+		case ANIM_IDEL:
+			m_pModelCom->SetUp_Animation(9);
+			break;
 
+		case ANIM_RUN:
+			m_pModelCom->SetUp_Animation(3);
+			break;
+
+		case ANIM_RUN_L:
+			m_pModelCom->SetUp_Animation(4);
+			break;
+
+		case ANIM_RUN_R:
+			m_pModelCom->SetUp_Animation(5);
+			break;
+
+		case ANIM_RUN_END:
+			m_pModelCom->SetUp_Animation(6);
+			break;
+
+		case ANIM_ATTACK:
+			m_pModelCom->SetUp_Animation(11);
+			break;
+
+		case ANIM_ATTACK_COMBO:
+			Attack_Combo(TimeDelta);
+
+		case ANIM_END:
+		default:
+			break;
+		}
+		//여기서 현재 애니메이션이 종료 되면 idel로 넘어가는 코드 짜야함 
+		// 현재 애니메이션이 종료됐다는 조건은 timeacc 가 duration이랑 일치 하면?
+	}
+		m_tInfo.prevAnimState = m_tInfo.CurrAnimState;
+		if (m_AnimTimeAcc >= m_AnimDuration)
+		{
+			m_tInfo.CurrAnimState = ANIM_IDEL;
+		}
 
 }
 
 void CPlayer_Body::Hit(const _int & _Damage)
 {
+}
+
+void CPlayer_Body::Attack()
+{
+	m_tInfo.CurrAnimState = ANIM_ATTACK;
+
+	//if (m_AnimDuration >= 24.f)
+		//m_tInfo.CurrAnimState = ANIM_IDEL;
+
+	m_ComboCheck = true;
+
+}
+
+void CPlayer_Body::Attack_Combo(_double TimeDelta)
+{
+	if (true == m_ComboCheck)
+	{
+		if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_RB))
+		{
+			m_pModelCom->SetUp_Animation(11);
+			m_ComboTime = 0.5f * TimeDelta;
+			if (m_ComboTime <= 5.f && CKeyMgr::GetInstance()->Mouse_Down(DIMK_RB))
+			{
+				m_pModelCom->SetUp_Animation(12);
+				if (m_ComboTime <= 5.f && CKeyMgr::GetInstance()->Mouse_Down(DIMK_RB))
+				{
+					m_pModelCom->SetUp_Animation(13);
+					m_ComboCheck = false;
+				}
+			}
+
+		}
+	}
+}
+
+CTransform * CPlayer_Body::Get_Transform()
+{
+	return m_pTransformCom;
 }
 
 HRESULT CPlayer_Body::Add_Components()

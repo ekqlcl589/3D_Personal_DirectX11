@@ -23,7 +23,7 @@ public:
 	void Clear(_uint iLevelIndex);
 
 public:
-	class CGameObject* Find_GameObject(_uint iLevelIndex, const _tchar* pPrototypeTag, const _tchar* pLayerTag, void* pArg = nullptr);
+	class CGameObject* Find_GameObject(_uint iLevelIndex, const _tchar* pLayerTag, void* pArg = nullptr);
 
 private: //¿øº»°´Ã¼
 	unordered_map<const _tchar*, class CGameObject*> m_Prototypes;

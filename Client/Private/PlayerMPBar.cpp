@@ -70,20 +70,19 @@ void CPlayerMPBar::LateTick(_double TimeDelta)
 	CGameInstance* p = GET_INSTANCE(CGameInstance);
 	CGameObject* pPlayer = nullptr;
 
-	//pPlayer = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Player"), TEXT("Layer_Player"));
-	pPlayer = p->Find_Prototype(TEXT("Prototype_GameObject_Player"));
+	pPlayer = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
 
-	_float MaxHP = static_cast<CPlayer*>(pPlayer)->Get_Info()._MaxMp;
-	_float HP = static_cast<CPlayer*>(pPlayer)->Get_Info()._Mp;
+	_float MaxMP = static_cast<CPlayer*>(pPlayer)->Get_Info()._MaxMp;
+	_float MP = static_cast<CPlayer*>(pPlayer)->Get_Info()._Mp;
 
-	if (HP > MaxHP)
-		HP = MaxHP;
+	if (MP > MaxMP)
+		MP = MaxMP;
 
-	if (HP <= 0)
-		HP = 0;
+	if (MP <= 0)
+		MP = 0;
 
-	TexHpY = 1.f - HP / MaxHP;
-	VertexHpY = 1.f - (2 * TexHpY);
+	TexHpY = 0.5f - abs(MP / MaxMP);
+	VertexHpY = (-TexHpY);
 
 	//m_pVIBuffer_Rect->Set_Buffer(TexHpY, VertexHpY);
 

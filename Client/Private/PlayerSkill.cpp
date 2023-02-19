@@ -2,6 +2,7 @@
 #include "..\Public\PlayerSkill.h"
 
 #include "GameInstance.h"
+#include "Transform.h"
 #include "Shader.h"
 #include "Texture.h"
 #include "Layer.h"
@@ -14,6 +15,7 @@ CPlayerSkill::CPlayerSkill(ID3D11Device * pDevice, ID3D11DeviceContext * pContex
 
 CPlayerSkill::CPlayerSkill(const CPlayerSkill & rhs)
 	: CUI(rhs)
+	, m_fPosition(rhs.m_fPosition)
 {
 }
 
@@ -41,8 +43,9 @@ HRESULT CPlayerSkill::Initialize(void * pArg)
 	m_fX = g_iWinSizeX >> 1;
 	m_fY = g_iWinSizeY >> 1;
 
+	m_pTransform->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_fPosition));
 	XMStoreFloat4x4(&m_WorldMatrix,
-		XMMatrixScaling(175.f, 175.f, 1.f) * XMMatrixTranslation(m_fX - 675.f, -m_fY + 150.f, 0.f));
+		XMMatrixScaling(80.f, 80.f, 1.f) * XMMatrixTranslation(m_fX - m_fPosition.x, -m_fY + m_fPosition.y, 0.f));
 
 	XMStoreFloat4x4(&m_ViewMatrix,
 		XMMatrixIdentity());
@@ -97,7 +100,7 @@ HRESULT CPlayerSkill::Add_Components()
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_RageSkill"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Skill"),
 		TEXT("Com_Texture"), (CComponent**)&m_pTexture)))
 		return E_FAIL;
 
@@ -122,9 +125,11 @@ HRESULT CPlayerSkill::SetUp_ShaderResource()
 	return S_OK;
 }
 
-CPlayerSkill * CPlayerSkill::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CPlayerSkill * CPlayerSkill::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, _float3 fPos)
 {
 	CPlayerSkill * pInstance = new CPlayerSkill(pDevice, pContext);
+	pInstance->m_fPosition = fPos;
+
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
 		MSG_BOX("RageSkill Create Fail");

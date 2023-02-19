@@ -17,6 +17,7 @@
 
 #include "PlayerHPBar.h"
 #include "PlayerMPBar.h"
+#include "PlayerSkill.h"
 #include "PlayerRageSkill.h"
 
 CLoader::CLoader(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -242,6 +243,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CPlayer_Body::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	//if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster"),
+	//	CMonster::Create(m_pDevice, m_pContext))))
+	//	return E_FAIL;
+
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_HPBar"),
 		CPlayerHPBar::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -252,12 +257,24 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_RageSkill"),
 		CPlayerRageSkill::Create(m_pDevice, m_pContext))))
+		return E_FAIL; 
+
+	_float3 fE = { 765.f, 170.f, 0.f };
+	_float3 fR = { 690.f, 170.f, 0.f };
+	_float3 fF = { 615.f, 170.f, 0.f };
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Skill_E"),
+		CPlayerSkill::Create(m_pDevice, m_pContext, fE))))
 		return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster"),
-	//	CMonster::Create(m_pDevice, m_pContext))))
-	//	return E_FAIL;
-	
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Skill_R"),
+		CPlayerSkill::Create(m_pDevice, m_pContext, fR))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Skill_F"),
+		CPlayerSkill::Create(m_pDevice, m_pContext, fF))))
+		return E_FAIL;
+
 	// Test Tile
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_TestTile"),
 		CTestTile::Create(m_pDevice, m_pContext))))
