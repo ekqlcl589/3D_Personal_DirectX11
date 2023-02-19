@@ -149,9 +149,9 @@ void CPlayer_Body::Key_Input(_double TimeDelta)
 
 void CPlayer_Body::Animation_State(PLAYERANIMSTATE eType, _double TimeDelta)
 {
-	if (m_tInfo.prevAnimState != m_tInfo.CurrAnimState)
+	if (m_tInfo.CurrAnimState != m_tInfo.prevAnimState )
 	{
-		switch (eType)
+		switch (m_tInfo.CurrAnimState)
 		{
 		case ANIM_IDEL:
 			m_pModelCom->SetUp_Animation(9);
@@ -186,12 +186,12 @@ void CPlayer_Body::Animation_State(PLAYERANIMSTATE eType, _double TimeDelta)
 		}
 		//여기서 현재 애니메이션이 종료 되면 idel로 넘어가는 코드 짜야함 
 		// 현재 애니메이션이 종료됐다는 조건은 timeacc 가 duration이랑 일치 하면?
-	}
 		m_tInfo.prevAnimState = m_tInfo.CurrAnimState;
-		if (m_AnimTimeAcc >= m_AnimDuration)
-		{
-			m_tInfo.CurrAnimState = ANIM_IDEL;
-		}
+	}
+	if (m_AnimTimeAcc >= m_AnimDuration)
+	{
+		m_tInfo.CurrAnimState = ANIM_IDEL;
+	}
 
 }
 

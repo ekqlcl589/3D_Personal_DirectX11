@@ -132,6 +132,9 @@
     <ClInclude Include="..\Public\TestTile.h">
       <Filter>03.Object\TestTile</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\StaticMesh.h">
+      <Filter>02.Levels\00. Map</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -196,6 +199,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\TestTile.cpp">
       <Filter>03.Object\TestTile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\StaticMesh.cpp">
+      <Filter>02.Levels\00. Map</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

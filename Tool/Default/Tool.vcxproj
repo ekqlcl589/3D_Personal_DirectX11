@@ -173,6 +173,7 @@
     <ClInclude Include="..\Public\Loading.h" />
     <ClInclude Include="..\Public\Logo.h" />
     <ClInclude Include="..\Public\Monster.h" />
+    <ClInclude Include="..\Public\StaticMesh.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\TestTile.h" />
     <ClInclude Include="..\Public\ToolApp.h" />
@@ -192,6 +193,7 @@
     <ClCompile Include="..\Private\Loading.cpp" />
     <ClCompile Include="..\Private\Logo.cpp" />
     <ClCompile Include="..\Private\Monster.cpp" />
+    <ClCompile Include="..\Private\StaticMesh.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\Private\TestTile.cpp" />
     <ClCompile Include="..\Private\ToolApp.cpp" />

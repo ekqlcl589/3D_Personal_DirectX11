@@ -54,7 +54,9 @@ void CToolApp::Tick(_double TimeDelta)
 	if (nullptr == m_pGameInstance)
 		return;
 
-	CKeyMgr::GetInstance()->Key_Update();
+	CKeyMgr::GetInstance()->Update_KeyState();
+	CKeyMgr::GetInstance()->Update_MouseState();
+
 	CImGui_Tool::GetInstance()->Tick_ImGui(TimeDelta);
 
 	m_pGameInstance->Tick_Engine(TimeDelta);

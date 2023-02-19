@@ -101,6 +101,7 @@ HRESULT CVIBuffer_Rect::Initialize(void * pArg)
 
 void CVIBuffer_Rect::Set_Buffer(_float x, _float y)
 {
+	//동적 버퍼로 만들던가 셰이더에서 hp,mp를 던져서 하는게 편할듯 
 	ZeroMemory(&m_BufferDesc, sizeof m_BufferDesc);
 
 	m_BufferDesc.ByteWidth = m_iStride * m_iNumVertices;
