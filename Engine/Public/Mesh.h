@@ -20,6 +20,9 @@ public:
 	HRESULT Initialize_Prototype(CModel::MODEL_TYPE eType, const aiMesh* pAiMesh, class CModel* pModel, _fmatrix LocalMatrix);
 	HRESULT Initialize(void* pArg);
 
+public:
+	HRESULT SetUp_MeshBones(class CModel* pModel);
+
 private:
 	HRESULT Ready_VertexBuffer_For_NonAnim(const aiMesh* pAIMesh, _fmatrix LocalMatrix);
 	HRESULT Ready_VertexBuffer_For_Anim(const aiMesh* pAIMesh, class CModel* pModel);

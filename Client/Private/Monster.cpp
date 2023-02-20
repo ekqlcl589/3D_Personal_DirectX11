@@ -28,17 +28,13 @@ HRESULT CMonster::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	//ZeroMemory(&m_MonsterState, sizeof(MONSTERSTATE));
-	//
-	//memcpy(&m_MonsterState, pArg, sizeof m_MonsterState);
-	//
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_MonsterState.fPos));
-
-	//m_pTransformCom->Set_Scale(_float3(0.01f, 0.01f, 0.01f));
-	//m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.0f));
-	// 지금 애니메이션 모델은 LocalWorld가 안 잡혀 있어서 임시로 넣은 값
+	ZeroMemory(&m_MonsterState, sizeof(MONSTERSTATE));
 	
-	m_pModelCom->SetUp_Animation(0);
+	memcpy(&m_MonsterState, pArg, sizeof m_MonsterState);
+	
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_MonsterState.fPos));
+	
+	m_pModelCom->SetUp_Animation(rand() % 20);
 
 	return S_OK;
 }

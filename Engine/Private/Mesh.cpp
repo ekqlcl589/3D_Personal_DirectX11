@@ -8,8 +8,15 @@ CMesh::CMesh(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 }
 
 CMesh::CMesh(const CMesh & rhs)
-	:CVIBuffer(rhs)
+	: CVIBuffer(rhs)
+	, m_iMaterialIndex(rhs.m_iMaterialIndex)
+	, m_iNumBones(rhs.m_iNumBones)
+	, m_vecBones(rhs.m_vecBones)
 {
+	strcpy_s(m_szName, rhs.m_szName);
+
+	for (auto& pBone : m_vecBones)
+		Safe_AddRef(pBone);
 }
 
 void CMesh::Get_BoneMatrices(_float4x4 * pMeshBoneMatrices, _fmatrix LocalMatrix)
@@ -75,6 +82,25 @@ HRESULT CMesh::Initialize_Prototype(CModel::MODEL_TYPE eType, const aiMesh * pAi
 
 HRESULT CMesh::Initialize(void * pArg)
 {
+	return S_OK;
+}
+
+HRESULT CMesh::SetUp_MeshBones(CModel * pModel)
+{
+	vector<CBone*> Bones = m_vecBones; // 복사를 위한 기존 데이터 임시 보관
+
+	for (auto& pBone : m_vecBones)
+		Safe_Release(pBone);
+
+	m_vecBones.clear();
+
+	for (auto& pBone : Bones)
+	{
+		CBone* pCopyBone = pModel->Get_BonePtr(pBone->Get_Name());
+		pCopyBone->Set_OffsetMatrix(XMLoadFloat4x4(&pBone->Get_OffsetMatrix()));
+		m_vecBones.push_back(pCopyBone);
+	}
+
 	return S_OK;
 }
 

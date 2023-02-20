@@ -7,6 +7,7 @@
 #include "Calulator.h"
 #include "Monster.h"
 #include "TestTile.h"
+#include "StaticMesh.h"
 
 BEGIN(Engine)
 
@@ -68,7 +69,7 @@ public:
 public:
 	static int iCubeNum;
 	static int iMonsterNum;
-	static int iTileNum;
+	static int iTileNum; //  타일 안 쓸거니까 메쉬랑 같이 공유 ㄱㄱ
 
 private:
 	CCube::CUBESTATE m_CubeState;
@@ -93,6 +94,13 @@ private:
 	_float3 fTilePosition = { 0.f, 0.f, 0.f };
 	_float3 fTileScale = { 1.f, 1.f, 1.f };
 	_bool m_bTile = false;
+
+private:
+	vector<CStaticMesh::MESHSTATE> m_vecMeshData;
+	_vector m_vMeshPos = { 0.f, 0.f, 0.f };
+	_float3 fMeshPosition = { 0.f, 0.f, 0.f };
+	_float3 fMeshScale = { 1.f, 1.f, 1.f };
+	_bool m_bMesh = false;
 
 private:
 	ID3D11Device* m_pDevice;

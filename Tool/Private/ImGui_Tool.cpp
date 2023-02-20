@@ -346,6 +346,16 @@ _bool CImGui_Tool::TilePicking()
 
 _bool CImGui_Tool::MeshCreate()
 {
+	m_pCaculator->Picking_OnTerrain(g_hWnd, m_pBuffer_Terain, m_pTransform);
+
+	m_vMeshPos = m_pCaculator->Get_PickingState().vRayPos;
+
+	CStaticMesh::MESHSTATE MeshState;
+	ZeroMemory(&MeshState, sizeof(CStaticMesh::MESHSTATE));
+
+	XMStoreFloat3(&MeshState.fPos, m_vMeshPos);
+
+
 	return _bool();
 }
 

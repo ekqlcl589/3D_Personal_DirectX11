@@ -25,7 +25,7 @@ HRESULT CGamePlay::Initialize()
 
 	//6LoadMeshTile(L"../Data/Tile/Tile.dat");
 
-	//LoadMonster(L"../Data/Monster.dat");
+	LoadMonster(L"../Data/Monster.dat");
 	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
 

@@ -13,26 +13,19 @@ CModel::CModel(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 CModel::CModel(const CModel & rhs)
 	:CComponent(rhs)
 	, m_pAiScene(rhs.m_pAiScene)
-	, m_vecMesh(rhs.m_vecMesh)
 	, m_iNumMeshes(rhs.m_iNumMeshes)
 	, m_vecMaterial(rhs.m_vecMaterial)
 	, m_iNumMaterial(rhs.m_iNumMaterial)
 	, m_LocalMatrix(rhs.m_LocalMatrix)
 	, m_eType(rhs.m_eType)
-	, m_vecBones(rhs.m_vecBones)
-	, m_iNumBones(rhs.m_iNumBones)
-	, m_vecAnimations(rhs.m_vecAnimations)
 	, m_iNumAnimations(rhs.m_iNumAnimations)
 
 {
-	for (auto& pMesh : m_vecMesh)
-		Safe_AddRef(pMesh);
+	for (auto& pPrototypeMesh : rhs.m_vecMesh)
+		m_vecMesh.push_back(dynamic_cast<CMesh*>(pPrototypeMesh->Clone()));
 
-	for (auto& pBones : m_vecBones)
-		Safe_AddRef(pBones);
-
-	for (auto& pAnimations : m_vecAnimations)
-		Safe_AddRef(pAnimations);
+	for (auto& pPrototypeAnim : rhs.m_vecAnimations)
+		m_vecAnimations.push_back(pPrototypeAnim->Clone());
 
 	for (auto& pMaterial : m_vecMaterial)
 	{
@@ -50,6 +43,16 @@ CBone * CModel::Get_BonePtr(const char * pBoneName)
 		return !strcmp(pBone->Get_Name(), pBoneName);
 	});
 	return *iter;
+}
+
+_uint CModel::Get_BoneIndex(const char * pBoneName)
+{
+	for (_uint i = 0; i < m_iNumBones; i++)
+	{
+		if (0 == strcmp(m_vecBones[i]->Get_Name(), pBoneName))
+			return i;
+	}
+	return 0;
 }
 
 HRESULT CModel::Initialize_Prototype(const char * pModelFilePath, MODEL_TYPE eType, _fmatrix LocalMatrix)
@@ -88,6 +91,15 @@ HRESULT CModel::Initialize_Prototype(const char * pModelFilePath, MODEL_TYPE eTy
 
 HRESULT CModel::Initialize(void * pArg)
 {
+	// 복제본 마다 새로운 뼈를 만듦
+	if (FAILED(Ready_Bones(m_pAiScene->mRootNode, nullptr))) // 깊은 복사를 위해 복사 생성 초기화 부분도 불러줌 
+		return E_FAIL;
+
+	m_iNumBones = m_vecBones.size();
+
+	for (_uint i = 0; i < m_iNumMeshes; i++)
+		m_vecMesh[i]->SetUp_MeshBones(this);
+
 	return S_OK;
 }
 
@@ -126,7 +138,7 @@ HRESULT CModel::SetUp_Animation(_uint iAnimationIndex)
 
 HRESULT CModel::Play_Animation(_double TimeDelta)
 {
-	m_vecAnimations[m_iCurrAnimation]->Play_Animation(TimeDelta);
+	m_vecAnimations[m_iCurrAnimation]->Play_Animation(TimeDelta, m_vecBones);
 
 	for (auto& pBone : m_vecBones)
 	{
@@ -292,16 +304,13 @@ void CModel::Free()
 
 	for (auto& pAnim : m_vecAnimations)
 		Safe_Release(pAnim);
-
 	m_vecAnimations.clear();
 
 	for (auto& pBone : m_vecBones)
 		Safe_Release(pBone);
-
 	m_vecBones.clear();
 
 	for (auto& pMesh : m_vecMesh)
 		Safe_Release(pMesh);
-
 	m_vecMesh.clear();
 }

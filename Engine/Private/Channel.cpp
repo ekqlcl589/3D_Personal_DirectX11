@@ -11,8 +11,7 @@ HRESULT CChannel::Initialize(aiNodeAnim * pAIChannel, CModel* pModel)
 {
 	strcpy_s(m_szName, pAIChannel->mNodeName.data);
 
-	m_pBone = pModel->Get_BonePtr(m_szName);
-	Safe_AddRef(m_pBone);
+	m_iBoneIndex = pModel->Get_BoneIndex(m_szName);
 
 	m_iNumKeyFrames = max(pAIChannel->mNumScalingKeys, pAIChannel->mNumRotationKeys);
 	m_iNumKeyFrames = max(m_iNumKeyFrames, pAIChannel->mNumPositionKeys);
@@ -58,10 +57,10 @@ HRESULT CChannel::Initialize(aiNodeAnim * pAIChannel, CModel* pModel)
 	return S_OK;
 }
 
-void CChannel::Invalidate_Transform(_double TrackPosition)
+void CChannel::Invalidate_Transform(_double TrackPosition, _uint* pCurrKeyFrame, const vector<class CBone*>& Bones)
 {
 	if (0.0 == TrackPosition)
-		m_iCurrKeyFrame = 0;
+		*pCurrKeyFrame = 0;
 
 	_vector vScale;
 	_vector vRotation;
@@ -76,23 +75,23 @@ void CChannel::Invalidate_Transform(_double TrackPosition)
 	}
 	else
 	{
-		while (TrackPosition >= m_vecKeyFrame[m_iCurrKeyFrame + 1].Time)
-			++m_iCurrKeyFrame; //한 프레임 넘겨줌, 혹여나 여기서 프레임을 빠르게 하기 위해 tickpers를 늘리면 증가 폭이 커지면서 2 ~ 3개의 프레임이 넘어가 버리면서 스케일이나 이런게 튀는 현상이 발생할 수 있음 
+		while (TrackPosition >= m_vecKeyFrame[*pCurrKeyFrame + 1].Time)
+			++*pCurrKeyFrame; //한 프레임 넘겨줌, 혹여나 여기서 프레임을 빠르게 하기 위해 tickpers를 늘리면 증가 폭이 커지면서 2 ~ 3개의 프레임이 넘어가 버리면서 스케일이나 이런게 튀는 현상이 발생할 수 있음 
 		// 그래서 조건문이 아니라 while문을 돌면서 루프 안에서 굴리게 끔 만듦
-		_double Ratio = (TrackPosition - m_vecKeyFrame[m_iCurrKeyFrame].Time) / 
-			(m_vecKeyFrame[m_iCurrKeyFrame + 1].Time - m_vecKeyFrame[m_iCurrKeyFrame].Time);
+		_double Ratio = (TrackPosition - m_vecKeyFrame[*pCurrKeyFrame].Time) /
+			(m_vecKeyFrame[*pCurrKeyFrame + 1].Time - m_vecKeyFrame[*pCurrKeyFrame].Time);
 	
 		_vector	vSourScale, vDestScale;
 		_vector	vSourRotation, vDestRotation;
 		_vector	vSourPosition, vDestPosition;
 
-		vSourScale = XMLoadFloat3(&m_vecKeyFrame[m_iCurrKeyFrame].vScale);
-		vSourRotation = XMLoadFloat4(&m_vecKeyFrame[m_iCurrKeyFrame].vRotation);
-		vSourPosition = XMLoadFloat3(&m_vecKeyFrame[m_iCurrKeyFrame].vPosition);
+		vSourScale = XMLoadFloat3(&m_vecKeyFrame[*pCurrKeyFrame].vScale);
+		vSourRotation = XMLoadFloat4(&m_vecKeyFrame[*pCurrKeyFrame].vRotation);
+		vSourPosition = XMLoadFloat3(&m_vecKeyFrame[*pCurrKeyFrame].vPosition);
 
-		vDestScale = XMLoadFloat3(&m_vecKeyFrame[m_iCurrKeyFrame + 1].vScale);
-		vDestRotation = XMLoadFloat4(&m_vecKeyFrame[m_iCurrKeyFrame + 1].vRotation);
-		vDestPosition = XMLoadFloat3(&m_vecKeyFrame[m_iCurrKeyFrame + 1].vPosition);
+		vDestScale = XMLoadFloat3(&m_vecKeyFrame[*pCurrKeyFrame + 1].vScale);
+		vDestRotation = XMLoadFloat4(&m_vecKeyFrame[*pCurrKeyFrame + 1].vRotation);
+		vDestPosition = XMLoadFloat3(&m_vecKeyFrame[*pCurrKeyFrame + 1].vPosition);
 	
 		vScale = XMVectorLerp(vSourScale, vDestScale, (_float)Ratio);
 		vRotation = XMQuaternionSlerp(vSourRotation, vDestRotation, (_float)Ratio);
@@ -101,7 +100,7 @@ void CChannel::Invalidate_Transform(_double TrackPosition)
 
 	_matrix TransformationMatrix = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
 
-	m_pBone->Set_TransformationMatrix(TransformationMatrix);
+	Bones[m_iBoneIndex]->Set_TransformationMatrix(TransformationMatrix);
 }
 
 CChannel * CChannel::Create(aiNodeAnim * pAIChannel, CModel* pModel)
@@ -119,8 +118,6 @@ CChannel * CChannel::Create(aiNodeAnim * pAIChannel, CModel* pModel)
 
 void CChannel::Free()
 {
-	Safe_Release(m_pBone);
-
 	m_vecKeyFrame.clear();
 }
 

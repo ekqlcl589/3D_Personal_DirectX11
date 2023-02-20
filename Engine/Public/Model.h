@@ -17,6 +17,7 @@ public:
 	_uint Get_NumMeshes() const { return m_iNumMeshes; }
 
 	class CBone* Get_BonePtr(const char* pBoneName);
+	_uint Get_BoneIndex(const char* pBoneName);
 
 public:
 	virtual HRESULT Initialize_Prototype(const char* pModelFilePath, MODEL_TYPE eType, _fmatrix LocalMatrix);

@@ -5,6 +5,22 @@ CAnimation::CAnimation()
 {
 }
 
+CAnimation::CAnimation(const CAnimation& rhs)
+	: m_Duration(rhs.m_Duration)
+	, m_TickPerSecond(rhs.m_TickPerSecond)
+	, m_TimeAcc(rhs.m_TimeAcc)
+	, m_isFinished(rhs.m_isFinished)
+	, m_isLoop(rhs.m_isLoop)
+	, m_iNumChannels(rhs.m_iNumChannels)
+	, m_vecChannel(rhs.m_vecChannel)
+	, m_CurrKeyFrame(rhs.m_CurrKeyFrame)
+{
+	strcpy_s(m_szName, rhs.m_szName);
+
+	for (auto& pChannel : m_vecChannel)
+		Safe_AddRef(pChannel);
+}
+
 HRESULT CAnimation::Initialize(aiAnimation * pAIAnimation, CModel* pModel)
 {
 	strcpy_s(m_szName, pAIAnimation->mName.data);
@@ -24,10 +40,12 @@ HRESULT CAnimation::Initialize(aiAnimation * pAIAnimation, CModel* pModel)
 		m_vecChannel.push_back(pChannel);
 	}
 
+	m_CurrKeyFrame.resize(m_iNumChannels);
+
 	return S_OK;
 }
 
-void CAnimation::Play_Animation(_double TimeDelta)
+void CAnimation::Play_Animation(_double TimeDelta, const vector<class CBone*>& Bones)
 {
 	m_TimeAcc += m_TickPerSecond * TimeDelta;
 
@@ -46,8 +64,10 @@ void CAnimation::Play_Animation(_double TimeDelta)
 
 	if (false == m_isFinished || true == m_isLoop)
 	{
+		_uint iChannelIndex = 0;
+
 		for (auto& pChannel : m_vecChannel)
-			pChannel->Invalidate_Transform(m_TimeAcc);
+			pChannel->Invalidate_Transform(m_TimeAcc, &m_CurrKeyFrame[iChannelIndex++], Bones);
 	}
 
 	if (true == m_isLoop)
@@ -65,6 +85,11 @@ CAnimation * CAnimation::Create(aiAnimation * pAIAnimation, CModel* pModel)
 	}
 
 	return pInstance;
+}
+
+CAnimation * CAnimation::Clone()
+{
+	return new CAnimation(*this);
 }
 
 void CAnimation::Free()
