@@ -1,4 +1,8 @@
 #include "stdafx.h"
+#include "imgui.h"
+#include "imgui_impl_win32.h"
+#include "imgui_impl_dx11.h"
+
 #include "..\Public\StaticMesh.h"
 
 #include "GameInstance.h"
@@ -43,7 +47,7 @@ HRESULT CStaticMesh::Initialize(void * pArg)
 
 	m_MeshState.iMeshNum = CImGui_Tool::iTileNum++;
 
-	m_MeshState.m_ChangeKey; // arg에서 넘겨 받은 값 그니까 여기서는 뭘 안 해줘도 될 듯?
+	m_MeshState.m_ChangeKey;
 
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, m_MeshState.m_ChangeKey,
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
@@ -55,6 +59,7 @@ HRESULT CStaticMesh::Initialize(void * pArg)
 void CStaticMesh::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
+
 }
 
 void CStaticMesh::LateTick(_double TimeDelta)
@@ -85,6 +90,9 @@ HRESULT CStaticMesh::Render()
 
 		m_pModelCom->Render(i);
 	}
+
+	Set_State();
+
 	return S_OK;
 }
 
@@ -147,6 +155,30 @@ HRESULT CStaticMesh::SetUp_ShaderResources()
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
+}
+
+void CStaticMesh::Set_State()
+{
+	ImGui_ImplDX11_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
+
+	ImGui::Begin("Setting");
+
+	//if (ImGui::BeginMenuBar())
+	//{
+	//	if(ImGui::BeginMenu("test"))
+		ImGui::Text("test");
+	//	ImGui::EndMenu();
+
+	//	ImGui::EndMenuBar();
+	//}
+	ImGui::End();
+
+	ImGui::Render();
+
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
 }
 
 CStaticMesh * CStaticMesh::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)

@@ -48,6 +48,8 @@ private:
 	HRESULT Add_Components();
 	HRESULT SetUp_ShaderResources();
 
+	void Set_State();
+
 private:
 	MESHSTATE m_MeshState;
 

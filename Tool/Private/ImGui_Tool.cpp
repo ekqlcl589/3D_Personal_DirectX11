@@ -400,10 +400,15 @@ _bool CImGui_Tool::MeshCreate(_tchar* pMeshName)
 			MeshState.iMeshNum = iTileNum;
 			MeshState.m_ChangeKey = pMeshName;
 
+			// 여기서 뭔가 조건을 추가 해서 버튼을 눌렀을 때 생성을 하고 싶은데... 흠
+ 		//	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_SPACE))
+			//{
+			//}
+
 			if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_StaticMesh"), TEXT("Layer_StaticMesh"), &MeshState)))
 
-			RELEASE_INSTANCE(CGameInstance);
 			m_vecMeshData.push_back(MeshState);
+			RELEASE_INSTANCE(CGameInstance);
 			m_bMesh = false;
 
 			return m_bMesh;
@@ -443,7 +448,8 @@ void CImGui_Tool::ObjectSetting()
 	ImGui::InputFloat3("TileScale", TileSclae);
 	ImGui::Text("Tile : %d", iTileNum);
 
-
+	ImGui::Separator();
+	ImGui::Text("Mesh : %d", iTileNum);
 	ImGui::End();
 
 }
@@ -647,7 +653,7 @@ void CImGui_Tool::TileLoad()
 void CImGui_Tool::StaticMeshSave()
 {
 	HANDLE hFile = CreateFile(L"../Data/Level/Eltheca.dat", GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-
+	
 	if (INVALID_HANDLE_VALUE == hFile)
 	{
 		MSG_BOX("Level Save Fail");
