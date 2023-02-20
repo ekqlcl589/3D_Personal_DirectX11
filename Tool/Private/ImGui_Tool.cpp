@@ -55,21 +55,21 @@ void CImGui_Tool::Tick_ImGui(_double TimeDelta)
 	if (true == m_bCheck)
 	{
 		//if (CKeyMgr::GetInstance()->Key_Down(VK_RBUTTON))
-		if(CKeyMgr::GetInstance()->Key_Down(DIMK_LB))
+		if(CKeyMgr::GetInstance()->Mouse_Pressing(DIMK_LB))
 			Picking();
 	}
 	else if (true == m_bMonster)
 	{
-		if (CKeyMgr::GetInstance()->Key_Down(DIMK_LB))
+		if (CKeyMgr::GetInstance()->Mouse_Pressing(DIMK_LB))
 			MonsterPicking();
 	}
 	else if(true == m_bTile)
 	{
-		if (CKeyMgr::GetInstance()->Key_Down(DIMK_LB))
+		if (CKeyMgr::GetInstance()->Mouse_Pressing(DIMK_LB))
 			TilePicking();
 	}
 	
-	if (CKeyMgr::GetInstance()->Key_Down(DIMK_RB))
+	if (CKeyMgr::GetInstance()->Mouse_Pressing(DIMK_RB))
 	{
 		m_bCheck = false;
 		m_bMonster = false;
@@ -142,6 +142,16 @@ void CImGui_Tool::Setting_Terrain()
 
 			if (ImGui::MenuItem("TileLoad"))
 				TileLoad();
+
+			ImGui::Separator();
+
+			if (ImGui::MenuItem("MeshSave"))
+				StaticMeshSave();
+
+			ImGui::Separator();
+
+			if (ImGui::MenuItem("MeshLoad"))
+				StaticMeshLoad();
 
 			ImGui::EndMenu();
 
@@ -216,6 +226,11 @@ HRESULT CImGui_Tool::Create_Cube()
 		else if (ImGui::BeginMenu("Tile"))
 		{
 			m_bTile = true;
+			ImGui::EndMenu();
+		}
+
+		else if (ImGui::BeginMenu("StaticMesh"))
+		{
 			ImGui::EndMenu();
 		}
 		ImGui::EndMenuBar();
@@ -327,6 +342,11 @@ _bool CImGui_Tool::TilePicking()
 			return m_bTile;
 		}
 	}
+}
+
+_bool CImGui_Tool::MeshCreate()
+{
+	return _bool();
 }
 
 void CImGui_Tool::ObjectSetting()
@@ -558,6 +578,14 @@ void CImGui_Tool::TileLoad()
 		pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_TestTile"), TEXT("Layer_Tile"), &iter);
 		RELEASE_INSTANCE(CGameInstance);
 	}
+}
+
+void CImGui_Tool::StaticMeshSave()
+{
+}
+
+void CImGui_Tool::StaticMeshLoad()
+{
 }
 
 void CImGui_Tool::Free()

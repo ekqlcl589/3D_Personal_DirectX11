@@ -43,6 +43,8 @@ public:
 	_bool MonsterPicking();
 	_bool TilePicking();
 
+	_bool MeshCreate();
+
 public:
 	void ObjectSetting();
 
@@ -59,6 +61,9 @@ public:
 	void MonsterLoad();
 	void TileSave();
 	void TileLoad();
+
+	void StaticMeshSave();
+	void StaticMeshLoad();
 
 public:
 	static int iCubeNum;

@@ -152,10 +152,23 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Tile/Test.fbx", CModel::MODEL_NONANIM, LocalMatrix))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_StaticMesh"),
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_StaticMesh0"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/StaticMesh/Eltheca/Eltheca_Base_Center.fbx", CModel::MODEL_NONANIM, LocalMatrix))))
 		return E_FAIL;
-	// 쉬벌 이거 생각해 보니까 이미지만 바꿔서 메쉬를 따로 생성한다? 좆댄거 같은데;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_StaticMesh1"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/StaticMesh/Eltheca/Eltheca_ChaserHall_Floor1.fbx", CModel::MODEL_NONANIM, LocalMatrix))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_StaticMesh2"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/StaticMesh/Eltheca/Eltheca_ChaserHall_Floor2.fbx", CModel::MODEL_NONANIM, LocalMatrix))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_StaticMesh3"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/StaticMesh/Eltheca/Eltheca_Elscope_Circle_aa.fbx", CModel::MODEL_NONANIM, LocalMatrix))))
+		return E_FAIL;
+
+	// 쉬벌 이거 생각해 보니까 이미지만 바꿔서 메쉬를 따로 생성한다? 좆댄거 같은데; 
 	lstrcpy(m_szLoadingText, TEXT("셰이더를 로딩중입니다."));
 
 
@@ -199,6 +212,7 @@ HRESULT CLoader::Loading_ForGamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_TestTile"),
 		CTestTile::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
 	// 지형을 만들기 위한 메시들 객체 하나로 이미지를 여러 장 돌려 쓰면서 생성할 예정
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_StaticMesh"),
 		CStaticMesh::Create(m_pDevice, m_pContext))))

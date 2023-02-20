@@ -15,6 +15,17 @@ BEGIN(Tool)
 class CStaticMesh final :
 	public CGameObject
 {
+public:
+	typedef struct tagMeshState
+	{
+		_float3 fPos;
+		_int iMeshNum;
+		_float3 fScale;
+		_tchar* m_ChangeKey;
+
+		CTransform::TRANSFORM_DESC transformDesc;
+	}MESHSTATE;
+
 private:
 	CStaticMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CStaticMesh(const CStaticMesh& rhs);
@@ -36,6 +47,9 @@ private:
 private:
 	HRESULT Add_Components();
 	HRESULT SetUp_ShaderResources();
+
+private:
+	MESHSTATE m_MeshState;
 
 public:
 	static CStaticMesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
