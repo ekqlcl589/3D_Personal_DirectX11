@@ -21,6 +21,11 @@ int CImGui_Tool::iTileNum = 0;
 
 CImGui_Tool::CImGui_Tool()
 {
+	_MeshKey[0] = TEXT("Prototype_Component_Model_StaticMesh0");
+	_MeshKey[1] = TEXT("Prototype_Component_Model_StaticMesh1");
+	_MeshKey[2] = TEXT("Prototype_Component_Model_StaticMesh2");
+	_MeshKey[3] = TEXT("Prototype_Component_Model_StaticMesh3");
+	_MeshKey[4] = TEXT("Prototype_Component_Model_StaticMesh3");
 }
 
 void CImGui_Tool::Initialize_ImGui(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -171,8 +176,8 @@ void CImGui_Tool::Create_Terrain()
 	POINT Pos;
 	if (ImGui::IsMousePosValid())
 	{
-		Pos.x = io.MousePos.x;
-		Pos.y = io.MousePos.y;
+		Pos.x = (LONG)io.MousePos.x;
+		Pos.y = (LONG)io.MousePos.y;
 		ImGui::Text("Mouse pos: (%g, %g)", io.MousePos.x, io.MousePos.y);
 
 	}
@@ -231,6 +236,7 @@ HRESULT CImGui_Tool::Create_Cube()
 
 		else if (ImGui::BeginMenu("StaticMesh"))
 		{
+			ShowMesh();
 			ImGui::EndMenu();
 		}
 		ImGui::EndMenuBar();
@@ -274,7 +280,7 @@ _bool CImGui_Tool::Picking()
 			return m_bCheck;
 		}
 	}
-
+	return m_bCheck;
 }
 
 _bool CImGui_Tool::MonsterPicking()
@@ -305,11 +311,12 @@ _bool CImGui_Tool::MonsterPicking()
 			RELEASE_INSTANCE(CGameInstance);
 
 			m_vecMonsterData.push_back(eState);
-			m_bMonster = m_pCaculator->Get_PickingState().bPicking;
-			return m_pCaculator->Get_PickingState().bPicking;
+			m_bMonster = false;
 
+			return m_bMonster;
 		}
 	}
+	return m_bMonster;
 }
 
 _bool CImGui_Tool::TilePicking()
@@ -338,25 +345,72 @@ _bool CImGui_Tool::TilePicking()
 			RELEASE_INSTANCE(CGameInstance);
 
 			m_vecTileData.push_back(TileState);
-			m_bTile = m_pCaculator->Get_PickingState().bPicking;
+			m_bTile = false;
 			return m_bTile;
 		}
 	}
+	return m_bTile;
 }
 
-_bool CImGui_Tool::MeshCreate()
+void CImGui_Tool::ShowMesh()
 {
-	m_pCaculator->Picking_OnTerrain(g_hWnd, m_pBuffer_Terain, m_pTransform);
+	ImGui::Text("Mesh Selcect");
 
-	m_vMeshPos = m_pCaculator->Get_PickingState().vRayPos;
+	ImVec2 ChildSize = ImVec2(100.f, ImGui::GetFrameHeightWithSpacing() * 10);
+	ImGui::BeginChild("##0", ChildSize, true, ImGuiWindowFlags_HorizontalScrollbar);
+	int iCnt = 0;
+
+	for (_uint i = 0; i < 5; i++)
+	{
+		iCnt++;		
+		if (ImGui::Button((char*)&_MeshKey[i], ImVec2(100.f, 100.f)))
+		{
+			m_bMesh = true;
+			MeshCreate(_MeshKey[i]);
+		}
+		if (iCnt < 1)
+			ImGui::SameLine();
+		else
+			iCnt = 0;
+
+	}
+	ImGui::EndChild();
+}
+
+_bool CImGui_Tool::MeshCreate(_tchar* pMeshName)
+{
+	m_bCheck = false;
+	m_bMonster = false;
+	m_bTile = false;
 
 	CStaticMesh::MESHSTATE MeshState;
 	ZeroMemory(&MeshState, sizeof(CStaticMesh::MESHSTATE));
+	
+	if (ImGui::IsMousePosValid())
+	{
+		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+		m_pCaculator->Picking_OnTerrain(g_hWnd, m_pBuffer_Terain, m_pTransform);
+		
+		if (true == m_pCaculator->Get_PickingState().bPicking)
+		{
+			m_vMeshPos = m_pCaculator->Get_PickingState().vRayPos;
 
-	XMStoreFloat3(&MeshState.fPos, m_vMeshPos);
+			XMStoreFloat3(&MeshState.fPos, m_vMeshPos);
+			MeshState.fScale = fMeshScale;
+			MeshState.iMeshNum = iTileNum;
+			MeshState.m_ChangeKey = pMeshName;
 
+			if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_StaticMesh"), TEXT("Layer_StaticMesh"), &MeshState)))
 
-	return _bool();
+			RELEASE_INSTANCE(CGameInstance);
+			m_vecMeshData.push_back(MeshState);
+			m_bMesh = false;
+
+			return m_bMesh;
+		}
+	}
+
+	return m_bMesh;
 }
 
 void CImGui_Tool::ObjectSetting()
@@ -592,10 +646,55 @@ void CImGui_Tool::TileLoad()
 
 void CImGui_Tool::StaticMeshSave()
 {
+	HANDLE hFile = CreateFile(L"../Data/Level/Eltheca.dat", GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	if (INVALID_HANDLE_VALUE == hFile)
+	{
+		MSG_BOX("Level Save Fail");
+		return;
+	}
+
+	DWORD dwByte = 0;
+
+	for (auto& iter : m_vecMeshData)
+	{
+		WriteFile(hFile, &iter, sizeof(CStaticMesh::MESHSTATE), &dwByte, nullptr);
+	}
+
+	CloseHandle(hFile);
 }
 
 void CImGui_Tool::StaticMeshLoad()
 {
+	HANDLE hFile = CreateFile(L"../Data/Level/Eltheca.dat", GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	if (INVALID_HANDLE_VALUE == hFile)
+	{
+		MSG_BOX("Level Load Fail");
+		return;
+	}
+
+	DWORD dwByte = 0;
+	CStaticMesh::MESHSTATE LevelData;
+	while (true)
+	{
+		ReadFile(hFile, &LevelData, sizeof(CStaticMesh::MESHSTATE), &dwByte, nullptr);
+
+		if (0 == dwByte)
+			break;
+
+		m_vecMeshData.push_back(LevelData);
+	}
+
+	CloseHandle(hFile);
+
+	for (auto& iter : m_vecMeshData)
+	{
+		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+		pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_StaticMesh"), TEXT("Layer_StaticMesh"), &iter);
+		RELEASE_INSTANCE(CGameInstance);
+	}
 }
 
 void CImGui_Tool::Free()

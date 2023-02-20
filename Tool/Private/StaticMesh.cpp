@@ -26,9 +26,14 @@ HRESULT CStaticMesh::Initialize(void * pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
+
+	if (FAILED(Add_Components()))
+		return E_FAIL;
+
 	ZeroMemory(&m_MeshState, sizeof MESHSTATE);
 
-	memcpy(&m_MeshState, &pArg, sizeof(_tchar));
+	memcpy(&m_MeshState, pArg, sizeof(MESHSTATE));
+
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_MeshState.fPos));
 
@@ -40,7 +45,8 @@ HRESULT CStaticMesh::Initialize(void * pArg)
 
 	m_MeshState.m_ChangeKey; // arg에서 넘겨 받은 값 그니까 여기서는 뭘 안 해줘도 될 듯?
 
-	if (FAILED(Add_Components()))
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, m_MeshState.m_ChangeKey,
+		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
 	return S_OK;
@@ -98,9 +104,6 @@ HRESULT CStaticMesh::Add_Components()
 		TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, m_MeshState.m_ChangeKey,
-		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
-		return E_FAIL;
 
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModel"),
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))

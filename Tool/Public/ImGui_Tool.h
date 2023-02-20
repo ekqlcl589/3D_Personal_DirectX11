@@ -44,7 +44,9 @@ public:
 	_bool MonsterPicking();
 	_bool TilePicking();
 
-	_bool MeshCreate();
+public:
+	void ShowMesh();
+	_bool MeshCreate(_tchar* pMeshName);
 
 public:
 	void ObjectSetting();
@@ -101,6 +103,7 @@ private:
 	_float3 fMeshPosition = { 0.f, 0.f, 0.f };
 	_float3 fMeshScale = { 1.f, 1.f, 1.f };
 	_bool m_bMesh = false;
+	_tchar* _MeshKey[5];
 
 private:
 	ID3D11Device* m_pDevice;
