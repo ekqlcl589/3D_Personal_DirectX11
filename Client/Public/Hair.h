@@ -1,7 +1,6 @@
 #pragma once
-
-#include "Client_Defines.h"
 #include "GameObject.h"
+#include "Client_Defines.h"
 
 BEGIN(Engine)
 class CShader;
@@ -9,25 +8,26 @@ class CRenderer;
 class CTransform;
 class CModel;
 class CBone;
-
 END
 
 BEGIN(Client)
 
-class CPlayer final : public CGameObject
+class CHair final : public CGameObject
 {
 public:
-	typedef struct tagPartDesc
+	enum HAIRTYPE { HAIR_BACK, HAIR_FRONT, HAIR_SIDE, HAIR_TAIL, HAIR_END };
+	typedef struct tagHairDesc
 	{
 		CBone* pBonePtr;
 		_float4x4 matParentLocal;
 		CTransform* pParentTransform;
-	}PARTSDESC;
+		HAIRTYPE HairType;
+	}HAIRDESC;
 
 private:
-	CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CPlayer(const CPlayer& rhs);
-	virtual ~CPlayer() = default;
+	CHair(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CHair(const CHair& rhs);
+	virtual ~CHair() = default;
 
 public:
 	virtual	HRESULT Initialize_Prototype() override;
@@ -47,11 +47,11 @@ private:
 	HRESULT SetUp_ShaderResources();
 
 private:
-	PARTSDESC m_Parts;
+	HAIRDESC m_HairParts;
 	_float4x4 m_WorldMatrix;
 
 public:
-	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CHair* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;
 	virtual void Free() override;
 };

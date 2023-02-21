@@ -36,7 +36,7 @@ public:
 	}
 
 	_matrix Get_WorldMatrixInverse() { return XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_WorldMatrix)); }
-	_matrix Get_WorldMatrix() { return XMLoadFloat4x4(&m_WorldMatrix); }
+	_matrix Get_WorldMatrix() const { return XMLoadFloat4x4(&m_WorldMatrix); }
 public:
 	HRESULT Initialize_Prototype()override;
 	HRESULT Initialize(void* pArg)override;

@@ -3,6 +3,9 @@
 
 #include "GameInstance.h"
 #include "KeyMgr.h"
+#include "Player.h"
+#include "Hair.h"
+#include "Weapon.h"
 
 CPlayer_Body::CPlayer_Body(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -41,6 +44,13 @@ HRESULT CPlayer_Body::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
+	if (FAILED(Add_Parts()))
+		return E_FAIL;
+
+	if (FAILED(Add_Weapon()))
+		return E_FAIL;
+
+
 	m_animation = m_pModelCom->Get_Animations();
 
 
@@ -54,7 +64,6 @@ void CPlayer_Body::Tick(_double TimeDelta)
 	__super::Tick(TimeDelta);
 
 
-	m_pModelCom->Play_Animation(TimeDelta);
 
 
 }
@@ -63,8 +72,7 @@ void CPlayer_Body::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
 
-	if (nullptr != m_pRendererCom)
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
+	m_pModelCom->Play_Animation(TimeDelta);
 
 	Animation_State(m_tInfo.CurrAnimState, TimeDelta);
 	Key_Input(TimeDelta);
@@ -72,6 +80,48 @@ void CPlayer_Body::LateTick(_double TimeDelta)
 	m_AnimDuration = m_pModelCom->Get_AnimDuration();
 
 	m_AnimTimeAcc = m_pModelCom->Get_AnimTimeAcc();
+
+	for (_uint i = 0; i < WEAPON_END; i++)
+	{
+		for (auto& pWeapon : m_vecWeapon[i])
+		{
+			if (nullptr != pWeapon)
+				pWeapon->LateTick(TimeDelta);
+		}
+	}
+
+	for (_uint i = 0; i < PART_END; i++)
+	{
+		for (auto& pPart : m_vecParts[i])
+		{
+			if (nullptr != pPart)
+				pPart->LateTick(TimeDelta);
+		}
+	}
+
+	if (nullptr != m_pRendererCom)
+	{
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
+
+		for (_uint i = 0; i < WEAPON_END; i++)
+		{
+			for (auto& pWeapon : m_vecWeapon[i])
+			{
+				if (nullptr != pWeapon)
+					m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, pWeapon);
+			}
+		}
+
+		for (_uint i = 0; i < PART_END; i++)
+		{
+			for (auto& pPart : m_vecParts[i])
+			{
+				if (nullptr != pPart)
+					m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, pPart);
+			}
+		}
+
+	}
 
 
 }
@@ -133,15 +183,15 @@ void CPlayer_Body::Key_Input(_double TimeDelta)
 		m_tInfo.CurrAnimState = ANIM_RUN_END;
 
 
-	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_D))
+	if (CKeyMgr::GetInstance()->Mouse_Pressing(DIMK_LB))
 	{
 		Attack();
 	}
 	//else if (CKeyMgr::GetInstance()->Mouse_Up(DIMK_LB))
 	//	m_tInfo.CurrAnimState = ANIM_IDEL;
 
-	//else
-	//	m_tInfo.CurrAnimState = ANIM_IDEL;
+	else
+		m_tInfo.CurrAnimState = ANIM_IDEL;
 
 	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_Q))
 		m_tInfo._Hp -= 10.f;
@@ -264,6 +314,76 @@ HRESULT CPlayer_Body::Add_Components()
 	return S_OK;
 }
 
+HRESULT CPlayer_Body::Add_Parts() 
+{
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+	CBone* pBonePtr = m_pModelCom->Get_BonePtr("Neck");
+	if (nullptr == pBonePtr)
+		return E_FAIL;
+
+	CPlayer::PARTSDESC PartsDesc = { pBonePtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom };
+	Safe_AddRef(pBonePtr);
+
+	CGameObject* pHead = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Player"), &PartsDesc);
+
+	if (nullptr == pHead)
+		return E_FAIL;
+
+	m_vecParts[PART_HEAD].push_back(pHead);
+
+	CBone* pHairBontPtr = m_pModelCom->Get_BonePtr("Head");
+	if (nullptr == pHairBontPtr)
+		return E_FAIL;
+
+	CHair::HAIRDESC HairDesc1 = { pHairBontPtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CHair::HAIR_BACK };
+	CHair::HAIRDESC HairDesc2 = { pHairBontPtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CHair::HAIR_FRONT };
+	CHair::HAIRDESC HairDesc3 = { pHairBontPtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CHair::HAIR_SIDE };
+	CHair::HAIRDESC HairDesc4 = { pHairBontPtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CHair::HAIR_TAIL };
+
+	CGameObject* pHair = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Hair"), &HairDesc1);
+
+	CGameObject* pHair_F = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Hair"), &HairDesc2);
+	
+	CGameObject* pHair_S = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Hair"), &HairDesc3);
+
+	CGameObject* pHair_T = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Hair"), &HairDesc4);
+
+	if (nullptr == pHair || nullptr == pHair_F || nullptr == pHair_S || nullptr == pHair_T)
+		return E_FAIL;
+
+	m_vecParts[PART_HAIR_B].push_back(pHair);
+	m_vecParts[PART_HAIR_F].push_back(pHair_F);
+	m_vecParts[PART_HAIR_S].push_back(pHair_S);
+	m_vecParts[PART_HAIR_T].push_back(pHair_T);
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CPlayer_Body::Add_Weapon()
+{
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+	CBone* pBonePtr = m_pModelCom->Get_BonePtr("Weapon_Hand_R");
+	if (nullptr == pBonePtr)
+		return E_FAIL;
+	CWeapon::WEAPONDESC WeaponDesc = { pBonePtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom };
+	Safe_AddRef(pBonePtr);
+
+	CGameObject* pWeapon = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Weapon"), &WeaponDesc);
+
+	if (nullptr == pWeapon)
+		return E_FAIL;
+
+	m_vecWeapon[WEAPON_SS].push_back(pWeapon);
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	return S_OK;
+}
+
 HRESULT CPlayer_Body::SetUp_ShaderResources()
 {
 	if (nullptr == m_pShaderCom)
@@ -329,6 +449,22 @@ CGameObject * CPlayer_Body::Clone(void * pArg)
 void CPlayer_Body::Free()
 {
 	__super::Free();
+
+	for (_uint i = 0; i < WEAPON_END; ++i)
+	{
+		for (auto& pWeapon : m_vecWeapon[i])
+			Safe_Release(pWeapon);
+
+		m_vecWeapon[i].clear();
+	}
+
+	for (_uint i = 0; i < PART_END; ++i)
+	{
+		for (auto& pPart : m_vecParts[i])
+			Safe_Release(pPart);
+
+		m_vecParts[i].clear();
+	}
 
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pModelCom);

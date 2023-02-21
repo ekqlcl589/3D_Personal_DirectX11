@@ -106,6 +106,15 @@
     <Filter Include="02.GameObject\05. Player\Part\Hair\Tail">
       <UniqueIdentifier>{7bf5a3b6-93bf-4ce2-a321-0a8b2e48d3e5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05. Player\Weapon">
+      <UniqueIdentifier>{75f234b9-c12a-4496-95f1-8faaad038354}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05. Player\Weapon\SwordShield">
+      <UniqueIdentifier>{ea3e2b8c-cf6e-4861-acc0-b1a30891d6de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05. Player\Weapon\Karma14">
+      <UniqueIdentifier>{9b7d2fe8-a816-4a95-ba1e-62035d408407}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -177,6 +186,12 @@
     <ClInclude Include="..\Public\Player_Body.h">
       <Filter>02.GameObject\05. Player\Part\Body</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Weapon.h">
+      <Filter>02.GameObject\05. Player\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Hair.h">
+      <Filter>02.GameObject\05. Player\Part\Hair</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -235,6 +250,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Player_Body.cpp">
       <Filter>02.GameObject\05. Player\Part\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Weapon.cpp">
+      <Filter>02.GameObject\05. Player\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Hair.cpp">
+      <Filter>02.GameObject\05. Player\Part\Hair</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,22 +1,20 @@
 #include "stdafx.h"
-#include "imgui.h"
-
-#include "..\Public\StaticMesh.h"
-
+#include "..\Public\Hair.h"
 #include "GameInstance.h"
-#include "ImGui_Tool.h"
 
-CStaticMesh::CStaticMesh(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+
+CHair::CHair(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
 {
 }
 
-CStaticMesh::CStaticMesh(const CStaticMesh & rhs)
+CHair::CHair(const CHair & rhs)
 	: CGameObject(rhs)
 {
 }
 
-HRESULT CStaticMesh::Initialize_Prototype()
+
+HRESULT CHair::Initialize_Prototype()
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
@@ -24,52 +22,44 @@ HRESULT CStaticMesh::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CStaticMesh::Initialize(void * pArg)
+HRESULT CHair::Initialize(void * pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	ZeroMemory(&m_HairParts, sizeof m_HairParts);
+
+	if (nullptr != pArg)
+		memcpy(&m_HairParts, pArg, sizeof m_HairParts);
+
 	if (FAILED(Add_Components()))
-		return E_FAIL;
-
-	ZeroMemory(&m_MeshState, sizeof MESHSTATE);
-
-	memcpy(&m_MeshState, pArg, sizeof(MESHSTATE));
-
-
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_MeshState.fPos));
-
-	m_pTransformCom->Set_Scale(m_MeshState.fScale);
-
-	//m_pTransformCom->Rotation(XMMatrixRotationAxis(),m_MeshState.transformDesc.fRotation)
-
-	m_MeshState.iMeshNum = CImGui_Tool::iTileNum++;
-
-	m_MeshState.m_ChangeKey;
-
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, m_MeshState.m_ChangeKey,
-		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-void CStaticMesh::Tick(_double TimeDelta)
+void CHair::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
-
-	Set_State();
 }
 
-void CStaticMesh::LateTick(_double TimeDelta)
+void CHair::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
 
-	if (nullptr != m_pRendererCom)
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_PRIORITY, this);
+	//XMLoadFloat4x4(&m_HairParts.pBonePtr->Get_OffsetMatrix()) *
+	_matrix		ParentMatrix = XMMatrixIdentity() *
+		XMLoadFloat4x4(&m_HairParts.pBonePtr->Get_CombinedTransformMatrix()) *
+		XMLoadFloat4x4(&m_HairParts.matParentLocal);
+
+	ParentMatrix.r[0] = XMVector3Normalize(ParentMatrix.r[0]);
+	ParentMatrix.r[1] = XMVector3Normalize(ParentMatrix.r[1]);
+	ParentMatrix.r[2] = XMVector3Normalize(ParentMatrix.r[2]);
+
+	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * ParentMatrix * m_HairParts.pParentTransform->Get_WorldMatrix());
 }
 
-HRESULT CStaticMesh::Render()
+HRESULT CHair::Render()
 {
 	if (FAILED(__super::Render()))
 		return E_FAIL;
@@ -85,6 +75,8 @@ HRESULT CStaticMesh::Render()
 		/*m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);
 		m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);*/
 
+		//m_pModelCom->SetUp_BoneMatrices(m_pShaderCom, "g_BoneMatrix", i);
+
 		m_pShaderCom->Begin(0);
 
 		m_pModelCom->Render(i);
@@ -92,7 +84,7 @@ HRESULT CStaticMesh::Render()
 	return S_OK;
 }
 
-HRESULT CStaticMesh::Add_Components()
+HRESULT CHair::Add_Components()
 {
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"),
 		TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom)))
@@ -107,7 +99,30 @@ HRESULT CStaticMesh::Add_Components()
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Transform"),
 		TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))
 		return E_FAIL;
-
+	if (m_HairParts.HairType == HAIR_BACK)
+	{
+		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Hair_Back"),
+			TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+			return E_FAIL;
+	}
+	else if (m_HairParts.HairType == HAIR_FRONT)
+	{
+		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Hair_Front"),
+			TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+			return E_FAIL;
+	}
+	else if (m_HairParts.HairType == HAIR_SIDE)
+	{
+		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Hair_Side"),
+			TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+			return E_FAIL;
+	}
+	else if (m_HairParts.HairType == HAIR_TAIL)
+	{
+		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Hair_Tail"),
+			TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+			return E_FAIL;
+	}
 
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModel"),
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
@@ -116,12 +131,12 @@ HRESULT CStaticMesh::Add_Components()
 	return S_OK;
 }
 
-HRESULT CStaticMesh::SetUp_ShaderResources()
+HRESULT CHair::SetUp_ShaderResources()
 {
 	if (nullptr == m_pShaderCom)
 		return E_FAIL;
 
-	if (FAILED(m_pTransformCom->SetUp_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
+	if (FAILED(m_pShaderCom->Set_Matrix("g_WorldMatrix", &m_WorldMatrix)))
 		return E_FAIL;
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
@@ -149,54 +164,41 @@ HRESULT CStaticMesh::SetUp_ShaderResources()
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
-
 	return S_OK;
 }
 
-void CStaticMesh::Set_State()
+CHair * CHair::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {
-	ImGui::Begin("Setting");
-
-	//if (ImGui::BeginMenuBar())
-	//{
-	//	if(ImGui::BeginMenu("test"))
-	//	ImGui::Text("test");
-	//	ImGui::EndMenu();
-
-	//	ImGui::EndMenuBar();
-	//}
-	ImGui::End();
-}
-
-CStaticMesh * CStaticMesh::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
-{
-	CStaticMesh*		pInstance = new CStaticMesh(pDevice, pContext);
+	CHair*		pInstance = new CHair(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Created : CStaticMesh");
+		MSG_BOX("Failed to Created : CHair");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject * CStaticMesh::Clone(void * pArg)
+CGameObject * CHair::Clone(void * pArg)
 {
-	CStaticMesh*		pInstance = new CStaticMesh(*this);
+	CHair*		pInstance = new CHair(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Clone : CStaticMesh");
+		MSG_BOX("Failed to Cloned : CHair");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CStaticMesh::Free()
+void CHair::Free()
 {
 	__super::Free();
+
+	if (true == m_isCloned)
+		Safe_Release(m_HairParts.pBonePtr);
 
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pModelCom);

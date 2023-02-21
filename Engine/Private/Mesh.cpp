@@ -99,6 +99,7 @@ HRESULT CMesh::SetUp_MeshBones(CModel * pModel)
 		CBone* pCopyBone = pModel->Get_BonePtr(pBone->Get_Name());
 		pCopyBone->Set_OffsetMatrix(XMLoadFloat4x4(&pBone->Get_OffsetMatrix()));
 		m_vecBones.push_back(pCopyBone);
+		Safe_AddRef(pCopyBone);
 	}
 
 	return S_OK;
@@ -106,9 +107,9 @@ HRESULT CMesh::SetUp_MeshBones(CModel * pModel)
 
 HRESULT CMesh::Ready_VertexBuffer_For_NonAnim(const aiMesh * pAIMesh, _fmatrix LocalMatrix)
 {
-	m_iStride = sizeof(VTXNONANIMMODEL);
-
 #pragma region VERTEXBUFFER
+
+	m_iStride = sizeof(VTXNONANIMMODEL);
 
 	ZeroMemory(&m_BufferDesc, sizeof m_BufferDesc);
 
@@ -253,6 +254,8 @@ HRESULT CMesh::Ready_VertexBuffer_For_Anim(const aiMesh * pAIMesh, class CModel*
 			return E_FAIL;
 
 		m_vecBones.push_back(pBone);
+
+		Safe_AddRef(pBone);
 	}
 #pragma endregion VERTEXBUFFER
 

@@ -1,9 +1,9 @@
 #pragma once
-
-#include "Client_Defines.h"
 #include "GameObject.h"
+#include "Client_Defines.h"
 
 BEGIN(Engine)
+
 class CShader;
 class CRenderer;
 class CTransform;
@@ -12,22 +12,24 @@ class CBone;
 
 END
 
+
 BEGIN(Client)
 
-class CPlayer final : public CGameObject
+class CWeapon final :
+	public CGameObject
 {
 public:
-	typedef struct tagPartDesc
+	typedef struct tagWeaponDesc
 	{
 		CBone* pBonePtr;
 		_float4x4 matParentLocal;
 		CTransform* pParentTransform;
-	}PARTSDESC;
+	}WEAPONDESC;
 
-private:
-	CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CPlayer(const CPlayer& rhs);
-	virtual ~CPlayer() = default;
+protected:
+	CWeapon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CWeapon(const CWeapon& rhs);
+	virtual ~CWeapon() = default;
 
 public:
 	virtual	HRESULT Initialize_Prototype() override;
@@ -47,13 +49,13 @@ private:
 	HRESULT SetUp_ShaderResources();
 
 private:
-	PARTSDESC m_Parts;
+	WEAPONDESC m_Weapon;
 	_float4x4 m_WorldMatrix;
 
 public:
-	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual CGameObject* Clone(void* pArg = nullptr) override;
-	virtual void Free() override;
+	static CWeapon* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual CGameObject* Clone(void* pArg = nullptr);
+	virtual void Free()override;
 };
 
 END

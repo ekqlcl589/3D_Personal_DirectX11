@@ -91,7 +91,7 @@ void CDynamicCamera::Target_Renewal()
 {
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-	CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Find_Prototype(TEXT("Prototype_GameObject_Player"))->Get_Component(TEXT("Prototype_Component_Transform")));
+	CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Find_GameObject(LEVEL_GAMEPLAY ,TEXT("Layer_Player"))->Get_Component(TEXT("Prototype_Component_Transform")));
 	//원본이 아니라 사본을 찾는걸 만들어서 적용해야 함
 
 	_vector vLook;

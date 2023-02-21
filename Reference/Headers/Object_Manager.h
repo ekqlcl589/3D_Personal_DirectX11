@@ -24,6 +24,7 @@ public:
 
 public:
 	class CGameObject* Find_GameObject(_uint iLevelIndex, const _tchar* pLayerTag, void* pArg = nullptr);
+	class CGameObject* Clone_GameObject(const _tchar* pPrototypeTag, void* pArg = nullptr);
 
 private: //¿øº»°´Ã¼
 	unordered_map<const _tchar*, class CGameObject*> m_Prototypes;
@@ -35,9 +36,10 @@ private: //»çº»°´Ã¼
 private:
 	_uint m_iNumLevels = { 0 };
 
-public:
+private:
 	class CGameObject* Find_Prototype(const _tchar* pPrototypeTag);
 	class CLayer* Find_Layer(_uint iLevelIndex,const _tchar* pLayerTag);
+
 public:
 	virtual void Free()override;
 };

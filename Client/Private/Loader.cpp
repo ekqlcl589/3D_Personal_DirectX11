@@ -10,6 +10,9 @@
 
 #include "Player.h"
 #include "Player_Body.h"
+#include "Hair.h"
+
+#include "Weapon.h"
 
 #include "Monster.h"
 
@@ -169,12 +172,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("모델를 로딩중입니다."));
-	_matrix		LocalMatrix = XMMatrixIdentity();
-	LocalMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	_matrix		LocalMatrixx = XMMatrixIdentity();
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Fiona"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Fiona/Fiona.fbx", CModel::MODEL_ANIM, LocalMatrix))))
-		return E_FAIL;
+	_matrix		LocalMatrix = XMMatrixIdentity();
+	LocalMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) *XMMatrixRotationZ(XMConvertToRadians(270.0f));
 
 	/* For.Prototype_Component_Model_Player */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Player"),
@@ -188,10 +189,36 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Body/Test2.fbx", CModel::MODEL_ANIM, LocalMatrix2))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Model_TestMonster */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Boss0"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Ancient_Ston_Golem.fbx", CModel::MODEL_ANIM, LocalMatrix))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Weapon_SS"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Weapon/SS/Sword_NonAnim.fbx", CModel::MODEL_NONANIM, LocalMatrix2))))
 		return E_FAIL;
+
+	/* For.Prototype_Component_Model_TestMonster */
+	/*if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Boss0"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Ancient_Ston_Golem.fbx", CModel::MODEL_ANIM, LocalMatrix))))
+		return E_FAIL;*/
+
+#pragma region HairModel
+	_matrix		LocalMatrix3 = XMMatrixIdentity();
+	LocalMatrix3 = XMMatrixScaling(0.01f, 0.01f, 0.01f) *XMMatrixRotationY(XMConvertToRadians(270.0f));
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Hair_Back"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Head/Hair/h_b.fbx", CModel::MODEL_NONANIM, LocalMatrix3))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Hair_Front"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Head/Hair/h_f.fbx", CModel::MODEL_NONANIM, LocalMatrix3))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Hair_Side"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Head/Hair/h_s.fbx", CModel::MODEL_NONANIM, LocalMatrix3))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Hair_Tail"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Head/Hair/h_t.fbx", CModel::MODEL_NONANIM, LocalMatrix3))))
+		return E_FAIL;
+
+#pragma endregion HairModel
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Tile"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Tile/Test.fbx", CModel::MODEL_NONANIM, LocalMatrix))))
@@ -243,8 +270,16 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CPlayer_Body::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster"),
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon"),
+		CWeapon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/*if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster"),
 		CMonster::Create(m_pDevice, m_pContext))))
+		return E_FAIL;*/
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Hair"),
+		CHair::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_HPBar"),

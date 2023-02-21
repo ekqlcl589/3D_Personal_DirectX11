@@ -1,5 +1,6 @@
 #pragma once
 #include "Component.h"
+#include "Bone.h"
 
 BEGIN(Engine)
 
@@ -18,6 +19,8 @@ public:
 
 	class CBone* Get_BonePtr(const char* pBoneName);
 	_uint Get_BoneIndex(const char* pBoneName);
+
+	_float4x4 Get_LocalMatrix() const {	return m_LocalMatrix; }
 
 public:
 	virtual HRESULT Initialize_Prototype(const char* pModelFilePath, MODEL_TYPE eType, _fmatrix LocalMatrix);
@@ -67,6 +70,7 @@ private:
 	_uint m_iNumAnimations = { 0 };
 	_uint m_iCurrAnimation = { 0 };
 	vector<class CAnimation*> m_vecAnimations;
+
 private:
 	_float4x4 m_LocalMatrix;
 

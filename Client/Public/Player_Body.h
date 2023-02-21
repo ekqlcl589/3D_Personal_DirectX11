@@ -14,6 +14,10 @@ BEGIN(Client)
 
 class CPlayer_Body final : public CGameObject
 {
+public:
+	enum PARTS {PART_HEAD, PART_HAIR_B, PART_HAIR_F, PART_HAIR_S, PART_HAIR_T, PART_TOP, PART_PANTS, PART_END};
+	enum WEAPON { WEAPON_SS, WEAPON_KARMA14, WEAPON_END };
+
 private:
 	CPlayer_Body(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CPlayer_Body(const CPlayer_Body& rhs);
@@ -49,7 +53,13 @@ private:
 	CModel* m_pModelCom = { nullptr };
 
 private:
+	vector<CGameObject*> m_vecParts[PART_END];
+	vector<CGameObject*> m_vecWeapon[WEAPON_END];
+	
+private:
 	HRESULT Add_Components();
+	HRESULT Add_Parts();
+	HRESULT Add_Weapon();
 	HRESULT SetUp_ShaderResources();
 
 private:

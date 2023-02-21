@@ -28,10 +28,8 @@ public: /* Obj_Mgr */
 	HRESULT Add_Prototype(const _tchar* pPrototypeTag, class CGameObject* pPrototype);
 	HRESULT Add_GameObject(_uint iLevelIndex, const _tchar* pPrototypeTag, const _tchar* pLayerTag, void* pArg = nullptr);
 
-	class CGameObject* Find_Prototype(const _tchar* pPrototypeTag);
-	class CLayer* Find_Layer(_uint iLevelIndex, const _tchar* pLayerTag);
-
 	class CGameObject* Find_GameObject(_uint iLevelIndex, const _tchar* pLayerTag, void* pArg = nullptr);
+	class CGameObject* Clone_GameObject(const _tchar* pPrototypeTag, void* pArg = nullptr);
 
 public: /* For.Component_Manager */
 	HRESULT Add_Prototype(_uint iLevelIndex, const _tchar* pPrototypeTag, class CComponent* pPrototype);

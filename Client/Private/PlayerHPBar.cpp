@@ -5,7 +5,7 @@
 #include "Shader.h"
 #include "Texture.h"
 #include "Layer.h"
-#include "Player.h"
+#include "Player_Body.h"
 
 CPlayerHPBar::CPlayerHPBar(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CUI(pDevice, pContext)
@@ -72,8 +72,8 @@ void CPlayerHPBar::LateTick(_double TimeDelta)
 
 	pPlayer = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
 
-	_float MaxHP = static_cast<CPlayer*>(pPlayer)->Get_Info()._MaxHp;
-	_float HP = static_cast<CPlayer*>(pPlayer)->Get_Info()._Hp;
+	_float MaxHP = static_cast<CPlayer_Body*>(pPlayer)->Get_Info()._MaxHp;
+	_float HP = static_cast<CPlayer_Body*>(pPlayer)->Get_Info()._Hp;
 
 	if (HP > MaxHP)
 		HP = MaxHP;

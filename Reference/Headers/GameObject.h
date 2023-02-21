@@ -22,6 +22,8 @@ protected:
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pContext = { nullptr };
 
+	_bool m_isCloned = { false };
+
 protected:
 	unordered_map<const _tchar*, class CComponent*>			m_Components;
 

@@ -5,7 +5,7 @@
 #include "Shader.h"
 #include "Texture.h"
 #include "Layer.h"
-#include "Player.h"
+#include "Player_Body.h"
 
 CPlayerMPBar::CPlayerMPBar(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CUI(pDevice, pContext)
@@ -72,8 +72,8 @@ void CPlayerMPBar::LateTick(_double TimeDelta)
 
 	pPlayer = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
 
-	_float MaxMP = static_cast<CPlayer*>(pPlayer)->Get_Info()._MaxMp;
-	_float MP = static_cast<CPlayer*>(pPlayer)->Get_Info()._Mp;
+	_float MaxMP = static_cast<CPlayer_Body*>(pPlayer)->Get_Info()._MaxMp;
+	_float MP = static_cast<CPlayer_Body*>(pPlayer)->Get_Info()._Mp;
 
 	if (MP > MaxMP)
 		MP = MaxMP;
