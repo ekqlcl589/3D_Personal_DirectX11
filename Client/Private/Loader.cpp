@@ -11,6 +11,7 @@
 #include "Player.h"
 #include "Player_Body.h"
 #include "Hair.h"
+#include "PlayerTop.h"
 
 #include "Weapon.h"
 
@@ -172,7 +173,6 @@ HRESULT CLoader::Loading_ForGamePlay()
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("모델를 로딩중입니다."));
-	_matrix		LocalMatrixx = XMMatrixIdentity();
 
 	_matrix		LocalMatrix = XMMatrixIdentity();
 	LocalMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) *XMMatrixRotationZ(XMConvertToRadians(270.0f));
@@ -200,25 +200,36 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 #pragma region HairModel
 	_matrix		LocalMatrix3 = XMMatrixIdentity();
-	LocalMatrix3 = XMMatrixScaling(0.01f, 0.01f, 0.01f) *XMMatrixRotationY(XMConvertToRadians(270.0f));
+	LocalMatrix3 = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(270.0f));
+
+	_matrix		LocalMatrix5 = XMMatrixIdentity();
+	LocalMatrix5 = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixTranslation(0.f, -1.f, 0.f) * XMMatrixRotationZ(XMConvertToRadians(270.0f));
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Hair_Back"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Head/Hair/h_b.fbx", CModel::MODEL_NONANIM, LocalMatrix3))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Head/Hair/Hair3.fbx", CModel::MODEL_NONANIM, LocalMatrix))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Hair_Front"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Head/Hair/h_f.fbx", CModel::MODEL_NONANIM, LocalMatrix3))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Head/Hair/h_f.fbx", CModel::MODEL_NONANIM, LocalMatrix5))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Hair_Side"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Head/Hair/h_s.fbx", CModel::MODEL_NONANIM, LocalMatrix3))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Head/Hair/h_s.fbx", CModel::MODEL_NONANIM, LocalMatrix5))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Hair_Tail"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Head/Hair/h_t.fbx", CModel::MODEL_NONANIM, LocalMatrix3))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Head/Hair/h_t.fbx", CModel::MODEL_NONANIM, LocalMatrix5))))
 		return E_FAIL;
 
 #pragma endregion HairModel
+
+#pragma region 애니메이션 옷 파츠
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Player_Top"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Parts/Top/Top2.fbx", CModel::MODEL_NONANIM, LocalMatrix))))
+		return E_FAIL;
+
+#pragma endregion 애니메이션 옷 파츠
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Tile"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Tile/Test.fbx", CModel::MODEL_NONANIM, LocalMatrix))))
@@ -251,6 +262,23 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CCalculator::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	lstrcpy(m_szLoadingText, TEXT("충돌체를 로딩중입니다."));
+
+	/* For.Prototype_Component_Collider_AABB */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"),
+		CCollider::Create(m_pDevice, m_pContext, CCollider::TYPE_AABB))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Collider_OBB */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_OBB"),
+		CCollider::Create(m_pDevice, m_pContext, CCollider::TYPE_OBB))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Collider_SPHERE */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_SPHERE"),
+		CCollider::Create(m_pDevice, m_pContext, CCollider::TYPE_SPHERE))))
+		return E_FAIL;
+
 	lstrcpy(m_szLoadingText, TEXT("객체원형을 로딩중."));
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Terrain"),
 		CTerrain::Create(m_pDevice, m_pContext))))
@@ -280,6 +308,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Hair"),
 		CHair::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player_Top"),
+		CPlayerTop::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_HPBar"),

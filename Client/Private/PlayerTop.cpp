@@ -1,20 +1,18 @@
 #include "stdafx.h"
-#include "..\Public\Hair.h"
+#include "..\Public\PlayerTop.h"
 #include "GameInstance.h"
 
-
-CHair::CHair(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CPlayerTop::CPlayerTop(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
 {
 }
 
-CHair::CHair(const CHair & rhs)
+CPlayerTop::CPlayerTop(const CPlayerTop & rhs)
 	: CGameObject(rhs)
 {
 }
 
-
-HRESULT CHair::Initialize_Prototype()
+HRESULT CPlayerTop::Initialize_Prototype()
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
@@ -22,46 +20,46 @@ HRESULT CHair::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CHair::Initialize(void * pArg)
+HRESULT CPlayerTop::Initialize(void * pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	ZeroMemory(&m_HairParts, sizeof m_HairParts);
+	ZeroMemory(&m_TopDesc, sizeof m_TopDesc);
 
 	if (nullptr != pArg)
-		memcpy(&m_HairParts, pArg, sizeof m_HairParts);
+		memcpy(&m_TopDesc, pArg, sizeof m_TopDesc);
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 0.f));
 	m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.0f));
 
 	return S_OK;
 }
 
-void CHair::Tick(_double TimeDelta)
+void CPlayerTop::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 }
 
-void CHair::LateTick(_double TimeDelta)
+void CPlayerTop::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
-
-	//XMLoadFloat4x4(&m_HairParts.pBonePtr->Get_OffsetMatrix()) *
+	//XMLoadFloat4x4(&m_TopDesc.pBonePtr->Get_OffsetMatrix()) *
 	_matrix		ParentMatrix = 
-		XMLoadFloat4x4(&m_HairParts.pBonePtr->Get_CombinedTransformMatrix()) *
-		XMLoadFloat4x4(&m_HairParts.matParentLocal);
+		XMLoadFloat4x4(&m_TopDesc.pBonePtr->Get_CombinedTransformMatrix()) *
+		XMLoadFloat4x4(&m_TopDesc.matParentLocal);
 
 	ParentMatrix.r[0] = XMVector3Normalize(ParentMatrix.r[0]);
 	ParentMatrix.r[1] = XMVector3Normalize(ParentMatrix.r[1]);
 	ParentMatrix.r[2] = XMVector3Normalize(ParentMatrix.r[2]);
 
-	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * ParentMatrix * m_HairParts.pParentTransform->Get_WorldMatrix());
+	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * ParentMatrix * m_TopDesc.pParentTransform->Get_WorldMatrix());
 }
 
-HRESULT CHair::Render()
+HRESULT CPlayerTop::Render()
 {
 	if (FAILED(__super::Render()))
 		return E_FAIL;
@@ -86,7 +84,7 @@ HRESULT CHair::Render()
 	return S_OK;
 }
 
-HRESULT CHair::Add_Components()
+HRESULT CPlayerTop::Add_Components()
 {
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"),
 		TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom)))
@@ -101,30 +99,10 @@ HRESULT CHair::Add_Components()
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Transform"),
 		TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))
 		return E_FAIL;
-	if (m_HairParts.HairType == HAIR_BACK)
-	{
-		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Hair_Back"),
-			TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
-			return E_FAIL;
-	}
-	else if (m_HairParts.HairType == HAIR_FRONT)
-	{
-		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Hair_Front"),
-			TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
-			return E_FAIL;
-	}
-	else if (m_HairParts.HairType == HAIR_SIDE)
-	{
-		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Hair_Side"),
-			TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
-			return E_FAIL;
-	}
-	else if (m_HairParts.HairType == HAIR_TAIL)
-	{
-		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Hair_Tail"),
-			TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
-			return E_FAIL;
-	}
+
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Player_Top"),
+		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+		return E_FAIL;
 
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModel"),
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
@@ -133,7 +111,7 @@ HRESULT CHair::Add_Components()
 	return S_OK;
 }
 
-HRESULT CHair::SetUp_ShaderResources()
+HRESULT CPlayerTop::SetUp_ShaderResources()
 {
 	if (nullptr == m_pShaderCom)
 		return E_FAIL;
@@ -169,38 +147,38 @@ HRESULT CHair::SetUp_ShaderResources()
 	return S_OK;
 }
 
-CHair * CHair::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CPlayerTop * CPlayerTop::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {
-	CHair*		pInstance = new CHair(pDevice, pContext);
+	CPlayerTop*		pInstance = new CPlayerTop(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Created : CHair");
+		MSG_BOX("Failed to Created : CPlayerTop");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject * CHair::Clone(void * pArg)
+CGameObject * CPlayerTop::Clone(void * pArg)
 {
-	CHair*		pInstance = new CHair(*this);
+	CPlayerTop*		pInstance = new CPlayerTop(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CHair");
+		MSG_BOX("Failed to Cloned : CPlayerTop");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CHair::Free()
+void CPlayerTop::Free()
 {
 	__super::Free();
 
 	if (true == m_isCloned)
-		Safe_Release(m_HairParts.pBonePtr);
+		Safe_Release(m_TopDesc.pBonePtr);
 
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pModelCom);

@@ -1,6 +1,7 @@
 #pragma once
 
 #pragma warning (disable : 4005)
+#pragma warning (disable : 4099)
 #pragma warning (disable : 4251)
 
 #include <d3d11.h>
@@ -10,14 +11,20 @@
 #include <DirectXMath.h>
 #include <DirectXCollision.h>
 #include <process.h>
-#include "Effects11/d3dx11effect.h"
 #include <d3dcompiler.h>
+#include <typeinfo.h>
+//#include <typeinfo>
+
+#include "Effects11/d3dx11effect.h"
 #include "DirectXTK/DDSTextureLoader.h"
 #include "DirectXTK/WICTextureLoader.h"
 #include "DirectXTK/ScreenGrab.h"
 
-#include <typeinfo.h>
-//#include <typeinfo>
+#include "DirectXTK/PrimitiveBatch.h"
+#include "DirectXTK/VertexTypes.h"
+#include "DirectXTK/Effects.h"
+#include "DirectXTK/SpriteBatch.h"
+#include "DirectXTK/SpriteFont.h"
 
 // 모델 로드 테스트용 나중에는 빼야함 
 #include "assimp/scene.h"

@@ -8,6 +8,7 @@ class CShader;
 class CRenderer;
 class CTransform;
 class CModel;
+class CCollider;
 END
 
 BEGIN(Client)
@@ -17,6 +18,9 @@ class CPlayer_Body final : public CGameObject
 public:
 	enum PARTS {PART_HEAD, PART_HAIR_B, PART_HAIR_F, PART_HAIR_S, PART_HAIR_T, PART_TOP, PART_PANTS, PART_END};
 	enum WEAPON { WEAPON_SS, WEAPON_KARMA14, WEAPON_END };
+
+public:
+	enum COLLIDER {COLLIDER_AABB, COLLIDER_OBB, COLLIDER_SPHERE, COLLIDER_END};
 
 private:
 	CPlayer_Body(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -44,13 +48,17 @@ public:
 	void Attack_Combo(_double TimeDelta);
 
 public:
-	CTransform* Get_Transform();
+	CTransform* Get_Transform() {
+		return m_pTransformCom;
+	}
+
 
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CRenderer* m_pRendererCom = { nullptr };
 	CTransform*	m_pTransformCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
+	CCollider* m_pColliderCom[COLLIDER_END] = { nullptr };
 
 private:
 	vector<CGameObject*> m_vecParts[PART_END];

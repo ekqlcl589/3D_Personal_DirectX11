@@ -8,6 +8,7 @@
 #include "VIBuffer_Cube.h"
 #include "Transform.h"
 #include "Calulator.h"
+#include "Collider.h"
 #include "Model.h"
 
 BEGIN(Engine)

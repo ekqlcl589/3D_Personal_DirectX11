@@ -94,18 +94,6 @@
     <Filter Include="02.GameObject\05. Player\Part\Pant">
       <UniqueIdentifier>{559dee5a-9b7d-4bca-ae84-a6ec4213eb41}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05. Player\Part\Hair\Back">
-      <UniqueIdentifier>{68aa2a80-84be-4924-9cf6-f28cf589c78c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05. Player\Part\Hair\Front">
-      <UniqueIdentifier>{56e1880a-bcf1-4070-9065-542438678b5b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05. Player\Part\Hair\Side">
-      <UniqueIdentifier>{f4137206-59ee-4f79-afd2-e802b4abb71e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\05. Player\Part\Hair\Tail">
-      <UniqueIdentifier>{7bf5a3b6-93bf-4ce2-a321-0a8b2e48d3e5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\05. Player\Weapon">
       <UniqueIdentifier>{75f234b9-c12a-4496-95f1-8faaad038354}</UniqueIdentifier>
     </Filter>
@@ -192,6 +180,7 @@
     <ClInclude Include="..\Public\Hair.h">
       <Filter>02.GameObject\05. Player\Part\Hair</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\PlayerTop.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -257,6 +246,7 @@
     <ClCompile Include="..\Private\Hair.cpp">
       <Filter>02.GameObject\05. Player\Part\Hair</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\PlayerTop.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

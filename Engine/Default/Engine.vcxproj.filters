@@ -109,6 +109,12 @@
     <Filter Include="01.Utillity\03. Component\04. Model\02. Animation\00. Channel">
       <UniqueIdentifier>{ae4c81a3-0240-48a2-b467-2853e6493b4e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utillity\03. Component\05. Collider">
+      <UniqueIdentifier>{39e9ba3a-a224-49f1-a94c-8b14d3a47743}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utillity\03. Component\05. Collider\DebugDraw">
+      <UniqueIdentifier>{7a25af31-18d9-4af0-92d5-06b8184036fe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -225,6 +231,12 @@
     <ClInclude Include="..\Public\Channel.h">
       <Filter>01.Utillity\03. Component\04. Model\02. Animation\00. Channel</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Collider.h">
+      <Filter>01.Utillity\03. Component\05. Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\DebugDraw.h">
+      <Filter>01.Utillity\03. Component\05. Collider\DebugDraw</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\GameInstance.cpp">
@@ -328,6 +340,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Channel.cpp">
       <Filter>01.Utillity\03. Component\04. Model\02. Animation\00. Channel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Collider.cpp">
+      <Filter>01.Utillity\03. Component\05. Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DebugDraw.cpp">
+      <Filter>01.Utillity\03. Component\05. Collider\DebugDraw</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

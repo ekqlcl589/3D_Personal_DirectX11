@@ -5,6 +5,7 @@
 #include "KeyMgr.h"
 #include "Player.h"
 #include "Hair.h"
+#include "PlayerTop.h"
 #include "Weapon.h"
 
 CPlayer_Body::CPlayer_Body(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -63,9 +64,29 @@ void CPlayer_Body::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 
+	for (_uint i = 0; i < WEAPON_END; i++)
+	{
+		for (auto& pWeapon : m_vecWeapon[i])
+		{
+			if (nullptr != pWeapon)
+				pWeapon->Tick(TimeDelta);
+		}
+	}
 
+	for (_uint i = 0; i < PART_END; i++)
+	{
+		for (auto& pPart : m_vecParts[i])
+		{
+			if (nullptr != pPart)
+				pPart->Tick(TimeDelta);
+		}
+	}
 
-
+	for (_uint i = 0; i < COLLIDER_END; i++)
+	{
+		if (nullptr != m_pColliderCom[i])
+			m_pColliderCom[i]->Update(m_pTransformCom->Get_WorldMatrix());
+	}
 }
 
 void CPlayer_Body::LateTick(_double TimeDelta)
@@ -148,6 +169,17 @@ HRESULT CPlayer_Body::Render()
 
 		m_pModelCom->Render(i);
 	}
+
+#ifdef _DEBUG
+
+	for (_uint i = 0; i < COLLIDER_END; ++i)
+	{
+		if (nullptr != m_pColliderCom[i])
+			m_pColliderCom[i]->Render();
+	}
+
+#endif
+
 	return S_OK;
 }
 
@@ -282,11 +314,6 @@ void CPlayer_Body::Attack_Combo(_double TimeDelta)
 	}
 }
 
-CTransform * CPlayer_Body::Get_Transform()
-{
-	return m_pTransformCom;
-}
-
 HRESULT CPlayer_Body::Add_Components()
 {
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"),
@@ -311,6 +338,16 @@ HRESULT CPlayer_Body::Add_Components()
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
+	CCollider::COLLIDERDESC ColliderDesc;
+	ZeroMemory(&ColliderDesc, sizeof ColliderDesc);
+
+	ColliderDesc.vScale = _float3(1.f, 2.5f, 1.f);
+	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vScale.y * 0.5f, 0.f);
+
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"),
+		TEXT("Com_Collider"), (CComponent**)&m_pColliderCom[COLLIDER_AABB], &ColliderDesc)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -332,7 +369,7 @@ HRESULT CPlayer_Body::Add_Parts()
 
 	m_vecParts[PART_HEAD].push_back(pHead);
 
-	CBone* pHairBontPtr = m_pModelCom->Get_BonePtr("Head");
+	CBone* pHairBontPtr = m_pModelCom->Get_BonePtr("Neck");
 	if (nullptr == pHairBontPtr)
 		return E_FAIL;
 
@@ -343,19 +380,37 @@ HRESULT CPlayer_Body::Add_Parts()
 
 	CGameObject* pHair = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Hair"), &HairDesc1);
 
-	CGameObject* pHair_F = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Hair"), &HairDesc2);
-	
-	CGameObject* pHair_S = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Hair"), &HairDesc3);
+	//CGameObject* pHair_F = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Hair"), &HairDesc2);
+	//
+	//CGameObject* pHair_S = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Hair"), &HairDesc3);
+	//
+	//CGameObject* pHair_T = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Hair"), &HairDesc4);
 
-	CGameObject* pHair_T = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Hair"), &HairDesc4);
-
-	if (nullptr == pHair || nullptr == pHair_F || nullptr == pHair_S || nullptr == pHair_T)
+	if (nullptr == pHair)// || nullptr == pHair_F || nullptr == pHair_S || nullptr == pHair_T)
 		return E_FAIL;
 
 	m_vecParts[PART_HAIR_B].push_back(pHair);
-	m_vecParts[PART_HAIR_F].push_back(pHair_F);
-	m_vecParts[PART_HAIR_S].push_back(pHair_S);
-	m_vecParts[PART_HAIR_T].push_back(pHair_T);
+	//m_vecParts[PART_HAIR_F].push_back(pHair_F);
+	//m_vecParts[PART_HAIR_S].push_back(pHair_S);
+	//m_vecParts[PART_HAIR_T].push_back(pHair_T);
+
+	CBone* pBoneTopPtr = m_pModelCom->Get_BonePtr("Spine");
+	if (nullptr == pBoneTopPtr)
+		return E_FAIL;
+	
+	CPlayerTop::TOPDESC TopDesc = { pBoneTopPtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom };
+	//float4x4 ff = pBoneTopPtr->Get_OffsetMatrix();
+	//XMStoreFloat4x4(&ff, XMLoadFloat4x4(&pBoneTopPtr->Get_OffsetMatrix()));
+	//CPlayerTop::TOPDESC TopDesc = { pBoneTopPtr, ff, m_pTransformCom };
+	Safe_AddRef(pBoneTopPtr);
+
+	CGameObject* pTop = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Player_Top"), &TopDesc);
+
+	if (nullptr == pTop)
+		return E_FAIL;
+
+	m_vecParts[PART_TOP].push_back(pTop);
+
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -464,6 +519,11 @@ void CPlayer_Body::Free()
 			Safe_Release(pPart);
 
 		m_vecParts[i].clear();
+	}
+
+	for (_uint i = 0; i < COLLIDER_END; ++i)
+	{
+		Safe_Release(m_pColliderCom[i]);
 	}
 
 	Safe_Release(m_pTransformCom);
