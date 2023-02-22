@@ -180,7 +180,9 @@
     <ClInclude Include="..\Public\Hair.h">
       <Filter>02.GameObject\05. Player\Part\Hair</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\PlayerTop.h" />
+    <ClInclude Include="..\Public\PlayerTop.h">
+      <Filter>02.GameObject\05. Player\Part\Top</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -246,7 +248,9 @@
     <ClCompile Include="..\Private\Hair.cpp">
       <Filter>02.GameObject\05. Player\Part\Hair</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\PlayerTop.cpp" />
+    <ClCompile Include="..\Private\PlayerTop.cpp">
+      <Filter>02.GameObject\05. Player\Part\Top</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

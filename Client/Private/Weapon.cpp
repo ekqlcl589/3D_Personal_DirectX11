@@ -35,7 +35,7 @@ HRESULT CWeapon::Initialize(void * pArg)
 		return E_FAIL;
 
 	//m_pTransformCom->Set_Scale(_float3(0.1f, 0.1f, 0.1f));
-	m_pTransformCom->Rotation(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(90.0f));
+	m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(270.0f));
 
 	return S_OK;
 }
@@ -98,9 +98,18 @@ HRESULT CWeapon::Add_Components()
 		TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))
 		return E_FAIL;
 	/* For.Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Weapon_SS"),
-		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
-		return E_FAIL;
+	if (m_Weapon.WeaponType == WEAPON_SWORD)
+	{
+		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Weapon_SS"),
+			TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+			return E_FAIL;
+	}
+	else if (m_Weapon.WeaponType == WEAPON_SHILED)
+	{
+		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Weapon_Shield"),
+			TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+			return E_FAIL;
+	}
 
 	/* For.Com_Shader */
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModel"),

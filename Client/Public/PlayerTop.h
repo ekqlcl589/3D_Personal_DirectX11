@@ -16,11 +16,13 @@ class CPlayerTop final :
 	public CGameObject
 {
 public:
+	enum CLOTHESTYPE { CLOTHES_TOP, CLOTHES_PANTS, CLOTHES_HAND, CLOTHES_END};
 	typedef struct tagTopDesc
 	{
 		CBone* pBonePtr;
 		_float4x4 matParentLocal;
 		CTransform* pParentTransform;
+		CLOTHESTYPE ClothesType;
 	}TOPDESC;
 
 private:

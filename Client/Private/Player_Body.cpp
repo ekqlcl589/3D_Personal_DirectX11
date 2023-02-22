@@ -194,8 +194,13 @@ void CPlayer_Body::Key_Input(_double TimeDelta)
 		m_tInfo.CurrAnimState = ANIM_RUN_END;
 
 	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_DOWN))
+	{
 		m_pTransformCom->Go_Back(TimeDelta);
+		m_tInfo.CurrAnimState = ANIM_RUN;
 
+	}
+	else if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_DOWN))
+		m_tInfo.CurrAnimState - ANIM_RUN_END;
 
 	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_LEFT))
 	{
@@ -222,8 +227,8 @@ void CPlayer_Body::Key_Input(_double TimeDelta)
 	//else if (CKeyMgr::GetInstance()->Mouse_Up(DIMK_LB))
 	//	m_tInfo.CurrAnimState = ANIM_IDEL;
 
-	else
-		m_tInfo.CurrAnimState = ANIM_IDEL;
+	//else
+	//	m_tInfo.CurrAnimState = ANIM_IDEL;
 
 	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_Q))
 		m_tInfo._Hp -= 10.f;
@@ -341,7 +346,7 @@ HRESULT CPlayer_Body::Add_Components()
 	CCollider::COLLIDERDESC ColliderDesc;
 	ZeroMemory(&ColliderDesc, sizeof ColliderDesc);
 
-	ColliderDesc.vScale = _float3(1.f, 2.5f, 1.f);
+	ColliderDesc.vScale = _float3(1.f, 2.f, 1.f);
 	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vScale.y * 0.5f, 0.f);
 
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"),
@@ -398,19 +403,18 @@ HRESULT CPlayer_Body::Add_Parts()
 	if (nullptr == pBoneTopPtr)
 		return E_FAIL;
 	
-	CPlayerTop::TOPDESC TopDesc = { pBoneTopPtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom };
-	//float4x4 ff = pBoneTopPtr->Get_OffsetMatrix();
-	//XMStoreFloat4x4(&ff, XMLoadFloat4x4(&pBoneTopPtr->Get_OffsetMatrix()));
-	//CPlayerTop::TOPDESC TopDesc = { pBoneTopPtr, ff, m_pTransformCom };
+	CPlayerTop::TOPDESC TopDesc = { pBoneTopPtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CPlayerTop::CLOTHES_TOP };
+	CPlayerTop::TOPDESC TopDesc2 = { pBoneTopPtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CPlayerTop::CLOTHES_PANTS };
 	Safe_AddRef(pBoneTopPtr);
 
 	CGameObject* pTop = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Player_Top"), &TopDesc);
+	CGameObject* pPants = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Player_Top"), &TopDesc2);
 
-	if (nullptr == pTop)
+	if (nullptr == pTop || nullptr == pPants)
 		return E_FAIL;
 
 	m_vecParts[PART_TOP].push_back(pTop);
-
+	m_vecParts[PART_PANTS].push_back(pPants);
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -422,17 +426,22 @@ HRESULT CPlayer_Body::Add_Weapon()
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
 	CBone* pBonePtr = m_pModelCom->Get_BonePtr("Weapon_Hand_R");
-	if (nullptr == pBonePtr)
+	CBone* pBonePtrL = m_pModelCom->Get_BonePtr("Weapon_Hand_L");
+	if (nullptr == pBonePtr || nullptr == pBonePtrL)
 		return E_FAIL;
-	CWeapon::WEAPONDESC WeaponDesc = { pBonePtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom };
+	CWeapon::WEAPONDESC WeaponDesc = { pBonePtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CWeapon::WEAPON_SWORD };
+	CWeapon::WEAPONDESC WeaponDesc1 = { pBonePtrL, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CWeapon::WEAPON_SHILED };
 	Safe_AddRef(pBonePtr);
+	Safe_AddRef(pBonePtrL);
 
 	CGameObject* pWeapon = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Weapon"), &WeaponDesc);
+	CGameObject* pShield = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Weapon"), &WeaponDesc1);
 
-	if (nullptr == pWeapon)
+	if (nullptr == pWeapon || nullptr == pShield)
 		return E_FAIL;
 
 	m_vecWeapon[WEAPON_SS].push_back(pWeapon);
+	m_vecWeapon[WEAPON_SHIELD].push_back(pShield);
 
 	RELEASE_INSTANCE(CGameInstance);
 

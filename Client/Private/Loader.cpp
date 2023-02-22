@@ -186,13 +186,22 @@ HRESULT CLoader::Loading_ForGamePlay()
 	LocalMatrix2 = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(270.0f));
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Player_Body"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Body/Test2.fbx", CModel::MODEL_ANIM, LocalMatrix2))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Body/PlayerBody.fbx", CModel::MODEL_ANIM, LocalMatrix2))))
 		return E_FAIL;
 
+	_matrix		LocalMatrix6 = XMMatrixIdentity();
+	LocalMatrix6 = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+
+#pragma region Weapon
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Weapon_SS"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Weapon/SS/Sword_NonAnim.fbx", CModel::MODEL_NONANIM, LocalMatrix2))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Weapon/SS/Sword_NonAnim.fbx", CModel::MODEL_NONANIM, LocalMatrix6))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Weapon_Shield"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Weapon/SS/Shield.fbx", CModel::MODEL_NONANIM, LocalMatrix6))))
+		return E_FAIL;
+
+#pragma endregion Weapon
 	/* For.Prototype_Component_Model_TestMonster */
 	/*if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Boss0"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Ancient_Ston_Golem.fbx", CModel::MODEL_ANIM, LocalMatrix))))
@@ -226,7 +235,11 @@ HRESULT CLoader::Loading_ForGamePlay()
 #pragma region 局聪皋捞记 渴 颇明
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Player_Top"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Parts/Top/Top2.fbx", CModel::MODEL_NONANIM, LocalMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Parts/Top/JEBAL.fbx", CModel::MODEL_NONANIM, LocalMatrix5))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Player_Pants"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Parts/Pants/PlayerPants.fbx", CModel::MODEL_NONANIM, LocalMatrix))))
 		return E_FAIL;
 
 #pragma endregion 局聪皋捞记 渴 颇明

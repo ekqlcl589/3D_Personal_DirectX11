@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\PlayerTop.h"
 #include "GameInstance.h"
+#include "Player_Body.h"
 
 CPlayerTop::CPlayerTop(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -42,6 +43,8 @@ HRESULT CPlayerTop::Initialize(void * pArg)
 void CPlayerTop::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
+
+	//m_pModelCom->Play_Animation(TimeDelta);
 }
 
 void CPlayerTop::LateTick(_double TimeDelta)
@@ -57,6 +60,8 @@ void CPlayerTop::LateTick(_double TimeDelta)
 	ParentMatrix.r[2] = XMVector3Normalize(ParentMatrix.r[2]);
 
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * ParentMatrix * m_TopDesc.pParentTransform->Get_WorldMatrix());
+
+	//m_pModelCom->SetUp_Animation()
 }
 
 HRESULT CPlayerTop::Render()
@@ -100,9 +105,18 @@ HRESULT CPlayerTop::Add_Components()
 		TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Player_Top"),
-		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
-		return E_FAIL;
+	if (m_TopDesc.ClothesType == CLOTHES_TOP)
+	{
+		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Player_Top"),
+			TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+			return E_FAIL;
+	}
+	else if (m_TopDesc.ClothesType == CLOTHES_PANTS)
+	{
+		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Player_Pants"),
+			TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+			return E_FAIL;
+	}
 
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModel"),
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))

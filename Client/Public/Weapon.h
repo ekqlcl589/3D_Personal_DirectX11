@@ -19,11 +19,13 @@ class CWeapon final :
 	public CGameObject
 {
 public:
+	enum WEAPONTYPE {WEAPON_SWORD, WEAPON_SHILED, WEAPON_END};
 	typedef struct tagWeaponDesc
 	{
 		CBone* pBonePtr;
 		_float4x4 matParentLocal;
 		CTransform* pParentTransform;
+		WEAPONTYPE WeaponType;
 	}WEAPONDESC;
 
 protected:
