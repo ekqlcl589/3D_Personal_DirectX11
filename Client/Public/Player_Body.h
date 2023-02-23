@@ -81,6 +81,7 @@ private:
 private:
 	_bool m_AttackCheck = false;
 	_bool m_ComboCheck = false;
+	_bool m_bAnimCheck = false;
 
 	_float m_ComboTime = 0.f;
 

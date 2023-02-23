@@ -14,9 +14,13 @@ public:
 	HRESULT Initialize(aiAnimation* pAIAnimation, class CModel* pModel);
 	void Play_Animation(_double TimeDelta, const vector<class CBone*>& Bones);
 
+	_bool Play_Animation_Last(_double TimeDelta, _double CheckTime, const vector<class CBone*>& Bones);
+
 public:
 	_double Get_Duration() { return m_Duration; }
 	_double Get_TimeAcc() { return m_TimeAcc; }
+
+	_bool Get_AnimCheck() { return m_Check; }
 
 private:
 	char m_szName[MAX_PATH] = "";
@@ -27,11 +31,14 @@ private:
 	_bool m_isFinished = false;
 	_bool m_isLoop = true;
 
+	_bool m_Check = false;
+
 private:
 	_uint m_iNumChannels = { 0 };
 	vector<class CChannel*> m_vecChannel;
 
 	vector<_uint> m_CurrKeyFrame;
+	vector<_uint> m_NextKeyFrame;
 
 public:
 	static CAnimation* Create(aiAnimation* pAIAnimation, class CModel* pModel);

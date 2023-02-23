@@ -136,6 +136,18 @@ HRESULT CModel::SetUp_Animation(_uint iAnimationIndex)
 	return S_OK;
 }
 
+HRESULT CModel::Set_Animation(_uint iAnimationIndex)
+{
+	if (iAnimationIndex >= m_iNumAnimations)
+		return E_FAIL;
+
+	m_iNextAnimation = m_iCurrAnimation;
+
+
+
+	return S_OK;
+}
+
 HRESULT CModel::Play_Animation(_double TimeDelta)
 {
 	m_vecAnimations[m_iCurrAnimation]->Play_Animation(TimeDelta, m_vecBones);
@@ -263,6 +275,11 @@ _double CModel::Get_AnimDuration()
 _double CModel::Get_AnimTimeAcc()
 {
 	return	m_vecAnimations[m_iCurrAnimation]->Get_TimeAcc();
+}
+
+_bool CModel::Get_AnimCheck()
+{
+	return m_vecAnimations[m_iCurrAnimation]->Get_AnimCheck();
 }
 
 

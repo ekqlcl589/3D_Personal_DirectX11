@@ -30,6 +30,7 @@ public:
 	HRESULT SetUp_ShaderMaterialResource(class CShader* pShaderCom, const char* pConstantName, _uint iMeshIndex, aiTextureType eType);
 	HRESULT SetUp_BoneMatrices(class CShader* pShaderCom, const char* pConstantName, _uint iMeshIndex);
 	HRESULT SetUp_Animation(_uint iAnimationIndex);
+	HRESULT Set_Animation(_uint iAnimationIndex);
 	HRESULT Play_Animation(_double TimeDelta);
 	HRESULT Render(_uint iMeshIndex);
 
@@ -46,6 +47,7 @@ public:
 	vector<class CAnimation*>* Get_Anim() { return &m_vecAnimations; }
 	_double Get_AnimDuration();
 	_double Get_AnimTimeAcc();
+	_bool Get_AnimCheck();
 
 private:
 	Assimp::Importer m_Importer;
@@ -69,6 +71,7 @@ private:
 private:
 	_uint m_iNumAnimations = { 0 };
 	_uint m_iCurrAnimation = { 0 };
+	_uint m_iNextAnimation = { 0 };
 	vector<class CAnimation*> m_vecAnimations;
 
 private:

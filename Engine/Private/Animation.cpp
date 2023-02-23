@@ -58,20 +58,37 @@ void CAnimation::Play_Animation(_double TimeDelta, const vector<class CBone*>& B
 		}
 		else
 		{
+			m_TimeAcc = 0.0;
 			m_isFinished = true;
 		}
+			m_Check = true;
 	}
+	else
+		m_Check = false;
 
 	if (false == m_isFinished || true == m_isLoop)
 	{
 		_uint iChannelIndex = 0;
 
 		for (auto& pChannel : m_vecChannel)
+		{
+			m_NextKeyFrame = m_CurrKeyFrame;
 			pChannel->Invalidate_Transform(m_TimeAcc, &m_CurrKeyFrame[iChannelIndex++], Bones);
+			//pChannel->Linear_Transform(m_TimeAcc, &m_CurrKeyFrame[iChannelIndex++], &m_NextKeyFrame[iChannelIndex], Bones);
+		}
+
+		
 	}
 
 	if (true == m_isLoop)
 		m_isFinished = false;
+}
+
+_bool CAnimation::Play_Animation_Last(_double TimeDelta, _double CheckTime, const vector<class CBone*>& Bones)
+{
+	CheckTime = m_TimeAcc;
+
+	return m_Check;
 }
 
 CAnimation * CAnimation::Create(aiAnimation * pAIAnimation, CModel* pModel)

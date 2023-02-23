@@ -186,7 +186,7 @@ HRESULT CLoader::Loading_ForGamePlay()
 	LocalMatrix2 = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(270.0f));
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Player_Body"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Body/PlayerBody.fbx", CModel::MODEL_ANIM, LocalMatrix2))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Body/Player.fbx", CModel::MODEL_ANIM, LocalMatrix2))))
 		return E_FAIL;
 
 	_matrix		LocalMatrix6 = XMMatrixIdentity();
@@ -234,13 +234,13 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 #pragma region ¾Ö´Ï¸ÞÀÌ¼Ç ¿Ê ÆÄÃ÷
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Player_Top"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Parts/Top/JEBAL.fbx", CModel::MODEL_NONANIM, LocalMatrix5))))
-		return E_FAIL;
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Player_Top"),
+	//	CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Parts/Top/JEBAL.fbx", CModel::MODEL_ANIM, LocalMatrix5))))
+	//	return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Player_Pants"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Parts/Pants/PlayerPants.fbx", CModel::MODEL_NONANIM, LocalMatrix))))
-		return E_FAIL;
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Player_Pants"),
+	//	CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Parts/Pants/PlayerPants.fbx", CModel::MODEL_NONANIM, LocalMatrix))))
+	//	return E_FAIL;
 
 #pragma endregion ¾Ö´Ï¸ÞÀÌ¼Ç ¿Ê ÆÄÃ÷
 
@@ -323,9 +323,9 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CHair::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player_Top"),
-		CPlayerTop::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
+	//if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player_Top"),
+	//	CPlayerTop::Create(m_pDevice, m_pContext))))
+	//	return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_HPBar"),
 		CPlayerHPBar::Create(m_pDevice, m_pContext))))

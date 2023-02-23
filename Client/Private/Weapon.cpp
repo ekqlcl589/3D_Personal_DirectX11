@@ -37,6 +37,9 @@ HRESULT CWeapon::Initialize(void * pArg)
 	//m_pTransformCom->Set_Scale(_float3(0.1f, 0.1f, 0.1f));
 	m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(270.0f));
 
+	if(m_Weapon.WeaponType == WEAPON_SHILED)
+		m_pTransformCom->Rotation(XMVectorSet(1.f, 1.f, 0.f, 0.f), XMConvertToRadians(180.0f));
+
 	return S_OK;
 }
 

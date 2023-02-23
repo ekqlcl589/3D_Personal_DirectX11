@@ -55,7 +55,7 @@ HRESULT CPlayer_Body::Initialize(void * pArg)
 	m_animation = m_pModelCom->Get_Animations();
 
 
-	//m_pModelCom->SetUp_Animation(9);
+	//m_pModelCom->SetUp_Animation(5);
 
 	return S_OK;
 }
@@ -191,7 +191,9 @@ void CPlayer_Body::Key_Input(_double TimeDelta)
 		m_tInfo.CurrAnimState = ANIM_RUN;
 	}
 	else if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_UP))
+	{
 		m_tInfo.CurrAnimState = ANIM_RUN_END;
+	}
 
 	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_DOWN))
 	{
@@ -200,7 +202,7 @@ void CPlayer_Body::Key_Input(_double TimeDelta)
 
 	}
 	else if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_DOWN))
-		m_tInfo.CurrAnimState - ANIM_RUN_END;
+		m_tInfo.CurrAnimState = ANIM_RUN_END;
 
 	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_LEFT))
 	{
@@ -216,11 +218,11 @@ void CPlayer_Body::Key_Input(_double TimeDelta)
 		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta);
 		m_tInfo.CurrAnimState = ANIM_RUN_R;
 	}
-	else if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_RIGHT))
+	if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_RIGHT))
 		m_tInfo.CurrAnimState = ANIM_RUN_END;
 
 
-	if (CKeyMgr::GetInstance()->Mouse_Pressing(DIMK_LB))
+	if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_LB))
 	{
 		Attack();
 	}
@@ -241,27 +243,27 @@ void CPlayer_Body::Animation_State(PLAYERANIMSTATE eType, _double TimeDelta)
 		switch (m_tInfo.CurrAnimState)
 		{
 		case ANIM_IDEL:
-			m_pModelCom->SetUp_Animation(9);
+			m_pModelCom->SetUp_Animation(19);
 			break;
 
 		case ANIM_RUN:
-			m_pModelCom->SetUp_Animation(3);
+			m_pModelCom->SetUp_Animation(9);
 			break;
 
 		case ANIM_RUN_L:
-			m_pModelCom->SetUp_Animation(4);
+			m_pModelCom->SetUp_Animation(9);
 			break;
 
 		case ANIM_RUN_R:
-			m_pModelCom->SetUp_Animation(5);
+			m_pModelCom->SetUp_Animation(9);
 			break;
 
 		case ANIM_RUN_END:
-			m_pModelCom->SetUp_Animation(6);
+			m_pModelCom->SetUp_Animation(12);
 			break;
 
 		case ANIM_ATTACK:
-			m_pModelCom->SetUp_Animation(11);
+			m_pModelCom->SetUp_Animation(26);
 			break;
 
 		case ANIM_ATTACK_COMBO:
@@ -271,11 +273,9 @@ void CPlayer_Body::Animation_State(PLAYERANIMSTATE eType, _double TimeDelta)
 		default:
 			break;
 		}
-		//여기서 현재 애니메이션이 종료 되면 idel로 넘어가는 코드 짜야함 
-		// 현재 애니메이션이 종료됐다는 조건은 timeacc 가 duration이랑 일치 하면?
 		m_tInfo.prevAnimState = m_tInfo.CurrAnimState;
 	}
-	if (m_AnimTimeAcc >= m_AnimDuration)
+	if (true == m_pModelCom->Get_AnimCheck())
 	{
 		m_tInfo.CurrAnimState = ANIM_IDEL;
 	}
@@ -303,14 +303,14 @@ void CPlayer_Body::Attack_Combo(_double TimeDelta)
 	{
 		if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_RB))
 		{
-			m_pModelCom->SetUp_Animation(11);
+			m_pModelCom->SetUp_Animation(26);
 			m_ComboTime = 0.5f * TimeDelta;
 			if (m_ComboTime <= 5.f && CKeyMgr::GetInstance()->Mouse_Down(DIMK_RB))
 			{
-				m_pModelCom->SetUp_Animation(12);
+				m_pModelCom->SetUp_Animation(27);
 				if (m_ComboTime <= 5.f && CKeyMgr::GetInstance()->Mouse_Down(DIMK_RB))
 				{
-					m_pModelCom->SetUp_Animation(13);
+					m_pModelCom->SetUp_Animation(28);
 					m_ComboCheck = false;
 				}
 			}
@@ -399,22 +399,22 @@ HRESULT CPlayer_Body::Add_Parts()
 	//m_vecParts[PART_HAIR_S].push_back(pHair_S);
 	//m_vecParts[PART_HAIR_T].push_back(pHair_T);
 
-	CBone* pBoneTopPtr = m_pModelCom->Get_BonePtr("Spine");
-	if (nullptr == pBoneTopPtr)
-		return E_FAIL;
-	
-	CPlayerTop::TOPDESC TopDesc = { pBoneTopPtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CPlayerTop::CLOTHES_TOP };
-	CPlayerTop::TOPDESC TopDesc2 = { pBoneTopPtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CPlayerTop::CLOTHES_PANTS };
-	Safe_AddRef(pBoneTopPtr);
-
-	CGameObject* pTop = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Player_Top"), &TopDesc);
-	CGameObject* pPants = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Player_Top"), &TopDesc2);
-
-	if (nullptr == pTop || nullptr == pPants)
-		return E_FAIL;
-
-	m_vecParts[PART_TOP].push_back(pTop);
-	m_vecParts[PART_PANTS].push_back(pPants);
+//	CBone* pBoneTopPtr = m_pModelCom->Get_BonePtr("Spine");
+//	if (nullptr == pBoneTopPtr)
+//		return E_FAIL;
+//	
+//	CPlayerTop::TOPDESC TopDesc = { pBoneTopPtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CPlayerTop::CLOTHES_TOP };
+//	//CPlayerTop::TOPDESC TopDesc2 = { pBoneTopPtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CPlayerTop::CLOTHES_PANTS };
+//	Safe_AddRef(pBoneTopPtr);
+//
+//	CGameObject* pTop = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Player_Top"), &TopDesc);
+//	//CGameObject* pPants = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Player_Top"), &TopDesc2);
+//
+//	if (nullptr == pTop)// || nullptr == pPants)
+//		return E_FAIL;
+//
+//	m_vecParts[PART_TOP].push_back(pTop);
+////	m_vecParts[PART_PANTS].push_back(pPants);
 
 	RELEASE_INSTANCE(CGameInstance);
 

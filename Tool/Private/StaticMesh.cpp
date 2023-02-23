@@ -155,7 +155,7 @@ HRESULT CStaticMesh::SetUp_ShaderResources()
 
 void CStaticMesh::Set_State()
 {
-	ImGui::Begin("Setting");
+//	ImGui::Begin("Setting");
 
 	//if (ImGui::BeginMenuBar())
 	//{
@@ -165,7 +165,7 @@ void CStaticMesh::Set_State()
 
 	//	ImGui::EndMenuBar();
 	//}
-	ImGui::End();
+//	ImGui::End();
 }
 
 CStaticMesh * CStaticMesh::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
