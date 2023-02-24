@@ -14,6 +14,7 @@ CLoading::CLoading(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 
 HRESULT CLoading::Initialize(LEVELID eNextLevel)
 {
+
 	m_eNextLevelID = eNextLevel;
 
 	m_pLoader = CLoader::Create(m_pDevice, m_pContext, m_eNextLevelID);

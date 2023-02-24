@@ -18,6 +18,9 @@ public:
 public:
 	list<class CGameObject*> Get_GameObject() { return m_GameObject; }
 
+public:
+	class CComponent* Get_Component(const _tchar* pComponentTag, _uint iIndex = 0);
+
 private:
 	list<class CGameObject*> m_GameObject;
 	typedef list<class CGameObject*> GAMEOBJECT;

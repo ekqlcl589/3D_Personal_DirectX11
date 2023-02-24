@@ -86,17 +86,19 @@ HRESULT CLoader::Loading_ForLogo()
 		return E_FAIL;
 	//ㅅㅂ 경로 확인 잘 합시다
 
-	lstrcpy(m_szLoadingText, TEXT("정점버퍼를 로딩중입니다."));
-
-	lstrcpy(m_szLoadingText, TEXT("모델를 로딩중입니다."));
-
-	lstrcpy(m_szLoadingText, TEXT("셰이더를 로딩중입니다."));
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOADING, TEXT("Prototype_Component_Texture_Loading"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/GUI_IntroImage.png")))))
+		return E_FAIL;
 
 #pragma endregion
 
 #pragma region GAMEOBJECTS
 	lstrcpy(m_szLoadingText, TEXT("객체원형을 로딩중."));
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_BackGround"),
+		CBackGround::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Loading"),
 		CBackGround::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
@@ -202,10 +204,16 @@ HRESULT CLoader::Loading_ForGamePlay()
 		return E_FAIL;
 
 #pragma endregion Weapon
+
+
+#pragma region Monster
 	/* For.Prototype_Component_Model_TestMonster */
-	/*if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Boss0"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Ancient_Ston_Golem.fbx", CModel::MODEL_ANIM, LocalMatrix))))
-		return E_FAIL;*/
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Boss0"),
+	//	CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Ancient_Ston_Golem.fbx", CModel::MODEL_ANIM, LocalMatrix))))
+	//	return E_FAIL;
+
+#pragma endregion Monster
+
 
 #pragma region HairModel
 	_matrix		LocalMatrix3 = XMMatrixIdentity();
@@ -315,9 +323,9 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CWeapon::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/*if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster"),
-		CMonster::Create(m_pDevice, m_pContext))))
-		return E_FAIL;*/
+	//if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster"),
+	//	CMonster::Create(m_pDevice, m_pContext))))
+	//	return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Hair"),
 		CHair::Create(m_pDevice, m_pContext))))

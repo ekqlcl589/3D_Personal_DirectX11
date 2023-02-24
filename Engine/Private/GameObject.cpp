@@ -77,12 +77,7 @@ CComponent * CGameObject::Find_Component(const _tchar * pComponentTag)
 
 CComponent * CGameObject::Get_Component(const _tchar * pComponentTag)
 {
-	CComponent*		pComponent = Find_Component(pComponentTag);
-
-	if (nullptr == pComponent)
-		return nullptr;
-
-	return pComponent;
+	return Find_Component(pComponentTag);
 }
 
 void CGameObject::Free()

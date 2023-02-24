@@ -49,13 +49,9 @@ HRESULT CPlayer_Body::Initialize(void * pArg)
 		return E_FAIL;
 
 	if (FAILED(Add_Weapon()))
-		return E_FAIL;
-
+		return	E_FAIL;
 
 	m_animation = m_pModelCom->Get_Animations();
-
-
-	//m_pModelCom->SetUp_Animation(5);
 
 	return S_OK;
 }
@@ -63,6 +59,7 @@ HRESULT CPlayer_Body::Initialize(void * pArg)
 void CPlayer_Body::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
+
 
 	for (_uint i = 0; i < WEAPON_END; i++)
 	{
@@ -101,6 +98,8 @@ void CPlayer_Body::LateTick(_double TimeDelta)
 	m_AnimDuration = m_pModelCom->Get_AnimDuration();
 
 	m_AnimTimeAcc = m_pModelCom->Get_AnimTimeAcc();
+
+	m_AnimTickPerSecond = m_pModelCom->Get_AnimTick();
 
 	for (_uint i = 0; i < WEAPON_END; i++)
 	{
@@ -226,14 +225,25 @@ void CPlayer_Body::Key_Input(_double TimeDelta)
 	{
 		Attack();
 	}
-	//else if (CKeyMgr::GetInstance()->Mouse_Up(DIMK_LB))
-	//	m_tInfo.CurrAnimState = ANIM_IDEL;
+	else if (CKeyMgr::GetInstance()->Mouse_Up(DIMK_LB))
+		m_tInfo.CurrAnimState = ANIM_COMBAT_WAIT;
 
 	//else
 	//	m_tInfo.CurrAnimState = ANIM_IDEL;
 
 	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_Q))
 		m_tInfo._Hp -= 10.f;
+
+#pragma region SkillMotion Test 
+
+	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_E))
+		m_pModelCom->SetUp_Animation(38);
+	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_R))
+		m_pModelCom->SetUp_Animation(42);
+	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_F))
+		m_pModelCom->SetUp_Animation(43);
+
+#pragma endregion 
 }
 
 void CPlayer_Body::Animation_State(PLAYERANIMSTATE eType, _double TimeDelta)
@@ -266,8 +276,17 @@ void CPlayer_Body::Animation_State(PLAYERANIMSTATE eType, _double TimeDelta)
 			m_pModelCom->SetUp_Animation(26);
 			break;
 
-		case ANIM_ATTACK_COMBO:
+		case ANIM_ATTACK_COMBO1:
+		{
 			Attack_Combo(TimeDelta);
+			break;
+		}
+
+		case ANIM_COMBAT_WAIT:
+		{
+			m_pModelCom->SetUp_Animation(5);
+			break;
+		}
 
 		case ANIM_END:
 		default:
@@ -289,11 +308,6 @@ void CPlayer_Body::Hit(const _int & _Damage)
 void CPlayer_Body::Attack()
 {
 	m_tInfo.CurrAnimState = ANIM_ATTACK;
-
-	//if (m_AnimDuration >= 24.f)
-		//m_tInfo.CurrAnimState = ANIM_IDEL;
-
-	m_ComboCheck = true;
 
 }
 
@@ -379,9 +393,9 @@ HRESULT CPlayer_Body::Add_Parts()
 		return E_FAIL;
 
 	CHair::HAIRDESC HairDesc1 = { pHairBontPtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CHair::HAIR_BACK };
-	CHair::HAIRDESC HairDesc2 = { pHairBontPtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CHair::HAIR_FRONT };
-	CHair::HAIRDESC HairDesc3 = { pHairBontPtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CHair::HAIR_SIDE };
-	CHair::HAIRDESC HairDesc4 = { pHairBontPtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CHair::HAIR_TAIL };
+	//CHair::HAIRDESC HairDesc2 = { pHairBontPtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CHair::HAIR_FRONT };
+	//CHair::HAIRDESC HairDesc3 = { pHairBontPtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CHair::HAIR_SIDE };
+	//CHair::HAIRDESC HairDesc4 = { pHairBontPtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CHair::HAIR_TAIL };
 
 	CGameObject* pHair = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Hair"), &HairDesc1);
 
@@ -425,10 +439,12 @@ HRESULT CPlayer_Body::Add_Weapon()
 {
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-	CBone* pBonePtr = m_pModelCom->Get_BonePtr("Weapon_Hand_R");
+	CBone* pBonePtr = m_pModelCom->Get_BonePtr("Weapon_Hand_R"); // ÀüÅõ°¡ ¾Æ´Ò ¶§ ºÙÀÌ´Â »À == Weapon_Spine_R
 	CBone* pBonePtrL = m_pModelCom->Get_BonePtr("Weapon_Hand_L");
+
 	if (nullptr == pBonePtr || nullptr == pBonePtrL)
 		return E_FAIL;
+
 	CWeapon::WEAPONDESC WeaponDesc = { pBonePtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CWeapon::WEAPON_SWORD };
 	CWeapon::WEAPONDESC WeaponDesc1 = { pBonePtrL, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CWeapon::WEAPON_SHILED };
 	Safe_AddRef(pBonePtr);

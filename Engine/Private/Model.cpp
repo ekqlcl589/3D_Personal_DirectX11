@@ -136,22 +136,10 @@ HRESULT CModel::SetUp_Animation(_uint iAnimationIndex)
 	return S_OK;
 }
 
-HRESULT CModel::Set_Animation(_uint iAnimationIndex)
-{
-	if (iAnimationIndex >= m_iNumAnimations)
-		return E_FAIL;
-
-	m_iNextAnimation = m_iCurrAnimation;
-
-
-
-	return S_OK;
-}
-
 HRESULT CModel::Play_Animation(_double TimeDelta)
 {
 	m_vecAnimations[m_iCurrAnimation]->Play_Animation(TimeDelta, m_vecBones);
-
+	
 	for (auto& pBone : m_vecBones)
 	{
 		pBone->Invalidate_CombinedMatrix();
@@ -277,9 +265,19 @@ _double CModel::Get_AnimTimeAcc()
 	return	m_vecAnimations[m_iCurrAnimation]->Get_TimeAcc();
 }
 
+_double CModel::Get_AnimTick()
+{
+	return	m_vecAnimations[m_iCurrAnimation]->Get_TickPerSecond();
+}
+
 _bool CModel::Get_AnimCheck()
 {
 	return m_vecAnimations[m_iCurrAnimation]->Get_AnimCheck();
+}
+
+void CModel::Set_AnimTick(_double Tick)
+{
+	m_vecAnimations[m_iCurrAnimation]->Set_AnimTick(Tick);
 }
 
 

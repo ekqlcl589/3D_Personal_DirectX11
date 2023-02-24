@@ -115,6 +115,9 @@
     <Filter Include="01.Utillity\03. Component\05. Collider\DebugDraw">
       <UniqueIdentifier>{7a25af31-18d9-4af0-92d5-06b8184036fe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utillity\03. Component\05. Collider\CollisionMgr">
+      <UniqueIdentifier>{b148a025-d733-4f95-98bf-71c1a4eab19b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">

@@ -27,7 +27,7 @@ HRESULT CAnimation::Initialize(aiAnimation * pAIAnimation, CModel* pModel)
 
 	m_Duration = pAIAnimation->mDuration;
 
-	m_TickPerSecond = pAIAnimation->mTicksPerSecond;
+	m_SecondTick = m_TickPerSecond = pAIAnimation->mTicksPerSecond;
 
 	m_iNumChannels = pAIAnimation->mNumChannels;
 
@@ -58,25 +58,23 @@ void CAnimation::Play_Animation(_double TimeDelta, const vector<class CBone*>& B
 		}
 		else
 		{
-			m_TimeAcc = 0.0;
 			m_isFinished = true;
 		}
-			m_Check = true;
+		m_Check = true;
+
 	}
 	else
+	{
 		m_Check = false;
+	}
 
 	if (false == m_isFinished || true == m_isLoop)
 	{
 		_uint iChannelIndex = 0;
-
 		for (auto& pChannel : m_vecChannel)
 		{
-			m_NextKeyFrame = m_CurrKeyFrame;
 			pChannel->Invalidate_Transform(m_TimeAcc, &m_CurrKeyFrame[iChannelIndex++], Bones);
-			//pChannel->Linear_Transform(m_TimeAcc, &m_CurrKeyFrame[iChannelIndex++], &m_NextKeyFrame[iChannelIndex], Bones);
 		}
-
 		
 	}
 
@@ -84,11 +82,32 @@ void CAnimation::Play_Animation(_double TimeDelta, const vector<class CBone*>& B
 		m_isFinished = false;
 }
 
-_bool CAnimation::Play_Animation_Last(_double TimeDelta, _double CheckTime, const vector<class CBone*>& Bones)
+_bool CAnimation::Play_Animation_Last(_double TimeDelta, const vector<class CBone*>& Bones)
 {
-	CheckTime = m_TimeAcc;
+	m_TimeAcc += m_TickPerSecond * TimeDelta;
 
-	return m_Check;
+	if (m_TimeAcc >= m_Duration)
+	{
+		m_Check = true;
+		m_isFinished = true;
+		m_TimeAcc = 0.0;
+	}
+	else
+		m_isFinished = true;
+
+	if (true == m_Check)
+	{
+		_uint iChannelIndex = 0;
+		for (auto& pChannel : m_vecChannel)
+		{
+			pChannel->Linear_Transform(m_TimeAcc, m_vecBone, Bones);
+		}
+		return true;
+	}
+
+	m_TimeAcc = 0.0;
+
+	return false;
 }
 
 CAnimation * CAnimation::Create(aiAnimation * pAIAnimation, CModel* pModel)

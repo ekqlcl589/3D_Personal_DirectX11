@@ -16,8 +16,6 @@ HRESULT CChannel::Initialize(aiNodeAnim * pAIChannel, CModel* pModel)
 	m_iNumKeyFrames = max(pAIChannel->mNumScalingKeys, pAIChannel->mNumRotationKeys);
 	m_iNumKeyFrames = max(m_iNumKeyFrames, pAIChannel->mNumPositionKeys);
 
-	m_iNextKeyFrame = max(m_iNumKeyFrames, m_iNextKeyFrame);
-
 	_float3 vScale;
 	_float4 vRotation;
 	_float3 vPosition;
@@ -69,7 +67,7 @@ void CChannel::Invalidate_Transform(_double TrackPosition, _uint* pCurrKeyFrame,
 	_vector vPosition;
 
 	KEYFRAME LastKeyFrame = m_vecKeyFrame.back();
-	if (TrackPosition + 0.2 >= LastKeyFrame.Time)
+	if (TrackPosition >= LastKeyFrame.Time)
 	{
 		vScale = XMLoadFloat3(&LastKeyFrame.vScale);
 		vRotation = XMLoadFloat4(&LastKeyFrame.vRotation);
@@ -82,7 +80,7 @@ void CChannel::Invalidate_Transform(_double TrackPosition, _uint* pCurrKeyFrame,
 		// 그래서 조건문이 아니라 while문을 돌면서 루프 안에서 굴리게 끔 만듦
 		_double Ratio = (TrackPosition - m_vecKeyFrame[*pCurrKeyFrame].Time) /
 			(m_vecKeyFrame[*pCurrKeyFrame + 1].Time - m_vecKeyFrame[*pCurrKeyFrame].Time);
-	
+
 		_vector	vSourScale, vDestScale;
 		_vector	vSourRotation, vDestRotation;
 		_vector	vSourPosition, vDestPosition;
@@ -105,37 +103,40 @@ void CChannel::Invalidate_Transform(_double TrackPosition, _uint* pCurrKeyFrame,
 	Bones[m_iBoneIndex]->Set_TransformationMatrix(TransformationMatrix);
 }
 
-void CChannel::Linear_Transform(_double TrackPosition, _uint * pCurrKeyFrame, _uint * pNextKeyFrame, const vector<class CBone*>& Bones)
+void CChannel::Linear_Transform(_double TrackPosition, class CBone* pBone, const vector<class CBone*>& Bones)
 {
 	_vector vScale;
 	_vector vRotation;
 	_vector vPosition;
 
-	m_iNextKeyFrame = m_vecKeyFrame[*pCurrKeyFrame].Time;
-
-	KEYFRAME LastKeyFrame = m_vecKeyFrame.back();
+	_matrix mat;
+	_float4x4 fMat = pBone->Get_TransformMatrix(); // 전 애니메이션의 마지막 프레임값을 넣어줘야함 
+	
+	KEYFRAME LastKeyFrame = m_vecKeyFrame.back(); // 새로 시작될 애니메이션 프레임 
 
 	if (0.2 >= TrackPosition)
 	{
-		vScale = XMLoadFloat3(&m_vecKeyFrame[*pNextKeyFrame].vScale);
-		vRotation = XMLoadFloat4(&m_vecKeyFrame[*pNextKeyFrame].vRotation);
-		vPosition = XMLoadFloat3(&m_vecKeyFrame[*pNextKeyFrame].vPosition);
+		vScale = XMLoadFloat3(&LastKeyFrame.vScale);
+		vRotation = XMLoadFloat4(&LastKeyFrame.vRotation);
+		vPosition = XMLoadFloat3(&LastKeyFrame.vPosition);
 	}
 	else
 	{
 		_vector	vSourScale, vDestScale;
 		_vector	vSourRotation, vDestRotation;
 		_vector	vSourPosition, vDestPosition;
-
+		
 		_double Ratio = (0.2 / TrackPosition);
+		 
+		//전 애니메이션의 마지막 프레임 
+		vSourScale = XMLoadFloat3(&LastKeyFrame.vScale);
+		vSourRotation = XMQuaternionRotationMatrix(XMLoadFloat4x4(&fMat));
+		vSourPosition = mat.r[3];
 
-		vSourScale = XMLoadFloat3(&m_vecKeyFrame[*pCurrKeyFrame].vScale);
-		vSourRotation = XMLoadFloat4(&m_vecKeyFrame[*pCurrKeyFrame].vRotation);
-		vSourPosition = XMLoadFloat3(&m_vecKeyFrame[*pCurrKeyFrame].vPosition);
-
-		vDestScale = XMLoadFloat3(&m_vecKeyFrame[*pCurrKeyFrame + 1].vScale);
-		vDestRotation = XMLoadFloat4(&m_vecKeyFrame[*pCurrKeyFrame + 1].vRotation);
-		vDestPosition = XMLoadFloat3(&m_vecKeyFrame[*pCurrKeyFrame + 1].vPosition);
+		//새로 시작될 애니메이션은 그냥 처음부터 시작하면 됨 
+		vDestScale = XMLoadFloat3(&m_vecKeyFrame[0].vScale);
+		vDestRotation = XMLoadFloat4(&m_vecKeyFrame[0].vRotation);
+		vDestPosition = XMLoadFloat3(&m_vecKeyFrame[0].vPosition);
 
 		vScale = XMVectorLerp(vSourScale, vDestScale, (_float)Ratio);
 		vRotation = XMQuaternionSlerp(vSourRotation, vDestRotation, (_float)Ratio);

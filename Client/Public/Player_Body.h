@@ -75,10 +75,12 @@ private:
 	
 	_double m_AnimDuration = { 0.0 };
 	_double m_AnimTimeAcc = { 0.0 };
+	_double m_AnimTickPerSecond = { 0.0 };
 
 	_uint m_animation = { 0 };
 
 private:
+	_bool m_WeaponChange = false;
 	_bool m_AttackCheck = false;
 	_bool m_ComboCheck = false;
 	_bool m_bAnimCheck = false;

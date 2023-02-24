@@ -35,6 +35,16 @@ void CLayer::LateTick(_double TimeDelta)
 	}
 }
 
+CComponent * CLayer::Get_Component(const _tchar * pComponentTag, _uint iIndex)
+{
+	auto	iter = m_GameObject.begin();
+
+	for (_uint i = 0; i < iIndex; ++i)
+		++iter;
+
+	return (*iter)->Get_Component(pComponentTag);
+}
+
 CLayer * CLayer::Create()
 {
 	CLayer * pInstance = new CLayer();

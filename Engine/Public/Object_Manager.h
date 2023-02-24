@@ -24,7 +24,10 @@ public:
 
 public:
 	class CGameObject* Find_GameObject(_uint iLevelIndex, const _tchar* pLayerTag, void* pArg = nullptr);
+
 	class CGameObject* Clone_GameObject(const _tchar* pPrototypeTag, void* pArg = nullptr);
+
+	class CComponent* Get_Component(_uint iLevelIndex, const _tchar* pLayerTag, const _tchar* pComponentTag, _uint iIndex = 0);
 
 private: //¿øº»°´Ã¼
 	unordered_map<const _tchar*, class CGameObject*> m_Prototypes;

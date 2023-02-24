@@ -82,9 +82,6 @@
     <Filter Include="02.GameObject\05. Player\Part">
       <UniqueIdentifier>{4554f805-b6bc-4f62-995a-bd86f0032b6a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05. Player\Part\Body">
-      <UniqueIdentifier>{15a14a08-9bd9-48df-9d13-5ec96e0c619f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\05. Player\Part\Hair">
       <UniqueIdentifier>{4e259dc7-bcc7-477d-abba-0edf187ebb1b}</UniqueIdentifier>
     </Filter>
@@ -102,6 +99,12 @@
     </Filter>
     <Filter Include="02.GameObject\05. Player\Weapon\Karma14">
       <UniqueIdentifier>{9b7d2fe8-a816-4a95-ba1e-62035d408407}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05. Player\Head">
+      <UniqueIdentifier>{d3aa1365-11a5-4a2b-a0de-e72e73126680}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05. Player\Body">
+      <UniqueIdentifier>{15a14a08-9bd9-48df-9d13-5ec96e0c619f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -150,9 +153,6 @@
     <ClInclude Include="..\Public\Cube.h">
       <Filter>02.GameObject\03.Cube</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Player.h">
-      <Filter>02.GameObject\05. Player</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Monster.h">
       <Filter>02.GameObject\06. Monster</Filter>
     </ClInclude>
@@ -172,7 +172,7 @@
       <Filter>02.GameObject\04. UI\Player\Skill</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Player_Body.h">
-      <Filter>02.GameObject\05. Player\Part\Body</Filter>
+      <Filter>02.GameObject\05. Player\Body</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Weapon.h">
       <Filter>02.GameObject\05. Player\Weapon</Filter>
@@ -182,6 +182,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\PlayerTop.h">
       <Filter>02.GameObject\05. Player\Part\Top</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Player.h">
+      <Filter>02.GameObject\05. Player\Head</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -218,9 +221,6 @@
     <ClCompile Include="..\Private\Cube.cpp">
       <Filter>02.GameObject\03.Cube</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Player.cpp">
-      <Filter>02.GameObject\05. Player</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Monster.cpp">
       <Filter>02.GameObject\06. Monster</Filter>
     </ClCompile>
@@ -240,7 +240,7 @@
       <Filter>02.GameObject\04. UI\Player\Skill</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Player_Body.cpp">
-      <Filter>02.GameObject\05. Player\Part\Body</Filter>
+      <Filter>02.GameObject\05. Player\Body</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Weapon.cpp">
       <Filter>02.GameObject\05. Player\Weapon</Filter>
@@ -250,6 +250,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\PlayerTop.cpp">
       <Filter>02.GameObject\05. Player\Part\Top</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Player.cpp">
+      <Filter>02.GameObject\05. Player\Head</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

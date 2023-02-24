@@ -118,6 +118,14 @@ HRESULT CGameInstance::Add_GameObject(_uint iLevelIndex, const _tchar * pPrototy
 	return m_pObject_Manager->Add_GameObject(iLevelIndex, pPrototypeTag, pLayerTag, pArg);
 }
 
+CComponent * CGameInstance::Get_Component(_uint iLevelIndex, const _tchar * pLayerTag, const _tchar * pComponentTag, _uint iIndex)
+{
+	if (nullptr == m_pObject_Manager)
+		return nullptr;
+
+	return m_pObject_Manager->Get_Component(iLevelIndex, pLayerTag, pComponentTag, iIndex);
+}
+
 CGameObject * CGameInstance::Find_GameObject(_uint iLevelIndex, const _tchar * pLayerTag, void * pArg)
 {
 	if (nullptr == m_pObject_Manager)

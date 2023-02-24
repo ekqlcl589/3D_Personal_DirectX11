@@ -25,6 +25,8 @@ public:
 
 	void Set_OffsetMatrix(_fmatrix OffsetMatrix) { XMStoreFloat4x4(&m_OffsetMatrix, OffsetMatrix); }
 
+	_float4x4 Get_TransformMatrix() const { return m_TransformationMatrix; }
+
 private:
 	_float4x4 m_TransformationMatrix; // ³» »À ¸¸ÀÇ Çà·Ä
 	_float4x4 m_CombinedTransformationMatrix; // ³» »À * ºÎ¸ð »ÀÀÇ Çà·Ä 

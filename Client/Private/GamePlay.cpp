@@ -87,7 +87,7 @@ HRESULT CGamePlay::Ready_Layer_Camera(const _tchar * pLayerTag)
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Camera"), pLayerTag, &CameraDesc)))
 		return E_FAIL;
-
+	
 	Safe_Release(pGameInstance);
 	
 	return S_OK;

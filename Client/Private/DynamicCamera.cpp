@@ -31,7 +31,7 @@ HRESULT CDynamicCamera::Initialize(void * pArg)
 
 void CDynamicCamera::Tick(_double TimeDelta)
 {
-	//Target_Renewal();
+	Target_Renewal();
 	Key_Input(TimeDelta);
 	__super::Tick(TimeDelta);
 
@@ -91,11 +91,11 @@ void CDynamicCamera::Target_Renewal()
 {
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-	CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Find_GameObject(LEVEL_GAMEPLAY ,TEXT("Layer_Player"))->Get_Component(TEXT("Prototype_Component_Transform")));
-	//원본이 아니라 사본을 찾는걸 만들어서 적용해야 함
+	CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
+	
+	//이거 선생님 FindComponent로 해보셈
 
-	_vector vLook;
-	pPlayerTransform->Set_State(CTransform::STATE_LOOK, vLook);
+	_vector vLook =	pPlayerTransform->Get_State(CTransform::STATE_LOOK);
 
 	 XMStoreFloat3(&m_CameraDesc.vEye, vLook);
 	 XMVector3Normalize(XMLoadFloat3(&m_CameraDesc.vEye));

@@ -42,6 +42,13 @@ HRESULT CMonster::Initialize(void * pArg)
 void CMonster::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
+
+	for (_uint i = 0; i < COLLIDER_END; i++)
+	{
+		if (nullptr != m_pColliderCom[i])
+			m_pColliderCom[i]->Update(m_pTransformCom->Get_WorldMatrix());
+	}
+
 }
 
 void CMonster::LateTick(_double TimeDelta)
@@ -76,6 +83,17 @@ HRESULT CMonster::Render()
 
 		m_pModelCom->Render(i);
 	}
+
+#ifdef _DEBUG
+
+	for (_uint i = 0; i < COLLIDER_END; ++i)
+	{
+		if (nullptr != m_pColliderCom[i])
+			m_pColliderCom[i]->Render();
+	}
+
+#endif
+
 	return S_OK;
 }
 
@@ -102,6 +120,16 @@ HRESULT CMonster::Add_Components()
 
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxAnimModel"),
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
+		return E_FAIL;
+
+	CCollider::COLLIDERDESC ColliderDesc;
+	ZeroMemory(&ColliderDesc, sizeof ColliderDesc);
+
+	ColliderDesc.vScale = _float3(3.f, 3.f, 3.f);
+	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vScale.y * 0.5f, 0.f);
+
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"),
+		TEXT("Com_Collider"), (CComponent**)&m_pColliderCom[COLLIDER_AABB], &ColliderDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -173,6 +201,11 @@ CGameObject * CMonster::Clone(void * pArg)
 void CMonster::Free()
 {
 	__super::Free();
+
+	for (_uint i = 0; i < COLLIDER_END; ++i)
+	{
+		Safe_Release(m_pColliderCom[i]);
+	}
 
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pModelCom);

@@ -9,12 +9,16 @@ class CShader;
 class CRenderer;
 class CTransform;
 class CModel;
+class CCollider;
 END
 
 BEGIN(Client)
 
 class CMonster final :	public CGameObject
 {
+public:
+	enum COLLIDER { COLLIDER_AABB, COLLIDER_OBB, COLLIDER_SPHERE, COLLIDER_END };
+
 public:
 	typedef struct MonsterState
 	{
@@ -42,6 +46,7 @@ private:
 	CRenderer* m_pRendererCom = { nullptr };
 	CTransform*	m_pTransformCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
+	CCollider* m_pColliderCom[COLLIDER_END] = { nullptr };
 
 private:
 	HRESULT Add_Components();
