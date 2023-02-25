@@ -37,9 +37,6 @@
     <Filter Include="02.GameObject\01. Terrain">
       <UniqueIdentifier>{0636ab8b-9763-4e43-8995-2ebbf85caaf6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\02.DynamicCamera">
-      <UniqueIdentifier>{ee67a341-39ae-4d77-9e3c-978bcaa3321a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\03.Cube">
       <UniqueIdentifier>{8fb728f3-c210-4518-8893-74ed87330d26}</UniqueIdentifier>
     </Filter>
@@ -106,6 +103,15 @@
     <Filter Include="02.GameObject\05. Player\Body">
       <UniqueIdentifier>{15a14a08-9bd9-48df-9d13-5ec96e0c619f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\02.Camera">
+      <UniqueIdentifier>{ee67a341-39ae-4d77-9e3c-978bcaa3321a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\02.Camera\Dynamic">
+      <UniqueIdentifier>{dd2c3574-4635-41b4-86e7-4ebd535840c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\02.Camera\Target">
+      <UniqueIdentifier>{17e46b3f-0e62-4794-8e34-87605e41d199}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -147,9 +153,6 @@
     <ClInclude Include="..\Public\Terrain.h">
       <Filter>02.GameObject\01. Terrain</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\DynamicCamera.h">
-      <Filter>02.GameObject\02.DynamicCamera</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Cube.h">
       <Filter>02.GameObject\03.Cube</Filter>
     </ClInclude>
@@ -186,6 +189,12 @@
     <ClInclude Include="..\Public\Player.h">
       <Filter>02.GameObject\05. Player\Head</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\DynamicCamera.h">
+      <Filter>02.GameObject\02.Camera\Dynamic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TargetCamera.h">
+      <Filter>02.GameObject\02.Camera\Target</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -214,9 +223,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\Terrain.cpp">
       <Filter>02.GameObject\01. Terrain</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\DynamicCamera.cpp">
-      <Filter>02.GameObject\02.DynamicCamera</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Cube.cpp">
       <Filter>02.GameObject\03.Cube</Filter>
@@ -253,6 +259,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Player.cpp">
       <Filter>02.GameObject\05. Player\Head</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DynamicCamera.cpp">
+      <Filter>02.GameObject\02.Camera\Dynamic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TargetCamera.cpp">
+      <Filter>02.GameObject\02.Camera\Target</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

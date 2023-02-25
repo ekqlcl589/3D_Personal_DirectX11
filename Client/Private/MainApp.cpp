@@ -7,6 +7,7 @@
 
 #include "KeyMgr.h"
 #include "DynamicCamera.h"
+#include "TargetCamera.h"
 CMainApp::CMainApp()
 	:m_pGameInstance(CGameInstance::GetInstance())
 {
@@ -106,7 +107,9 @@ HRESULT CMainApp::Ready_Prototype_Component_ForStatic()
 
 HRESULT CMainApp::Ready_Prototype_GameObject_ForStatic()
 {
-	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera"), CDynamicCamera::Create(m_pDevice, m_pDeviceContext))))
+	//if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera"), CDynamicCamera::Create(m_pDevice, m_pDeviceContext))))
+	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera"), CTargetCamera::Create(m_pDevice, m_pDeviceContext))))
 		return E_FAIL;
 
 	return S_OK;

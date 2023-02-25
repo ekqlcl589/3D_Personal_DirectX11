@@ -64,17 +64,6 @@ void CPlayer_Body::Tick(_double TimeDelta)
 	Key_Input(TimeDelta);
 	Animation_State(m_tInfo.CurrAnimState, TimeDelta);
 
-	//if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_UP))
-	//{
-	//	m_pModelCom->SetUp_Animation(9);
-	//}
-	//else if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_UP))
-	//{
-	//	m_pModelCom->SetUp_Animation(12);
-	//}
-	//else
-	//	m_pModelCom->SetUp_Animation(19);
-
 	for (_uint i = 0; i < WEAPON_END; i++)
 	{
 		for (auto& pWeapon : m_vecWeapon[i])
