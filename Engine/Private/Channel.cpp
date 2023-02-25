@@ -103,49 +103,68 @@ void CChannel::Invalidate_Transform(_double TrackPosition, _uint* pCurrKeyFrame,
 	Bones[m_iBoneIndex]->Set_TransformationMatrix(TransformationMatrix);
 }
 
-void CChannel::Linear_Transform(_double TrackPosition, class CBone* pBone, const vector<class CBone*>& Bones)
-{
+void CChannel::Linear_Transform(_double TrackPosition, _uint* pCurrKeyFrame, const vector<class CBone*>& Bones, vector<class CChannel*> mn_Test, _bool& bCheck)
+{ 
 	_vector vScale;
 	_vector vRotation;
 	_vector vPosition;
-
-	_matrix mat;
-	_float4x4 fMat = pBone->Get_TransformMatrix(); // 전 애니메이션의 마지막 프레임값을 넣어줘야함 
-	
-	KEYFRAME LastKeyFrame = m_vecKeyFrame.back(); // 새로 시작될 애니메이션 프레임 
-
-	if (0.2 >= TrackPosition)
+	//KEYFRAME LastKeyFrame = m_vecKeyFrame.back();
+	_double Ratio = (TrackPosition / 8.0);
+	for (auto& iter = mn_Test.begin(); iter != mn_Test.end(); iter++)
 	{
-		vScale = XMLoadFloat3(&LastKeyFrame.vScale);
-		vRotation = XMLoadFloat4(&LastKeyFrame.vRotation);
-		vPosition = XMLoadFloat3(&LastKeyFrame.vPosition);
-	}
-	else
-	{
-		_vector	vSourScale, vDestScale;
-		_vector	vSourRotation, vDestRotation;
-		_vector	vSourPosition, vDestPosition;
+
+		if (!strcmp((*iter)->m_szName, m_szName))
+		{
+
+			//KEYFRAME LastKeyFrame = m_vecKeyFrame.back(); //마지막 애니메이션 프레임 
+			// 전 애니메이션 뼈 이름과 지금 뼈이르
+			_vector	vSourScale, vDestScale;
+			_vector	vSourRotation, vDestRotation;
+			_vector	vSourPosition, vDestPosition;
 		
-		_double Ratio = (0.2 / TrackPosition);
-		 
-		//전 애니메이션의 마지막 프레임 
-		vSourScale = XMLoadFloat3(&LastKeyFrame.vScale);
-		vSourRotation = XMQuaternionRotationMatrix(XMLoadFloat4x4(&fMat));
-		vSourPosition = mat.r[3];
+			if (Ratio >= 1.0)
+				bCheck = false;
+			//LastKeyFrame = pChannel->Get_KeyFrame(m_iNumKeyFrames);
+			//pChannel->Get_KeyFrame(m_iNumKeyFrames).vPosition;
+			//전 애니메이션의 마지막 프레임 
+			//vSourScale = XMLoadFloat3(&LastKeyFrame.vScale);
+			//vSourRotation = XMLoadFloat4(&LastKeyFrame.vRotation);
+			//vSourPosition = XMLoadFloat3(&LastKeyFrame.vPosition);
+			vSourScale = XMLoadFloat3(&m_vecKeyFrame[*pCurrKeyFrame].vScale);
+			vSourRotation = XMLoadFloat4(&m_vecKeyFrame[*pCurrKeyFrame].vRotation);
+			vSourPosition = XMLoadFloat3(&m_vecKeyFrame[*pCurrKeyFrame].vPosition);
 
-		//새로 시작될 애니메이션은 그냥 처음부터 시작하면 됨 
-		vDestScale = XMLoadFloat3(&m_vecKeyFrame[0].vScale);
-		vDestRotation = XMLoadFloat4(&m_vecKeyFrame[0].vRotation);
-		vDestPosition = XMLoadFloat3(&m_vecKeyFrame[0].vPosition);
+			//새로 시작될 애니메이션은 그냥 처음부터 시작하면 됨 
+			
+			//vDestScale = XMLoadFloat3(&(*iter)->m_vecKeyFrame[*pCurrKeyFrame+1].vScale);
+			//vDestRotation = XMLoadFloat4(&(*iter)->m_vecKeyFrame[*pCurrKeyFrame+1].vRotation);
+			//vDestPosition = XMLoadFloat3(&(*iter)->m_vecKeyFrame[*pCurrKeyFrame+1].vScale);
 
-		vScale = XMVectorLerp(vSourScale, vDestScale, (_float)Ratio);
-		vRotation = XMQuaternionSlerp(vSourRotation, vDestRotation, (_float)Ratio);
-		vPosition = XMVectorLerp(vSourPosition, vDestPosition, (_float)Ratio);
+			vDestScale = XMLoadFloat3(&((*iter)->Get_KeyFrame(0).vScale));
+			vDestRotation = XMLoadFloat4(&((*iter)->Get_KeyFrame(0).vRotation));
+			vDestPosition = XMLoadFloat3(&((*iter)->Get_KeyFrame(0).vPosition));
 
+			vScale = XMVectorLerp(vSourScale, vDestScale, (_float)Ratio);
+			vRotation = XMQuaternionSlerp(vSourRotation, vDestRotation, (_float)Ratio);
+			vPosition = XMVectorLerp(vSourPosition, vDestPosition, (_float)Ratio);
+
+
+			_matrix TransformationMatrix = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
+
+			Bones[m_iBoneIndex]->Set_TransformationMatrix(TransformationMatrix);
+			return;
+		}
 	}
+
+	vScale = XMLoadFloat3(&m_vecKeyFrame[0].vScale);
+	vRotation = XMLoadFloat4(&m_vecKeyFrame[0].vRotation);
+	vPosition = XMLoadFloat3(&m_vecKeyFrame[0].vPosition);
+
 	_matrix TransformationMatrix = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
-	
+
 	Bones[m_iBoneIndex]->Set_TransformationMatrix(TransformationMatrix);
+	if (Ratio >= 1.0)
+		bCheck = false;
 }
 
 CChannel * CChannel::Create(aiNodeAnim * pAIChannel, CModel* pModel)

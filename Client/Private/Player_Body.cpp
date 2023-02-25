@@ -31,8 +31,8 @@ HRESULT CPlayer_Body::Initialize_Prototype()
 	m_tInfo._Hp = 100.f;
 	m_tInfo._MaxMp = 100.f;
 	m_tInfo._Mp = 100;
-	m_tInfo.CurrAnimState = ANIM_IDEL;
-	m_tInfo.prevAnimState = ANIM_END;
+	//m_tInfo.CurrAnimState = ANIM_IDEL;
+	//m_tInfo.prevAnimState = ANIM_END;
 
 	return S_OK;
 }
@@ -53,6 +53,7 @@ HRESULT CPlayer_Body::Initialize(void * pArg)
 
 	m_animation = m_pModelCom->Get_Animations();
 
+	m_pModelCom->SetUp_Animation(19);
 	return S_OK;
 }
 
@@ -60,6 +61,19 @@ void CPlayer_Body::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 
+	Key_Input(TimeDelta);
+	Animation_State(m_tInfo.CurrAnimState, TimeDelta);
+
+	//if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_UP))
+	//{
+	//	m_pModelCom->SetUp_Animation(9);
+	//}
+	//else if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_UP))
+	//{
+	//	m_pModelCom->SetUp_Animation(12);
+	//}
+	//else
+	//	m_pModelCom->SetUp_Animation(19);
 
 	for (_uint i = 0; i < WEAPON_END; i++)
 	{
@@ -92,8 +106,6 @@ void CPlayer_Body::LateTick(_double TimeDelta)
 
 	m_pModelCom->Play_Animation(TimeDelta);
 
-	Animation_State(m_tInfo.CurrAnimState, TimeDelta);
-	Key_Input(TimeDelta);
 
 	m_AnimDuration = m_pModelCom->Get_AnimDuration();
 
@@ -191,7 +203,7 @@ void CPlayer_Body::Key_Input(_double TimeDelta)
 	}
 	else if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_UP))
 	{
-		m_tInfo.CurrAnimState = ANIM_RUN_END;
+		m_tInfo.CurrAnimState = ANIM_IDEL;
 	}
 
 	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_DOWN))
@@ -293,10 +305,6 @@ void CPlayer_Body::Animation_State(PLAYERANIMSTATE eType, _double TimeDelta)
 			break;
 		}
 		m_tInfo.prevAnimState = m_tInfo.CurrAnimState;
-	}
-	if (true == m_pModelCom->Get_AnimCheck())
-	{
-		m_tInfo.CurrAnimState = ANIM_IDEL;
 	}
 
 }

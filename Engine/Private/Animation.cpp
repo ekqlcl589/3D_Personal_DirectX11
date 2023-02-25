@@ -51,63 +51,60 @@ void CAnimation::Play_Animation(_double TimeDelta, const vector<class CBone*>& B
 
 	if (m_TimeAcc >= m_Duration)
 	{
-		if (true == m_isLoop)
-		{
-			m_TimeAcc = 0.0;
-			m_isFinished = true;
-		}
-		else
-		{
-			m_isFinished = true;
-		}
-		m_Check = true;
-
-	}
-	else
-	{
-		m_Check = false;
+		m_TimeAcc = 0.0;
+		m_isFinished = true;
+		Set_CurrKeyFrame();
 	}
 
-	if (false == m_isFinished || true == m_isLoop)
+	m_iChannelIndex = 0;
+	for (auto& pChannel : m_vecChannel)
 	{
-		_uint iChannelIndex = 0;
-		for (auto& pChannel : m_vecChannel)
-		{
-			pChannel->Invalidate_Transform(m_TimeAcc, &m_CurrKeyFrame[iChannelIndex++], Bones);
-		}
+		pChannel->Invalidate_Transform(m_TimeAcc, &m_CurrKeyFrame[m_iChannelIndex], Bones);
+		m_iChannelIndex += 1;
+	}
 		
-	}
-
-	if (true == m_isLoop)
-		m_isFinished = false;
 }
 
-_bool CAnimation::Play_Animation_Last(_double TimeDelta, const vector<class CBone*>& Bones)
+_bool CAnimation::Play_Animation_Last(_double TimeDelta, const vector<class CBone*>& Bones, CAnimation* pAnim, _bool& bCheck)
 {
 	m_TimeAcc += m_TickPerSecond * TimeDelta;
 
-	if (m_TimeAcc >= m_Duration)
+	if (m_TimeAcc >= 8.0)
 	{
 		m_Check = true;
-		m_isFinished = true;
-		m_TimeAcc = 0.0;
-	}
-	else
-		m_isFinished = true;
-
-	if (true == m_Check)
-	{
-		_uint iChannelIndex = 0;
-		for (auto& pChannel : m_vecChannel)
-		{
-			pChannel->Linear_Transform(m_TimeAcc, m_vecBone, Bones);
-		}
+		//m_isFinished = true;
+		//m_TimeAcc = 0.0;
+		// 여기다가 curr 전부 0ㅇ로 초기화 하는 함수 만들어서 넣어주면 된다 
+		Set_CurrKeyFrame();
+		bCheck = false;
 		return true;
 	}
+	
+	else
+	//if (true != m_Check)
+	{
+		m_iChannelIndex = 0;
 
-	m_TimeAcc = 0.0;
+		for (auto& pChannel : m_vecChannel)
+		{
+			pChannel->Linear_Transform(m_TimeAcc, &m_CurrKeyFrame[m_iChannelIndex], Bones, pAnim->Get_Channel(), bCheck);
+		
+			m_iChannelIndex += 1;
+			//Set_CurrKeyFrame();
+		}
+	}
 
 	return false;
+}
+
+void CAnimation::Set_CurrKeyFrame()
+{
+	for (auto& iter : m_CurrKeyFrame)
+	{
+		iter = 0;
+	}
+	m_isFinished = false;
+	m_TimeAcc = 0.0;
 }
 
 CAnimation * CAnimation::Create(aiAnimation * pAIAnimation, CModel* pModel)

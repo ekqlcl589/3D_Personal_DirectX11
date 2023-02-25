@@ -131,19 +131,65 @@ HRESULT CModel::SetUp_Animation(_uint iAnimationIndex)
 	if (iAnimationIndex >= m_iNumAnimations)
 		return E_FAIL;
 
-	m_iCurrAnimation = iAnimationIndex;
-
+	if (m_iCurrAnimation == iAnimationIndex)
+	{
+		m_iCurrAnimation = iAnimationIndex;
+		m_Check = false;
+	}
+	else
+	{
+		m_iNextAnimation = iAnimationIndex;
+		m_Check = false;
+		//m_vecAnimations[m_iCurrAnimation]->Set_TimeAcc(); // 이러면 현재 진행되는 애니메이션의 Time은 0
+	}
+	// 현재 애님의 timeacc 0으로 초기ㅣ화 하는 함수 불러 주고
 	return S_OK;
 }
 
 HRESULT CModel::Play_Animation(_double TimeDelta)
 {
-	m_vecAnimations[m_iCurrAnimation]->Play_Animation(TimeDelta, m_vecBones);
 	
+	if (m_iCurrAnimation == m_iNextAnimation && m_Check == false)
+	{	
+		m_vecAnimations[m_iCurrAnimation]->Play_Animation(TimeDelta, m_vecBones);
+	}
+	else
+	{
+		if (m_vecAnimations[m_iCurrAnimation]->Play_Animation_Last(TimeDelta, m_vecBones, m_vecAnimations[m_iNextAnimation], m_Check))
+		{
+			m_iCurrAnimation = m_iNextAnimation;
+			
+		}
+
+	}
+	
+
 	for (auto& pBone : m_vecBones)
 	{
 		pBone->Invalidate_CombinedMatrix();
 	}
+
+	return S_OK;
+}
+
+HRESULT CModel::Change_Animation(_double TimeDelta, _uint iAnimationIndex)
+{
+
+
+	//for (auto& pBone : m_vecBones)
+	//{
+	//	pBone->Invalidate_CombinedMatrix();
+	//}
+
+	return S_OK;
+}
+
+HRESULT CModel::Set_Animation(_uint iAnimationIndex)
+{
+	if (iAnimationIndex >= m_iNumAnimations)
+		return E_FAIL;
+
+	m_iCurrAnimation = iAnimationIndex;
 
 	return S_OK;
 }
