@@ -14,7 +14,7 @@ END
 
 BEGIN(Client)
 
-class CMonster  :	public CGameObject
+class CMonster  abstract: public CGameObject
 {
 protected:
 	enum COLLIDER { COLLIDER_AABB, COLLIDER_OBB, COLLIDER_SPHERE, COLLIDER_END };
@@ -35,11 +35,11 @@ protected:
 	virtual ~CMonster() = default;
 
 public:
-	virtual	HRESULT Initialize_Prototype() override;
-	virtual	HRESULT Initialize(void* pArg) override;
-	virtual void Tick(_double TimeDelta) override;
-	virtual void LateTick(_double TimeDelta) override;
-	virtual HRESULT Render() override;
+	virtual	HRESULT Initialize_Prototype();
+	virtual	HRESULT Initialize(void* pArg);
+	virtual void Tick(_double TimeDelta);
+	virtual void LateTick(_double TimeDelta);
+	virtual HRESULT Render();
 
 protected:
 	CShader* m_pShaderCom = { nullptr };
@@ -49,17 +49,12 @@ protected:
 	CCollider* m_pColliderCom[COLLIDER_END] = { nullptr };
 
 protected:
-	HRESULT Add_Components();
-	HRESULT SetUp_ShaderResources();
-
-protected:
 	MONSTERSTATE m_MonsterState;
 	_uint iId = { 0 };
 	void Collision_ToPlayer();
 
 public:
-	static CMonster* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual CGameObject* Clone(void* pArg = nullptr) override;
+	virtual CGameObject* Clone(void* pArg = nullptr) = 0;
 	virtual void Free() override;
 
 };

@@ -1,15 +1,15 @@
 #pragma once
-#include "Monster.h"
+#include "Weapon.h"
 #include "Client_Defines.h"
 
 BEGIN(Client)
 
-class CAncient_StonGolem final : public CMonster
+class CSwordShield final : public CWeapon
 {
 private:
-	CAncient_StonGolem(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CAncient_StonGolem(const CAncient_StonGolem& rhs);
-	virtual ~CAncient_StonGolem() = default;
+	CSwordShield(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CSwordShield(const CSwordShield& rhs);
+	virtual ~CSwordShield() = default;
 
 public:
 	virtual	HRESULT Initialize_Prototype() override;
@@ -23,8 +23,8 @@ private:
 	HRESULT SetUp_ShaderResources();
 
 public:
-	static CAncient_StonGolem* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual CGameObject* Clone(void* pArg = nullptr) override;
+	static CWeapon* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual CGameObject* Clone(void* pArg = nullptr);
 	virtual void Free()override;
 
 };

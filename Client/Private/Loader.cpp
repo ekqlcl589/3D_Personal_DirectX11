@@ -13,9 +13,9 @@
 #include "Hair.h"
 #include "PlayerTop.h"
 
-#include "Weapon.h"
+#include "SwordShield.h"
 
-#include "Monster.h"
+#include "Ancient_StonGolem.h"
 
 #include "TestTile.h"
 
@@ -208,9 +208,9 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 #pragma region Monster
 	/* For.Prototype_Component_Model_TestMonster */
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Boss0"),
-	//	CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Ancient_Ston_Golem.fbx", CModel::MODEL_ANIM, LocalMatrix))))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Boss0"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Ancient_Ston_Golem.fbx", CModel::MODEL_ANIM, LocalMatrix))))
+		return E_FAIL;
 
 #pragma endregion Monster
 
@@ -320,12 +320,12 @@ HRESULT CLoader::Loading_ForGamePlay()
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon"),
-		CWeapon::Create(m_pDevice, m_pContext))))
+		CSwordShield::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster"),
-	//	CMonster::Create(m_pDevice, m_pContext))))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster"),
+		CAncient_StonGolem::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Hair"),
 		CHair::Create(m_pDevice, m_pContext))))

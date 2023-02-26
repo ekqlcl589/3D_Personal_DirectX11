@@ -6,7 +6,8 @@
 #include "Player.h"
 #include "Hair.h"
 #include "PlayerTop.h"
-#include "Weapon.h"
+#include "SwordShield.h"
+
 #include "TargetCamera.h"
 
 CPlayer_Body::CPlayer_Body(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -444,8 +445,8 @@ HRESULT CPlayer_Body::Add_Weapon()
 	if (nullptr == pBonePtr || nullptr == pBonePtrL)
 		return E_FAIL;
 
-	CWeapon::WEAPONDESC WeaponDesc = { pBonePtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CWeapon::WEAPON_SWORD };
-	CWeapon::WEAPONDESC WeaponDesc1 = { pBonePtrL, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CWeapon::WEAPON_SHILED };
+	CSwordShield::WEAPONDESC WeaponDesc = { pBonePtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CSwordShield::WEAPON_SWORD };
+	CSwordShield::WEAPONDESC WeaponDesc1 = { pBonePtrL, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CSwordShield::WEAPON_SHILED };
 	Safe_AddRef(pBonePtr);
 	Safe_AddRef(pBonePtrL);
 

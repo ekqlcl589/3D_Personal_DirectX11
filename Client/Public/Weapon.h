@@ -16,11 +16,10 @@ END
 
 BEGIN(Client)
 
-class CWeapon final :
-	public CGameObject
+class CWeapon abstract : public CGameObject
 {
 
-public:
+protected:
 	enum COLLIDER { COLLIDER_AABB, COLLIDER_OBB, COLLIDER_SPHERE, COLLIDER_END };
 
 public:
@@ -38,31 +37,26 @@ protected:
 	CWeapon(const CWeapon& rhs);
 	virtual ~CWeapon() = default;
 
-public:
-	virtual	HRESULT Initialize_Prototype() override;
-	virtual	HRESULT Initialize(void* pArg) override;
-	virtual void Tick(_double TimeDelta) override;
-	virtual void LateTick(_double TimeDelta) override;
-	virtual HRESULT Render() override;
+protected:
+	virtual	HRESULT Initialize_Prototype();
+	virtual	HRESULT Initialize(void* pArg);
+	virtual void Tick(_double TimeDelta);
+	virtual void LateTick(_double TimeDelta);
+	virtual HRESULT Render();
 
-private:
+protected:
 	CShader* m_pShaderCom = { nullptr };
 	CRenderer* m_pRendererCom = { nullptr };
 	CTransform*	m_pTransformCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 	CCollider* m_pColliderCom[COLLIDER_END] = { nullptr };
 
-private:
-	HRESULT Add_Components();
-	HRESULT SetUp_ShaderResources();
-
-private:
+public:
 	WEAPONDESC m_Weapon;
 	_float4x4 m_WorldMatrix;
 
 public:
-	static CWeapon* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual CGameObject* Clone(void* pArg = nullptr);
+	virtual CGameObject* Clone(void* pArg = nullptr) = 0;
 	virtual void Free()override;
 };
 

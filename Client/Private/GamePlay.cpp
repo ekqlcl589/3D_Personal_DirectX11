@@ -31,8 +31,8 @@ HRESULT CGamePlay::Initialize()
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
-	//if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
-	//	return E_FAIL;
+	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
+		return E_FAIL;
 
 	if (FAILED(Ready_UI(TEXT("Layer_UI"))))
 		return E_FAIL;
@@ -159,6 +159,7 @@ HRESULT CGamePlay::Ready_Layer_Player(const _tchar * pLayerTag)
 HRESULT CGamePlay::Ready_Layer_Monster(const _tchar * pLayerTag)
 {
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
 	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster"), pLayerTag)))
 		return E_FAIL;
 

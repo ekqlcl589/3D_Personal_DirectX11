@@ -69,19 +69,17 @@ _bool CAnimation::Play_Animation_Last(_double TimeDelta, const vector<class CBon
 {
 	m_TimeAcc += m_TickPerSecond * TimeDelta;
 
+	// 꾹 누르는 애니메이션의 경우 누르는 동안 TimeAcc이 8초를 넘을 수 있어서 
+	// 그런 애니메이션에 대한 예외처리가 필요함 
 	if (m_TimeAcc >= 8.0)
 	{
-		m_Check = true;
-		//m_isFinished = true;
-		//m_TimeAcc = 0.0;
-		// 여기다가 curr 전부 0ㅇ로 초기화 하는 함수 만들어서 넣어주면 된다 
 		Set_CurrKeyFrame();
 		bCheck = false;
+
 		return true;
 	}
 	
 	else
-	//if (true != m_Check)
 	{
 		m_iChannelIndex = 0;
 
@@ -90,7 +88,6 @@ _bool CAnimation::Play_Animation_Last(_double TimeDelta, const vector<class CBon
 			pChannel->Linear_Transform(m_TimeAcc, &m_CurrKeyFrame[m_iChannelIndex], Bones, pAnim->Get_Channel(), bCheck);
 		
 			m_iChannelIndex += 1;
-			//Set_CurrKeyFrame();
 		}
 	}
 

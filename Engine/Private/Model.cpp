@@ -163,7 +163,6 @@ HRESULT CModel::Play_Animation(_double TimeDelta)
 
 	}
 	
-
 	for (auto& pBone : m_vecBones)
 	{
 		pBone->Invalidate_CombinedMatrix();

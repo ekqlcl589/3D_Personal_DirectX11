@@ -81,8 +81,9 @@ void CTargetCamera::Target_Renewal()
 	fPosition = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
 
 	XMStoreFloat3(&m_CameraDesc.vEye, fPosition);// -XMLoadFloat3(&m_CameraDesc.vEye));
+	// 
 	m_CameraDesc.vAt = m_CameraDesc.vEye;
-
+	m_CameraDesc.vAt.y + 10.f;
 	m_Transform->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_CameraDesc.vEye));
 	m_Transform->LookAt(XMLoadFloat3(&m_CameraDesc.vAt));
 	m_Transform->Set_TransformDesc(m_CameraDesc.Transform_Desc);

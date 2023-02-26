@@ -198,6 +198,9 @@
     <ClInclude Include="..\Public\Ancient_StonGolem.h">
       <Filter>02.GameObject\06. Monster\Boss_Ancient_StonGolem</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\SwordShield.h">
+      <Filter>02.GameObject\05. Player\Weapon\SwordShield</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -271,6 +274,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Ancient_StonGolem.cpp">
       <Filter>02.GameObject\06. Monster\Boss_Ancient_StonGolem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SwordShield.cpp">
+      <Filter>02.GameObject\05. Player\Weapon\SwordShield</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
