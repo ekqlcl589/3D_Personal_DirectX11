@@ -52,6 +52,7 @@ namespace Engine
 {
 	enum MOUSEKEYSTATE { DIMK_LB, DIMK_RB, DIMK_WHEEL, DIMK_END };
 	enum MOUSEMOVESTATE { DIMM_X, DIMM_Y, DIMM_WHEEL, DIMM_END };
+
 }
 
 #ifdef _DEBUG

@@ -49,9 +49,6 @@
     <Filter Include="02.GameObject\06. Monster">
       <UniqueIdentifier>{90a30566-ac2e-4c6d-924d-58d5e4aa4e75}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\06. Monster\Boss_00">
-      <UniqueIdentifier>{4cc3b2b5-099f-4446-a959-5bfb64114b67}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\TileMesh">
       <UniqueIdentifier>{0fc7bcd6-04a7-4d24-86b2-2e3261b77692}</UniqueIdentifier>
     </Filter>
@@ -111,6 +108,9 @@
     </Filter>
     <Filter Include="02.GameObject\02.Camera\Target">
       <UniqueIdentifier>{17e46b3f-0e62-4794-8e34-87605e41d199}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06. Monster\Boss_Ancient_StonGolem">
+      <UniqueIdentifier>{4cc3b2b5-099f-4446-a959-5bfb64114b67}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -195,6 +195,9 @@
     <ClInclude Include="..\Public\TargetCamera.h">
       <Filter>02.GameObject\02.Camera\Target</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Ancient_StonGolem.h">
+      <Filter>02.GameObject\06. Monster\Boss_Ancient_StonGolem</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -265,6 +268,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\TargetCamera.cpp">
       <Filter>02.GameObject\02.Camera\Target</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Ancient_StonGolem.cpp">
+      <Filter>02.GameObject\06. Monster\Boss_Ancient_StonGolem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

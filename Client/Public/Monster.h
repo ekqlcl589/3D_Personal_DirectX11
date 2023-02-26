@@ -14,9 +14,9 @@ END
 
 BEGIN(Client)
 
-class CMonster final :	public CGameObject
+class CMonster  :	public CGameObject
 {
-public:
+protected:
 	enum COLLIDER { COLLIDER_AABB, COLLIDER_OBB, COLLIDER_SPHERE, COLLIDER_END };
 
 public:
@@ -29,7 +29,7 @@ public:
 		CTransform::TRANSFORM_DESC transformDesc;
 	}MONSTERSTATE;
 
-private:
+protected:
 	CMonster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CMonster(const CMonster& rhs);
 	virtual ~CMonster() = default;
@@ -41,18 +41,18 @@ public:
 	virtual void LateTick(_double TimeDelta) override;
 	virtual HRESULT Render() override;
 
-private:
+protected:
 	CShader* m_pShaderCom = { nullptr };
 	CRenderer* m_pRendererCom = { nullptr };
 	CTransform*	m_pTransformCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 	CCollider* m_pColliderCom[COLLIDER_END] = { nullptr };
 
-private:
+protected:
 	HRESULT Add_Components();
 	HRESULT SetUp_ShaderResources();
 
-private:
+protected:
 	MONSTERSTATE m_MonsterState;
 	_uint iId = { 0 };
 	void Collision_ToPlayer();

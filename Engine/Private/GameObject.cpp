@@ -15,6 +15,7 @@ CGameObject::CGameObject(const CGameObject & rhs)
 	: m_pDevice(rhs.m_pDevice)
 	, m_pContext(rhs.m_pContext)
 	, m_isCloned{ true }
+	, m_eCollisionState(rhs.m_eCollisionState)
 {
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pContext);

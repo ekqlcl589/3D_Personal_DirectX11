@@ -145,6 +145,16 @@ namespace Engine
 		ANIM_END
 	};
 
+	enum COLLISIONSTATE
+	{
+		OBJ_PLAYER,
+		OBJ_WEAPON_SS,
+		OBJ_WEAPON_KARMA14,
+		OBJ_BOSS1,
+		OBJ_BOSS2,
+		OBJ_END
+	};
+
 	typedef struct tagPlayerInfo
 	{
 		_uint _Lv;

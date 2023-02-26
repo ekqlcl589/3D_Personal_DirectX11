@@ -115,6 +115,33 @@ CGameObject * CObject_Manager::Clone_GameObject(const _tchar * pPrototypeTag, vo
 	return pGameObject;
 }
 
+CGameObject * CObject_Manager::Clone_GameObject_Add_Layer(const _tchar * pPrototypeTag, void * pArg)
+{
+	CGameObject*	pPrototype = Find_Prototype(pPrototypeTag);
+
+	if (nullptr == pPrototype)
+		return nullptr;
+
+	CGameObject*	pGameObject = pPrototype->Clone(pArg);
+	if (nullptr == pGameObject)
+		return nullptr;
+
+	CLayer* pLayer = nullptr;
+
+	if (nullptr == pLayer)
+	{
+		pLayer = CLayer::Create();
+
+		pLayer->Add_GameObject(pGameObject);
+
+		m_pLayers[3].emplace(pPrototypeTag, pLayer);//무조건 LEVEL_GAMEPLAY에 들어가는데 혹시 나중에 필요하면 index 받아서 따로 추가 하는 기능 ㄱㄱ
+	}
+	else
+		pLayer->Add_GameObject(pGameObject);
+
+	return pGameObject;
+}
+
 CComponent * CObject_Manager::Get_Component(_uint iLevelIndex, const _tchar * pLayerTag, const _tchar * pComponentTag, _uint iIndex)
 {
 	CLayer* pLayer = Find_Layer(iLevelIndex, pLayerTag);

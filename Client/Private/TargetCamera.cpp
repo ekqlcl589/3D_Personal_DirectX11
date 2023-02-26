@@ -31,7 +31,6 @@ HRESULT CTargetCamera::Initialize(void * pArg)
 
 void CTargetCamera::Tick(_double TimeDelta)
 {
-	__super::Tick(TimeDelta);
 
 	Target_Renewal();
 
@@ -52,6 +51,8 @@ void CTargetCamera::Tick(_double TimeDelta)
 
 	if (false == m_bFix)
 		return;
+
+	__super::Tick(TimeDelta);
 }
 
 void CTargetCamera::LateTick(_double TimeDelta)
@@ -76,20 +77,12 @@ void CTargetCamera::Target_Renewal()
 
 	CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
 
-	_vector vLook;
-	vLook = pPlayerTransform->Get_State(CTransform::STATE_LOOK);
-
-	XMStoreFloat3(&m_CameraDesc.vEye, vLook * -1.f);
-
 	_vector fPosition;
 	fPosition = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
 
-	XMStoreFloat3(&m_CameraDesc.vEye, XMVector3Normalize(vLook) * m_CameraDesc.Transform_Desc.fSpeed);
-	XMStoreFloat3(&m_CameraDesc.vEye, fPosition - XMLoadFloat3(&m_CameraDesc.vEye));
-	m_CameraDesc.vEye.y = 5.f;
+	XMStoreFloat3(&m_CameraDesc.vEye, fPosition);// -XMLoadFloat3(&m_CameraDesc.vEye));
 	m_CameraDesc.vAt = m_CameraDesc.vEye;
 
-	
 	m_Transform->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_CameraDesc.vEye));
 	m_Transform->LookAt(XMLoadFloat3(&m_CameraDesc.vAt));
 	m_Transform->Set_TransformDesc(m_CameraDesc.Transform_Desc);

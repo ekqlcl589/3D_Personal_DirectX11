@@ -31,9 +31,7 @@ public:
 	HRESULT SetUp_BoneMatrices(class CShader* pShaderCom, const char* pConstantName, _uint iMeshIndex);
 	HRESULT SetUp_Animation(_uint iAnimationIndex);
 	HRESULT Play_Animation(_double TimeDelta);
-	HRESULT Change_Animation(_double TimeDelta, _uint iAnimationIndex);
 
-	HRESULT Set_Animation(_uint iAnimationIndex);
 	HRESULT Render(_uint iMeshIndex);
 
 private:

@@ -172,28 +172,6 @@ HRESULT CModel::Play_Animation(_double TimeDelta)
 	return S_OK;
 }
 
-HRESULT CModel::Change_Animation(_double TimeDelta, _uint iAnimationIndex)
-{
-
-
-	//for (auto& pBone : m_vecBones)
-	//{
-	//	pBone->Invalidate_CombinedMatrix();
-	//}
-
-	return S_OK;
-}
-
-HRESULT CModel::Set_Animation(_uint iAnimationIndex)
-{
-	if (iAnimationIndex >= m_iNumAnimations)
-		return E_FAIL;
-
-	m_iCurrAnimation = iAnimationIndex;
-
-	return S_OK;
-}
-
 HRESULT CModel::Render(_uint iMeshIndex)
 {
 	if (iMeshIndex >= m_iNumMeshes)

@@ -26,7 +26,7 @@ HRESULT CGamePlay::Initialize()
 	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
 	
-	LoadMonster(L"../Data/Monster.dat");
+	//LoadMonster(L"../Data/Monster.dat");
 
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;

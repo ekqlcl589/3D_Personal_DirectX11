@@ -27,6 +27,9 @@ public: /* Level_Mgr */
 public: /* Obj_Mgr */
 	HRESULT Add_Prototype(const _tchar* pPrototypeTag, class CGameObject* pPrototype);
 	HRESULT Add_GameObject(_uint iLevelIndex, const _tchar* pPrototypeTag, const _tchar* pLayerTag, void* pArg = nullptr);
+	
+	class CGameObject* Clone_GameObject_Add_Layer(const _tchar* pPrototypeTag, void* pArg = nullptr);
+
 	CComponent* Get_Component(_uint iLevelIndex, const _tchar* pLayerTag, const _tchar* pComponentTag, _uint iIndex = 0);
 
 	class CGameObject* Find_GameObject(_uint iLevelIndex, const _tchar* pLayerTag, void* pArg = nullptr);
@@ -57,6 +60,8 @@ public: // For Light_Mgr
 	HRESULT Add_Lights(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const LIGHT_DESC& LightDesc);
 	const LIGHT_DESC* Get_Light(_uint iIndex);
 
+public: // For Collision_Mgr
+
 private:
 	class CGraphic_Device* m_pGraphic_Device = { nullptr };
 	class CLevel_Mgr* m_pLevel_Manager = { nullptr };
@@ -66,6 +71,7 @@ private:
 	class CTimer_Manager* m_pTime_Mgr = { nullptr };
 	class CInput_Device* m_pInput_Device = { nullptr };
 	class CLight_Mgr* m_pLight_Mgr = { nullptr };
+	class CCollisionMgr* m_pCollision_Mgr = { nullptr };
 
 public:
 	static void Release_Engine();

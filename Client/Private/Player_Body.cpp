@@ -32,8 +32,10 @@ HRESULT CPlayer_Body::Initialize_Prototype()
 	m_tInfo._Hp = 100.f;
 	m_tInfo._MaxMp = 100.f;
 	m_tInfo._Mp = 100;
-	//m_tInfo.CurrAnimState = ANIM_IDEL;
-	//m_tInfo.prevAnimState = ANIM_END;
+	m_tInfo.CurrAnimState = ANIM_IDEL;
+	m_tInfo.prevAnimState = ANIM_END;
+
+	m_eCollisionState = COLLISIONSTATE::OBJ_PLAYER;
 
 	return S_OK;
 }
@@ -54,7 +56,6 @@ HRESULT CPlayer_Body::Initialize(void * pArg)
 
 	m_animation = m_pModelCom->Get_Animations();
 
-	m_pModelCom->SetUp_Animation(19);
 	return S_OK;
 }
 
@@ -448,7 +449,7 @@ HRESULT CPlayer_Body::Add_Weapon()
 	Safe_AddRef(pBonePtr);
 	Safe_AddRef(pBonePtrL);
 
-	CGameObject* pWeapon = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Weapon"), &WeaponDesc);
+	CGameObject* pWeapon = pInstance->Clone_GameObject_Add_Layer(TEXT("Prototype_GameObject_Weapon"), &WeaponDesc);
 	CGameObject* pShield = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Weapon"), &WeaponDesc1);
 
 	if (nullptr == pWeapon || nullptr == pShield)

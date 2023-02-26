@@ -5,6 +5,7 @@
 #include "Timer_Manager.h"
 #include "Input_Device.h"
 #include "Light_Mgr.h"
+#include "CollisionMgr.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -17,6 +18,7 @@ CGameInstance::CGameInstance()
 	, m_pTime_Mgr(CTimer_Manager::GetInstance())
 	, m_pInput_Device(CInput_Device::GetInstance())
 	, m_pLight_Mgr(CLight_Mgr::GetInstance())
+	, m_pCollision_Mgr(CCollisionMgr::GetInstance())
 {
 	Safe_AddRef(m_pGraphic_Device);
 	Safe_AddRef(m_pLevel_Manager);
@@ -26,6 +28,7 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pTime_Mgr);
 	Safe_AddRef(m_pInput_Device);
 	Safe_AddRef(m_pLight_Mgr);
+	Safe_AddRef(m_pCollision_Mgr);
 }
 
 HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, const GRAPHIC_DESC & GraphicDesc, _uint iNumLevels, ID3D11Device ** ppDeviceOut, ID3D11DeviceContext ** ppContextOut)
@@ -66,6 +69,7 @@ HRESULT CGameInstance::Tick_Engine(_double TimeDelta)
 
 	m_pObject_Manager->LateTick(TimeDelta);
 
+	m_pCollision_Mgr->Update_Collision(TimeDelta);
 
 	return S_OK;
 }
@@ -116,6 +120,14 @@ HRESULT CGameInstance::Add_GameObject(_uint iLevelIndex, const _tchar * pPrototy
 		return E_FAIL;
 
 	return m_pObject_Manager->Add_GameObject(iLevelIndex, pPrototypeTag, pLayerTag, pArg);
+}
+
+CGameObject * CGameInstance::Clone_GameObject_Add_Layer(const _tchar * pPrototypeTag, void * pArg)
+{
+	if (nullptr == m_pObject_Manager)
+		return nullptr;
+
+	return m_pObject_Manager->Clone_GameObject_Add_Layer(pPrototypeTag,  pArg);
 }
 
 CComponent * CGameInstance::Get_Component(_uint iLevelIndex, const _tchar * pLayerTag, const _tchar * pComponentTag, _uint iIndex)
@@ -259,6 +271,7 @@ const LIGHT_DESC * CGameInstance::Get_Light(_uint iIndex)
 	return m_pLight_Mgr->Get_Light(iIndex);
 }
 
+
 void CGameInstance::Release_Engine()
 {
 	CGameInstance::GetInstance()->DestroyInstance();
@@ -269,6 +282,7 @@ void CGameInstance::Release_Engine()
 	CTimer_Manager::GetInstance()->DestroyInstance();
 	CInput_Device::GetInstance()->DestroyInstance();
 	CLight_Mgr::GetInstance()->DestroyInstance();
+	CCollisionMgr::GetInstance()->DestroyInstance();
 
 	CGraphic_Device::GetInstance()->DestroyInstance();
 }
@@ -282,5 +296,7 @@ void CGameInstance::Free()
 	Safe_Release(m_pTime_Mgr);
 	Safe_Release(m_pInput_Device);
 	Safe_Release(m_pLight_Mgr);
+	Safe_Release(m_pCollision_Mgr);
+
 	Safe_Release(m_pGraphic_Device);
 }

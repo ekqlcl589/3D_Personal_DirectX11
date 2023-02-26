@@ -27,6 +27,8 @@ public:
 
 	class CGameObject* Clone_GameObject(const _tchar* pPrototypeTag, void* pArg = nullptr);
 
+	class CGameObject* Clone_GameObject_Add_Layer(const _tchar* pPrototypeTag, void* pArg = nullptr);
+
 	class CComponent* Get_Component(_uint iLevelIndex, const _tchar* pLayerTag, const _tchar* pComponentTag, _uint iIndex = 0);
 
 private: //¿øº»°´Ã¼

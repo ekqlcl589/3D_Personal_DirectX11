@@ -18,6 +18,8 @@ HRESULT CWeapon::Initialize_Prototype()
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
 
+	m_eCollisionState = COLLISIONSTATE::OBJ_WEAPON_SS;
+
 	return S_OK;
 }
 
@@ -50,7 +52,7 @@ void CWeapon::Tick(_double TimeDelta)
 	for (_uint i = 0; i < COLLIDER_END; ++i)
 	{
 		if (nullptr != m_pColliderCom[i])
-			m_pColliderCom[i]->Update(m_pTransformCom->Get_WorldMatrix());
+			m_pColliderCom[i]->Update(XMLoadFloat4x4(&m_WorldMatrix));
 	}
 }
 

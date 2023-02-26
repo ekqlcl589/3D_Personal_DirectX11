@@ -17,6 +17,8 @@ HRESULT CMonster::Initialize_Prototype()
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
 
+	m_eCollisionState = COLLISIONSTATE::OBJ_BOSS1;
+
 	return S_OK;
 }
 
@@ -28,11 +30,13 @@ HRESULT CMonster::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	ZeroMemory(&m_MonsterState, sizeof(MONSTERSTATE));
+	//ZeroMemory(&m_MonsterState, sizeof(MONSTERSTATE));
+	//
+	//memcpy(&m_MonsterState, pArg, sizeof m_MonsterState);
 	
-	memcpy(&m_MonsterState, pArg, sizeof m_MonsterState);
-	
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_MonsterState.fPos));
+	_float3 fPosition = { 10.f, 0.f, 10.f };
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPosition));
 	
 	m_pModelCom->SetUp_Animation(rand() % 20);
 
@@ -180,7 +184,10 @@ void CMonster::Collision_ToPlayer()
 
 	CCollider* pPlayerCollider = static_cast<CCollider*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Collider_AABB")));
 
+	CCollider* pWeaponColiider = static_cast<CCollider*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Weapon"), TEXT("Com_Collider")));
+	
 	m_pColliderCom[COLLIDER_AABB]->Collision(pPlayerCollider);
+	m_pColliderCom[COLLIDER_AABB]->Collision(pWeaponColiider);
 
 	RELEASE_INSTANCE(CGameInstance);
 }
