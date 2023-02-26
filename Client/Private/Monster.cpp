@@ -57,6 +57,8 @@ void CMonster::LateTick(_double TimeDelta)
 
 	m_pModelCom->Play_Animation(TimeDelta);
 
+	Collision_ToPlayer();
+
 	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 }
@@ -170,6 +172,17 @@ HRESULT CMonster::SetUp_ShaderResources()
 
 	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
+}
+
+void CMonster::Collision_ToPlayer()
+{
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+	CCollider* pPlayerCollider = static_cast<CCollider*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Collider_AABB")));
+
+	m_pColliderCom[COLLIDER_AABB]->Collision(pPlayerCollider);
+
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 CMonster * CMonster::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)

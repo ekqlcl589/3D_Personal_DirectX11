@@ -55,6 +55,7 @@ private:
 private:
 	MONSTERSTATE m_MonsterState;
 	_uint iId = { 0 };
+	void Collision_ToPlayer();
 
 public:
 	static CMonster* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

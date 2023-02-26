@@ -15,6 +15,14 @@ public:
 		_float3 vScale;
 		_float3 vRotation;
 	}COLLIDERDESC;
+
+	typedef struct taagOBBDesc
+	{
+		_float3 vCenter;
+		_float3 vCenterDir[3];
+		_float3 vAlignDir[3];
+	}OBBDESC;
+
 private:
 	CCollider(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CCollider(const CCollider& rhs);
@@ -25,6 +33,12 @@ public:
 	HRESULT Initialize(void* pArg)override;
 
 	void Update(_fmatrix TransformMatrix);
+
+	_bool Collision(CCollider* pTargetCollider);
+
+	_bool Collision_AABB(CCollider* pTargetCollider);
+	_bool Collision_OBB(CCollider* pTargetCollider);
+	_bool Collision_SPHERE(CCollider* pTargetCollider);
 
 #ifdef _DEBUG
 
@@ -42,6 +56,7 @@ private:
 	BoundingSphere* m_pOriginSphere = { nullptr };
 
 	COLLIDERDESC m_ColliderDesc;
+	_bool m_isColl = { false };
 
 #ifdef _DEBUG
 private:
@@ -52,6 +67,9 @@ private:
 
 private:
 	_matrix Remove_Rotation(_fmatrix TransformMatrix); // AABB용 회전하면 ㅄ되는 충돌체를 위해 
+	
+	_float3 Compute_Min();
+	_float3 Compute_Max();
 
 public:
 	static CCollider* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, TYPE eType);

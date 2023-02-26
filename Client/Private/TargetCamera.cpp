@@ -56,11 +56,11 @@ void CTargetCamera::Tick(_double TimeDelta)
 
 void CTargetCamera::LateTick(_double TimeDelta)
 {
-	if (false == m_bFix)
-	{
-		Mouse_Check(TimeDelta);
-		Mouse_Fix();
-	}
+	//if (false == m_bFix)
+	//{
+	//	Mouse_Check(TimeDelta);
+	//	Mouse_Fix();
+	//}
 
 	__super::LateTick(TimeDelta);
 }
@@ -76,28 +76,23 @@ void CTargetCamera::Target_Renewal()
 
 	CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
 
-	_float3 vLook;
-	XMStoreFloat3(&vLook, pPlayerTransform->Get_State(CTransform::STATE_LOOK));
+	_vector vLook;
+	vLook = pPlayerTransform->Get_State(CTransform::STATE_LOOK);
 
-	//m_CameraDesc.vEye =  vLook;
-	//m_CameraDesc.vEye.y = 1.f;
-	//XMVector3Normalize(XMLoadFloat3(&m_CameraDesc.vEye));
-	//_float3 f = {1.f, 1.f, 1.f};
-	//m_CameraDesc.vEye *  f; // 이건 나중에 휠로 조절할 수 있게 변수로 받아야 함
+	XMStoreFloat3(&m_CameraDesc.vEye, vLook * -1.f);
 
-	// _float3 vRight;
-	// memcpy(&vRight, &pPlayerTransform->Get_WorldMatrix().r[0], sizeof(_vector));
-	// XMStoreFloat3(&vRight, pPlayerTransform->Get_State(CTransform::STATE_RIGHT));
-	//_matrix matRot;
-	//XMMatrixRotationAxis()
+	_vector fPosition;
+	fPosition = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
 
-	_float3 fPosition;
-	XMStoreFloat3(&fPosition, pPlayerTransform->Get_State(CTransform::STATE_POSITION));
-	m_CameraDesc.vEye.x = fPosition.x;
-	m_CameraDesc.vEye.y = fPosition.y + 10.f;
-	m_CameraDesc.vEye.z = fPosition.z;
+	XMStoreFloat3(&m_CameraDesc.vEye, XMVector3Normalize(vLook) * m_CameraDesc.Transform_Desc.fSpeed);
+	XMStoreFloat3(&m_CameraDesc.vEye, fPosition - XMLoadFloat3(&m_CameraDesc.vEye));
+	m_CameraDesc.vEye.y = 5.f;
 	m_CameraDesc.vAt = m_CameraDesc.vEye;
-	// XMStoreFloat3(&m_CameraDesc.vAt, pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+
+	
+	m_Transform->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_CameraDesc.vEye));
+	m_Transform->LookAt(XMLoadFloat3(&m_CameraDesc.vAt));
+	m_Transform->Set_TransformDesc(m_CameraDesc.Transform_Desc);
 
 	RELEASE_INSTANCE(CGameInstance);
 }

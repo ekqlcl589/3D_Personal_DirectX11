@@ -23,9 +23,11 @@ HRESULT CGamePlay::Initialize()
 
 	//6LoadMeshTile(L"../Data/Tile/Tile.dat");
 
-	//LoadMonster(L"../Data/Monster.dat");
 	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
+	
+	LoadMonster(L"../Data/Monster.dat");
+
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
@@ -77,12 +79,12 @@ HRESULT CGamePlay::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CameraDesc.vEye = _float3(0.f, 10.f, -9.f);
 	CameraDesc.vAt = _float3(0.f, 0.f, 0.f);
 	CameraDesc.vAxisY = _float3(0.f, 1.f, 0.f);
-
+	
 	CameraDesc.vFov = XMConvertToRadians(60.f);
 	CameraDesc.vAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	CameraDesc.vNear = 0.2f;
 	CameraDesc.vFar = 300.f;
-
+	
 	CameraDesc.Transform_Desc.fSpeed = 10.f;
 	CameraDesc.Transform_Desc.fRotation = XMConvertToRadians(90.f);
 

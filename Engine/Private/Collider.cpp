@@ -84,18 +84,78 @@ HRESULT CCollider::Initialize(void * pArg)
 
 void CCollider::Update(_fmatrix TransformMatrix)
 {
+	m_isColl = false;
+
 	switch (m_eType)
 	{
 	case TYPE_AABB:
 		m_pOriginAABB->Transform(*m_pAABB, Remove_Rotation(TransformMatrix)); // m_pAABB에 값을 저장
 		break;
+
 	case TYPE_OBB:
+		m_pOriginOBB->Transform(*m_pOBB, TransformMatrix);
 		break;
+
 	case TYPE_SPHERE:
+		m_pOriginSphere->Transform(*m_pSphere, TransformMatrix);
 		break;
+
 	default:
 		break;
 	}
+}
+
+_bool CCollider::Collision(CCollider * pTargetCollider)
+{
+	if (TYPE_AABB == m_eType)
+	{
+		if (TYPE_AABB == pTargetCollider->m_eType)
+			m_isColl = m_pAABB->Intersects(*pTargetCollider->m_pAABB);
+		if (TYPE_OBB == pTargetCollider->m_eType)
+			m_isColl = m_pAABB->Intersects(*pTargetCollider->m_pOBB);
+		if (TYPE_SPHERE == pTargetCollider->m_eType)
+			m_isColl = m_pAABB->Intersects(*pTargetCollider->m_pSphere);
+	}
+
+	else if (TYPE_OBB == m_eType)
+	{
+		if (TYPE_AABB == pTargetCollider->m_eType)
+			m_isColl = m_pOBB->Intersects(*pTargetCollider->m_pAABB);
+		if (TYPE_OBB == pTargetCollider->m_eType)
+			m_isColl = m_pOBB->Intersects(*pTargetCollider->m_pOBB);
+		if (TYPE_SPHERE == pTargetCollider->m_eType)
+			m_isColl = m_pOBB->Intersects(*pTargetCollider->m_pSphere);
+	}
+
+	else
+	{
+		if (TYPE_AABB == pTargetCollider->m_eType)
+			m_isColl = m_pSphere->Intersects(*pTargetCollider->m_pAABB);
+		if (TYPE_OBB == pTargetCollider->m_eType)
+			m_isColl = m_pSphere->Intersects(*pTargetCollider->m_pOBB);
+		if (TYPE_SPHERE == pTargetCollider->m_eType)
+			m_isColl = m_pSphere->Intersects(*pTargetCollider->m_pSphere);
+	}
+
+	if (true == m_isColl)
+		pTargetCollider->m_isColl = m_isColl;
+
+	return m_isColl;
+}
+
+_bool CCollider::Collision_AABB(CCollider * pTargetCollider)
+{
+	return _bool();
+}
+
+_bool CCollider::Collision_OBB(CCollider * pTargetCollider)
+{
+	return _bool();
+}
+
+_bool CCollider::Collision_SPHERE(CCollider * pTargetCollider)
+{
+	return _bool();
 }
 
 #ifdef _DEBUG
@@ -116,16 +176,18 @@ HRESULT CCollider::Render()
 
 	m_pBatch->Begin();
 
+	_vector	vColor = m_isColl == true ? XMVectorSet(1.f, 0.f, 0.f, 1.f) : XMVectorSet(0.f, 1.f, 0.f, 1.f);
+
 	switch (m_eType)
 	{
 	case CCollider::TYPE_AABB:
-		DX::Draw(m_pBatch, *m_pAABB);
+		DX::Draw(m_pBatch, *m_pAABB, vColor);
 		break;
 	case CCollider::TYPE_OBB:
-		DX::Draw(m_pBatch, *m_pOBB);
+		DX::Draw(m_pBatch, *m_pOBB, vColor);
 		break;
 	case CCollider::TYPE_SPHERE:
-		DX::Draw(m_pBatch, *m_pSphere);
+		DX::Draw(m_pBatch, *m_pSphere, vColor);
 		break;
 	}
 
@@ -146,6 +208,17 @@ _matrix CCollider::Remove_Rotation(_fmatrix TransformMatrix)
 
 	return Result;
 }
+
+_float3 CCollider::Compute_Min()
+{
+	return _float3();
+}
+
+_float3 CCollider::Compute_Max()
+{
+	return _float3();
+}
+
 
 CCollider * CCollider::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, TYPE eType)
 {

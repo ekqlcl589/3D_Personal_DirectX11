@@ -31,7 +31,7 @@ HRESULT CDynamicCamera::Initialize(void * pArg)
 
 void CDynamicCamera::Tick(_double TimeDelta)
 {
-	Target_Renewal();
+	//Target_Renewal();
 	Key_Input(TimeDelta);
 	__super::Tick(TimeDelta);
 

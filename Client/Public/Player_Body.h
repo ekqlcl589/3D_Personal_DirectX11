@@ -20,7 +20,7 @@ public:
 	enum WEAPON { WEAPON_SS, WEAPON_SHIELD, WEAPON_KARMA14, WEAPON_END };
 
 public:
-	enum COLLIDER {COLLIDER_AABB, COLLIDER_OBB, COLLIDER_SPHERE, COLLIDER_END};
+	enum COLLIDER { COLLIDER_AABB, COLLIDER_OBB, COLLIDER_SPHERE, COLLIDER_END };
 
 private:
 	CPlayer_Body(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -69,6 +69,7 @@ private:
 	HRESULT Add_Parts();
 	HRESULT Add_Weapon();
 	HRESULT SetUp_ShaderResources();
+	HRESULT TargetCamera();
 
 private:
 	PLAYERINFO m_tInfo;

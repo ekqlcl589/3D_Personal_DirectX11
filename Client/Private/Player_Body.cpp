@@ -7,6 +7,7 @@
 #include "Hair.h"
 #include "PlayerTop.h"
 #include "Weapon.h"
+#include "TargetCamera.h"
 
 CPlayer_Body::CPlayer_Body(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -361,7 +362,7 @@ HRESULT CPlayer_Body::Add_Components()
 	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vScale.y * 0.5f, 0.f);
 
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"),
-		TEXT("Com_Collider"), (CComponent**)&m_pColliderCom[COLLIDER_AABB], &ColliderDesc)))
+		TEXT("Com_Collider_AABB"), (CComponent**)&m_pColliderCom[COLLIDER_AABB], &ColliderDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -494,6 +495,18 @@ HRESULT CPlayer_Body::SetUp_ShaderResources()
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
+	return S_OK;
+}
+
+HRESULT CPlayer_Body::TargetCamera()
+{
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+	//m_pCamear = static_cast<CTargetCamera*>(pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Camera")));
+
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION);
+	RELEASE_INSTANCE(CGameInstance);
+
 	return S_OK;
 }
 

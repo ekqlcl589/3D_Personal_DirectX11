@@ -46,6 +46,12 @@ HRESULT CWeapon::Initialize(void * pArg)
 void CWeapon::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
+
+	for (_uint i = 0; i < COLLIDER_END; ++i)
+	{
+		if (nullptr != m_pColliderCom[i])
+			m_pColliderCom[i]->Update(m_pTransformCom->Get_WorldMatrix());
+	}
 }
 
 void CWeapon::LateTick(_double TimeDelta)
@@ -82,6 +88,16 @@ HRESULT CWeapon::Render()
 		m_pModelCom->Render(i);
 	}
 
+#ifdef _DEBUG
+
+	for (_uint i = 0; i < COLLIDER_END; ++i)
+	{
+		if (nullptr != m_pColliderCom[i])
+			m_pColliderCom[i]->Render();
+	}
+
+#endif
+
 	return S_OK;
 }
 
@@ -105,6 +121,16 @@ HRESULT CWeapon::Add_Components()
 	{
 		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Weapon_SS"),
 			TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+			return E_FAIL;
+
+		CCollider::COLLIDERDESC ColliderDesc;
+		ZeroMemory(&ColliderDesc, sizeof ColliderDesc);
+
+		ColliderDesc.vScale = _float3(1.f, 1.f, 1.f);
+		ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vScale.y * 0.5f, 0.f);
+
+		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_SPHERE"),
+			TEXT("Com_Collider"), (CComponent**)&m_pColliderCom[COLLIDER_SPHERE], &ColliderDesc)))
 			return E_FAIL;
 	}
 	else if (m_Weapon.WeaponType == WEAPON_SHILED)
@@ -191,6 +217,11 @@ void CWeapon::Free()
 
 	if (true == m_isCloned)
 		Safe_Release(m_Weapon.pBonePtr);
+
+	for (_uint i = 0; i < COLLIDER_END; ++i)
+	{
+		Safe_Release(m_pColliderCom[i]);
+	}
 
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pModelCom);
