@@ -34,11 +34,11 @@ HRESULT CAncient_StonGolem::Initialize(void * pArg)
 	//
 	//memcpy(&m_MonsterState, pArg, sizeof m_MonsterState);
 
-	_float3 fPosition = { 10.f, 0.f, 10.f };
+	_float3 fPosition = { 10.f, 1.f, 10.f };
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPosition));
 
-	m_pModelCom->SetUp_Animation(rand() % 20);
+	m_pModelCom->SetUp_Animation(3);
 
 	return S_OK;
 }

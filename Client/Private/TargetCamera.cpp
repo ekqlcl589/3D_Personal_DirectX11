@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\TargetCamera.h"
 #include "GameInstance.h"
-#include "Transform.h"
 #include "Player_Body.h"
 
 
@@ -31,16 +30,15 @@ HRESULT CTargetCamera::Initialize(void * pArg)
 
 void CTargetCamera::Tick(_double TimeDelta)
 {
-
-	//Target_Renewal();
+	Target_Renewal(TimeDelta);
 
 	if (m_pInstance->Get_DIKeyState(DIK_TAB))
 	{
 		if (m_bCheck)
 			return;
-
+	
 		m_bCheck = true;
-
+	
 		if (m_bFix)
 			m_bFix = false;
 		else
@@ -48,20 +46,21 @@ void CTargetCamera::Tick(_double TimeDelta)
 	}
 	else
 		m_bCheck = false;
-
+	
 	if (false == m_bFix)
 		return;
+
+	if (false == m_bFix)
+	{
+	  Mouse_Fix();
+	  Mouse_Check(TimeDelta);
+	}
 
 	__super::Tick(TimeDelta);
 }
 
 void CTargetCamera::LateTick(_double TimeDelta)
 {
-	//if (false == m_bFix)
-	//{
-	//	Mouse_Check(TimeDelta);
-	//	Mouse_Fix();
-	//}
 
 	__super::LateTick(TimeDelta);
 }
@@ -71,38 +70,36 @@ HRESULT CTargetCamera::Render()
 	return S_OK;
 }
 
-void CTargetCamera::Target_Renewal()
+void CTargetCamera::Target_Renewal(_double TimeDelta)
 {
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
 	CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
 
-	_vector fPosition;
-	fPosition = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
+	_vector fPosition = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
 
-	XMStoreFloat3(&m_CameraDesc.vEye, fPosition);// -XMLoadFloat3(&m_CameraDesc.vEye));
-	// 카메라의 eye가 플레이어의 포지션과 똑같으면 플레이어의 중점 (0,0,0)을 바라보게 됨 
-	// at은 y값만 조금 조절하면 되고 
-	// eye +  반지름을 구해서 반지름 만큼 더하면 카메라의 바라보는 위치를 구할수 있음??
-	// 아니 갑자기 카메라가 나를 이렇게 괴롭힌다고? 역시 인생 쉽지 않다.. 
-	m_CameraDesc.vAt = m_CameraDesc.vEye;
-	m_CameraDesc.vAt.y + 10.f;
-	m_Transform->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_CameraDesc.vEye));
-	m_Transform->LookAt(XMLoadFloat3(&m_CameraDesc.vAt));
-	m_Transform->Set_TransformDesc(m_CameraDesc.Transform_Desc);
+	XMStoreFloat3(&m_CameraDesc.vEye, fPosition);
+
+	_float3 fTarget = m_CameraDesc.vEye;
+
+	fTarget.y += 5.f;
+	fTarget.z -= 7.f;
+
+	m_Transform->LookAt(XMLoadFloat3(&fTarget));
+	//m_Transform->Chase(XMLoadFloat3(&fTarget), TimeDelta, 5.f);
+	
+	_long Mouse = 0;
+	if (Mouse = m_pInstance->Get_DIMouseMove(DIMM_X))
+		m_Transform->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * Mouse * 0.1f);
+
+	//if (Mouse = m_pInstance->Get_DIMouseMove(DIMM_Y))
+	//	m_Transform->Turn(m_Transform->Get_State(CTransform::STATE_RIGHT), TimeDelta * Mouse * 0.1f);
 
 	RELEASE_INSTANCE(CGameInstance);
 }
 
 void CTargetCamera::Mouse_Check(_double TimeDelta)
 {
-	_long Mouse = 0;
-
-	if (Mouse = m_pInstance->Get_DIMouseMove(DIMM_X))
-		m_Transform->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * Mouse * 0.1f);
-
-	if (Mouse = m_pInstance->Get_DIMouseMove(DIMM_Y))
-		m_Transform->Turn(m_Transform->Get_State(CTransform::STATE_RIGHT), TimeDelta * Mouse * 0.1f);
 }
 
 void CTargetCamera::Mouse_Fix()

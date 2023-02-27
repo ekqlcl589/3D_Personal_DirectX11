@@ -78,6 +78,10 @@ void CMonster::Collision_ToPlayer()
 	RELEASE_INSTANCE(CGameInstance);
 }
 
+void CMonster::ChaseToPlayer()
+{
+}
+
 
 void CMonster::Free()
 {

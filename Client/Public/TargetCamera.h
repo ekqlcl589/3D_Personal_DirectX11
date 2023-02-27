@@ -24,7 +24,7 @@ public:
 	virtual HRESULT Render()override;
 
 public:
-	void Target_Renewal();
+	void Target_Renewal(_double TimeDelta);
 	void Key_Input(_double TimeDelta);
 
 private:

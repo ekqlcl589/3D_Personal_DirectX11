@@ -211,11 +211,13 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 #pragma endregion Weapon
 
+	_matrix		LocalMatrix55 = XMMatrixIdentity();
+	LocalMatrix55 = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 
 #pragma region Monster
 	/* For.Prototype_Component_Model_TestMonster */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Boss0"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Ancient_Ston_Golem.fbx", CModel::MODEL_ANIM, LocalMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Ancient_Ston_Golem.fbx", CModel::MODEL_ANIM, LocalMatrix55))))
 		return E_FAIL;
 
 #pragma endregion Monster
@@ -258,11 +260,9 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 #pragma endregion 애니메이션 옷 파츠
 
-	_matrix		LocalMatrix55 = XMMatrixIdentity();
-	LocalMatrix5 = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Tile"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/StaticMesh/TrainingRoom/TraningRoom.fbx", CModel::MODEL_NONANIM, LocalMatrix5))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/StaticMesh/TrainingRoom/TraningRoom.fbx", CModel::MODEL_NONANIM, LocalMatrix55))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더를 로딩중입니다."));
