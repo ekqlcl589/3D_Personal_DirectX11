@@ -258,8 +258,11 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 #pragma endregion 애니메이션 옷 파츠
 
+	_matrix		LocalMatrix55 = XMMatrixIdentity();
+	LocalMatrix5 = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Tile"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Tile/Test.fbx", CModel::MODEL_NONANIM, LocalMatrix))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/StaticMesh/TrainingRoom/TraningRoom.fbx", CModel::MODEL_NONANIM, LocalMatrix5))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더를 로딩중입니다."));

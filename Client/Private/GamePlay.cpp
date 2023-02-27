@@ -59,8 +59,8 @@ HRESULT CGamePlay::Ready_Layer_BackGround(const _tchar * pLayerTag)
 	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Terrain"), pLayerTag)))
 	//	return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_TestTile"), pLayerTag)))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_TestTile"), pLayerTag)))
+		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_SkyBox"), pLayerTag)))
 		return E_FAIL;

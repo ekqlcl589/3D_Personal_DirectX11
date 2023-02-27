@@ -30,13 +30,13 @@ HRESULT CTestTile::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	ZeroMemory(&m_TileState, sizeof(TILESTATE));
-
-	memcpy(&m_TileState, pArg, sizeof m_TileState);
-
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_TileState.fPos));
-
-	m_pTransformCom->Set_Scale(m_TileState.fScale);
+	//ZeroMemory(&m_TileState, sizeof(TILESTATE));
+	//
+	//memcpy(&m_TileState, pArg, sizeof m_TileState);
+	//
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_TileState.fPos));
+	//
+	//m_pTransformCom->Set_Scale(m_TileState.fScale);
 
 	//m_TileState.iTileNum = CImGui_Tool::iTileNum++;
 
@@ -53,7 +53,7 @@ void CTestTile::LateTick(_double TimeDelta)
 	__super::LateTick(TimeDelta);
 
 	if (nullptr != m_pRendererCom)
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_PRIORITY, this);
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 }
 
 HRESULT CTestTile::Render()
@@ -72,7 +72,6 @@ HRESULT CTestTile::Render()
 		/*m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);
 		m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);*/
 
-		//m_pModelCom->SetUp_BoneMatrices(m_pShaderCom, "g_BoneMatrix", i);
 
 		m_pShaderCom->Begin(0);
 
