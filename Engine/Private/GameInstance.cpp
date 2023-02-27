@@ -205,6 +205,7 @@ _float4 CGameInstance::Get_CamPos()
 {
 	if (nullptr == m_pPipeLine)
 		return _float4(0.f, 0.f, 0.f, 1.f);
+
 	return m_pPipeLine->Get_CamPos();
 }
 

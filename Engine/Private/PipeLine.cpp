@@ -24,7 +24,7 @@ void CPipeLine::Tick(_double TimeDelta)
 	{
 		XMStoreFloat4x4(&m_TransformMatrixInverse[i], XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_TransformMatrix[i])));
 	}
-	memcpy(&m_vCamPos, &m_TransformMatrix[TS_VIEW].m[3][0], sizeof (_float4) );
+	memcpy(&m_vCamPos, &m_TransformMatrixInverse[TS_VIEW].m[3][0], sizeof (_float4) );
 }
 
 _float4x4 CPipeLine::Get_Transformfloat4x4(TRANSFORMSTATE eState)

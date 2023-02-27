@@ -46,6 +46,10 @@ public:
 	void Hit(const _int& _Damage);
 	void Attack();
 	void Attack_Combo(_double TimeDelta);
+	
+	void Jump(_double TimeDelta);
+	void Jump_Attack(_double TimeDelta);
+
 
 public:
 	CTransform* Get_Transform() {
@@ -80,11 +84,15 @@ private:
 
 	_uint m_animation = { 0 };
 
+	_float m_fGravity = 5.f;
+
 private:
 	_bool m_WeaponChange = false;
 	_bool m_AttackCheck = false;
 	_bool m_ComboCheck = false;
 	_bool m_bAnimCheck = false;
+
+	_bool m_bJump = false;
 
 	_float m_ComboTime = 0.f;
 

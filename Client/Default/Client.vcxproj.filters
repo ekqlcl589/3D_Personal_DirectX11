@@ -112,6 +112,9 @@
     <Filter Include="02.GameObject\06. Monster\Boss_Ancient_StonGolem">
       <UniqueIdentifier>{4cc3b2b5-099f-4446-a959-5bfb64114b67}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\08. StaticMesh">
+      <UniqueIdentifier>{c5ff6b16-4f93-47f5-aa05-3069c9a268cb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -201,6 +204,9 @@
     <ClInclude Include="..\Public\SwordShield.h">
       <Filter>02.GameObject\05. Player\Weapon\SwordShield</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\SkyBox.h">
+      <Filter>02.GameObject\07. SkyBox</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -278,6 +284,9 @@
     <ClCompile Include="..\Private\SwordShield.cpp">
       <Filter>02.GameObject\05. Player\Weapon\SwordShield</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\SkyBox.cpp">
+      <Filter>02.GameObject\07. SkyBox</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -303,6 +312,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimModel.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCubeTex.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

@@ -87,38 +87,6 @@ void CDynamicCamera::Key_Input(_double TimeDelta)
 
 }
 
-void CDynamicCamera::Target_Renewal()
-{
-	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-
-	CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
-	
-	_float3 vLook;
-	XMStoreFloat3(&vLook, pPlayerTransform->Get_State(CTransform::STATE_LOOK));
-
-	 //m_CameraDesc.vEye =  vLook;
-	 //m_CameraDesc.vEye.y = 1.f;
-	 //XMVector3Normalize(XMLoadFloat3(&m_CameraDesc.vEye));
-	 //_float3 f = {1.f, 1.f, 1.f};
-	 //m_CameraDesc.vEye *  f; // 이건 나중에 휠로 조절할 수 있게 변수로 받아야 함
-
-	// _float3 vRight;
-	// memcpy(&vRight, &pPlayerTransform->Get_WorldMatrix().r[0], sizeof(_vector));
-	// XMStoreFloat3(&vRight, pPlayerTransform->Get_State(CTransform::STATE_RIGHT));
-	 //_matrix matRot;
-	 //XMMatrixRotationAxis()
-
-	 _float3 fPosition;
-	 XMStoreFloat3(&fPosition, pPlayerTransform->Get_State(CTransform::STATE_POSITION));
-	 m_CameraDesc.vEye.x = fPosition.x;
-	 m_CameraDesc.vEye.y = fPosition.y + 10.f;
-	 m_CameraDesc.vEye.z = fPosition.z;
-	 m_CameraDesc.vAt = m_CameraDesc.vEye;
-	// XMStoreFloat3(&m_CameraDesc.vAt, pPlayerTransform->Get_State(CTransform::STATE_POSITION));
-
-	 RELEASE_INSTANCE(CGameInstance);
-}
-
 void CDynamicCamera::Mouse_Check(_double TimeDelta)
 {
 	_long Mouse = 0;

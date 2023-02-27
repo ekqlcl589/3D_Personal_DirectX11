@@ -227,10 +227,11 @@ void CPlayer_Body::Key_Input(_double TimeDelta)
 
 	if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_LB))
 	{
-		Attack();
+		m_ComboCheck = true;
+		m_tInfo.CurrAnimState = ANIM_ATTACK;
 	}
-	else if (CKeyMgr::GetInstance()->Mouse_Up(DIMK_LB))
-		m_tInfo.CurrAnimState = ANIM_COMBAT_WAIT;
+	//else if (CKeyMgr::GetInstance()->Mouse_Up(DIMK_LB))
+	//	m_tInfo.CurrAnimState = ANIM_COMBAT_WAIT;
 
 	//else
 	//	m_tInfo.CurrAnimState = ANIM_IDEL;
@@ -277,6 +278,7 @@ void CPlayer_Body::Animation_State(PLAYERANIMSTATE eType, _double TimeDelta)
 			break;
 
 		case ANIM_ATTACK:
+			//Attack_Combo(TimeDelta);
 			m_pModelCom->SetUp_Animation(26);
 			break;
 
@@ -285,6 +287,12 @@ void CPlayer_Body::Animation_State(PLAYERANIMSTATE eType, _double TimeDelta)
 			Attack_Combo(TimeDelta);
 			break;
 		}
+
+		case ANIM_ATTACK_COMBO2:
+			break;
+
+		case ANIM_ATTACK_COMBO3:
+			break;
 
 		case ANIM_COMBAT_WAIT:
 		{
@@ -315,7 +323,7 @@ void CPlayer_Body::Attack_Combo(_double TimeDelta)
 {
 	if (true == m_ComboCheck)
 	{
-		if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_RB))
+		if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_LB))
 		{
 			m_pModelCom->SetUp_Animation(26);
 			m_ComboTime = 0.5f * TimeDelta;
@@ -502,12 +510,12 @@ HRESULT CPlayer_Body::SetUp_ShaderResources()
 
 HRESULT CPlayer_Body::TargetCamera()
 {
-	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	//CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
 	//m_pCamear = static_cast<CTargetCamera*>(pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Camera")));
 
 	//m_pTransformCom->Set_State(CTransform::STATE_POSITION);
-	RELEASE_INSTANCE(CGameInstance);
+	//RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
 }

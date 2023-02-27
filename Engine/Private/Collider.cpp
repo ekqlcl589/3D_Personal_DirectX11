@@ -58,18 +58,21 @@ HRESULT CCollider::Initialize(void * pArg)
 	matRotation = XMMatrixRotationX(m_ColliderDesc.vRotation.x) * XMMatrixRotationY(m_ColliderDesc.vRotation.y) * XMMatrixRotationZ(m_ColliderDesc.vCenter.z);
 	matTranslation = XMMatrixTranslation(m_ColliderDesc.vCenter.x, m_ColliderDesc.vCenter.y, m_ColliderDesc.vCenter.z);
 
-	_matrix TransformMatrix = matScale * matRotation * matTranslation;
+	_matrix TransformMatrix = XMMatrixIdentity(); // OBB 스케일 ㅄ 이라서 이렇게 함
 
 	switch (m_eType)
 	{
 	case Engine::CCollider::TYPE_AABB:
 		m_pAABB = new BoundingBox(_float3(0.f, 0.f, 0.f), _float3(0.5f, 0.5f, 0.5f));
+		TransformMatrix = matScale * matRotation * matTranslation;
 		m_pAABB->Transform(*m_pAABB, TransformMatrix);
 		m_pOriginAABB = new BoundingBox(*m_pAABB);
 		break;
 	case Engine::CCollider::TYPE_OBB:
 		m_pOBB = new BoundingOrientedBox(_float3(0.f, 0.f, 0.f), _float3(0.5f, 0.5f, 0.5f), _float4(0.f, 0.f, 0.f, 1.f));
+		TransformMatrix = matRotation * matTranslation;
 		m_pOBB->Transform(*m_pOBB, TransformMatrix);
+		XMStoreFloat3(&m_pOBB->Extents, XMLoadFloat3(&m_pOBB->Extents) * XMLoadFloat3(&m_ColliderDesc.vScale));
 		m_pOriginOBB = new BoundingOrientedBox(*m_pOBB);
 		break;
 	case Engine::CCollider::TYPE_SPHERE:
@@ -145,12 +148,74 @@ _bool CCollider::Collision(CCollider * pTargetCollider)
 
 _bool CCollider::Collision_AABB(CCollider * pTargetCollider)
 {
-	return _bool();
+	if (nullptr == m_pAABB ||
+		nullptr == pTargetCollider->m_pAABB)
+		return false;
+
+	_float3		vSourMin, vSourMax;
+	_float3		vDestMin, vDestMax;
+
+	vSourMin = Compute_Min();
+	vSourMax = Compute_Max();
+
+	vDestMin = pTargetCollider->Compute_Min();
+	vDestMax = pTargetCollider->Compute_Max();
+
+	/* 너비 충돌. */
+	if (max(vSourMin.x, vDestMin.x) > min(vSourMax.x, vDestMax.x))
+		return false;
+	/* 높이 충돌. */
+	if (max(vSourMin.y, vDestMin.y) > min(vSourMax.y, vDestMax.y))
+		return false;
+
+	if (max(vSourMin.z, vDestMin.z) > min(vSourMax.z, vDestMax.z))
+		return false;
+
+	m_isColl = true;
+	pTargetCollider->m_isColl = true;
+
+	return true;
 }
 
 _bool CCollider::Collision_OBB(CCollider * pTargetCollider)
 {
-	return _bool();
+	if (nullptr == m_pOBB ||
+		nullptr == pTargetCollider->m_pOBB)
+		return false;
+
+	OBBDESC		OBBDesc[2] = {
+		Compute_OBB(),
+		pTargetCollider->Compute_OBB(),
+	};
+
+	_float		fLength[3] = { 0.0f };
+
+	_vector		vCenterDir = XMLoadFloat3(&OBBDesc[1].vCenter) - XMLoadFloat3(&OBBDesc[0].vCenter);
+
+	for (_uint i = 0; i < 2; ++i)
+	{
+		for (_uint j = 0; j < 3; ++j)
+		{
+			/* 센터를 잇는 벡터를 0번째 박스의 0번째 평행한 축에 투영시킨 길이를 얻어온다. */
+			fLength[0] = fabs(XMVectorGetX(XMVector3Dot(vCenterDir, XMLoadFloat3(&OBBDesc[i].vAlignDir[j]))));
+
+			fLength[1] = fabs(XMVectorGetX(XMVector3Dot(XMLoadFloat3(&OBBDesc[0].vCenterDir[0]), XMLoadFloat3(&OBBDesc[i].vAlignDir[j])))) +
+				fabs(XMVectorGetX(XMVector3Dot(XMLoadFloat3(&OBBDesc[0].vCenterDir[1]), XMLoadFloat3(&OBBDesc[i].vAlignDir[j])))) +
+				fabs(XMVectorGetX(XMVector3Dot(XMLoadFloat3(&OBBDesc[0].vCenterDir[2]), XMLoadFloat3(&OBBDesc[i].vAlignDir[j]))));
+
+			fLength[2] = fabs(XMVectorGetX(XMVector3Dot(XMLoadFloat3(&OBBDesc[1].vCenterDir[0]), XMLoadFloat3(&OBBDesc[i].vAlignDir[j])))) +
+				fabs(XMVectorGetX(XMVector3Dot(XMLoadFloat3(&OBBDesc[1].vCenterDir[1]), XMLoadFloat3(&OBBDesc[i].vAlignDir[j])))) +
+				fabs(XMVectorGetX(XMVector3Dot(XMLoadFloat3(&OBBDesc[1].vCenterDir[2]), XMLoadFloat3(&OBBDesc[i].vAlignDir[j]))));
+
+			if (fLength[1] + fLength[2] < fLength[0])
+			{
+				m_isColl = false;
+				return m_isColl;
+			}
+		}
+	}
+
+	return m_isColl = true;
 }
 
 _bool CCollider::Collision_SPHERE(CCollider * pTargetCollider)
@@ -211,12 +276,51 @@ _matrix CCollider::Remove_Rotation(_fmatrix TransformMatrix)
 
 _float3 CCollider::Compute_Min()
 {
-	return _float3();
+	if (nullptr == m_pAABB)
+		return _float3(0.f, 0.f, 0.f);
+
+	_float3 vMin = { m_pAABB->Center.x - m_pAABB->Extents.x,
+		m_pAABB->Center.y - m_pAABB->Extents.y,
+		m_pAABB->Center.z - m_pAABB->Extents.z
+	};
+
+	return vMin;
 }
 
 _float3 CCollider::Compute_Max()
 {
-	return _float3();
+	if (nullptr == m_pAABB)
+		return _float3(0.f, 0.f, 0.f);
+
+	_float3 vMax = { m_pAABB->Center.x + m_pAABB->Extents.x,
+		m_pAABB->Center.y + m_pAABB->Extents.y,
+		m_pAABB->Center.z + m_pAABB->Extents.z
+	};
+
+
+
+	return vMax;
+}
+
+CCollider::OBBDESC CCollider::Compute_OBB()
+{
+	OBBDESC		OBBDesc;
+	ZeroMemory(&OBBDesc, sizeof OBBDesc);
+
+	OBBDesc.vCenter = m_pOBB->Center;
+
+	_float3		vPoint[8];
+	m_pOBB->GetCorners(vPoint);
+
+	XMStoreFloat3(&OBBDesc.vCenterDir[0], (XMLoadFloat3(&vPoint[2]) - XMLoadFloat3(&vPoint[3])) * 0.5f);
+	XMStoreFloat3(&OBBDesc.vCenterDir[1], (XMLoadFloat3(&vPoint[2]) - XMLoadFloat3(&vPoint[1])) * 0.5f);
+	XMStoreFloat3(&OBBDesc.vCenterDir[2], (XMLoadFloat3(&vPoint[2]) - XMLoadFloat3(&vPoint[6])) * 0.5f);
+
+	XMStoreFloat3(&OBBDesc.vAlignDir[0], XMVector3Normalize(XMLoadFloat3(&OBBDesc.vCenterDir[0])));
+	XMStoreFloat3(&OBBDesc.vAlignDir[1], XMVector3Normalize(XMLoadFloat3(&OBBDesc.vCenterDir[1])));
+	XMStoreFloat3(&OBBDesc.vAlignDir[2], XMVector3Normalize(XMLoadFloat3(&OBBDesc.vCenterDir[2])));
+
+	return OBBDesc;
 }
 
 

@@ -243,6 +243,9 @@
     <ClInclude Include="..\Public\CollisionMgr.h">
       <Filter>01.Utillity\03. Component\05. Collider\CollisionMgr</Filter>
     </ClInclude>
+    <ClInclude Include="..\Bin\ShaderFiles\Shader_Defines.hpp">
+      <Filter>01.Utillity\03. Component\90.Shader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\GameInstance.cpp">

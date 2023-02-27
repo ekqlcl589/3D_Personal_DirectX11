@@ -33,6 +33,9 @@ private:
 	_double m_SecondTick = { 0.0 };
 	_double m_TimeAcc = { 0.0 };
 
+	_double m_Ratio = { 8.0 };
+
+
 	_bool m_isFinished = false;
 	_bool m_isLoop = true;
 

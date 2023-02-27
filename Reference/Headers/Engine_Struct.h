@@ -38,9 +38,8 @@ namespace Engine
 
 	typedef struct tagVertexCube_TEXTURECUBE
 	{
-		XMFLOAT3			vPosition;			// 위치
-		XMFLOAT3			vNormal;
-		XMFLOAT2			vTexUV;			// 텍스처 uv좌표
+		XMFLOAT3			vPosition;	
+		XMFLOAT3			vTexUV;
 
 	}VTXCUBE;
 

@@ -16,7 +16,7 @@ public:
 		_float3 vRotation;
 	}COLLIDERDESC;
 
-	typedef struct taagOBBDesc
+	typedef struct tagOBBDesc
 	{
 		_float3 vCenter;
 		_float3 vCenterDir[3];
@@ -70,6 +70,7 @@ private:
 	
 	_float3 Compute_Min();
 	_float3 Compute_Max();
+	OBBDESC Compute_OBB();
 
 public:
 	static CCollider* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, TYPE eType);

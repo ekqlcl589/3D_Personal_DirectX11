@@ -20,6 +20,8 @@ HRESULT CGamePlay::Initialize()
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_Terrain"))))
 		return E_FAIL;
 
+	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
+		return E_FAIL;
 
 	//6LoadMeshTile(L"../Data/Tile/Tile.dat");
 
@@ -28,8 +30,6 @@ HRESULT CGamePlay::Initialize()
 	
 	//LoadMonster(L"../Data/Monster.dat");
 
-	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
-		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
 		return E_FAIL;
@@ -37,7 +37,7 @@ HRESULT CGamePlay::Initialize()
 	if (FAILED(Ready_UI(TEXT("Layer_UI"))))
 		return E_FAIL;
 
-	LoadData(L"../Data/Cube/Cube.dat");
+	//LoadData(L"../Data/Cube/Cube.dat");
 
 	return S_OK;
 }
@@ -56,11 +56,14 @@ HRESULT CGamePlay::Ready_Layer_BackGround(const _tchar * pLayerTag)
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Terrain"), pLayerTag)))
-		return E_FAIL;
+	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Terrain"), pLayerTag)))
+	//	return E_FAIL;
 
 	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_TestTile"), pLayerTag)))
 	//	return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_SkyBox"), pLayerTag)))
+		return E_FAIL;
 
 	Safe_Release(pGameInstance);
 
@@ -71,7 +74,6 @@ HRESULT CGamePlay::Ready_Layer_Camera(const _tchar * pLayerTag)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
-	CTransform* pPlayerTransform = static_cast<CTransform*>(pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
 	
 	CCamera::CAMERADESC CameraDesc;
 	ZeroMemory(&CameraDesc, sizeof CameraDesc);

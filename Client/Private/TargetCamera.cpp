@@ -32,7 +32,7 @@ HRESULT CTargetCamera::Initialize(void * pArg)
 void CTargetCamera::Tick(_double TimeDelta)
 {
 
-	Target_Renewal();
+	//Target_Renewal();
 
 	if (m_pInstance->Get_DIKeyState(DIK_TAB))
 	{
@@ -81,7 +81,10 @@ void CTargetCamera::Target_Renewal()
 	fPosition = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
 
 	XMStoreFloat3(&m_CameraDesc.vEye, fPosition);// -XMLoadFloat3(&m_CameraDesc.vEye));
-	// 
+	// 카메라의 eye가 플레이어의 포지션과 똑같으면 플레이어의 중점 (0,0,0)을 바라보게 됨 
+	// at은 y값만 조금 조절하면 되고 
+	// eye +  반지름을 구해서 반지름 만큼 더하면 카메라의 바라보는 위치를 구할수 있음??
+	// 아니 갑자기 카메라가 나를 이렇게 괴롭힌다고? 역시 인생 쉽지 않다.. 
 	m_CameraDesc.vAt = m_CameraDesc.vEye;
 	m_CameraDesc.vAt.y + 10.f;
 	m_Transform->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_CameraDesc.vEye));

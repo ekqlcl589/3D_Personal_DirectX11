@@ -33,6 +33,7 @@ private:
 
 private:
 	CGameInstance* m_pInstance = nullptr;
+	_float m_fRation = 0;
 	_bool m_bCheck = false;
 	_bool m_bFix = false;
 

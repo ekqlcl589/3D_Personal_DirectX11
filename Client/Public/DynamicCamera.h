@@ -28,7 +28,6 @@ public:
 
 public:
 	void Key_Input(_double TimeDelta);
-	void Target_Renewal();
 
 private:
 	void Mouse_Check(_double TimeDelta);
