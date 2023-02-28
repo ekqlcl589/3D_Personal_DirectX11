@@ -62,6 +62,10 @@ public: // For Light_Mgr
 
 public: // For Collision_Mgr
 
+public: // For Font_Mgr
+	HRESULT Add_Font(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar* pFontTag, const _tchar* pFontName);
+	void Render_Font(const _tchar* pFontTag, const _tchar* pText, const _float2 & vPosition, _fvector vColor = XMVectorSet(1.f, 1.f, 1.f, 1.f), const _float2 & vScale = _float2(1.f, 1.f), _float fRadian = 0.f, const _float2 & vOrigin = _float2(0.f, 0.f));
+
 private:
 	class CGraphic_Device* m_pGraphic_Device = { nullptr };
 	class CLevel_Mgr* m_pLevel_Manager = { nullptr };
@@ -72,6 +76,7 @@ private:
 	class CInput_Device* m_pInput_Device = { nullptr };
 	class CLight_Mgr* m_pLight_Mgr = { nullptr };
 	class CCollisionMgr* m_pCollision_Mgr = { nullptr };
+	class CFont_Mgr* m_pFont_Mgr = { nullptr };
 
 public:
 	static void Release_Engine();

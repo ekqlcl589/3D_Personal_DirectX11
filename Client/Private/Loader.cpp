@@ -7,6 +7,7 @@
 #include "Texture.h"
 #include "Terrain.h"
 #include "SkyBox.h"
+#include "Mouse.h"
 #include "Cube.h"
 
 #include "Player.h"
@@ -168,6 +169,11 @@ HRESULT CLoader::Loading_ForGamePlay()
 	/* For.Prototype_Component_Texture_Sky */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Sky"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/SkyBox/TrainigRoom.dds"), 4))))
+		return E_FAIL;
+
+	/*For. Prototype_Component_Texture_Mouse*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Mouse"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/MouseCursor/GUI_MouseCursor_Default.png")))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("정점버퍼를 로딩중입니다."));
@@ -370,6 +376,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Skill_F"),
 		CPlayerSkill::Create(m_pDevice, m_pContext, fF))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Mouse"),
+		CMouse::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	// Test Tile

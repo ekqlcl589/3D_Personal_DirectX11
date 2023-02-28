@@ -6,6 +6,7 @@
 #include "Input_Device.h"
 #include "Light_Mgr.h"
 #include "CollisionMgr.h"
+#include "Font_Mgr.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -19,6 +20,7 @@ CGameInstance::CGameInstance()
 	, m_pInput_Device(CInput_Device::GetInstance())
 	, m_pLight_Mgr(CLight_Mgr::GetInstance())
 	, m_pCollision_Mgr(CCollisionMgr::GetInstance())
+	, m_pFont_Mgr(CFont_Mgr::GetInstance())
 {
 	Safe_AddRef(m_pGraphic_Device);
 	Safe_AddRef(m_pLevel_Manager);
@@ -29,6 +31,7 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pInput_Device);
 	Safe_AddRef(m_pLight_Mgr);
 	Safe_AddRef(m_pCollision_Mgr);
+	Safe_AddRef(m_pFont_Mgr);
 }
 
 HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, const GRAPHIC_DESC & GraphicDesc, _uint iNumLevels, ID3D11Device ** ppDeviceOut, ID3D11DeviceContext ** ppContextOut)
@@ -272,6 +275,22 @@ const LIGHT_DESC * CGameInstance::Get_Light(_uint iIndex)
 	return m_pLight_Mgr->Get_Light(iIndex);
 }
 
+HRESULT CGameInstance::Add_Font(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const _tchar * pFontTag, const _tchar * pFontName)
+{
+	if(nullptr == m_pFont_Mgr)
+	return E_FAIL;
+
+	return m_pFont_Mgr->Add_Font(pDevice, pContext, pFontTag, pFontName);
+}
+
+void CGameInstance::Render_Font(const _tchar * pFontTag, const _tchar * pText, const _float2 & vPosition, _fvector vColor, const _float2 & vScale, _float fRadian, const _float2 & vOrigin)
+{
+	if (nullptr == m_pFont_Mgr)
+		return;
+
+	 m_pFont_Mgr->Render_Font(pFontTag, pText, vPosition, vColor, vScale, fRadian, vOrigin);
+}
+
 
 void CGameInstance::Release_Engine()
 {
@@ -284,6 +303,7 @@ void CGameInstance::Release_Engine()
 	CInput_Device::GetInstance()->DestroyInstance();
 	CLight_Mgr::GetInstance()->DestroyInstance();
 	CCollisionMgr::GetInstance()->DestroyInstance();
+	CFont_Mgr::GetInstance()->DestroyInstance();
 
 	CGraphic_Device::GetInstance()->DestroyInstance();
 }
@@ -298,6 +318,7 @@ void CGameInstance::Free()
 	Safe_Release(m_pInput_Device);
 	Safe_Release(m_pLight_Mgr);
 	Safe_Release(m_pCollision_Mgr);
+	Safe_Release(m_pFont_Mgr);
 
 	Safe_Release(m_pGraphic_Device);
 }

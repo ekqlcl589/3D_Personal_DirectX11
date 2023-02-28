@@ -26,6 +26,7 @@ private:
 	HRESULT Open_Level(LEVELID eLevelID);
 	HRESULT Ready_Prototype_Component_ForStatic();
 	HRESULT Ready_Prototype_GameObject_ForStatic();
+	HRESULT Ready_Fonts();
 
 private:
 	CGameInstance* m_pGameInstance = { nullptr };

@@ -118,6 +118,12 @@
     <Filter Include="01.Utillity\03. Component\05. Collider\CollisionMgr">
       <UniqueIdentifier>{b148a025-d733-4f95-98bf-71c1a4eab19b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utillity\07. Fonts">
+      <UniqueIdentifier>{6acad951-102e-4b76-a771-f5b0ca3b616b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utillity\07. Fonts\Manager">
+      <UniqueIdentifier>{59259fc3-63bc-4230-be9d-76d08ed229c5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -246,6 +252,12 @@
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Defines.hpp">
       <Filter>01.Utillity\03. Component\90.Shader</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CustomFont.h">
+      <Filter>01.Utillity\07. Fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Font_Mgr.h">
+      <Filter>01.Utillity\07. Fonts\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\GameInstance.cpp">
@@ -358,6 +370,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\CollisionMgr.cpp">
       <Filter>01.Utillity\03. Component\05. Collider\CollisionMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CustomFont.cpp">
+      <Filter>01.Utillity\07. Fonts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Font_Mgr.cpp">
+      <Filter>01.Utillity\07. Fonts\Manager</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

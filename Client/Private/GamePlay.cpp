@@ -123,6 +123,9 @@ HRESULT CGamePlay::Ready_UI(const _tchar * pLayerTag)
 {
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
+	//if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Mouse"), pLayerTag)))
+	//	return E_FAIL;
+
 	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_HPBar"), pLayerTag)))
 		return E_FAIL;
 	

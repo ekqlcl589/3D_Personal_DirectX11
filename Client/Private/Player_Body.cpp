@@ -36,6 +36,8 @@ HRESULT CPlayer_Body::Initialize_Prototype()
 	m_tInfo.CurrAnimState = ANIM_IDEL;
 	m_tInfo.prevAnimState = ANIM_END;
 
+	m_bJump = false;
+
 	m_eCollisionState = COLLISIONSTATE::OBJ_PLAYER;
 
 	return S_OK;
@@ -224,12 +226,12 @@ void CPlayer_Body::Key_Input(_double TimeDelta)
 	if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_RIGHT))
 		m_tInfo.CurrAnimState = ANIM_RUN_END;
 
+	Attack_Combo(TimeDelta);
 
-	if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_LB))
-	{
-		m_ComboCheck = true;
-		m_tInfo.CurrAnimState = ANIM_ATTACK;
-	}
+	//if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_LB))
+	//{
+	//	Attack();
+	//}
 	//else if (CKeyMgr::GetInstance()->Mouse_Up(DIMK_LB))
 	//	m_tInfo.CurrAnimState = ANIM_COMBAT_WAIT;
 
@@ -278,20 +280,19 @@ void CPlayer_Body::Animation_State(PLAYERANIMSTATE eType, _double TimeDelta)
 			break;
 
 		case ANIM_ATTACK:
-			//Attack_Combo(TimeDelta);
 			m_pModelCom->SetUp_Animation(26);
 			break;
 
 		case ANIM_ATTACK_COMBO1:
-		{
-			Attack_Combo(TimeDelta);
+			m_pModelCom->SetUp_Animation(26);
 			break;
-		}
 
 		case ANIM_ATTACK_COMBO2:
+			m_pModelCom->SetUp_Animation(27);
 			break;
 
 		case ANIM_ATTACK_COMBO3:
+			m_pModelCom->SetUp_Animation(28);
 			break;
 
 		case ANIM_COMBAT_WAIT:
@@ -311,33 +312,54 @@ void CPlayer_Body::Animation_State(PLAYERANIMSTATE eType, _double TimeDelta)
 
 void CPlayer_Body::Hit(const _int & _Damage)
 {
+	m_tInfo._Hp -= _Damage;
+	m_pModelCom->SetUp_Animation(16);
+
+	
 }
 
 void CPlayer_Body::Attack()
 {
 	m_tInfo.CurrAnimState = ANIM_ATTACK;
+	m_bAnimCheck = true;
 
 }
 
 void CPlayer_Body::Attack_Combo(_double TimeDelta)
 {
-	if (true == m_ComboCheck)
-	{
-		if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_LB))
-		{
-			m_pModelCom->SetUp_Animation(26);
-			m_ComboTime = 0.5f * TimeDelta;
-			if (m_ComboTime <= 5.f && CKeyMgr::GetInstance()->Mouse_Down(DIMK_RB))
-			{
-				m_pModelCom->SetUp_Animation(27);
-				if (m_ComboTime <= 5.f && CKeyMgr::GetInstance()->Mouse_Down(DIMK_RB))
-				{
-					m_pModelCom->SetUp_Animation(28);
-					m_ComboCheck = false;
-				}
-			}
+	_uint iIndex = ANIM_ATTACK_COMBO1;
+	m_iAttackCombo[0] = 26;
 
-		}
+	if(CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_C))
+		m_qMotion.push_back(m_iAttackCombo[0]);
+
+	m_iAttackCombo[1] = 27;
+	m_iAttackCombo[2] = 28;
+
+	if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_LB))
+	{
+		m_pModelCom->SetUp_Animation(m_qMotion.front());
+	}
+
+	if (m_qMotion.size() >= 3)
+	{
+		//m_qMotion.pop_back();
+		m_qMotion.clear();
+	}
+}
+
+void CPlayer_Body::Jump(_double TimeDelta)
+{
+	m_bJump = true;
+
+}
+
+void CPlayer_Body::Jump_Attack(_double TimeDelta)
+{
+	if (true == m_bJump && false == m_JumpAttack)
+	{
+		m_fGravity = 0.f;
+
 	}
 }
 

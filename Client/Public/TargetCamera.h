@@ -38,6 +38,8 @@ private:
 	_bool m_bFix = false;
 
 	_float3 m_fDistance = { 10.f, 10.f, 10.f };
+	_float m_fDis = 5.f;
+
 public:
 	static CTargetCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject * Clone(void * pArg = nullptr) override;

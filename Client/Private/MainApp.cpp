@@ -27,6 +27,9 @@ HRESULT CMainApp::Initialize()
 	if (FAILED(m_pGameInstance->Initialize_Engine(g_hInst, GraphicDesc, LEVEL_END, &m_pDevice, &m_pDeviceContext)))
 		return E_FAIL;
 
+	if (FAILED(Ready_Fonts()))
+		return E_FAIL;
+
 	if (FAILED(Ready_Prototype_Component_ForStatic()))
 		return E_FAIL;
 
@@ -57,6 +60,8 @@ HRESULT CMainApp::Render()
 
 	//이 사이에 그릴것들을 넣어야 함
 	m_pRenderer->Draw_Renderer();
+
+	m_pGameInstance->Render_Font(TEXT("Font_Bazzi"), TEXT("살려주세요"), _float2(0.f, 0.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
 
 	m_pGameInstance->Present();
 
@@ -110,6 +115,17 @@ HRESULT CMainApp::Ready_Prototype_GameObject_ForStatic()
 	//if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera"), CDynamicCamera::Create(m_pDevice, m_pDeviceContext))))
 	//	return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera"), CTargetCamera::Create(m_pDevice, m_pDeviceContext))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CMainApp::Ready_Fonts()
+{
+	if (nullptr == m_pGameInstance)
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Font(m_pDevice, m_pDeviceContext, TEXT("Font_Bazzi"), TEXT("../Bin/Resources/Fonts/132.spritefont"))))
 		return E_FAIL;
 
 	return S_OK;

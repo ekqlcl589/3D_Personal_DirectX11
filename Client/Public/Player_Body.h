@@ -77,6 +77,9 @@ private:
 
 private:
 	PLAYERINFO m_tInfo;
+
+	deque<_uint> m_qMotion;
+	_uint m_iAttackCombo[3];
 	
 	_double m_AnimDuration = { 0.0 };
 	_double m_AnimTimeAcc = { 0.0 };
@@ -93,7 +96,9 @@ private:
 	_bool m_bAnimCheck = false;
 
 	_bool m_bJump = false;
+	_bool m_JumpAttack = false;
 
+	_float m_HitDelay = 0.f;
 	_float m_ComboTime = 0.f;
 
 public:

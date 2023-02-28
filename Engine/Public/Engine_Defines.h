@@ -23,6 +23,7 @@
 #include "DirectXTK/PrimitiveBatch.h"
 #include "DirectXTK/VertexTypes.h"
 #include "DirectXTK/Effects.h"
+
 #include "DirectXTK/SpriteBatch.h"
 #include "DirectXTK/SpriteFont.h"
 
@@ -35,6 +36,8 @@
 #include <vector>
 #include <list>
 #include <unordered_map>
+#include <queue>
+#include <deque>
 #include <algorithm>
 
 

@@ -115,6 +115,9 @@
     <Filter Include="02.GameObject\08. StaticMesh">
       <UniqueIdentifier>{c5ff6b16-4f93-47f5-aa05-3069c9a268cb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\09. Mouse">
+      <UniqueIdentifier>{c8a123a3-ca07-44ea-b51d-e78f02ff72c7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -207,6 +210,9 @@
     <ClInclude Include="..\Public\SkyBox.h">
       <Filter>02.GameObject\07. SkyBox</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Mouse.h">
+      <Filter>02.GameObject\09. Mouse</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -286,6 +292,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\SkyBox.cpp">
       <Filter>02.GameObject\07. SkyBox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Mouse.cpp">
+      <Filter>02.GameObject\09. Mouse</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -32,29 +32,29 @@ void CTargetCamera::Tick(_double TimeDelta)
 {
 	Target_Renewal(TimeDelta);
 
-	if (m_pInstance->Get_DIKeyState(DIK_TAB))
-	{
-		if (m_bCheck)
-			return;
-	
-		m_bCheck = true;
-	
-		if (m_bFix)
-			m_bFix = false;
-		else
-			m_bFix = true;
-	}
-	else
-		m_bCheck = false;
-	
-	if (false == m_bFix)
-		return;
+	//if (m_pInstance->Get_DIKeyState(DIK_TAB))
+	//{
+	//	if (m_bCheck)
+	//		return;
+	//
+	//	m_bCheck = true;
+	//
+	//	if (m_bFix)
+	//		m_bFix = false;
+	//	else
+	//		m_bFix = true;
+	//}
+	//else
+	//	m_bCheck = false;
+	//
+	//if (false == m_bFix)
+	//	return;
 
-	if (false == m_bFix)
-	{
-	  Mouse_Fix();
-	  Mouse_Check(TimeDelta);
-	}
+	//if (false == m_bFix)
+	//{
+	//  Mouse_Fix();
+	//  Mouse_Check(TimeDelta);
+	//}
 
 	__super::Tick(TimeDelta);
 }
@@ -86,14 +86,12 @@ void CTargetCamera::Target_Renewal(_double TimeDelta)
 	fTarget.z -= 7.f;
 
 	m_Transform->LookAt(XMLoadFloat3(&fTarget));
-	//m_Transform->Chase(XMLoadFloat3(&fTarget), TimeDelta, 5.f);
-	
-	_long Mouse = 0;
-	if (Mouse = m_pInstance->Get_DIMouseMove(DIMM_X))
-		m_Transform->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * Mouse * 0.1f);
+	pPlayerTransform->Chase(XMLoadFloat3(&fTarget), TimeDelta, m_fDis);
 
-	//if (Mouse = m_pInstance->Get_DIMouseMove(DIMM_Y))
-	//	m_Transform->Turn(m_Transform->Get_State(CTransform::STATE_RIGHT), TimeDelta * Mouse * 0.1f);
+	//_long Mouse = 0;
+
+	//if (Mouse = m_pInstance->Get_DIMouseMove(DIMM_X))
+	//	m_Transform->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * Mouse * 0.1f);
 
 	RELEASE_INSTANCE(CGameInstance);
 }

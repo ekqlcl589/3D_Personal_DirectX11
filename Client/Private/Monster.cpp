@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Monster.h"
 #include "GameInstance.h"
+#include "Player_Body.h"
 
 CMonster::CMonster(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -80,6 +81,15 @@ void CMonster::Collision_ToPlayer()
 
 void CMonster::ChaseToPlayer()
 {
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+	CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
+
+	_vector fDist = pPlayerTransform->Get_WorldMatrix().r[3];
+
+	XMVector3Length(fDist);
+
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 
