@@ -55,6 +55,7 @@ public:
 	_bool Get_AnimCheck();
 	void Set_AnimTick(_double Tick);
 	_bool Get_AnimFinished();
+	_bool Get_PrivAimFinished();
 
 private:
 	Assimp::Importer m_Importer;
@@ -83,6 +84,7 @@ private:
 	vector<class CAnimation*> m_vecAnimations;
 	CAnimation*				  m_PreAnim;
 	_bool m_KeyCheck = false;
+	_bool m_LerpCheck = false;
 
 private:
 	_float4x4 m_LocalMatrix;

@@ -91,14 +91,18 @@ void CMonster::Collision_ToPlayer()
 
 void CMonster::ChaseToPlayer()
 {
-	m_vTargetPos = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION);// -m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	if (false == m_bCheck)
+	{
 
-	m_fTagetDistance = 5.f;
+		m_vTargetPos = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION);// -m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
-	if (m_pTransformCom->Compute_Distance(m_vTargetPos) <= m_fTagetDistance)
-		m_bPlayerChecck = true;
-	else
-		m_bPlayerChecck = false;
+		m_fTagetDistance = 5.f;
+
+		if (m_pTransformCom->Compute_Distance(m_vTargetPos) <= m_fTagetDistance)
+			m_bPlayerChecck = true;
+		else
+			m_bPlayerChecck = false;
+	}
 }
 
 

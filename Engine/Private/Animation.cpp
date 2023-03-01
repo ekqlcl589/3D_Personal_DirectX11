@@ -67,27 +67,13 @@ void CAnimation::Play_Animation(_double TimeDelta, const vector<class CBone*>& B
 _bool CAnimation::Play_Animation_Last(_double TimeDelta, const vector<class CBone*>& Bones, CAnimation* pAnim, _bool& bCheck)
 {
 	m_TimeAcc += m_TickPerSecond * TimeDelta;
+	m_isLerpFinished = false;
 	m_isFinished = false;
-	// 꾹 누르는 애니메이션의 경우 누르는 동안 TimeAcc이 8초를 넘을 수 있어서 
-	// 그런 애니메이션에 대한 예외처리가 필요함 
-	//if (PLAYERANIMSTATE::ANIM_ATTACK || PLAYERANIMSTATE::ANIM_ATTACK_COMBO1)
-	//{
-	//	m_Ratio = 16.0;
-	//} 애니메이션에서 특정 애니메이션 스테이트를 알아와서 그 애니메이션에만 ratio 값을 늘려줌 
+
 	if (m_TickPerSecond >= 25.0)
-	{
 		m_Ratio = 30.0;
-	}
 
-	if (m_TimeAcc >= m_Ratio)
-	{
-		Set_CurrKeyFrame();
-		bCheck = false;
-
-		return true;
-	}
-	
-	else
+	if(m_TimeAcc <= m_Ratio)
 	{
 		m_iChannelIndex = 0;
 
@@ -97,6 +83,14 @@ _bool CAnimation::Play_Animation_Last(_double TimeDelta, const vector<class CBon
 		
 			m_iChannelIndex += 1;
 		}
+	}
+	else
+	{
+		Reset();
+		bCheck = false;
+
+		return true;
+
 	}
 
 	return false;
@@ -110,6 +104,16 @@ void CAnimation::Set_CurrKeyFrame()
 	}
 	m_isFinished = true;
 	m_TimeAcc = 0.0;
+}
+
+void CAnimation::Reset()
+{
+	m_TimeAcc = 0.0;
+	m_isLerpFinished = true;
+	for (auto& iter : m_CurrKeyFrame)
+	{
+		iter = 0;
+	}
 }
 
 CAnimation * CAnimation::Create(aiAnimation * pAIAnimation, CModel* pModel)

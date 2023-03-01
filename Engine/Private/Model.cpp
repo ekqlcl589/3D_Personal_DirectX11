@@ -131,6 +131,8 @@ HRESULT CModel::SetUp_Animation(_uint iAnimationIndex)
 	if (iAnimationIndex >= m_iNumAnimations)
 		return E_FAIL;
 
+	m_vecAnimations[m_iCurrAnimation]->Set_CurrKeyFrame();
+	
 	if (m_iCurrAnimation == iAnimationIndex)
 	{
 		m_iCurrAnimation = iAnimationIndex;
@@ -139,8 +141,8 @@ HRESULT CModel::SetUp_Animation(_uint iAnimationIndex)
 	else
 	{
 		m_iNextAnimation = iAnimationIndex;
-		m_Check = false;
-		m_vecAnimations[m_iCurrAnimation]->Set_TimeAcc(); // 이러면 현재 진행되는 애니메이션의 Time은 0
+		//m_Check = false;
+		//m_vecAnimations[m_iCurrAnimation]->Set_CurrKeyFrame(); // 이러면 현재 진행되는 애니메이션의 Time은 0
 	}
 	// 현재 애님의 timeacc 0으로 초기ㅣ화 하는 함수 불러 주고
 	return S_OK;
@@ -306,6 +308,11 @@ void CModel::Set_AnimTick(_double Tick)
 _bool CModel::Get_AnimFinished()
 {
 	return m_vecAnimations[m_iCurrAnimation]->Get_AnimFinished();
+}
+
+_bool CModel::Get_PrivAimFinished()
+{
+	return m_vecAnimations[m_iNextAnimation]->Get_AnimFinished();
 }
 
 

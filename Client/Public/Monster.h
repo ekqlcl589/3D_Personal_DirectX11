@@ -64,6 +64,7 @@ protected:
 	CTransform* m_pPlayerTransform = nullptr;
 
 	_bool m_bPlayerChecck = false;
+	_bool m_bCheck = false;
 
 public:
 	virtual CGameObject* Clone(void* pArg = nullptr) = 0;

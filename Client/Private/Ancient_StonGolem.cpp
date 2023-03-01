@@ -206,19 +206,19 @@ void CAncient_StonGolem::Set_State(_double TimeDelta)
 
 	if (m_PrevAnim == S_START && true == m_pModelCom->Get_AnimFinished())
 	{
-		m_CurrAnim = S_SKILL04_1;
+		m_bCheck = true;
 		m_bAttack = true;
-		m_bPlayerChecck = false;
+		m_CurrAnim = S_SKILL04_1;
 	}
 
 	if (m_CurrAnim == S_SKILL04_1 && true == m_pModelCom->Get_AnimFinished())
 		m_CurrAnim = S_SKILL04_2;
 
-	if (m_CurrAnim == S_SKILL04_2 && true == m_pModelCom->Get_AnimFinished())
-		m_CurrAnim = S_SKILL04_3;
+	//if (m_CurrAnim == S_SKILL04_2 && true == m_pModelCom->Get_AnimFinished())
+	//	m_CurrAnim = S_SKILL04_3;
 	
-	if (false == m_bAttack && m_PrevAnim == S_SKILL04_3 && true == m_pModelCom->Get_AnimFinished())
-		m_CurrAnim = S_WAIT;
+//	if (false == m_bAttack && m_PrevAnim == S_SKILL04_3 && true == m_pModelCom->Get_AnimFinished())
+//		m_CurrAnim = S_WAIT;
 	//애니메이션이 모두 끝났다면 조건 추가 
 }
 

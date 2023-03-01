@@ -25,8 +25,10 @@ public:
 	void Set_AnimTick(_double TickPerSecond) { m_TickPerSecond = TickPerSecond; }
 
 	_bool Get_AnimFinished() { return m_isFinished; }
+	_bool Get_LerpAnimFinished() { return m_isLerpFinished; }
 
 	void Set_CurrKeyFrame();
+	void Reset();
 	vector<class CChannel*> Get_Channel() { return m_vecChannel; }
 private:
 	char m_szName[MAX_PATH] = "";
@@ -39,6 +41,8 @@ private:
 
 
 	_bool m_isFinished = false;
+	_bool m_isLerpFinished = false;
+
 	_bool m_isLoop = true;
 
 	_bool m_Check = false;
