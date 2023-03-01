@@ -19,6 +19,7 @@ HRESULT CAncient_StonGolem::Initialize_Prototype()
 
 	m_eCollisionState = COLLISIONSTATE::OBJ_BOSS1;
 
+
 	return S_OK;
 }
 
@@ -38,7 +39,8 @@ HRESULT CAncient_StonGolem::Initialize(void * pArg)
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPosition));
 
-	m_pModelCom->SetUp_Animation(3);
+	m_CurrAnim = S_WAIT;
+	m_pModelCom->SetUp_Animation(m_CurrAnim);
 
 	return S_OK;
 }
@@ -47,6 +49,15 @@ void CAncient_StonGolem::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 
+	Set_State(TimeDelta);
+
+	Set_AnimationState(m_CurrAnim);
+
+	//if (true == m_bPlayerChecck)
+	//{
+	//	Set_Anim();
+	//
+	//}
 }
 
 void CAncient_StonGolem::LateTick(_double TimeDelta)
@@ -85,6 +96,130 @@ HRESULT CAncient_StonGolem::Render()
 	}
 
 	return S_OK;
+}
+
+void CAncient_StonGolem::Set_Anim()
+{
+	//m_pModelCom->SetUp_Animation(17);
+	//
+	//if (true == m_pModelCom->Get_AnimFinished())
+	//{
+	//	m_pModelCom->SetUp_Animation(19);
+	//	//m_bPlayerChecck = false;
+	//}
+
+}
+
+void CAncient_StonGolem::Set_AnimationState(STONGOLEMANIMSTATE eType)
+{
+	if (m_CurrAnim != m_PrevAnim)
+	{
+		switch (m_CurrAnim)
+		{
+		case Engine::S_ALL:
+			break;
+		case Engine::S_START:
+			m_iAnimIndex = 1;
+			break;
+		case Engine::S_RESPAN: //  w 어디갔누 ㅋㅋ
+			m_iAnimIndex = 2;
+			break;
+		case Engine::S_RUN:
+			m_iAnimIndex = 3;
+			break;
+		case Engine::S_START2:
+			m_iAnimIndex = 4;
+			break;
+		case Engine::S_WAIT:
+			m_iAnimIndex = 5;
+			break;
+		case Engine::S_SKILL01:
+			m_iAnimIndex = 6;
+			break;
+		case Engine::S_SKILL02:
+			m_iAnimIndex = 7;
+			break;
+		case Engine::S_SKILL03_1:
+			m_iAnimIndex = 8;
+			break;
+		case Engine::S_SKILL03_2:
+			m_iAnimIndex = 9;
+			break;
+		case Engine::S_SKILL03_3:
+			m_iAnimIndex = 10;
+			break;
+		case Engine::S_SKILL04_1:
+			m_iAnimIndex = 11;
+			break;
+		case Engine::S_SKILL04_2:
+			m_iAnimIndex = 12;
+			break;
+		case Engine::S_SKILL04_3:
+			m_iAnimIndex = 13;
+			break;
+		case Engine::S_SKILL05_1:
+			m_iAnimIndex = 14;
+			break;
+		case Engine::S_SKILL05_2:
+			m_iAnimIndex = 15;
+			break;
+		case Engine::S_SKILL05_3:
+			m_iAnimIndex = 16;
+			break;
+		case Engine::S_SKILL07:
+			m_iAnimIndex = 17;
+			break;
+		case Engine::S_SKILL08:
+			m_iAnimIndex = 18;
+			break;
+		case Engine::S_SKILL09:
+			m_iAnimIndex = 19;
+			break;
+		case Engine::S_SKILL10_1:
+			m_iAnimIndex = 20;
+			break;
+		case Engine::S_SKILL10_2:
+			m_iAnimIndex = 21;
+			break;
+		case Engine::S_SKILL10_3:
+			m_iAnimIndex = 22;
+			break;
+		case Engine::S_ANIMEND:
+			break;
+		default:
+			break;
+		
+		}
+		m_pModelCom->SetUp_Animation(m_iAnimIndex);
+		m_PrevAnim = m_CurrAnim;
+	}
+
+}
+
+void CAncient_StonGolem::Set_State(_double TimeDelta)
+{
+	if (true == m_bPlayerChecck)
+	{
+		//m_pTransformCom->Turn(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION), TimeDelta);
+		m_CurrAnim = S_START;
+	}
+
+	if (m_PrevAnim == S_START && true == m_pModelCom->Get_AnimFinished())
+	{
+		m_CurrAnim = S_SKILL04_1;
+		m_bAttack = true;
+		m_bPlayerChecck = false;
+	}
+
+	if (m_CurrAnim == S_SKILL04_1 && true == m_pModelCom->Get_AnimFinished())
+		m_CurrAnim = S_SKILL04_2;
+
+	if (m_CurrAnim == S_SKILL04_2 && true == m_pModelCom->Get_AnimFinished())
+		m_CurrAnim = S_SKILL04_3;
+	
+	if (false == m_bAttack && m_PrevAnim == S_SKILL04_3 && true == m_pModelCom->Get_AnimFinished())
+		m_CurrAnim = S_WAIT;
+	//애니메이션이 모두 끝났다면 조건 추가 
 }
 
 HRESULT CAncient_StonGolem::Add_Components()

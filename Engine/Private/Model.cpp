@@ -140,7 +140,7 @@ HRESULT CModel::SetUp_Animation(_uint iAnimationIndex)
 	{
 		m_iNextAnimation = iAnimationIndex;
 		m_Check = false;
-		//m_vecAnimations[m_iCurrAnimation]->Set_TimeAcc(); // 이러면 현재 진행되는 애니메이션의 Time은 0
+		m_vecAnimations[m_iCurrAnimation]->Set_TimeAcc(); // 이러면 현재 진행되는 애니메이션의 Time은 0
 	}
 	// 현재 애님의 timeacc 0으로 초기ㅣ화 하는 함수 불러 주고
 	return S_OK;
@@ -152,15 +152,15 @@ HRESULT CModel::Play_Animation(_double TimeDelta)
 	if (m_iCurrAnimation == m_iNextAnimation && m_Check == false)
 	{	
 		m_vecAnimations[m_iCurrAnimation]->Play_Animation(TimeDelta, m_vecBones);
+		
 	}
 	else
 	{
 		if (m_vecAnimations[m_iCurrAnimation]->Play_Animation_Last(TimeDelta, m_vecBones, m_vecAnimations[m_iNextAnimation], m_Check))
 		{
 			m_iCurrAnimation = m_iNextAnimation;
-			
-		}
 
+		}
 	}
 	
 	for (auto& pBone : m_vecBones)
@@ -301,6 +301,11 @@ _bool CModel::Get_AnimCheck()
 void CModel::Set_AnimTick(_double Tick)
 {
 	m_vecAnimations[m_iCurrAnimation]->Set_AnimTick(Tick);
+}
+
+_bool CModel::Get_AnimFinished()
+{
+	return m_vecAnimations[m_iCurrAnimation]->Get_AnimFinished();
 }
 
 

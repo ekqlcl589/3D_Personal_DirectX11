@@ -230,7 +230,7 @@ void CPlayer_Body::Key_Input(_double TimeDelta)
 
 	if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_LB))
 	{
-		m_pModelCom->SetUp_Animation(27);
+		//m_pModelCom->SetUp_Animation(27);
 	}
 	//else if (CKeyMgr::GetInstance()->Mouse_Up(DIMK_LB))
 	//	m_tInfo.CurrAnimState = ANIM_COMBAT_WAIT;

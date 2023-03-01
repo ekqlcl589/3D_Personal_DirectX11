@@ -24,6 +24,8 @@ public:
 	_bool Get_AnimCheck() { return m_Check; }
 	void Set_AnimTick(_double TickPerSecond) { m_TickPerSecond = TickPerSecond; }
 
+	_bool Get_AnimFinished() { return m_isFinished; }
+
 	void Set_CurrKeyFrame();
 	vector<class CChannel*> Get_Channel() { return m_vecChannel; }
 private:

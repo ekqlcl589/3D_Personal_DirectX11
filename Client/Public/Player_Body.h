@@ -73,7 +73,6 @@ private:
 	HRESULT Add_Parts();
 	HRESULT Add_Weapon();
 	HRESULT SetUp_ShaderResources();
-	HRESULT TargetCamera();
 
 private:
 	PLAYERINFO m_tInfo;

@@ -54,6 +54,7 @@ public:
 	_double Get_AnimTick();
 	_bool Get_AnimCheck();
 	void Set_AnimTick(_double Tick);
+	_bool Get_AnimFinished();
 
 private:
 	Assimp::Importer m_Importer;

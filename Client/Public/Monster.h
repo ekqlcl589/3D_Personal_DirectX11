@@ -55,7 +55,15 @@ protected:
 	void ChaseToPlayer();
 
 	_float3 m_fDistance = { 5.f, 5.f, 5.f };
-	_float m_fDis = 5.f;
+	_float m_fTagetDistance = 0.f;
+
+	_float3 m_fToTagetPos = { 0.f, 0.f, 0.f };
+	_vector m_vTargetPos;
+
+	CGameObject* m_pTarget = nullptr;
+	CTransform* m_pPlayerTransform = nullptr;
+
+	_bool m_bPlayerChecck = false;
 
 public:
 	virtual CGameObject* Clone(void* pArg = nullptr) = 0;

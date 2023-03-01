@@ -10,6 +10,7 @@ CMonster::CMonster(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 
 CMonster::CMonster(const CMonster & rhs)
 	: CGameObject(rhs)
+	, m_pTarget(rhs.m_pTarget)
 {
 }
 
@@ -26,6 +27,14 @@ HRESULT CMonster::Initialize(void * pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+	m_pTarget = static_cast<CPlayer_Body*>(pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player")));
+
+	m_pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
+
+	RELEASE_INSTANCE(CGameInstance);
+
 	return S_OK;
 }
 
@@ -39,6 +48,7 @@ void CMonster::Tick(_double TimeDelta)
 			m_pColliderCom[i]->Update(m_pTransformCom->Get_WorldMatrix());
 	}
 
+	ChaseToPlayer();
 }
 
 void CMonster::LateTick(_double TimeDelta)
@@ -81,15 +91,14 @@ void CMonster::Collision_ToPlayer()
 
 void CMonster::ChaseToPlayer()
 {
-	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	m_vTargetPos = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION);// -m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
-	CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
+	m_fTagetDistance = 5.f;
 
-	_vector fDist = pPlayerTransform->Get_WorldMatrix().r[3];
-
-	XMVector3Length(fDist);
-
-	RELEASE_INSTANCE(CGameInstance);
+	if (m_pTransformCom->Compute_Distance(m_vTargetPos) <= m_fTagetDistance)
+		m_bPlayerChecck = true;
+	else
+		m_bPlayerChecck = false;
 }
 
 
