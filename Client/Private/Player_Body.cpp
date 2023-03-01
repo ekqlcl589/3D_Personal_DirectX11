@@ -228,10 +228,10 @@ void CPlayer_Body::Key_Input(_double TimeDelta)
 
 	Attack_Combo(TimeDelta);
 
-	//if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_LB))
-	//{
-	//	Attack();
-	//}
+	if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_LB))
+	{
+		m_pModelCom->SetUp_Animation(27);
+	}
 	//else if (CKeyMgr::GetInstance()->Mouse_Up(DIMK_LB))
 	//	m_tInfo.CurrAnimState = ANIM_COMBAT_WAIT;
 
@@ -328,17 +328,18 @@ void CPlayer_Body::Attack()
 void CPlayer_Body::Attack_Combo(_double TimeDelta)
 {
 	_uint iIndex = ANIM_ATTACK_COMBO1;
-	m_iAttackCombo[0] = 26;
+	m_iAttackCombo[iIndex] = 26;
 
 	if(CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_C))
-		m_qMotion.push_back(m_iAttackCombo[0]);
+		m_qMotion.push_back(m_iAttackCombo[iIndex++]);
 
 	m_iAttackCombo[1] = 27;
 	m_iAttackCombo[2] = 28;
 
-	if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_LB))
+	if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_RB))
 	{
-		m_pModelCom->SetUp_Animation(m_qMotion.front());
+		for(auto& iter : m_qMotion)
+			m_pModelCom->SetUp_Animation(m_qMotion.front());
 	}
 
 	if (m_qMotion.size() >= 3)
@@ -530,17 +531,6 @@ HRESULT CPlayer_Body::SetUp_ShaderResources()
 	return S_OK;
 }
 
-HRESULT CPlayer_Body::TargetCamera()
-{
-	//CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-
-	//m_pCamear = static_cast<CTargetCamera*>(pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Camera")));
-
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION);
-	//RELEASE_INSTANCE(CGameInstance);
-
-	return S_OK;
-}
 
 CPlayer_Body * CPlayer_Body::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {

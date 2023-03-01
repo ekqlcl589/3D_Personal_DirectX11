@@ -85,8 +85,8 @@ void CTargetCamera::Target_Renewal(_double TimeDelta)
 	fTarget.y += 5.f;
 	fTarget.z -= 7.f;
 
-	m_Transform->LookAt(XMLoadFloat3(&fTarget));
-	pPlayerTransform->Chase(XMLoadFloat3(&fTarget), TimeDelta, m_fDis);
+	//m_Transform->LookAt(XMLoadFloat3(&fTarget));
+	m_Transform->Chase(XMLoadFloat3(&m_CameraDesc.vEye), TimeDelta, m_fDis);
 
 	//_long Mouse = 0;
 

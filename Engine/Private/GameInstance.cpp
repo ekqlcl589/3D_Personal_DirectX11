@@ -19,8 +19,8 @@ CGameInstance::CGameInstance()
 	, m_pTime_Mgr(CTimer_Manager::GetInstance())
 	, m_pInput_Device(CInput_Device::GetInstance())
 	, m_pLight_Mgr(CLight_Mgr::GetInstance())
-	, m_pCollision_Mgr(CCollisionMgr::GetInstance())
 	, m_pFont_Mgr(CFont_Mgr::GetInstance())
+	//, m_pCollision_Mgr(CCollisionMgr::GetInstance())
 {
 	Safe_AddRef(m_pGraphic_Device);
 	Safe_AddRef(m_pLevel_Manager);
@@ -30,7 +30,7 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pTime_Mgr);
 	Safe_AddRef(m_pInput_Device);
 	Safe_AddRef(m_pLight_Mgr);
-	Safe_AddRef(m_pCollision_Mgr);
+	//Safe_AddRef(m_pCollision_Mgr);
 	Safe_AddRef(m_pFont_Mgr);
 }
 
@@ -72,7 +72,7 @@ HRESULT CGameInstance::Tick_Engine(_double TimeDelta)
 
 	m_pObject_Manager->LateTick(TimeDelta);
 
-	m_pCollision_Mgr->Update_Collision(TimeDelta);
+	//m_pCollision_Mgr->Update_Collision(TimeDelta);
 
 	return S_OK;
 }
@@ -302,7 +302,7 @@ void CGameInstance::Release_Engine()
 	CTimer_Manager::GetInstance()->DestroyInstance();
 	CInput_Device::GetInstance()->DestroyInstance();
 	CLight_Mgr::GetInstance()->DestroyInstance();
-	CCollisionMgr::GetInstance()->DestroyInstance();
+	//CCollisionMgr::GetInstance()->DestroyInstance();
 	CFont_Mgr::GetInstance()->DestroyInstance();
 
 	CGraphic_Device::GetInstance()->DestroyInstance();
@@ -317,7 +317,7 @@ void CGameInstance::Free()
 	Safe_Release(m_pTime_Mgr);
 	Safe_Release(m_pInput_Device);
 	Safe_Release(m_pLight_Mgr);
-	Safe_Release(m_pCollision_Mgr);
+	//Safe_Release(m_pCollision_Mgr);
 	Safe_Release(m_pFont_Mgr);
 
 	Safe_Release(m_pGraphic_Device);
