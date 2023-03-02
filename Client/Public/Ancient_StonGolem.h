@@ -42,6 +42,8 @@ private:
 	_uint m_iAnimIndex = 0;
 	_bool m_bAttack = false;
 
+	_float m_f = 0.0f;
+
 	queue<_uint> m_AnimIndex;
 
 public:

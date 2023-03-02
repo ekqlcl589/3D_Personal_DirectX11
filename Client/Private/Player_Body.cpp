@@ -58,8 +58,6 @@ HRESULT CPlayer_Body::Initialize(void * pArg)
 
 	m_eCollisionState = COLLISIONSTATE::OBJ_PLAYER;
 
-	m_animation = m_pModelCom->Get_Animations();
-
 	return S_OK;
 }
 
@@ -68,6 +66,7 @@ void CPlayer_Body::Tick(_double TimeDelta)
 	__super::Tick(TimeDelta);
 
 	Key_Input(TimeDelta);
+	CombatWait();
 	Animation_State(m_tInfo.CurrAnimState, TimeDelta);
 
 	for (_uint i = 0; i < WEAPON_END; i++)
@@ -100,7 +99,6 @@ void CPlayer_Body::LateTick(_double TimeDelta)
 	__super::LateTick(TimeDelta);
 
 	m_pModelCom->Play_Animation(TimeDelta);
-
 
 	m_AnimDuration = m_pModelCom->Get_AnimDuration();
 
@@ -207,8 +205,15 @@ void CPlayer_Body::Key_Input(_double TimeDelta)
 		m_tInfo.CurrAnimState = ANIM_RUN;
 
 	}
-	//else if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_DOWN))
-	//	m_tInfo.CurrAnimState = ANIM_RUN_END;
+
+	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_NUMPAD0))
+	{
+		Dash(TimeDelta);
+		m_pTransformCom->Go_Straight(TimeDelta);
+
+	}
+	else if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_NUMPAD0))
+		m_bDeah = false;
 
 	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_LEFT))
 	{
@@ -227,12 +232,22 @@ void CPlayer_Body::Key_Input(_double TimeDelta)
 	//if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_RIGHT))
 	//	m_tInfo.CurrAnimState = ANIM_RUN_END;
 
-	Attack_Combo(TimeDelta);
+	//Attack_Combo(TimeDelta);
 
 	if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_LB))
 	{
-		m_pModelCom->SetUp_Animation(27);
+		Attack_Combo(TimeDelta);
+
+		//m_pModelCom->SetUp_Animation(27);
 	}
+
+	if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_RB))
+	{
+		Jump_Attack(TimeDelta);
+
+		//m_pModelCom->SetUp_Animation(27);
+	}
+
 	//else if (CKeyMgr::GetInstance()->Mouse_Up(DIMK_LB))
 	//	m_tInfo.CurrAnimState = ANIM_COMBAT_WAIT;
 
@@ -241,6 +256,9 @@ void CPlayer_Body::Key_Input(_double TimeDelta)
 
 	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_Q))
 		m_tInfo._Hp -= 10.f;
+
+	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_SPACE))
+		Jump(TimeDelta);
 
 #pragma region SkillMotion Test 
 
@@ -261,51 +279,71 @@ void CPlayer_Body::Animation_State(PLAYERANIMSTATE eType, _double TimeDelta)
 		switch (m_tInfo.CurrAnimState)
 		{
 		case ANIM_IDEL:
-			m_pModelCom->SetUp_Animation(19);
+			m_iAnimIndex = 19;
 			break;
 
 		case ANIM_RUN:
-			m_pModelCom->SetUp_Animation(9);
+			m_iAnimIndex = 9;
 			break;
 
 		case ANIM_RUN_L:
-			m_pModelCom->SetUp_Animation(9);
+			m_iAnimIndex = 6;
 			break;
 
 		case ANIM_RUN_R:
-			m_pModelCom->SetUp_Animation(9);
+			m_iAnimIndex = 9;
 			break;
 
 		case ANIM_RUN_END:
-			m_pModelCom->SetUp_Animation(12);
+			m_iAnimIndex = 12;
 			break;
 
 		case ANIM_ATTACK:
-			m_pModelCom->SetUp_Animation(26);
+			m_iAnimIndex = 26;
 			break;
 
 		case ANIM_ATTACK_COMBO1:
-			m_pModelCom->SetUp_Animation(26);
+			m_iAnimIndex = 26;
 			break;
 
 		case ANIM_ATTACK_COMBO2:
-			m_pModelCom->SetUp_Animation(27);
+			m_iAnimIndex = 27;
 			break;
 
 		case ANIM_ATTACK_COMBO3:
-			m_pModelCom->SetUp_Animation(28);
+			m_iAnimIndex = 28;
 			break;
 
 		case ANIM_COMBAT_WAIT:
 		{
-			m_pModelCom->SetUp_Animation(5);
+			m_iAnimIndex = 5;
 			break;
 		}
+
+		case ANIM_JUMP:
+			m_iAnimIndex = 4;
+			break;
+		case ANIM_JUMP_ING:
+			break;
+		case ANIM_JUMP_LENDING:
+			m_iAnimIndex = 2;
+			break;
+		case ANIM_JUMP_ATTACK1:
+			m_iAnimIndex = 22;
+			break;
+		case ANIM_JUMP_ATTACK2:
+			m_iAnimIndex = 23;
+			break;
+		case ANIM_JUMP_ATTACK3:
+			m_iAnimIndex = 24;
+			break;
 
 		case ANIM_END:
 		default:
 			break;
 		}
+		m_pModelCom->SetUp_Animation(m_iAnimIndex);
+
 		m_tInfo.prevAnimState = m_tInfo.CurrAnimState;
 	}
 
@@ -328,32 +366,37 @@ void CPlayer_Body::Attack()
 
 void CPlayer_Body::Attack_Combo(_double TimeDelta)
 {
-	_uint iIndex = ANIM_ATTACK_COMBO1;
-	m_iAttackCombo[iIndex] = 26;
+	//if (false == m_bJump)
+	//{
+	//
+	//}
+		m_AttackCheck = true;
 
-	if(CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_C))
-		m_qMotion.push_back(m_iAttackCombo[iIndex++]);
+		m_tInfo.CurrAnimState = ANIM_ATTACK;
 
-	m_iAttackCombo[1] = 27;
-	m_iAttackCombo[2] = 28;
+		if (m_tInfo.prevAnimState == ANIM_ATTACK && true != m_pModelCom->Get_AnimFinished())
+			m_tInfo.CurrAnimState = ANIM_ATTACK_COMBO2;
 
-	if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_RB))
-	{
-		for(auto& iter : m_qMotion)
-			m_pModelCom->SetUp_Animation(m_qMotion.front());
-	}
+		else if (m_tInfo.prevAnimState == ANIM_ATTACK_COMBO2 && true != m_pModelCom->Get_AnimFinished())
+			m_tInfo.CurrAnimState = ANIM_ATTACK_COMBO3;
 
-	if (m_qMotion.size() >= 3)
-	{
-		//m_qMotion.pop_back();
-		m_qMotion.clear();
-	}
+		//if (m_tInfo.prevAnimState == ANIM_ATTACK_COMBO3 && true == m_pModelCom->Get_AnimFinished())
+		//{
+		//	m_tInfo.CurrAnimState = ANIM_COMBAT_WAIT;
+		//	m_AttackCheck = false;
+		//
+		//}
+		//
+		//if (false == m_AttackCheck && m_tInfo.prevAnimState == ANIM_COMBAT_WAIT && true == m_pModelCom->Get_AnimFinished())
+		//{
+		//	m_tInfo.CurrAnimState = ANIM_IDEL;
+		//}
 }
 
 void CPlayer_Body::Jump(_double TimeDelta)
 {
 	m_bJump = true;
-
+	m_JumpAttack = false;
 }
 
 void CPlayer_Body::Jump_Attack(_double TimeDelta)
@@ -361,8 +404,66 @@ void CPlayer_Body::Jump_Attack(_double TimeDelta)
 	if (true == m_bJump && false == m_JumpAttack)
 	{
 		m_fGravity = 0.f;
+		//m_JumpAttack = true;
+		m_tInfo.CurrAnimState = ANIM_JUMP_ATTACK1;
+
+		if (m_tInfo.prevAnimState == ANIM_JUMP_ATTACK1 && true != m_pModelCom->Get_AnimFinished())
+			m_tInfo.CurrAnimState = ANIM_JUMP_ATTACK2;
+
+		else if (m_tInfo.prevAnimState == ANIM_JUMP_ATTACK2 && true != m_pModelCom->Get_AnimFinished())
+			m_tInfo.CurrAnimState = ANIM_JUMP_ATTACK3;
+
+		// keyinput이 있어야 다음 동작으로 넘어 가는건가 
+		//if (m_tInfo.prevAnimState == ANIM_JUMP_ATTACK3 && true == m_pModelCom->Get_AnimFinished())
+		//{
+		//	m_bJump = false;
+		//	m_fGravity = 5.f;
+		//	m_tInfo.CurrAnimState = ANIM_JUMP_LENDING;
+		//}
+		//
+		//if (m_tInfo.prevAnimState == ANIM_JUMP_LENDING && true == m_pModelCom->Get_AnimFinished())
+		//{
+		//	m_tInfo.CurrAnimState = ANIM_IDEL;
+		//	m_JumpAttack = true;
+		//}
 
 	}
+}
+
+void CPlayer_Body::Dash(_double TimeDelta)
+{
+	m_bDeah = true;
+	m_tInfo.CurrAnimState = ANIM_RUN_L;
+	
+}
+
+void CPlayer_Body::CombatWait()
+{
+	if (m_tInfo.prevAnimState == ANIM_ATTACK_COMBO3 && true == m_pModelCom->Get_AnimFinished())
+	{
+		m_tInfo.CurrAnimState = ANIM_COMBAT_WAIT;
+		m_AttackCheck = false;
+
+	}
+
+	if (false == m_AttackCheck && m_tInfo.prevAnimState == ANIM_COMBAT_WAIT && true == m_pModelCom->Get_AnimFinished())
+	{
+		m_tInfo.CurrAnimState = ANIM_IDEL;
+	}
+
+	if (m_tInfo.prevAnimState == ANIM_JUMP_ATTACK3 && true == m_pModelCom->Get_AnimFinished())
+	{
+		m_bJump = false;
+		m_fGravity = 5.f;
+		m_tInfo.CurrAnimState = ANIM_JUMP_LENDING;
+	}
+
+	if (m_tInfo.prevAnimState == ANIM_JUMP_LENDING && true == m_pModelCom->Get_AnimFinished())
+	{
+		m_tInfo.CurrAnimState = ANIM_IDEL;
+		m_JumpAttack = true;
+	}
+
 }
 
 HRESULT CPlayer_Body::Add_Components()
@@ -376,6 +477,9 @@ HRESULT CPlayer_Body::Add_Components()
 
 	TransformDesc.fSpeed = 5.f;
 	TransformDesc.fRotation = XMConvertToRadians(90.0f);
+
+	if (true == m_bDeah)
+		TransformDesc.fSpeed += 5.f;
 
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Transform"),
 		TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))

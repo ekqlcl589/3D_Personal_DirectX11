@@ -30,6 +30,7 @@ public:
 	void Set_CurrKeyFrame();
 	void Reset();
 	vector<class CChannel*> Get_Channel() { return m_vecChannel; }
+
 private:
 	char m_szName[MAX_PATH] = "";
 	_double m_Duration = { 0.0 };

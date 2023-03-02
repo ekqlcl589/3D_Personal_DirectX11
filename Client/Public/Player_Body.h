@@ -50,7 +50,9 @@ public:
 	void Jump(_double TimeDelta);
 	void Jump_Attack(_double TimeDelta);
 
+	void Dash(_double TimeDelta);
 
+	void CombatWait();
 public:
 	CTransform* Get_Transform() {
 		return m_pTransformCom;
@@ -79,7 +81,8 @@ private:
 
 	deque<_uint> m_qMotion;
 	_uint m_iAttackCombo[3];
-	
+	_uint m_iAnimIndex = 0;
+
 	_double m_AnimDuration = { 0.0 };
 	_double m_AnimTimeAcc = { 0.0 };
 	_double m_AnimTickPerSecond = { 0.0 };
@@ -99,6 +102,8 @@ private:
 
 	_float m_HitDelay = 0.f;
 	_float m_ComboTime = 0.f;
+
+	_bool m_bDeah = false;
 
 public:
 	static CPlayer_Body* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

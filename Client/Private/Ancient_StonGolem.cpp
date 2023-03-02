@@ -44,6 +44,8 @@ HRESULT CAncient_StonGolem::Initialize(void * pArg)
 	m_eType._MaxHp = 100.f;
 	m_eType._Hp = 100.f;
 
+	m_f = m_pModelCom->Get_AnimTick();
+
 	m_CurrAnim = S_WAIT;
 	m_pModelCom->SetUp_Animation(m_CurrAnim);
 
@@ -56,6 +58,9 @@ void CAncient_StonGolem::Tick(_double TimeDelta)
 
 	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_J))
 		m_eType._Hp -= 10.f; 
+
+	if (true == m_bAttack)
+		m_CurrAnim != 5;
 
 	Set_State(TimeDelta);
 
@@ -188,6 +193,7 @@ void CAncient_StonGolem::Set_AnimationState(STONGOLEMANIMSTATE eType)
 		
 		}
 		m_pModelCom->SetUp_Animation(m_iAnimIndex);
+
 		m_PrevAnim = m_CurrAnim;
 	}
 
@@ -197,7 +203,7 @@ void CAncient_StonGolem::Set_State(_double TimeDelta)
 {
 	if (m_eType._Hp <= 0)
 	{
-		m_CurrAnim = S_SKILL10_1;
+		m_CurrAnim = S_SKILL10_1; // 원래는 스킬 모션인데 죽는게 따로 없어서 이걸로 대체 
 
 		if (m_PrevAnim == S_SKILL01 && true == m_pModelCom->Get_AnimFinished())
 			m_CurrAnim = S_SKILL02;
@@ -230,19 +236,25 @@ void CAncient_StonGolem::Set_Skill04(_double TimeDelta)
 		m_CurrAnim = S_SKILL04_1;
 	}
 
-	if (m_PrevAnim == S_SKILL04_1 && true == m_pModelCom->Get_AnimFinished())
+	else if (m_PrevAnim == S_SKILL04_1 && true == m_pModelCom->Get_AnimFinished())
 	{
+		m_pModelCom->Set_AnimTick(m_f * (_double)5.f);
+		cout << m_CurrAnim << endl;
 		m_CurrAnim = S_SKILL04_2;
 		// 애니메이션 끝나면 지형이 부서지는 이팩트 생성
 	}
+	//cout << m_CurrAnim << endl;
 
-	if (m_PrevAnim == S_SKILL04_2 && true == m_pModelCom->Get_AnimFinished())
+	else if (m_PrevAnim == S_SKILL04_2 && true == m_pModelCom->Get_AnimFinished())
 	{
 		// 이팩트 FadeIn,Out 후  삭제처리 
+		cout << m_CurrAnim << endl;
+
 		m_CurrAnim = S_SKILL04_3;
 		m_bAttack = false;
 	}
 
+	//cout << m_CurrAnim << endl;
 	if (false == m_bAttack && m_PrevAnim == S_SKILL04_3 && true == m_pModelCom->Get_AnimFinished())
 		m_CurrAnim = S_WAIT;
 

@@ -22,7 +22,7 @@ CModel::CModel(const CModel & rhs)
 
 {
 	for (auto& pPrototypeMesh : rhs.m_vecMesh)
-		m_vecMesh.push_back(dynamic_cast<CMesh*>(pPrototypeMesh->Clone()));
+		m_vecMesh.push_back((CMesh*)(pPrototypeMesh->Clone()));
 
 	for (auto& pPrototypeAnim : rhs.m_vecAnimations)
 		m_vecAnimations.push_back(pPrototypeAnim->Clone());
@@ -152,7 +152,6 @@ HRESULT CModel::Play_Animation(_double TimeDelta)
 	if (m_iCurrAnimation == m_iNextAnimation && m_Check == false)
 	{	
 		m_vecAnimations[m_iCurrAnimation]->Play_Animation(TimeDelta, m_vecBones);
-		
 	}
 	else
 	{
