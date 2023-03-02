@@ -214,10 +214,15 @@ void CPlayer_Body::OnCollision(CGameObject * pObj)
 
 void CPlayer_Body::Key_Input(_double TimeDelta)
 {
+
+	_float3 vPos;
+	XMStoreFloat3(&vPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
 	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_UP))
 	{
 		m_pTransformCom->Go_Straight(TimeDelta);
 		m_tInfo.CurrAnimState = ANIM_RUN;
+
 	}
 	else if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_UP))
 	{
@@ -421,12 +426,17 @@ void CPlayer_Body::Attack_Combo(_double TimeDelta)
 void CPlayer_Body::Jump(_double TimeDelta)
 {
 	m_tInfo.CurrAnimState = ANIM_JUMP;
+	m_pModelCom->Set_AnimTick(14.f);
 	m_bJump = true;
 	m_JumpAttack = false;
-	m_pModelCom->Set_AnimTick(4.0);
+
+	m_pTransformCom->Jump(TimeDelta, &m_bJump);
 
 	if (m_tInfo.prevAnimState == ANIM_JUMP && true == m_pModelCom->Get_AnimFinished())
+	{
 		m_tInfo.CurrAnimState = ANIM_JUMP_ING;
+		m_bJump = false;
+	}
 
 }
 
@@ -720,4 +730,5 @@ void CPlayer_Body::Free()
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pRendererCom);
+
 }

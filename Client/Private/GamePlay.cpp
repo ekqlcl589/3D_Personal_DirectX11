@@ -6,6 +6,7 @@
 #include "Cube.h"
 #include "Monster.h"
 #include "TestTile.h"
+#include "Player_Body.h"
 
 CGamePlay::CGamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	:CLevel(pDevice, pContext)

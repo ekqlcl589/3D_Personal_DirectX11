@@ -103,6 +103,37 @@ void CTransform::Go_Back(_double TimeDelta)
 	Set_State(CTransform::STATE_POSITION, vPosition);
 }
 
+void CTransform::Jump(_double dTimeDelta, _bool* isJump)
+{
+	if (m_fTimer < 0.3f)
+	{
+		_vector		vPosition = Get_State(STATE_POSITION);
+		_vector		vLook = Get_State(STATE_LOOK);
+
+		_float3		vPos;
+		XMStoreFloat3(&vPos, vPosition);
+
+		m_fTimer += (_float)dTimeDelta;
+
+		vPos.y += 10.5f * m_fTimer + (0.5f * -2.f * pow(m_fTimer, 2));
+
+		vPosition = XMLoadFloat3(&vPos);
+		Set_State(STATE_POSITION, vPosition);
+	}
+	else
+	{
+		m_fTimer = 0.f;
+		_vector		vPosition = Get_State(STATE_POSITION);
+		_vector		vLook = Get_State(STATE_LOOK);
+
+		_float3		vPos;
+		XMStoreFloat3(&vPos, vPosition);
+		vPos.y = 0.f;
+
+		*isJump = false;
+	}
+
+}
 void CTransform::Rotation(_fvector vAxis, _float fAngle)
 {
 	_vector vRight, vUp, vLook;

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\TargetCamera.h"
 #include "GameInstance.h"
-#include "Player_Body.h"
+#include "KeyMgr.h"
 
 
 CTargetCamera::CTargetCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -32,6 +32,7 @@ void CTargetCamera::Tick(_double TimeDelta)
 {
 	Target_Renewal(TimeDelta);
 
+	Key_Input(TimeDelta);
 	//if (m_pInstance->Get_DIKeyState(DIK_TAB))
 	//{
 	//	if (m_bCheck)
@@ -78,15 +79,14 @@ void CTargetCamera::Target_Renewal(_double TimeDelta)
 
 	_vector fPosition = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
 
-	XMStoreFloat3(&m_CameraDesc.vEye, fPosition);
-
 	_float3 fTarget = m_CameraDesc.vEye;
 
-	fTarget.y += 5.f;
-	fTarget.z -= 7.f;
+	XMStoreFloat3(&fTarget, fPosition);
+	
+	fTarget.y +=  2.f;
 
 	//m_Transform->LookAt(XMLoadFloat3(&fTarget));
-	m_Transform->Chase(XMLoadFloat3(&m_CameraDesc.vEye), TimeDelta, m_fDis);
+	m_Transform->Chase(XMLoadFloat3(&fTarget), TimeDelta, m_fDis);
 
 	//_long Mouse = 0;
 
@@ -94,6 +94,21 @@ void CTargetCamera::Target_Renewal(_double TimeDelta)
 	//	m_Transform->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * Mouse * 0.1f);
 
 	RELEASE_INSTANCE(CGameInstance);
+}
+
+void CTargetCamera::Key_Input(_double TimeDelta)
+{
+	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_N))
+		m_fDis += 5.f;
+
+	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_M))
+		m_fDis -= 5.f;
+}
+
+void CTargetCamera::Set_CameraPos(_float x, _float z)
+{
+	m_CameraDesc.vEye.x = x;
+	m_CameraDesc.vEye.z = z - 9.f;
 }
 
 void CTargetCamera::Mouse_Check(_double TimeDelta)

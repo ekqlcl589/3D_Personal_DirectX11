@@ -27,6 +27,9 @@ public:
 	void Target_Renewal(_double TimeDelta);
 	void Key_Input(_double TimeDelta);
 
+public:
+	void Set_CameraPos(_float x, _float z);
+
 private:
 	void Mouse_Check(_double TimeDelta);
 	void Mouse_Fix();

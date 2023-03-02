@@ -46,6 +46,7 @@ public:
 	void Go_Left(_double TimeDelta);
 	void Go_Right(_double TimeDelta);
 	void Go_Back(_double TimeDelta);
+	void Jump(_double TimeDelta, _bool* isJump);
 
 	void Rotation(_fvector vAxis, _float fAngle);
 	void Turn(_fvector vAxis, _double TimeDelta);
@@ -61,6 +62,7 @@ private:
 	_float4x4 m_WorldMatrix;
 	TRANSFORM_DESC m_TransformDesc;
 	_float3 m_fAngle = { 0.f, 0.f, 0.f };
+	_float m_fTimer = 0.f;
 
 public:
 	static CTransform* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -12,6 +12,7 @@ class CCollider;
 END
 
 BEGIN(Client)
+class CTargetCamera;
 
 class CPlayer_Body final : public CGameObject
 {
