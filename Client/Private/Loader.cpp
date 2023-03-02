@@ -123,7 +123,7 @@ HRESULT CLoader::Loading_ForGamePlay()
 	//Snow
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩중입니다."));
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Show"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Snow/Snow.png")))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Snow/Snow0.png")))))
 		return E_FAIL;
 
 	//Terrain

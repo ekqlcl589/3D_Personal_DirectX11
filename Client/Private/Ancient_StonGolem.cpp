@@ -17,7 +17,6 @@ HRESULT CAncient_StonGolem::Initialize_Prototype()
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
 
-	m_eCollisionState = COLLISIONSTATE::OBJ_BOSS1;
 
 
 	return S_OK;
@@ -30,6 +29,8 @@ HRESULT CAncient_StonGolem::Initialize(void * pArg)
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
+
+	m_eCollisionState = COLLISIONSTATE::OBJ_BOSS1;
 
 	//ZeroMemory(&m_MonsterState, sizeof(MONSTERSTATE));
 	//
@@ -201,6 +202,8 @@ void CAncient_StonGolem::Set_State(_double TimeDelta)
 	if (true == m_bPlayerChecck)
 	{
 		//m_pTransformCom->Turn(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION), TimeDelta);
+		//m_pTransformCom->Chase(m_vTargetPos, TimeDelta, 3.f);
+		m_bPlayerChecck = false;
 		m_CurrAnim = S_START;
 	}
 
@@ -211,14 +214,17 @@ void CAncient_StonGolem::Set_State(_double TimeDelta)
 		m_CurrAnim = S_SKILL04_1;
 	}
 
-	if (m_CurrAnim == S_SKILL04_1 && true == m_pModelCom->Get_AnimFinished())
+	if (m_PrevAnim == S_SKILL04_1 && true == m_pModelCom->Get_AnimFinished())
 		m_CurrAnim = S_SKILL04_2;
 
-	//if (m_CurrAnim == S_SKILL04_2 && true == m_pModelCom->Get_AnimFinished())
-	//	m_CurrAnim = S_SKILL04_3;
+	if (m_PrevAnim == S_SKILL04_2 && true == m_pModelCom->Get_AnimFinished())
+	{
+		m_CurrAnim = S_SKILL04_3;
+		m_bAttack = false;
+	}
 	
-//	if (false == m_bAttack && m_PrevAnim == S_SKILL04_3 && true == m_pModelCom->Get_AnimFinished())
-//		m_CurrAnim = S_WAIT;
+	if (false == m_bAttack && m_PrevAnim == S_SKILL04_3 && true == m_pModelCom->Get_AnimFinished())
+		m_CurrAnim = S_WAIT;
 	//애니메이션이 모두 끝났다면 조건 추가 
 }
 

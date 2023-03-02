@@ -212,25 +212,25 @@ void CPlayer_Body::Key_Input(_double TimeDelta)
 	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_LEFT))
 	{
 		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * -1.f);
-		m_tInfo.CurrAnimState = ANIM_RUN_L;
+		//m_tInfo.CurrAnimState = ANIM_RUN_L;
 	}
-	else if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_LEFT))
-		m_tInfo.CurrAnimState = ANIM_RUN_END;
+	//else if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_LEFT))
+	//	m_tInfo.CurrAnimState = ANIM_RUN_END;
 
 
 	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_RIGHT))
 	{
 		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta);
-		m_tInfo.CurrAnimState = ANIM_RUN_R;
+		//m_tInfo.CurrAnimState = ANIM_RUN_R;
 	}
-	if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_RIGHT))
-		m_tInfo.CurrAnimState = ANIM_RUN_END;
+	//if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_RIGHT))
+	//	m_tInfo.CurrAnimState = ANIM_RUN_END;
 
 	Attack_Combo(TimeDelta);
 
 	if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_LB))
 	{
-		//m_pModelCom->SetUp_Animation(27);
+		m_pModelCom->SetUp_Animation(27);
 	}
 	//else if (CKeyMgr::GetInstance()->Mouse_Up(DIMK_LB))
 	//	m_tInfo.CurrAnimState = ANIM_COMBAT_WAIT;

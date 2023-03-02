@@ -47,6 +47,7 @@ private:
 
 	_bool m_Check = false;
 
+
 private:
 	_uint m_iNumChannels = { 0 };
 	class CBone* m_vecBone;
