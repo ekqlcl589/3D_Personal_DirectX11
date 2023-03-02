@@ -67,7 +67,7 @@ void CPlayer_Body::Tick(_double TimeDelta)
 	{
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-		pInstance->Add_Collider(m_eCollisionState, 1, this);
+		pInstance->Add_Collider(m_eCollisionState, 0, this);
 
 		RELEASE_INSTANCE(CGameInstance);
 

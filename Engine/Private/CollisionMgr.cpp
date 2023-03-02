@@ -58,12 +58,18 @@ HRESULT CCollisionMgr::Delete_CollideObj(COLLISIONSTATE eObjID, int iNum)
 
 void CCollisionMgr::Free()
 {
-	for (auto& Pair : m_mapObj)
-	{
-		for (auto& Obj : Pair)
-		{
-			Safe_Release(Obj.second);
+	//for (auto& Pair : m_mapObj)
+	//{
+	//	for (auto& Obj : Pair)
+	//	{
+	//		Safe_Release(Obj.second);
+	//
+	//	}
+	//}
 
-		}
-	}
+	//for (_uint i = 0; i < OBJ_END; i++)
+	//{
+	//	for (auto& pair : m_mapObj[OBJ_END])
+	//		Safe_Release(pair.second);
+	//}
 }

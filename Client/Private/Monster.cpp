@@ -45,6 +45,12 @@ void CMonster::Tick(_double TimeDelta)
 	if (nullptr != m_pColliderCom)
 		m_pColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
 
+	if (m_eType._Hp <= 0.f)
+		m_eType._Hp = 0.f;
+
+	if (m_eType._Hp == 0.f)
+		m_bDead = true;
+
 	ChaseToPlayer();
 }
 
@@ -78,6 +84,7 @@ void CMonster::Collision_ToPlayer()
 	CCollider* pWeaponColiider = static_cast<CCollider*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Weapon"), TEXT("Com_Collider")));
 	
 	m_pColliderCom->Collision(pPlayerCollider);
+		//m_eType._Hp -= 10.f;
 	m_pColliderCom->Collision(pWeaponColiider);
 
 	RELEASE_INSTANCE(CGameInstance);

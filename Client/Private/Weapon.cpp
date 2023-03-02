@@ -33,11 +33,8 @@ void CWeapon::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 
-	for (_uint i = 0; i < COLLIDER_END; ++i)
-	{
-		if (nullptr != m_pColliderCom[i])
-			m_pColliderCom[i]->Update(XMLoadFloat4x4(&m_WorldMatrix));
-	}
+	if (nullptr != m_pColliderCom)
+		m_pColliderCom->Update(XMLoadFloat4x4(&m_WorldMatrix));
 
 }
 
@@ -53,11 +50,8 @@ HRESULT CWeapon::Render()
 
 #ifdef _DEBUG
 
-	for (_uint i = 0; i < COLLIDER_END; ++i)
-	{
-		if (nullptr != m_pColliderCom[i])
-			m_pColliderCom[i]->Render();
-	}
+	if (nullptr != m_pColliderCom)
+		m_pColliderCom->Render();
 
 #endif
 

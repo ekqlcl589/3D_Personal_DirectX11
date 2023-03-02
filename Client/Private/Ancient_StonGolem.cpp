@@ -58,7 +58,7 @@ void CAncient_StonGolem::Tick(_double TimeDelta)
 	{
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-		pInstance->Add_Collider(m_eCollisionState, 2, this);
+		pInstance->Add_Collider(m_eCollisionState, 3, this);
 
 		RELEASE_INSTANCE(CGameInstance);
 

@@ -49,8 +49,8 @@ protected:
 	CRenderer* m_pRendererCom = { nullptr };
 	CTransform*	m_pTransformCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
-	CCollider* m_pColliderCom[COLLIDER_END] = { nullptr };
 
+	_bool m_bStart = { false };
 public:
 	WEAPONDESC m_Weapon;
 	_float4x4 m_WorldMatrix;
