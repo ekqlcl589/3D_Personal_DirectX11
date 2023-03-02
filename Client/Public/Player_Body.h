@@ -34,6 +34,8 @@ public:
 	virtual void LateTick(_double TimeDelta) override;
 	virtual HRESULT Render() override;
 
+	virtual void OnCollision(CGameObject* pObj)override;
+
 public:
 	void Key_Input(_double TimeDelta);
 
@@ -64,7 +66,6 @@ private:
 	CRenderer* m_pRendererCom = { nullptr };
 	CTransform*	m_pTransformCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
-	CCollider* m_pColliderCom[COLLIDER_END] = { nullptr };
 
 private:
 	vector<CGameObject*> m_vecParts[PART_END];
@@ -104,6 +105,8 @@ private:
 	_float m_ComboTime = 0.f;
 
 	_bool m_bDeah = false;
+
+	_bool m_bStart = false;
 
 public:
 	static CPlayer_Body* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

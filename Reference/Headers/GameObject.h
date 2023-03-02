@@ -3,6 +3,8 @@
 
 BEGIN(Engine)
 
+class CCollider;
+
 class ENGINE_DLL CGameObject abstract : public CBase
 {
 protected:
@@ -18,13 +20,31 @@ public:
 	virtual void LateTick(_double TimeDelta);
 	virtual HRESULT Render();
 
+	virtual void OnCollision(CGameObject* pObj) {}
+
+
+	void Set_ObjType(COLLISIONSTATE eObjID) { m_eCollisionState = eObjID; }
+
+	COLLISIONSTATE Get_ObjType() { return m_eCollisionState; }
+	CCollider* Get_Collider() { return m_pColliderCom; }
+
+	_bool Get_Dead() { return m_bDead; }
+	void Set_Dead() { m_bDead = true; }
+
+	void Set_ObjID(int& iObjID) { m_iObjID = iObjID; }
+	int	Get_ObjID() { return m_iObjID; }
+
 protected:
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pContext = { nullptr };
 
-	COLLISIONSTATE m_eCollisionState = COLLISIONSTATE::OBJ_END;
+	CCollider* m_pColliderCom = { nullptr };
+	COLLISIONSTATE m_eCollisionState = OBJ_END;
 
 	_bool m_isCloned = { false };
+	_bool m_bDead = { false };
+
+	int	m_iObjID = -1;
 
 protected:
 	unordered_map<const _tchar*, class CComponent*>			m_Components;

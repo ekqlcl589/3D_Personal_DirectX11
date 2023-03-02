@@ -56,13 +56,24 @@ HRESULT CPlayer_Body::Initialize(void * pArg)
 	if (FAILED(Add_Weapon()))
 		return	E_FAIL;
 
-	m_eCollisionState = COLLISIONSTATE::OBJ_PLAYER;
+	m_eCollisionState = OBJ_PLAYER;
 
 	return S_OK;
 }
 
 void CPlayer_Body::Tick(_double TimeDelta)
 {
+	if (false == m_bStart)
+	{
+		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+		pInstance->Add_Collider(m_eCollisionState, 1, this);
+
+		RELEASE_INSTANCE(CGameInstance);
+
+		m_bStart = true;
+	}
+
 	__super::Tick(TimeDelta);
 
 	Key_Input(TimeDelta);
@@ -87,11 +98,8 @@ void CPlayer_Body::Tick(_double TimeDelta)
 		}
 	}
 
-	for (_uint i = 0; i < COLLIDER_END; i++)
-	{
-		if (nullptr != m_pColliderCom[i])
-			m_pColliderCom[i]->Update(m_pTransformCom->Get_WorldMatrix());
-	}
+	if (nullptr != m_pColliderCom)
+		m_pColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
 }
 
 void CPlayer_Body::LateTick(_double TimeDelta)
@@ -176,15 +184,32 @@ HRESULT CPlayer_Body::Render()
 
 #ifdef _DEBUG
 
-	for (_uint i = 0; i < COLLIDER_END; ++i)
-	{
-		if (nullptr != m_pColliderCom[i])
-			m_pColliderCom[i]->Render();
-	}
+	if (nullptr != m_pColliderCom)
+		m_pColliderCom->Render();
 
 #endif
 
 	return S_OK;
+}
+
+void CPlayer_Body::OnCollision(CGameObject * pObj)
+{
+	COLLISIONSTATE eType = pObj->Get_ObjType();
+
+	switch (eType)
+	{
+	case Engine::OBJ_WEAPON_KARMA14:
+		break;
+	case Engine::OBJ_BOSS1:
+		m_tInfo._Hp -= 10.f;
+		break;
+	case Engine::OBJ_BOSS2:
+		break;
+	case Engine::OBJ_END:
+		break;
+	default:
+		break;
+	}
 }
 
 void CPlayer_Body::Key_Input(_double TimeDelta)
@@ -370,15 +395,15 @@ void CPlayer_Body::Attack_Combo(_double TimeDelta)
 	//{
 	//
 	//}
-		m_AttackCheck = true;
+	m_AttackCheck = true;
 
-		m_tInfo.CurrAnimState = ANIM_ATTACK;
+	m_tInfo.CurrAnimState = ANIM_ATTACK;
 
-		if (m_tInfo.prevAnimState == ANIM_ATTACK && true != m_pModelCom->Get_AnimFinished())
-			m_tInfo.CurrAnimState = ANIM_ATTACK_COMBO2;
+	if (m_tInfo.prevAnimState == ANIM_ATTACK && true != m_pModelCom->Get_AnimFinished())
+		m_tInfo.CurrAnimState = ANIM_ATTACK_COMBO2;
 
-		else if (m_tInfo.prevAnimState == ANIM_ATTACK_COMBO2 && true != m_pModelCom->Get_AnimFinished())
-			m_tInfo.CurrAnimState = ANIM_ATTACK_COMBO3;
+	else if (m_tInfo.prevAnimState == ANIM_ATTACK_COMBO2 && true != m_pModelCom->Get_AnimFinished())
+		m_tInfo.CurrAnimState = ANIM_ATTACK_COMBO3;
 
 		//if (m_tInfo.prevAnimState == ANIM_ATTACK_COMBO3 && true == m_pModelCom->Get_AnimFinished())
 		//{
@@ -395,8 +420,14 @@ void CPlayer_Body::Attack_Combo(_double TimeDelta)
 
 void CPlayer_Body::Jump(_double TimeDelta)
 {
+	m_tInfo.CurrAnimState = ANIM_JUMP;
 	m_bJump = true;
 	m_JumpAttack = false;
+	m_pModelCom->Set_AnimTick(4.0);
+
+	if (m_tInfo.prevAnimState == ANIM_JUMP && true == m_pModelCom->Get_AnimFinished())
+		m_tInfo.CurrAnimState = ANIM_JUMP_ING;
+
 }
 
 void CPlayer_Body::Jump_Attack(_double TimeDelta)
@@ -413,7 +444,7 @@ void CPlayer_Body::Jump_Attack(_double TimeDelta)
 		else if (m_tInfo.prevAnimState == ANIM_JUMP_ATTACK2 && true != m_pModelCom->Get_AnimFinished())
 			m_tInfo.CurrAnimState = ANIM_JUMP_ATTACK3;
 
-		// keyinput이 있어야 다음 동작으로 넘어 가는건가 
+		// keyinput이 있어야 다음 동작으로 넘어 가는건가 아니 근데 키를 눌러도 true 조건에 만족을 못 해서 안 넘어 가는 건가 ㅅㅂ
 		//if (m_tInfo.prevAnimState == ANIM_JUMP_ATTACK3 && true == m_pModelCom->Get_AnimFinished())
 		//{
 		//	m_bJump = false;
@@ -500,7 +531,7 @@ HRESULT CPlayer_Body::Add_Components()
 	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vScale.y * 0.5f, 0.f);
 
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"),
-		TEXT("Com_Collider_AABB"), (CComponent**)&m_pColliderCom[COLLIDER_AABB], &ColliderDesc)))
+		TEXT("Com_Collider_AABB"), (CComponent**)&m_pColliderCom, &ColliderDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -683,10 +714,7 @@ void CPlayer_Body::Free()
 		m_vecParts[i].clear();
 	}
 
-	for (_uint i = 0; i < COLLIDER_END; ++i)
-	{
-		Safe_Release(m_pColliderCom[i]);
-	}
+	Safe_Release(m_pColliderCom);
 
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pModelCom);

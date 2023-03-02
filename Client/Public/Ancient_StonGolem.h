@@ -18,6 +18,8 @@ public:
 	virtual void LateTick(_double TimeDelta) override;
 	virtual HRESULT Render() override;
 
+	virtual void OnCollision(CGameObject* pObj)override;
+
 
 	void Set_AnimationState(STONGOLEMANIMSTATE eType);
 	void Set_State(_double TimeDelta);
@@ -45,6 +47,8 @@ private:
 	_float m_f = 0.0f;
 
 	queue<_uint> m_AnimIndex;
+
+	_bool m_bStart = false;
 
 public:
 	static CAncient_StonGolem* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -61,6 +61,9 @@ public: // For Light_Mgr
 	const LIGHT_DESC* Get_Light(_uint iIndex);
 
 public: // For Collision_Mgr
+	HRESULT Add_Collider(COLLISIONSTATE eType, int iNum, CGameObject* pObj);
+	void OnCollision(COLLISIONSTATE eType, COLLISIONSTATE eType2);
+	HRESULT Delete_CollideObj(COLLISIONSTATE eObjID, int ObjNum);
 
 public: // For Font_Mgr
 	HRESULT Add_Font(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar* pFontTag, const _tchar* pFontName);

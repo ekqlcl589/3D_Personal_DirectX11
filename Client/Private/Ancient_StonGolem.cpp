@@ -31,7 +31,7 @@ HRESULT CAncient_StonGolem::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_eCollisionState = COLLISIONSTATE::OBJ_BOSS1;
+	m_eCollisionState = OBJ_BOSS1;
 
 	//ZeroMemory(&m_MonsterState, sizeof(MONSTERSTATE));
 	//
@@ -54,6 +54,17 @@ HRESULT CAncient_StonGolem::Initialize(void * pArg)
 
 void CAncient_StonGolem::Tick(_double TimeDelta)
 {
+	if (false == m_bStart)
+	{
+		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+		pInstance->Add_Collider(m_eCollisionState, 2, this);
+
+		RELEASE_INSTANCE(CGameInstance);
+
+		m_bStart = true;
+
+	}
 	__super::Tick(TimeDelta);
 
 	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_J))
@@ -71,6 +82,7 @@ void CAncient_StonGolem::Tick(_double TimeDelta)
 	//	Set_Anim();
 	//
 	//}
+	cout << m_eType._Hp << endl;
 }
 
 void CAncient_StonGolem::LateTick(_double TimeDelta)
@@ -109,6 +121,27 @@ HRESULT CAncient_StonGolem::Render()
 	}
 
 	return S_OK;
+}
+
+void CAncient_StonGolem::OnCollision(CGameObject * pObj)
+{
+	COLLISIONSTATE eType = pObj->Get_ObjType();
+
+	switch (eType)
+	{
+	case Engine::OBJ_PLAYER:
+		m_eType._Hp -= 10.f;
+		break;
+	case Engine::OBJ_WEAPON_SS:
+		m_eType._Hp -= 10.f;
+		break;
+	case Engine::OBJ_WEAPON_KARMA14:
+		break;
+	case Engine::OBJ_END:
+		break;
+	default:
+		break;
+	}
 }
 
 
@@ -209,7 +242,10 @@ void CAncient_StonGolem::Set_State(_double TimeDelta)
 			m_CurrAnim = S_SKILL02;
 
 		if (m_PrevAnim == S_SKILL02 && true == m_pModelCom->Get_AnimFinished())
+		{
+			m_bDead = true;
 			return;
+		}
 	}
 
 	if (true == m_bPlayerChecck) //  플레이어와 특정 거리 이하로 들어와서 조우 하면
@@ -315,7 +351,7 @@ HRESULT CAncient_StonGolem::Add_Components()
 	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vScale.y * 0.5f, 0.f);
 
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"),
-		TEXT("Com_Collider"), (CComponent**)&m_pColliderCom[COLLIDER_AABB], &ColliderDesc)))
+		TEXT("Com_Collider"), (CComponent**)&m_pColliderCom, &ColliderDesc)))
 		return E_FAIL;
 
 	return S_OK;

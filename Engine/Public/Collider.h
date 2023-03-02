@@ -46,6 +46,9 @@ public:
 
 #endif // _DEBUG
 
+public:
+	COLLISIONSTATE Get_Collider() { return m_Type; }
+
 private:
 	TYPE m_eType = { TYPE_END };
 	BoundingBox* m_pAABB = { nullptr };
@@ -56,6 +59,7 @@ private:
 	BoundingSphere* m_pOriginSphere = { nullptr };
 
 	COLLIDERDESC m_ColliderDesc;
+	COLLISIONSTATE m_Type;
 	_bool m_isColl = { false };
 
 #ifdef _DEBUG

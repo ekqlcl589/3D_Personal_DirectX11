@@ -188,6 +188,7 @@ namespace Engine
 		OBJ_END
 	};
 
+
 	typedef struct tagPlayerInfo
 	{
 		_uint _Lv;

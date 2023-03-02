@@ -46,7 +46,6 @@ protected:
 	CRenderer* m_pRendererCom = { nullptr };
 	CTransform*	m_pTransformCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
-	CCollider* m_pColliderCom[COLLIDER_END] = { nullptr };
 
 protected:
 	MONSTERSTATE m_MonsterState;

@@ -2,6 +2,7 @@
 #include "Base.h"
 
 BEGIN(Engine)
+class CGameObject;
 
 class CCollisionMgr :
 	public CBase
@@ -12,17 +13,13 @@ private:
 	virtual ~CCollisionMgr() = default;
 
 public:
-	HRESULT Add_Collider(const _tchar* pColliderTag, COLLISIONSTATE eType);
+	HRESULT Add_Collider(COLLISIONSTATE eType, int iNum, CGameObject* pObj);
 	
-	void Update_Collision(_double TimeDelta, COLLISIONSTATE eType);
-
-	void Render_Collider();
-
-private:
-	unordered_map<const _tchar*, class CCollider*>* m_Coll = { nullptr };
+	void OnCollision(COLLISIONSTATE eType, COLLISIONSTATE eType2);
+	HRESULT Delete_CollideObj(COLLISIONSTATE eObjID, int iNum);
 
 private:
-	class CCollider* Find_Collider(const _tchar* pColliderTag, COLLISIONSTATE eType);
+	unordered_map<_uint, CGameObject*> m_mapObj[OBJ_END];
 
 public:
 	virtual void Free()override;
