@@ -20,9 +20,8 @@ public:
 
 	virtual void OnCollision(CGameObject* pObj)override;
 
-
 	void Set_AnimationState(STONGOLEMANIMSTATE eType);
-	void Set_State(_double TimeDelta);
+	_uint Set_State(_double TimeDelta);
 
 	//void Set_Skill01(_double TimeDelta);
 	//void Set_Skill02(_double TimeDelta);

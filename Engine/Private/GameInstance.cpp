@@ -123,6 +123,14 @@ HRESULT CGameInstance::Add_GameObject(_uint iLevelIndex, const _tchar * pPrototy
 	return m_pObject_Manager->Add_GameObject(iLevelIndex, pPrototypeTag, pLayerTag, pArg);
 }
 
+HRESULT CGameInstance::Dleate_GameObject(_uint iLevelIndex, const _tchar * pLayerTag)
+{
+	if (nullptr == m_pObject_Manager)
+		return E_FAIL;
+
+	return m_pObject_Manager->Dleate_GameObject(iLevelIndex, pLayerTag);
+}
+
 CGameObject * CGameInstance::Clone_GameObject_Add_Layer(const _tchar * pPrototypeTag, void * pArg)
 {
 	if (nullptr == m_pObject_Manager)

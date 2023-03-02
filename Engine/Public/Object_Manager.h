@@ -17,6 +17,8 @@ public:
 
 	HRESULT Add_GameObject(_uint iLevelIndex, const _tchar* pPrototypeTag, const _tchar* pLayerTag, void* pArg = nullptr);
 
+	HRESULT Dleate_GameObject(_uint iLevelIndex, const _tchar* pLayerTag);
+
 	void Tick(_double TimeDelta);
 	void LateTick(_double TimeDelta);
 

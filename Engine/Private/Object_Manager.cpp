@@ -51,6 +51,17 @@ HRESULT CObject_Manager::Add_GameObject(_uint iLevelIndex, const _tchar * pProto
 	return S_OK;
 }
 
+HRESULT CObject_Manager::Dleate_GameObject(_uint iLevelIndex, const _tchar * pLayerTag)
+{
+	auto iter = find_if(m_pLayers[iLevelIndex].begin(), m_pLayers[iLevelIndex].end(), CTag_Finder(pLayerTag));
+
+	Safe_Release(iter->second);
+
+	m_pLayers[iLevelIndex].erase(iter);
+	
+	return S_OK;
+}
+
 void CObject_Manager::Tick(_double TimeDelta)
 {
 	for (_uint i = 0; i < m_iNumLevels; i++)

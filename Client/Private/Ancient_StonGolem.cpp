@@ -41,8 +41,8 @@ HRESULT CAncient_StonGolem::Initialize(void * pArg)
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPosition));
 
-	m_eType._MaxHp = 100.f;
-	m_eType._Hp = 100.f;
+	m_eType._MaxHp = 1000.f;
+	m_eType._Hp = 1000.f;
 
 	m_f = m_pModelCom->Get_AnimTick();
 
@@ -54,51 +54,60 @@ HRESULT CAncient_StonGolem::Initialize(void * pArg)
 
 void CAncient_StonGolem::Tick(_double TimeDelta)
 {
-	if (false == m_bStart)
+	if (false == m_bDead)
 	{
-		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+		if (false == m_bStart)
+		{
+			CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-		pInstance->Add_Collider(m_eCollisionState, 3, this);
+			pInstance->Add_Collider(m_eCollisionState, 3, this);
 
-		RELEASE_INSTANCE(CGameInstance);
+			RELEASE_INSTANCE(CGameInstance);
 
-		m_bStart = true;
+			m_bStart = true;
+
+		}
+		__super::Tick(TimeDelta);
+
+		Set_State(TimeDelta);
+
+		Set_AnimationState(m_CurrAnim);
+
+		//if (true == m_bPlayerChecck)
+		//{
+		//	Set_Anim();
+		//
+		//}
+		cout << m_eType._Hp << endl;
 
 	}
-	__super::Tick(TimeDelta);
-
-	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_J))
-		m_eType._Hp -= 10.f; 
-
-	if (true == m_bAttack)
-		m_CurrAnim != 5;
-
-	Set_State(TimeDelta);
-
-	Set_AnimationState(m_CurrAnim);
-
-	//if (true == m_bPlayerChecck)
-	//{
-	//	Set_Anim();
-	//
-	//}
-	cout << m_eType._Hp << endl;
+	else
+		return;
 }
 
 void CAncient_StonGolem::LateTick(_double TimeDelta)
 {
-	__super::LateTick(TimeDelta);
+	if (false == m_bDead)
+	{
+		__super::LateTick(TimeDelta);
 
-	m_pModelCom->Play_Animation(TimeDelta);
+		m_pModelCom->Play_Animation(TimeDelta);
 
-	Collision_ToPlayer();
+		Collision_ToPlayer();
 
-	if (nullptr != m_pRendererCom)
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
+		if (nullptr != m_pRendererCom)
+			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
+
+	}
+	else
+		return;
 }
 
 HRESULT CAncient_StonGolem::Render()
 {
+	if (true == m_bDead)
+		return OBJ_DEAD;
+
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 
@@ -130,7 +139,6 @@ void CAncient_StonGolem::OnCollision(CGameObject * pObj)
 	switch (eType)
 	{
 	case Engine::OBJ_PLAYER:
-		m_eType._Hp -= 10.f;
 		break;
 	case Engine::OBJ_WEAPON_SS:
 		m_eType._Hp -= 10.f;
@@ -232,19 +240,25 @@ void CAncient_StonGolem::Set_AnimationState(STONGOLEMANIMSTATE eType)
 
 }
 
-void CAncient_StonGolem::Set_State(_double TimeDelta)
+_uint CAncient_StonGolem::Set_State(_double TimeDelta)
 {
 	if (m_eType._Hp <= 0)
 	{
 		m_CurrAnim = S_SKILL10_1; // 원래는 스킬 모션인데 죽는게 따로 없어서 이걸로 대체 
 
-		if (m_PrevAnim == S_SKILL01 && true == m_pModelCom->Get_AnimFinished())
-			m_CurrAnim = S_SKILL02;
-
-		if (m_PrevAnim == S_SKILL02 && true == m_pModelCom->Get_AnimFinished())
+		if (true == m_pModelCom->Get_AnimFinished())
 		{
 			m_bDead = true;
-			return;
+			return OBJ_DEAD;
+		}
+		if (m_PrevAnim == S_SKILL01 && true == m_pModelCom->Get_AnimFinished())
+		{
+			m_CurrAnim = S_SKILL02;
+		}
+
+		else if (m_PrevAnim == S_SKILL02 && true == m_pModelCom->Get_AnimFinished())
+		{
+			OnDead();
 		}
 	}
 
@@ -259,8 +273,11 @@ void CAncient_StonGolem::Set_State(_double TimeDelta)
 	
 	Set_Skill04(TimeDelta); // 조우 후 공격 패턴 1
 
-	Set_Skill05(TimeDelta); // 패턴 1 이후 패턴 2
+	if(m_eType._Hp <= 700.f)
+		Set_Skill05(TimeDelta); // 패턴 1 이후 패턴 2
 	//애니메이션이 모두 끝났다면 조건 추가 
+
+	return OBJ_NOEVENT;
 }
 
 void CAncient_StonGolem::Set_Skill04(_double TimeDelta)
@@ -304,10 +321,10 @@ void CAncient_StonGolem::Set_Skill05(_double TimeDelta)
 		m_CurrAnim = S_SKILL05_1;
 	}
 
-	if (m_PrevAnim == S_SKILL05_1 && true == m_pModelCom->Get_AnimFinished())
+	else if (m_PrevAnim == S_SKILL05_1 && true == m_pModelCom->Get_AnimFinished())
 		m_CurrAnim = S_SKILL05_2;
 
-	if (m_PrevAnim == S_SKILL05_2 && true == m_pModelCom->Get_AnimFinished())
+	else if (m_PrevAnim == S_SKILL05_2 && true == m_pModelCom->Get_AnimFinished())
 	{
 		m_CurrAnim = S_SKILL05_3;
 		m_bAttack = false;

@@ -410,17 +410,6 @@ void CPlayer_Body::Attack_Combo(_double TimeDelta)
 	else if (m_tInfo.prevAnimState == ANIM_ATTACK_COMBO2 && true != m_pModelCom->Get_AnimFinished())
 		m_tInfo.CurrAnimState = ANIM_ATTACK_COMBO3;
 
-		//if (m_tInfo.prevAnimState == ANIM_ATTACK_COMBO3 && true == m_pModelCom->Get_AnimFinished())
-		//{
-		//	m_tInfo.CurrAnimState = ANIM_COMBAT_WAIT;
-		//	m_AttackCheck = false;
-		//
-		//}
-		//
-		//if (false == m_AttackCheck && m_tInfo.prevAnimState == ANIM_COMBAT_WAIT && true == m_pModelCom->Get_AnimFinished())
-		//{
-		//	m_tInfo.CurrAnimState = ANIM_IDEL;
-		//}
 }
 
 void CPlayer_Body::Jump(_double TimeDelta)

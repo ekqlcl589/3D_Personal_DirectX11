@@ -75,6 +75,20 @@ HRESULT CMonster::Render()
 	return S_OK;
 }
 
+_uint CMonster::OnDead()
+{
+	//CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	//
+	//pInstance->Dleate_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
+	//
+	//RELEASE_INSTANCE(CGameInstance);
+
+	if (m_eType._Hp <= 0)
+		return OBJ_DEAD;
+	else
+		return OBJ_NOEVENT;
+}
+
 void CMonster::Collision_ToPlayer()
 {
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);

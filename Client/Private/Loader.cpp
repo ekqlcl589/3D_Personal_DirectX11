@@ -217,13 +217,13 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 #pragma endregion Weapon
 
-	_matrix		LocalMatrix55 = XMMatrixIdentity();
-	LocalMatrix55 = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	_matrix		LocalMatrix66 = XMMatrixIdentity();
+	LocalMatrix66 = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(90.0f));
 
 #pragma region Monster
 	/* For.Prototype_Component_Model_TestMonster */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Boss0"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Ancient_Ston_Golem.fbx", CModel::MODEL_ANIM, LocalMatrix55))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Ancient_Ston_Golem.fbx", CModel::MODEL_ANIM, LocalMatrix66))))
 		return E_FAIL;
 
 #pragma endregion Monster
@@ -266,6 +266,8 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 #pragma endregion ¾Ö´Ï¸ÞÀÌ¼Ç ¿Ê ÆÄÃ÷
 
+	_matrix		LocalMatrix55 = XMMatrixIdentity();
+	LocalMatrix55 = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Tile"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/StaticMesh/TrainingRoom/TraningRoom.fbx", CModel::MODEL_NONANIM, LocalMatrix55))))

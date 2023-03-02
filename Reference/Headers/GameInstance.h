@@ -27,7 +27,8 @@ public: /* Level_Mgr */
 public: /* Obj_Mgr */
 	HRESULT Add_Prototype(const _tchar* pPrototypeTag, class CGameObject* pPrototype);
 	HRESULT Add_GameObject(_uint iLevelIndex, const _tchar* pPrototypeTag, const _tchar* pLayerTag, void* pArg = nullptr);
-	
+	HRESULT Dleate_GameObject(_uint iLevelIndex, const _tchar * pLayerTag);
+
 	class CGameObject* Clone_GameObject_Add_Layer(const _tchar* pPrototypeTag, void* pArg = nullptr);
 
 	CComponent* Get_Component(_uint iLevelIndex, const _tchar* pLayerTag, const _tchar* pComponentTag, _uint iIndex = 0);

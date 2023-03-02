@@ -41,6 +41,7 @@ public:
 	virtual void LateTick(_double TimeDelta);
 	virtual HRESULT Render();
 
+	virtual _uint OnDead();
 protected:
 	CShader* m_pShaderCom = { nullptr };
 	CRenderer* m_pRendererCom = { nullptr };
