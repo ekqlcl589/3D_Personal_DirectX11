@@ -142,21 +142,58 @@ HRESULT CModel::SetUp_Animation(_uint iAnimationIndex)
 	else
 	{
 		m_iNextAnimation = iAnimationIndex;
-		//m_Check = false;
-		//m_vecAnimations[m_iCurrAnimation]->Set_CurrKeyFrame(); // 이러면 현재 진행되는 애니메이션의 Time은 0
 		m_vecAnimations[m_iCurrAnimation]->Set_TimeAcc();
 	}
-	// 현재 애님의 timeacc 0으로 초기ㅣ화 하는 함수 불러 주고
 	return S_OK;
 }
 
 HRESULT CModel::Play_Animation(_double TimeDelta)
-{
-	
+{	
 	if (m_iCurrAnimation == m_iNextAnimation && m_Check == false)
 	{	
 		m_vecAnimations[m_iCurrAnimation]->Play_Animation(TimeDelta, m_vecBones);
 		
+	}
+	else
+	{
+		if (m_vecAnimations[m_iCurrAnimation]->Play_Animation_Last(TimeDelta, m_vecBones, m_vecAnimations[m_iNextAnimation], m_Check))
+		{
+			m_iCurrAnimation = m_iNextAnimation;
+			m_vecAnimations[m_iCurrAnimation]->Reset();
+
+		}
+	}
+	
+	for (auto& pBone : m_vecBones)
+	{
+		pBone->Invalidate_CombinedMatrix();
+	}
+
+	return S_OK;
+}
+
+HRESULT CModel::Play_AnimationTest(_double TimeDelta, COLLISIONSTATE eType)
+{
+	if (eType == COLLISIONSTATE::OBJ_BOSS1)
+	{
+		m_vecAnimations[m_iCurrAnimation]->Set_TimeAcc();
+
+		m_vecAnimations[m_iCurrAnimation]->Play_Animation(TimeDelta, m_vecBones);
+
+
+	}
+		for (auto& pBone : m_vecBones)
+		{
+			pBone->Invalidate_CombinedMatrix();
+		}
+
+		return S_OK;
+
+
+	if (m_iCurrAnimation == m_iNextAnimation && m_Check == false)
+	{
+		m_vecAnimations[m_iCurrAnimation]->Play_Animation(TimeDelta, m_vecBones);
+
 	}
 	else
 	{
@@ -168,7 +205,7 @@ HRESULT CModel::Play_Animation(_double TimeDelta)
 
 		}
 	}
-	
+
 	for (auto& pBone : m_vecBones)
 	{
 		pBone->Invalidate_CombinedMatrix();

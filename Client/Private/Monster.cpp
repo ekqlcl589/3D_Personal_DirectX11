@@ -89,6 +89,10 @@ void CMonster::Collision_ToPlayer()
 	RELEASE_INSTANCE(CGameInstance);
 }
 
+void CMonster::OnCollisionEnter()
+{
+}
+
 void CMonster::ChaseToPlayer()
 {
 	if (false == m_bCheck)

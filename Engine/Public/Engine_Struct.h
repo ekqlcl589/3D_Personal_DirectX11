@@ -206,6 +206,18 @@ namespace Engine
 		PLAYERANIMSTATE prevAnimState;
 
 	}PLAYERINFO;
+
+	typedef struct tagMonsterInfo
+	{
+		_float _MaxHp;
+		_float _Hp;
+		_uint _ATK;
+		_uint _DEF;
+
+		STONGOLEMANIMSTATE CurrAnimState;
+		STONGOLEMANIMSTATE prevAnimState;
+
+	}MONSTERINFO;
 }
 
 

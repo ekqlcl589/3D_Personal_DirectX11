@@ -52,6 +52,7 @@ protected:
 	MONSTERSTATE m_MonsterState;
 	_uint iId = { 0 };
 	void Collision_ToPlayer();
+	void OnCollisionEnter();
 	void ChaseToPlayer();
 
 	_float3 m_fDistance = { 5.f, 5.f, 5.f };
@@ -65,6 +66,8 @@ protected:
 
 	_bool m_bPlayerChecck = false;
 	_bool m_bCheck = false;
+
+	MONSTERINFO m_eType;
 
 public:
 	virtual CGameObject* Clone(void* pArg = nullptr) = 0;

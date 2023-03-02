@@ -38,7 +38,6 @@ HRESULT CPlayer_Body::Initialize_Prototype()
 
 	m_bJump = false;
 
-	m_eCollisionState = COLLISIONSTATE::OBJ_PLAYER;
 
 	return S_OK;
 }
@@ -56,6 +55,8 @@ HRESULT CPlayer_Body::Initialize(void * pArg)
 
 	if (FAILED(Add_Weapon()))
 		return	E_FAIL;
+
+	m_eCollisionState = COLLISIONSTATE::OBJ_PLAYER;
 
 	m_animation = m_pModelCom->Get_Animations();
 
@@ -206,8 +207,8 @@ void CPlayer_Body::Key_Input(_double TimeDelta)
 		m_tInfo.CurrAnimState = ANIM_RUN;
 
 	}
-	else if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_DOWN))
-		m_tInfo.CurrAnimState = ANIM_RUN_END;
+	//else if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_DOWN))
+	//	m_tInfo.CurrAnimState = ANIM_RUN_END;
 
 	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_LEFT))
 	{

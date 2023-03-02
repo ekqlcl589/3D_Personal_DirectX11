@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Ancient_StonGolem.h"
 #include "GameInstance.h"
+#include "KeyMgr.h"
 
 CAncient_StonGolem::CAncient_StonGolem(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CMonster(pDevice, pContext)
@@ -40,6 +41,9 @@ HRESULT CAncient_StonGolem::Initialize(void * pArg)
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPosition));
 
+	m_eType._MaxHp = 100.f;
+	m_eType._Hp = 100.f;
+
 	m_CurrAnim = S_WAIT;
 	m_pModelCom->SetUp_Animation(m_CurrAnim);
 
@@ -49,6 +53,9 @@ HRESULT CAncient_StonGolem::Initialize(void * pArg)
 void CAncient_StonGolem::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
+
+	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_J))
+		m_eType._Hp -= 10.f; 
 
 	Set_State(TimeDelta);
 
@@ -99,17 +106,6 @@ HRESULT CAncient_StonGolem::Render()
 	return S_OK;
 }
 
-void CAncient_StonGolem::Set_Anim()
-{
-	//m_pModelCom->SetUp_Animation(17);
-	//
-	//if (true == m_pModelCom->Get_AnimFinished())
-	//{
-	//	m_pModelCom->SetUp_Animation(19);
-	//	//m_bPlayerChecck = false;
-	//}
-
-}
 
 void CAncient_StonGolem::Set_AnimationState(STONGOLEMANIMSTATE eType)
 {
@@ -199,7 +195,18 @@ void CAncient_StonGolem::Set_AnimationState(STONGOLEMANIMSTATE eType)
 
 void CAncient_StonGolem::Set_State(_double TimeDelta)
 {
-	if (true == m_bPlayerChecck)
+	if (m_eType._Hp <= 0)
+	{
+		m_CurrAnim = S_SKILL10_1;
+
+		if (m_PrevAnim == S_SKILL01 && true == m_pModelCom->Get_AnimFinished())
+			m_CurrAnim = S_SKILL02;
+
+		if (m_PrevAnim == S_SKILL02 && true == m_pModelCom->Get_AnimFinished())
+			return;
+	}
+
+	if (true == m_bPlayerChecck) //  플레이어와 특정 거리 이하로 들어와서 조우 하면
 	{
 		//m_pTransformCom->Turn(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION), TimeDelta);
 		//m_pTransformCom->Chase(m_vTargetPos, TimeDelta, 3.f);
@@ -207,6 +214,15 @@ void CAncient_StonGolem::Set_State(_double TimeDelta)
 		m_CurrAnim = S_START;
 	}
 
+	
+	Set_Skill04(TimeDelta); // 조우 후 공격 패턴 1
+
+	Set_Skill05(TimeDelta); // 패턴 1 이후 패턴 2
+	//애니메이션이 모두 끝났다면 조건 추가 
+}
+
+void CAncient_StonGolem::Set_Skill04(_double TimeDelta)
+{
 	if (m_PrevAnim == S_START && true == m_pModelCom->Get_AnimFinished())
 	{
 		m_bCheck = true;
@@ -215,17 +231,44 @@ void CAncient_StonGolem::Set_State(_double TimeDelta)
 	}
 
 	if (m_PrevAnim == S_SKILL04_1 && true == m_pModelCom->Get_AnimFinished())
+	{
 		m_CurrAnim = S_SKILL04_2;
+		// 애니메이션 끝나면 지형이 부서지는 이팩트 생성
+	}
 
 	if (m_PrevAnim == S_SKILL04_2 && true == m_pModelCom->Get_AnimFinished())
 	{
+		// 이팩트 FadeIn,Out 후  삭제처리 
 		m_CurrAnim = S_SKILL04_3;
 		m_bAttack = false;
 	}
-	
+
 	if (false == m_bAttack && m_PrevAnim == S_SKILL04_3 && true == m_pModelCom->Get_AnimFinished())
 		m_CurrAnim = S_WAIT;
-	//애니메이션이 모두 끝났다면 조건 추가 
+
+}
+
+void CAncient_StonGolem::Set_Skill05(_double TimeDelta)
+{
+	if (m_PrevAnim == S_WAIT && m_pModelCom->Get_AnimFinished())
+	{
+		m_bAttack = true;
+		m_CurrAnim = S_SKILL05_1;
+	}
+
+	if (m_PrevAnim == S_SKILL05_1 && true == m_pModelCom->Get_AnimFinished())
+		m_CurrAnim = S_SKILL05_2;
+
+	if (m_PrevAnim == S_SKILL05_2 && true == m_pModelCom->Get_AnimFinished())
+	{
+		m_CurrAnim = S_SKILL05_3;
+		m_bAttack = false;
+	}
+
+	if (false == m_bAttack && m_PrevAnim == S_SKILL05_3 && true == m_pModelCom->Get_AnimFinished())
+		m_CurrAnim = S_WAIT;
+
+	
 }
 
 HRESULT CAncient_StonGolem::Add_Components()
