@@ -45,11 +45,6 @@ void CMonster::Tick(_double TimeDelta)
 	if (nullptr != m_pColliderCom)
 		m_pColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
 
-	if (m_eType._Hp <= 0.f)
-		m_eType._Hp = 0.f;
-
-	if (m_eType._Hp == 0.f)
-		m_bDead = true;
 
 	ChaseToPlayer();
 }

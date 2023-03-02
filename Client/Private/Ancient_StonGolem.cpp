@@ -56,6 +56,9 @@ void CAncient_StonGolem::Tick(_double TimeDelta)
 {
 	if (false == m_bDead)
 	{
+		if (m_eType._Hp <= 0.f)
+			m_eType._Hp = 1.f;
+
 		if (false == m_bStart)
 		{
 			CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
@@ -242,12 +245,13 @@ void CAncient_StonGolem::Set_AnimationState(STONGOLEMANIMSTATE eType)
 
 _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 {
-	if (m_eType._Hp <= 0)
+	if (m_eType._Hp <= 1.f)
 	{
 		m_CurrAnim = S_SKILL10_1; // 원래는 스킬 모션인데 죽는게 따로 없어서 이걸로 대체 
 
-		if (true == m_pModelCom->Get_AnimFinished())
+		if (m_CurrAnim == S_SKILL10_1 && true == m_pModelCom->Get_AnimFinished())
 		{
+			m_eType._Hp = 0.f;
 			m_bDead = true;
 			return OBJ_DEAD;
 		}
@@ -273,7 +277,7 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 	
 	Set_Skill04(TimeDelta); // 조우 후 공격 패턴 1
 
-	if(m_eType._Hp <= 700.f)
+	if(m_eType._Hp <= 500.f)
 		Set_Skill05(TimeDelta); // 패턴 1 이후 패턴 2
 	//애니메이션이 모두 끝났다면 조건 추가 
 
