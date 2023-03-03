@@ -92,9 +92,11 @@ void CMonster::Collision_ToPlayer()
 
 	CCollider* pWeaponColiider = static_cast<CCollider*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Weapon"), TEXT("Com_Collider")));
 	
-	m_pColliderCom->Collision(pPlayerCollider);
+	if(m_pColliderCom->Collision(pPlayerCollider))
 		//m_eType._Hp -= 10.f;
-	m_pColliderCom->Collision(pWeaponColiider);
+
+	if(m_pColliderCom->Collision(pWeaponColiider))
+		m_eType._Hp -= 10.f;
 
 	RELEASE_INSTANCE(CGameInstance);
 }

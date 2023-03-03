@@ -45,13 +45,14 @@ public:
 public:
 	PLAYERINFO& Get_Info() { return m_tInfo; }
 
+
 public:
 	void Hit(const _int& _Damage);
 	void Attack();
-	void Attack_Combo(_double TimeDelta);
+	void Attack_Combo(_double TimeDelta, _vector fPos);
 	
 	void Jump(_double TimeDelta);
-	void Jump_Attack(_double TimeDelta);
+	void Jump_Attack(_double TimeDelta, _vector fPos);
 
 	void Dash(_double TimeDelta);
 

@@ -75,7 +75,7 @@ HRESULT CMainApp::Render()
 	//이 사이에 그릴것들을 넣어야 함
 	m_pRenderer->Draw_Renderer();
 
-	m_pGameInstance->Render_Font(TEXT("Font_Bazzi"), TEXT("살려주세요"), _float2(0.f, 0.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	//m_pGameInstance->Render_Font(TEXT("Font_Bazzi"), TEXT("살려주세요"), _float2(0.f, 0.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
 
 	m_pGameInstance->Present();
 

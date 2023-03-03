@@ -72,6 +72,8 @@ void CAncient_StonGolem::Tick(_double TimeDelta)
 		}
 		__super::Tick(TimeDelta);
 
+		Key_Input(TimeDelta);
+
 		Set_Time();
 
 		Set_State(TimeDelta);
@@ -148,7 +150,7 @@ void CAncient_StonGolem::OnCollision(CGameObject * pObj)
 	case Engine::OBJ_WEAPON_SS:
 	{
 		//if(true == m_bAttackTime)
-		m_eType._Hp -= 10.f;
+		//m_eType._Hp -= 10.f;
 
 		break;
 	}
@@ -161,6 +163,13 @@ void CAncient_StonGolem::OnCollision(CGameObject * pObj)
 	}
 }
 
+void CAncient_StonGolem::Key_Input(_double TimeDelta)
+{
+	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_U))
+	{
+		Set_Skill01(TimeDelta);
+	}
+}
 
 void CAncient_StonGolem::Set_AnimationState(STONGOLEMANIMSTATE eType)
 {
@@ -283,11 +292,11 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 	
 	Set_Skill04(TimeDelta); // 조우 후 공격 패턴 1
 
-	if (m_eType._Hp <= 500.f)
-		Set_Skill01(TimeDelta);
-
-	if(m_eType._Hp <= 300.f)
-		Set_Skill05(TimeDelta); // 패턴 1 이후 패턴 2
+	//if (m_eType._Hp <= 500.f)
+	//	Set_Skill01(TimeDelta);
+	//
+	//if(m_eType._Hp <= 250.f)
+	//	Set_Skill05(TimeDelta); // 패턴 1 이후 패턴 2
 	//애니메이션이 모두 끝났다면 조건 추가 
 
 	return OBJ_NOEVENT;
@@ -295,19 +304,19 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 
 void CAncient_StonGolem::Set_Skill01(_double TimeDelta)
 {
-	if (m_PrevAnim == S_WAIT && true == m_pModelCom->Get_AnimFinished())
+	if (m_CurrAnim == S_WAIT && true == m_pModelCom->Get_AnimFinished())
 	{
 		m_bAttack = true;
 		m_CurrAnim = S_SKILL01;
 	}
 
-	else if (m_PrevAnim == S_SKILL01 && true == m_pModelCom->Get_AnimFinished())
+	else if (m_PrevAnim == S_SKILL01 && true == m_pModelCom->Get_LerpAnimFinished())
 	{
 		m_CurrAnim = S_SKILL02;
 		m_bAttack = false;
 	}
 
-	if (false == m_bAttack && m_PrevAnim == S_SKILL02 && true == m_pModelCom->Get_AnimFinished())
+	if (false == m_bAttack && m_PrevAnim == S_SKILL02 && true == m_pModelCom->Get_LerpAnimFinished())
 		m_CurrAnim = S_WAIT;
 }
 
@@ -324,27 +333,27 @@ void CAncient_StonGolem::Set_Skill04(_double TimeDelta)
 		m_CurrAnim = S_SKILL04_1;
 	}
 
-	else if (m_PrevAnim == S_SKILL04_1 && true == m_pModelCom->Get_AnimFinished())
+	if (m_PrevAnim == S_SKILL04_1 && true == m_pModelCom->Get_AnimFinished())
 	{
-		m_pModelCom->Set_AnimTick(m_f * (_double)5.f);
+		//m_pModelCom->Set_AnimTick(m_f * (_double)5.f);
 		cout << m_CurrAnim << endl;
 		m_CurrAnim = S_SKILL04_2;
 		// 애니메이션 끝나면 지형이 부서지는 이팩트 생성
 	}
 	//cout << m_CurrAnim << endl;
 
-	else if (m_PrevAnim == S_SKILL04_2 && true == m_pModelCom->Get_AnimFinished())
-	{
-		// 이팩트 FadeIn,Out 후  삭제처리 
-		cout << m_CurrAnim << endl;
-
-		m_CurrAnim = S_SKILL04_3;
-		m_bAttack = false;
-	}
-
-	//cout << m_CurrAnim << endl;
-	if (false == m_bAttack && m_PrevAnim == S_SKILL04_3 && true == m_pModelCom->Get_AnimFinished())
-		m_CurrAnim = S_WAIT;
+	//if (m_PrevAnim == S_SKILL04_2 && true == m_pModelCom->Get_AnimFinished())
+	//{
+	//	// 이팩트 FadeIn,Out 후  삭제처리 
+	//	cout << m_CurrAnim << endl;
+	//
+	//	m_CurrAnim = S_SKILL04_3;
+	//	m_bAttack = false;
+	//}
+	//
+	////cout << m_CurrAnim << endl;
+	//if (false == m_bAttack && m_PrevAnim == S_SKILL04_3 && true == m_pModelCom->Get_AnimFinished())
+	//	m_CurrAnim = S_WAIT;
 
 }
 

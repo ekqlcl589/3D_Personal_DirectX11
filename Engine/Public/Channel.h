@@ -22,7 +22,7 @@ private:
 
 	_bool m_bCheck = false;
 
-	_double m_Ratio = 8.0;
+	_double m_Ratio = 6.0;
 	_double m_AnimTic = 0.0;
 
 private: 

@@ -80,7 +80,7 @@ void CPlayer_Body::Tick(_double TimeDelta)
 
 	Animation_State(m_tInfo.CurrAnimState, TimeDelta);
 
-	CombatWait();
+	//CombatWait();
 
 	for (_uint i = 0; i < WEAPON_END; i++)
 	{
@@ -217,8 +217,8 @@ void CPlayer_Body::OnCollision(CGameObject * pObj)
 void CPlayer_Body::Key_Input(_double TimeDelta)
 {
 
-	_float3 vPos;
-	XMStoreFloat3(&vPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	_vector vPos;
+	vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
 	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_UP))
 	{
@@ -268,13 +268,13 @@ void CPlayer_Body::Key_Input(_double TimeDelta)
 
 	if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_LB))
 	{
-		Attack_Combo(TimeDelta);
+		Attack_Combo(TimeDelta, vPos);
 
 	}
 
 	if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_RB))
 	{
-		Jump_Attack(TimeDelta);
+		Jump_Attack(TimeDelta, vPos);
 
 	}
 
@@ -392,26 +392,44 @@ void CPlayer_Body::Attack()
 
 }
 
-void CPlayer_Body::Attack_Combo(_double TimeDelta)
+void CPlayer_Body::Attack_Combo(_double TimeDelta, _vector fPos)
 {
-	//if (false == m_bJump)
-	//{
-	//
-	//}
-	m_AttackCheck = true;
+	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 
-	m_tInfo.CurrAnimState = ANIM_ATTACK;
+	if (false == m_bJump)
+	{
+	
+		m_AttackCheck = true;
+		//if (true == m_AttackCheck)
+		//{
+		//	fPos += XMVector3Normalize(vLook) * 30.0 * TimeDelta;
+		//	m_pTransformCom->Set_State(CTransform::STATE_POSITION, fPos);
+		//}
 
-	if (m_tInfo.prevAnimState == ANIM_ATTACK && true != m_pModelCom->Get_AnimFinished())
+		m_tInfo.CurrAnimState = ANIM_ATTACK_COMBO1;
+		
+	}
+
+	if (m_tInfo.prevAnimState == ANIM_ATTACK_COMBO1 && true != m_pModelCom->Get_AnimFinished())
+	{
 		m_tInfo.CurrAnimState = ANIM_ATTACK_COMBO2;
+		//if (true == m_AttackCheck)
+		//	fPos += XMVector3Normalize(vLook) * 50.0 * TimeDelta;
+
+	}
 
 	else if (m_tInfo.prevAnimState == ANIM_ATTACK_COMBO2 && true != m_pModelCom->Get_AnimFinished())
-		m_tInfo.CurrAnimState = ANIM_ATTACK_COMBO3;
-
-	else if (m_tInfo.prevAnimState == ANIM_ATTACK_COMBO3 && true == m_pModelCom->Get_AnimFinished())
 	{
-		m_tInfo.CurrAnimState = ANIM_COMBAT_WAIT;
+		m_tInfo.CurrAnimState = ANIM_ATTACK_COMBO3;
+		//if (true == m_AttackCheck)
+		//	fPos += XMVector3Normalize(vLook) * 80.0 * TimeDelta;
+
+	}
+
+	if (m_tInfo.prevAnimState == ANIM_ATTACK_COMBO3 && true == m_pModelCom->Get_LerpAnimFinished())
+	{
 		m_AttackCheck = false;
+		m_tInfo.CurrAnimState = ANIM_COMBAT_WAIT;
 
 	}
 
@@ -424,50 +442,57 @@ void CPlayer_Body::Attack_Combo(_double TimeDelta)
 
 void CPlayer_Body::Jump(_double TimeDelta)
 {
-	m_tInfo.CurrAnimState = ANIM_JUMP;
-	m_pModelCom->Set_AnimTick(14.f);
+	//m_tInfo.CurrAnimState = ANIM_JUMP;
 	m_bJump = true;
 	m_JumpAttack = false;
 
-	m_pTransformCom->Jump(TimeDelta, &m_bJump);
+	//m_pTransformCom->Jump(TimeDelta, &m_bJump);
 
-	if (m_tInfo.prevAnimState == ANIM_JUMP && true == m_pModelCom->Get_AnimFinished())
-	{
-		m_tInfo.CurrAnimState = ANIM_JUMP_ING;
-		m_bJump = false;
-	}
+	//if (m_tInfo.prevAnimState == ANIM_JUMP && true == m_pModelCom->Get_AnimFinished())
+	//{
+	//	m_tInfo.CurrAnimState = ANIM_JUMP_ING;
+	//	m_bJump = false;
+	//}
 
 }
 
-void CPlayer_Body::Jump_Attack(_double TimeDelta)
+void CPlayer_Body::Jump_Attack(_double TimeDelta, _vector fPos)
 {
-	if (true == m_bJump && false == m_JumpAttack)
+	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+	_vector vUp = XMVector3Cross(vLook, fPos);
+	if (true == m_bJump)
 	{
 		m_fGravity = 0.f;
-		//m_JumpAttack = true;
+		vUp += XMVector3Normalize(vLook) * 50.0 * TimeDelta;
+		m_JumpAttack = true;
 		m_tInfo.CurrAnimState = ANIM_JUMP_ATTACK1;
-
-		if (m_tInfo.prevAnimState == ANIM_JUMP_ATTACK1 && true != m_pModelCom->Get_AnimFinished())
-			m_tInfo.CurrAnimState = ANIM_JUMP_ATTACK2;
-
-		else if (m_tInfo.prevAnimState == ANIM_JUMP_ATTACK2 && true != m_pModelCom->Get_AnimFinished())
-			m_tInfo.CurrAnimState = ANIM_JUMP_ATTACK3;
-
-		// keyinput이 있어야 다음 동작으로 넘어 가는건가 아니 근데 키를 눌러도 true 조건에 만족을 못 해서 안 넘어 가는 건가 ㅅㅂ
-		//if (m_tInfo.prevAnimState == ANIM_JUMP_ATTACK3 && true == m_pModelCom->Get_AnimFinished())
-		//{
-		//	m_bJump = false;
-		//	m_fGravity = 5.f;
-		//	m_tInfo.CurrAnimState = ANIM_JUMP_LENDING;
-		//}
-		//
-		//if (m_tInfo.prevAnimState == ANIM_JUMP_LENDING && true == m_pModelCom->Get_AnimFinished())
-		//{
-		//	m_tInfo.CurrAnimState = ANIM_IDEL;
-		//	m_JumpAttack = true;
-		//}
-
 	}
+
+	if (m_tInfo.prevAnimState == ANIM_JUMP_ATTACK1 && true != m_pModelCom->Get_AnimFinished())
+		m_tInfo.CurrAnimState = ANIM_JUMP_ATTACK2;
+
+	if (m_tInfo.prevAnimState == ANIM_JUMP_ATTACK2 && true != m_pModelCom->Get_AnimFinished())
+	{
+		cout << m_tInfo.CurrAnimState << endl;
+		m_tInfo.CurrAnimState = ANIM_JUMP_ATTACK3;
+	}
+
+	if (m_tInfo.prevAnimState == ANIM_JUMP_ATTACK3 && true == m_pModelCom->Get_LerpAnimFinished())
+	{
+		m_tInfo.CurrAnimState = ANIM_JUMP_LENDING;
+		m_bJump = false;
+		m_JumpAttack = false;
+		m_fGravity = 5.f;
+	}
+
+	if (false == m_JumpAttack && m_tInfo.prevAnimState == ANIM_JUMP_LENDING && true == m_pModelCom->Get_AnimFinished())
+	{
+		m_tInfo.CurrAnimState = ANIM_IDEL;
+		cout << m_tInfo.CurrAnimState << endl;
+	}
+
+	
+
 }
 
 void CPlayer_Body::Dash(_double TimeDelta)
@@ -479,9 +504,13 @@ void CPlayer_Body::Dash(_double TimeDelta)
 
 void CPlayer_Body::CombatWait()
 {
+	cout << m_tInfo.CurrAnimState << endl;
+
 	if (m_tInfo.prevAnimState == ANIM_ATTACK_COMBO3 && true == m_pModelCom->Get_AnimFinished())
 	{
-		m_tInfo.CurrAnimState = ANIM_COMBAT_WAIT;
+		cout << m_tInfo.CurrAnimState << endl;
+		if(true == m_pModelCom->Get_LerpAnimFinished())
+			m_tInfo.CurrAnimState = ANIM_COMBAT_WAIT;
 		m_AttackCheck = false;
 
 	}

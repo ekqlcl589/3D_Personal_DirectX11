@@ -25,7 +25,7 @@ HRESULT CAnimation::Initialize(aiAnimation * pAIAnimation, CModel* pModel)
 {
 	strcpy_s(m_szName, pAIAnimation->mName.data);
 
-	m_Duration = pAIAnimation->mDuration;
+	m_Duration = pAIAnimation->mDuration * 0.9;
 
 	m_SecondTick = m_TickPerSecond = pAIAnimation->mTicksPerSecond;
 
@@ -75,7 +75,7 @@ _bool CAnimation::Play_Animation_Last(_double TimeDelta, const vector<class CBon
 		m_Ratio = 8.0;
 		bCheck = false;
 
-		return true;
+		//return true; // 주석 없었음
 	}
 
 	if(m_TimeAcc <= m_Ratio)
@@ -88,6 +88,7 @@ _bool CAnimation::Play_Animation_Last(_double TimeDelta, const vector<class CBon
 		
 			m_iChannelIndex += 1;
 		}
+		//return true;
 	}
 	else
 	{

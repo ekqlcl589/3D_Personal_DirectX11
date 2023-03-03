@@ -350,10 +350,11 @@ _bool CModel::Get_AnimFinished()
 	return m_vecAnimations[m_iCurrAnimation]->Get_AnimFinished();
 }
 
-_bool CModel::Get_PrivAimFinished()
+_bool CModel::Get_LerpAnimFinished()
 {
-	return m_vecAnimations[m_iNextAnimation]->Get_AnimFinished();
+	return m_vecAnimations[m_iCurrAnimation]->Get_LerpAnimFinished();
 }
+
 
 
 CModel * CModel::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const char * pModelFilePath, MODEL_TYPE eType, _fmatrix LocalMatrix)
