@@ -23,8 +23,8 @@ public:
 	void Set_AnimationState(STONGOLEMANIMSTATE eType);
 	_uint Set_State(_double TimeDelta);
 
-	//void Set_Skill01(_double TimeDelta);
-	//void Set_Skill02(_double TimeDelta);
+	void Set_Skill01(_double TimeDelta);
+	void Set_Skill02(_double TimeDelta);
 	//void Set_Skill03(_double TimeDelta);
 	void Set_Skill04(_double TimeDelta);
 	void Set_Skill05(_double TimeDelta);
@@ -34,6 +34,7 @@ public:
 	//void Set_Skill09(_double TimeDelta);
 	//void Set_Skill10(_double TimeDelta);
 
+	void Set_Time();
 
 private:
 	HRESULT Add_Components();
@@ -48,6 +49,9 @@ private:
 	queue<_uint> m_AnimIndex;
 
 	_bool m_bStart = false;
+
+	_float m_fTime = 120.f;
+	_bool m_bAttackTime = false;
 
 public:
 	static CAncient_StonGolem* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -77,8 +77,10 @@ void CPlayer_Body::Tick(_double TimeDelta)
 	__super::Tick(TimeDelta);
 
 	Key_Input(TimeDelta);
-	CombatWait();
+
 	Animation_State(m_tInfo.CurrAnimState, TimeDelta);
+
+	CombatWait();
 
 	for (_uint i = 0; i < WEAPON_END; i++)
 	{
@@ -268,14 +270,12 @@ void CPlayer_Body::Key_Input(_double TimeDelta)
 	{
 		Attack_Combo(TimeDelta);
 
-		//m_pModelCom->SetUp_Animation(27);
 	}
 
 	if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_RB))
 	{
 		Jump_Attack(TimeDelta);
 
-		//m_pModelCom->SetUp_Animation(27);
 	}
 
 	//else if (CKeyMgr::GetInstance()->Mouse_Up(DIMK_LB))
@@ -284,8 +284,6 @@ void CPlayer_Body::Key_Input(_double TimeDelta)
 	//else
 	//	m_tInfo.CurrAnimState = ANIM_IDEL;
 
-	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_Q))
-		m_tInfo._Hp -= 10.f;
 
 	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_SPACE))
 		Jump(TimeDelta);
@@ -410,6 +408,18 @@ void CPlayer_Body::Attack_Combo(_double TimeDelta)
 	else if (m_tInfo.prevAnimState == ANIM_ATTACK_COMBO2 && true != m_pModelCom->Get_AnimFinished())
 		m_tInfo.CurrAnimState = ANIM_ATTACK_COMBO3;
 
+	else if (m_tInfo.prevAnimState == ANIM_ATTACK_COMBO3 && true == m_pModelCom->Get_AnimFinished())
+	{
+		m_tInfo.CurrAnimState = ANIM_COMBAT_WAIT;
+		m_AttackCheck = false;
+
+	}
+
+	if (false == m_AttackCheck && m_tInfo.prevAnimState == ANIM_COMBAT_WAIT && true == m_pModelCom->Get_AnimFinished())
+	{
+		m_tInfo.CurrAnimState = ANIM_IDEL;
+	}
+
 }
 
 void CPlayer_Body::Jump(_double TimeDelta)
@@ -487,7 +497,7 @@ void CPlayer_Body::CombatWait()
 		m_fGravity = 5.f;
 		m_tInfo.CurrAnimState = ANIM_JUMP_LENDING;
 	}
-
+	
 	if (m_tInfo.prevAnimState == ANIM_JUMP_LENDING && true == m_pModelCom->Get_AnimFinished())
 	{
 		m_tInfo.CurrAnimState = ANIM_IDEL;

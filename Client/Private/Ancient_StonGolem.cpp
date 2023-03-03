@@ -72,6 +72,8 @@ void CAncient_StonGolem::Tick(_double TimeDelta)
 		}
 		__super::Tick(TimeDelta);
 
+		Set_Time();
+
 		Set_State(TimeDelta);
 
 		Set_AnimationState(m_CurrAnim);
@@ -144,8 +146,12 @@ void CAncient_StonGolem::OnCollision(CGameObject * pObj)
 	case Engine::OBJ_PLAYER:
 		break;
 	case Engine::OBJ_WEAPON_SS:
+	{
+		//if(true == m_bAttackTime)
 		m_eType._Hp -= 10.f;
+
 		break;
+	}
 	case Engine::OBJ_WEAPON_KARMA14:
 		break;
 	case Engine::OBJ_END:
@@ -277,11 +283,36 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 	
 	Set_Skill04(TimeDelta); // 조우 후 공격 패턴 1
 
-	if(m_eType._Hp <= 500.f)
+	if (m_eType._Hp <= 500.f)
+		Set_Skill01(TimeDelta);
+
+	if(m_eType._Hp <= 300.f)
 		Set_Skill05(TimeDelta); // 패턴 1 이후 패턴 2
 	//애니메이션이 모두 끝났다면 조건 추가 
 
 	return OBJ_NOEVENT;
+}
+
+void CAncient_StonGolem::Set_Skill01(_double TimeDelta)
+{
+	if (m_PrevAnim == S_WAIT && true == m_pModelCom->Get_AnimFinished())
+	{
+		m_bAttack = true;
+		m_CurrAnim = S_SKILL01;
+	}
+
+	else if (m_PrevAnim == S_SKILL01 && true == m_pModelCom->Get_AnimFinished())
+	{
+		m_CurrAnim = S_SKILL02;
+		m_bAttack = false;
+	}
+
+	if (false == m_bAttack && m_PrevAnim == S_SKILL02 && true == m_pModelCom->Get_AnimFinished())
+		m_CurrAnim = S_WAIT;
+}
+
+void CAncient_StonGolem::Set_Skill02(_double TimeDelta)
+{
 }
 
 void CAncient_StonGolem::Set_Skill04(_double TimeDelta)
@@ -338,6 +369,18 @@ void CAncient_StonGolem::Set_Skill05(_double TimeDelta)
 		m_CurrAnim = S_WAIT;
 
 	
+}
+
+void CAncient_StonGolem::Set_Time()
+{
+	if (m_fTime <= 120.f)
+		m_fTime--;
+
+	if (m_fTime == 0.f)
+	{
+		m_bAttackTime = true;
+		m_fTime = 120.f;
+	}
 }
 
 HRESULT CAncient_StonGolem::Add_Components()
