@@ -54,6 +54,7 @@ protected:
 	void Collision_ToPlayer();
 	void OnCollisionEnter();
 	void ChaseToPlayer();
+	void KnockBack(_double TimeDelta);
 
 	_float3 m_fDistance = { 5.f, 5.f, 5.f };
 	_float m_fTagetDistance = 0.f;
@@ -68,6 +69,8 @@ protected:
 	_bool m_bCheck = false;
 
 	MONSTERINFO m_eType;
+
+	_float3 m_fHorizontal_Power = { 1.f, 1.f, 1.f };
 
 public:
 	virtual CGameObject* Clone(void* pArg = nullptr) = 0;

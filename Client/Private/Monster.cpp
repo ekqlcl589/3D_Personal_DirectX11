@@ -92,11 +92,11 @@ void CMonster::Collision_ToPlayer()
 
 	CCollider* pWeaponColiider = static_cast<CCollider*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Weapon"), TEXT("Com_Collider")));
 	
-	if(m_pColliderCom->Collision(pPlayerCollider))
-		//m_eType._Hp -= 10.f;
-
-	if(m_pColliderCom->Collision(pWeaponColiider))
-		m_eType._Hp -= 10.f;
+	//if(m_pColliderCom->Collision(pPlayerCollider))
+	//	//m_eType._Hp -= 10.f;
+	//
+	//if(m_pColliderCom->Collision(pWeaponColiider))
+	//	//m_eType._Hp -= 10.f;
 
 	RELEASE_INSTANCE(CGameInstance);
 }
@@ -119,6 +119,20 @@ void CMonster::ChaseToPlayer()
 		else
 			m_bPlayerChecck = false;
 	}
+}
+
+void CMonster::KnockBack(_double TimeDelta)
+{
+	_float3 fPos;
+	XMStoreFloat3(&fPos, m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+	_vector vDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_POSITION)) - XMVector3Normalize(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+
+	_float3 fDir;
+	XMStoreFloat3(&fDir, vDir);
+
+	m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) -= vDir * XMLoadFloat3(&m_fHorizontal_Power) * TimeDelta;
+
+	m_pPlayerTransform->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPos));
 }
 
 

@@ -20,12 +20,11 @@ public:
 
 	virtual void OnCollision(CGameObject* pObj)override;
 
-	void Key_Input(_double TimeDelta);
-
 	void Set_AnimationState(STONGOLEMANIMSTATE eType);
 	_uint Set_State(_double TimeDelta);
 
 public:
+	void Run(_double TimeDelta);
 	void Set_Skill01(_double TimeDelta);
 	void Set_Skill02(_double TimeDelta);
 	//void Set_Skill03(_double TimeDelta);
@@ -60,6 +59,8 @@ private:
 
 	_double m_AnimDuration = { 0.0 };
 	_double m_AnimTimeAcc = { 0.0 };
+
+	_bool m_b = false;
 
 public:
 	static CAncient_StonGolem* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

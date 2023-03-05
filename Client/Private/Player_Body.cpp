@@ -77,6 +77,8 @@ void CPlayer_Body::Tick(_double TimeDelta)
 	__super::Tick(TimeDelta);
 
 	Key_Input(TimeDelta);
+	Jump(TimeDelta);
+	Dash(TimeDelta);
 
 	Animation_State(m_tInfo.CurrAnimState, TimeDelta);
 
@@ -240,8 +242,7 @@ void CPlayer_Body::Key_Input(_double TimeDelta)
 
 	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_NUMPAD0))
 	{
-		Dash(TimeDelta);
-		m_pTransformCom->Go_Straight(TimeDelta);
+		m_bDeah = true;
 
 	}
 	else if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_NUMPAD0))
@@ -266,16 +267,20 @@ void CPlayer_Body::Key_Input(_double TimeDelta)
 
 	//Attack_Combo(TimeDelta);
 
-	if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_LB))
+	if (false == m_bJump)
 	{
-		Attack_Combo(TimeDelta, vPos);
+		if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_LB))
+		{
 
+			Attack_Combo(TimeDelta);
+		}
 	}
-
-	if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_LB))
+	else
 	{
-		Jump_Attack(TimeDelta, vPos);
-
+		if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_LB))
+		{
+			Jump_Attack(TimeDelta, vPos);
+		}
 	}
 
 	//else if (CKeyMgr::GetInstance()->Mouse_Up(DIMK_LB))
@@ -286,7 +291,7 @@ void CPlayer_Body::Key_Input(_double TimeDelta)
 
 
 	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_SPACE))
-		Jump(TimeDelta);
+		m_bJump = true;
 
 #pragma region SkillMotion Test 
 
@@ -380,9 +385,7 @@ void CPlayer_Body::Animation_State(PLAYERANIMSTATE eType, _double TimeDelta)
 void CPlayer_Body::Hit(const _int & _Damage)
 {
 	m_tInfo._Hp -= _Damage;
-	m_pModelCom->SetUp_Animation(16);
-
-	
+	m_pModelCom->SetUp_Animation(16);	
 }
 
 void CPlayer_Body::Attack()
@@ -392,49 +395,40 @@ void CPlayer_Body::Attack()
 
 }
 
-void CPlayer_Body::Attack_Combo(_double TimeDelta, _vector fPos)
+void CPlayer_Body::Attack_Combo(_double TimeDelta)
 {
 	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 
 	if (false == m_bJump)
 	{
 	
-		m_AttackCheck = true;
-		//if (true == m_AttackCheck)
-		//{
-		//	fPos += XMVector3Normalize(vLook) * 30.0 * TimeDelta;
-		//	m_pTransformCom->Set_State(CTransform::STATE_POSITION, fPos);
-		//}
-
 		m_tInfo.CurrAnimState = ANIM_ATTACK_COMBO1;
-		
+		m_pTransformCom->Go_Straight(TimeDelta);
 	}
 
 	if (m_tInfo.prevAnimState == ANIM_ATTACK_COMBO1 && true != m_pModelCom->Get_AnimFinished())
 	{
 		m_tInfo.CurrAnimState = ANIM_ATTACK_COMBO2;
-		//if (true == m_AttackCheck)
-		//	fPos += XMVector3Normalize(vLook) * 50.0 * TimeDelta;
+		m_pTransformCom->Go_Straight(TimeDelta);
 
 	}
 
 	else if (m_tInfo.prevAnimState == ANIM_ATTACK_COMBO2 && true != m_pModelCom->Get_AnimFinished())
 	{
 		m_tInfo.CurrAnimState = ANIM_ATTACK_COMBO3;
-		//if (true == m_AttackCheck)
-		//	fPos += XMVector3Normalize(vLook) * 80.0 * TimeDelta;
+		m_pTransformCom->Go_Straight(TimeDelta);
 
 	}
 
 	if (m_tInfo.prevAnimState == ANIM_ATTACK_COMBO3 && true == m_pModelCom->Get_LerpAnimFinished())
 	{
-		m_AttackCheck = false;
 		m_tInfo.CurrAnimState = ANIM_COMBAT_WAIT;
 
 	}
 
 	if (false == m_AttackCheck && m_tInfo.prevAnimState == ANIM_COMBAT_WAIT && true == m_pModelCom->Get_AnimFinished())
 	{
+		m_AttackCheck = false;
 		m_tInfo.CurrAnimState = ANIM_IDEL;
 	}
 
@@ -442,28 +436,62 @@ void CPlayer_Body::Attack_Combo(_double TimeDelta, _vector fPos)
 
 void CPlayer_Body::Jump(_double TimeDelta)
 {
-	//m_tInfo.CurrAnimState = ANIM_JUMP;
-	m_bJump = true;
 	m_JumpAttack = false;
 
-	//m_pTransformCom->Jump(TimeDelta, &m_bJump);
+	_vector	vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
-	//if (m_tInfo.prevAnimState == ANIM_JUMP && true == m_pModelCom->Get_AnimFinished())
-	//{
-	//	m_tInfo.CurrAnimState = ANIM_JUMP_ING;
-	//	m_bJump = false;
-	//}
+	_float3	vPos;
+
+	if (true == m_bJump)
+	{
+		if (m_fTime < 1.f)
+		{
+			m_tInfo.CurrAnimState = ANIM_JUMP_ING;
+			m_AnimTickPerSecond = 0.5f;
+
+			if (m_tInfo.prevAnimState == ANIM_JUMP && true == m_pModelCom->Get_AnimFinished())
+			{
+				m_AnimTickPerSecond = 0.5f;
+
+				m_tInfo.CurrAnimState = ANIM_JUMP_ING;
+			}
+
+			XMStoreFloat3(&vPos, vPosition);
+
+			m_fTime += (_float)TimeDelta;
+
+			//vPos.y += (0.5f * m_fTime +(1.f * -1.f * pow(m_fTime, 2)));
+			vPos.y += 0.5f * m_fPower * (TimeDelta);
+
+			vPosition = XMLoadFloat3(&vPos);
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+		}
+		else
+		{
+			_vector	vposition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		
+			_float3		vpos;
+			XMStoreFloat3(&vpos, vposition);
+		
+			m_tInfo.CurrAnimState = ANIM_JUMP_LENDING;
+		
+			if (vpos.y >= 0.25f)
+			{
+				vpos.y = 0.25f;
+				m_tInfo.CurrAnimState = ANIM_IDEL;
+				m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&vpos));
+				m_fTime = 0.f;
+				m_bJump = false;
+			}
+		}
+	}
 
 }
 
 void CPlayer_Body::Jump_Attack(_double TimeDelta, _vector fPos)
 {
-	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
-	_vector vUp = XMVector3Cross(vLook, fPos);
 	if (true == m_bJump)
 	{
-		m_fGravity = 0.f;
-		vUp += XMVector3Normalize(vLook) * 50.0 * TimeDelta;
 		m_JumpAttack = true;
 		m_tInfo.CurrAnimState = ANIM_JUMP_ATTACK1;
 	}
@@ -473,16 +501,14 @@ void CPlayer_Body::Jump_Attack(_double TimeDelta, _vector fPos)
 
 	if (m_tInfo.prevAnimState == ANIM_JUMP_ATTACK2 && true != m_pModelCom->Get_AnimFinished())
 	{
-		cout << m_tInfo.CurrAnimState << endl;
 		m_tInfo.CurrAnimState = ANIM_JUMP_ATTACK3;
 	}
 
-	if (m_tInfo.prevAnimState == ANIM_JUMP_ATTACK3 && true == m_pModelCom->Get_LerpAnimFinished())
+	if (m_tInfo.prevAnimState == ANIM_JUMP_ATTACK3 && true == m_pModelCom->Get_AnimFinished())
 	{
 		m_tInfo.CurrAnimState = ANIM_JUMP_LENDING;
 		m_bJump = false;
 		m_JumpAttack = false;
-		m_fGravity = 5.f;
 	}
 
 	if (false == m_JumpAttack && m_tInfo.prevAnimState == ANIM_JUMP_LENDING && true == m_pModelCom->Get_AnimFinished())
@@ -497,9 +523,35 @@ void CPlayer_Body::Jump_Attack(_double TimeDelta, _vector fPos)
 
 void CPlayer_Body::Dash(_double TimeDelta)
 {
-	m_bDeah = true;
-	m_tInfo.CurrAnimState = ANIM_RUN_L;
-	
+	if (true == m_bDeah)
+	{
+		m_tInfo.CurrAnimState = ANIM_RUN_L;
+
+		_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+
+		_vector vDir = XMVector3Cross(XMVector3Normalize(vPosition), XMVector3Normalize(vLook));
+
+		vPosition += vDir;
+
+		_float3 fPos;
+		XMStoreFloat3(&fPos, vPosition);
+
+		fPos.x += m_fPower;
+		fPos.z += m_fPower;
+		m_pTransformCom->Go_Straight(TimeDelta);
+		m_bDeah = false;
+
+	}
+}
+
+void CPlayer_Body::DashAttack(_double TimeDelta)
+{
+	if (m_bDeah)
+	{
+		if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_LB))
+			m_tInfo.CurrAnimState = ANIM_SKILL_RAGE; //아 시발 ㅋㅋ 이넘값 안 넣었네 ㅋㅋ
+	}
 }
 
 void CPlayer_Body::CombatWait()
@@ -704,7 +756,6 @@ HRESULT CPlayer_Body::SetUp_ShaderResources()
 	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
 }
-
 
 CPlayer_Body * CPlayer_Body::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {

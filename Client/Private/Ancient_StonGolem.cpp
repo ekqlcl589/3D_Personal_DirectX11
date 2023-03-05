@@ -73,8 +73,6 @@ void CAncient_StonGolem::Tick(_double TimeDelta)
 		}
 		__super::Tick(TimeDelta);
 
-		Key_Input(TimeDelta);
-
 		Set_State(TimeDelta);
 
 		Set_AnimationState(m_CurrAnim);
@@ -103,6 +101,9 @@ void CAncient_StonGolem::LateTick(_double TimeDelta)
 		Set_Time();
 
 		Collision_ToPlayer();
+
+		//if (true == m_b)
+		//	KnockBack(TimeDelta);
 
 		if (nullptr != m_pRendererCom)
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
@@ -148,12 +149,12 @@ void CAncient_StonGolem::OnCollision(CGameObject * pObj)
 	switch (eType)
 	{
 	case Engine::OBJ_PLAYER:
+		m_b = true;
 		break;
 	case Engine::OBJ_WEAPON_SS:
 	{
 		//if(true == m_bAttackTime)
 		//m_eType._Hp -= 10.f;
-
 		break;
 	}
 	case Engine::OBJ_WEAPON_KARMA14:
@@ -165,13 +166,6 @@ void CAncient_StonGolem::OnCollision(CGameObject * pObj)
 	}
 }
 
-void CAncient_StonGolem::Key_Input(_double TimeDelta)
-{
-	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_U))
-	{
-		Set_Skill01(TimeDelta);
-	}
-}
 
 void CAncient_StonGolem::Set_AnimationState(STONGOLEMANIMSTATE eType)
 {
@@ -331,6 +325,10 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 	return OBJ_NOEVENT;
 }
 
+void CAncient_StonGolem::Run(_double TimeDelta)
+{
+}
+
 void CAncient_StonGolem::Set_Skill01(_double TimeDelta)
 {
 	if (m_CurrAnim == S_WAIT && true == m_pModelCom->Get_AnimFinished())
@@ -417,12 +415,14 @@ HRESULT CAncient_StonGolem::Add_Effect()
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
+
+	return S_OK;
 }
 
 void CAncient_StonGolem::Set_Time()
 {
 	if (m_fTime <= m_AnimDuration)
-		m_fTime - m_AnimTimeAcc;
+		m_fTime -= m_AnimTimeAcc;
 
 	if (m_fTime <= 2.0)
 	{

@@ -49,12 +49,13 @@ public:
 public:
 	void Hit(const _int& _Damage);
 	void Attack();
-	void Attack_Combo(_double TimeDelta, _vector fPos);
+	void Attack_Combo(_double TimeDelta);
 	
 	void Jump(_double TimeDelta);
 	void Jump_Attack(_double TimeDelta, _vector fPos);
 
 	void Dash(_double TimeDelta);
+	void DashAttack(_double TimeDelta);
 
 	void CombatWait();
 public:
@@ -102,6 +103,9 @@ private:
 
 	_bool m_bJump = false;
 	_bool m_JumpAttack = false;
+
+	_float m_fPower = 0.5f;
+	_float m_fTime = 0.f;
 
 	_float m_HitDelay = 0.f;
 	_float m_ComboTime = 0.f;
