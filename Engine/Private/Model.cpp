@@ -132,17 +132,16 @@ HRESULT CModel::SetUp_Animation(_uint iAnimationIndex)
 	if (iAnimationIndex >= m_iNumAnimations)
 		return E_FAIL;
 
-	
 	if (m_iCurrAnimation == iAnimationIndex)
 	{
-		m_vecAnimations[m_iCurrAnimation]->Set_CurrKeyFrame();
+		m_vecAnimations[m_iCurrAnimation]->Set_CurrKeyFrame(); // finished , 프레임 초기화
 		m_iCurrAnimation = iAnimationIndex;
 		m_Check = false;
 	}
 	else
 	{
+		m_vecAnimations[m_iCurrAnimation]->Set_TimeAcc(); // 틱, 프레임 초기화
 		m_iNextAnimation = iAnimationIndex;
-		m_vecAnimations[m_iCurrAnimation]->Set_TimeAcc();
 	}
 	return S_OK;
 }
@@ -157,8 +156,8 @@ HRESULT CModel::Play_Animation(_double TimeDelta)
 	{
 		if (m_vecAnimations[m_iCurrAnimation]->Play_Animation_Last(TimeDelta, m_vecBones, m_vecAnimations[m_iNextAnimation], m_Check))
 		{
-			m_iCurrAnimation = m_iNextAnimation;
 			m_vecAnimations[m_iCurrAnimation]->Reset();
+			m_iCurrAnimation = m_iNextAnimation;
 
 		}
 	}
@@ -171,39 +170,19 @@ HRESULT CModel::Play_Animation(_double TimeDelta)
 	return S_OK;
 }
 
-HRESULT CModel::Play_AnimationTest(_double TimeDelta, COLLISIONSTATE eType)
+HRESULT CModel::SetUp_AnimationTest(_uint iAnimationIndex)
 {
-	if (eType == COLLISIONSTATE::OBJ_BOSS1)
-	{
-		m_vecAnimations[m_iCurrAnimation]->Set_TimeAcc();
+	if (iAnimationIndex >= m_iNumAnimations)
+		return E_FAIL;
 
-		m_vecAnimations[m_iCurrAnimation]->Play_Animation(TimeDelta, m_vecBones);
+	m_iCurrAnimation = iAnimationIndex;
 
+	return S_OK;
+}
 
-	}
-		for (auto& pBone : m_vecBones)
-		{
-			pBone->Invalidate_CombinedMatrix();
-		}
-
-		return S_OK;
-
-
-	if (m_iCurrAnimation == m_iNextAnimation && m_Check == false)
-	{
-		m_vecAnimations[m_iCurrAnimation]->Play_Animation(TimeDelta, m_vecBones);
-
-	}
-	else
-	{
-
-		if (m_vecAnimations[m_iCurrAnimation]->Play_Animation_Last(TimeDelta, m_vecBones, m_vecAnimations[m_iNextAnimation], m_Check))
-		{
-			m_iCurrAnimation = m_iNextAnimation;
-			m_vecAnimations[m_iCurrAnimation]->Reset();
-
-		}
-	}
+HRESULT CModel::Play_AnimationTest(_double TimeDelta)
+{
+	m_vecAnimations[m_iCurrAnimation]->Play_Animation(TimeDelta, m_vecBones);
 
 	for (auto& pBone : m_vecBones)
 	{

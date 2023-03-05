@@ -203,7 +203,7 @@ void CPlayer_Body::OnCollision(CGameObject * pObj)
 	case Engine::OBJ_WEAPON_KARMA14:
 		break;
 	case Engine::OBJ_BOSS1:
-		m_tInfo._Hp -= 10.f;
+		Hit(10);
 		break;
 	case Engine::OBJ_BOSS2:
 		break;
@@ -272,7 +272,7 @@ void CPlayer_Body::Key_Input(_double TimeDelta)
 
 	}
 
-	if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_RB))
+	if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_LB))
 	{
 		Jump_Attack(TimeDelta, vPos);
 

@@ -55,6 +55,8 @@ public:
 	void Chase(_fvector vTargetPos, _double TimeDelta, _float fLimitDist = 0.1f);
 	_float Compute_Distance(_fvector vTargetPos);
 
+	void CameraMove(_fvector vTargetPos, _fvector vAxis, _double TimeDelta, _float fLimitDist = 0.1);
+
 public:
 	HRESULT SetUp_ShaderResource(class CShader* pShaderCom, const char* pConstantName);
 

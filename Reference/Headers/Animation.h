@@ -16,7 +16,7 @@ public:
 
 	_bool Play_Animation_Last(_double TimeDelta, const vector<class CBone*>& Bones, CAnimation* pAnim, _bool& bCheck);
 	// TimEAcc 0으로 만드는 함수를 호출 해서 
-	void Set_TimeAcc() { m_TimeAcc = 0.0; }
+	void Set_TimeAcc();
 public:
 	_double Get_Duration() { return m_Duration; }
 	_double Get_TimeAcc() { return m_TimeAcc; }

@@ -53,6 +53,7 @@ void CAnimation::Play_Animation(_double TimeDelta, const vector<class CBone*>& B
 	if (m_TimeAcc >= m_Duration)
 	{
 		Set_CurrKeyFrame();
+
 	}
 
 	m_iChannelIndex = 0;
@@ -88,7 +89,6 @@ _bool CAnimation::Play_Animation_Last(_double TimeDelta, const vector<class CBon
 		
 			m_iChannelIndex += 1;
 		}
-		//return true;
 	}
 	else
 	{
@@ -102,6 +102,16 @@ _bool CAnimation::Play_Animation_Last(_double TimeDelta, const vector<class CBon
 	return false;
 }
 
+void CAnimation::Set_TimeAcc()
+{
+	//for (auto& iter : m_CurrKeyFrame)
+	//{
+	//	iter = 0;
+	//}
+	m_TimeAcc = 0.0;
+}
+
+
 void CAnimation::Set_CurrKeyFrame()
 {
 	for (auto& iter : m_CurrKeyFrame)
@@ -109,7 +119,7 @@ void CAnimation::Set_CurrKeyFrame()
 		iter = 0;
 	}
 	m_isFinished = true;
-	m_TimeAcc = 0.0;
+	//m_TimeAcc = 0.0;
 }
 
 void CAnimation::Reset()

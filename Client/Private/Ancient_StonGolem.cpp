@@ -2,6 +2,7 @@
 #include "..\Public\Ancient_StonGolem.h"
 #include "GameInstance.h"
 #include "KeyMgr.h"
+#include "Effect.h"
 
 CAncient_StonGolem::CAncient_StonGolem(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CMonster(pDevice, pContext)
@@ -74,8 +75,6 @@ void CAncient_StonGolem::Tick(_double TimeDelta)
 
 		Key_Input(TimeDelta);
 
-		Set_Time();
-
 		Set_State(TimeDelta);
 
 		Set_AnimationState(m_CurrAnim);
@@ -99,6 +98,9 @@ void CAncient_StonGolem::LateTick(_double TimeDelta)
 		__super::LateTick(TimeDelta);
 
 		m_pModelCom->Play_Animation(TimeDelta);
+		m_AnimDuration = m_pModelCom->Get_AnimDuration();
+		m_AnimTimeAcc = m_pModelCom->Get_AnimTimeAcc();
+		Set_Time();
 
 		Collision_ToPlayer();
 
@@ -270,7 +272,7 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 			m_bDead = true;
 			return OBJ_DEAD;
 		}
-		if (m_PrevAnim == S_SKILL01 && true == m_pModelCom->Get_AnimFinished())
+		if (m_PrevAnim == S_SKILL01 && true == m_pModelCom->Get_AnimFinished() && m_pModelCom->Get_LerpAnimFinished())
 		{
 			m_CurrAnim = S_SKILL02;
 		}
@@ -281,22 +283,49 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 		}
 	}
 
-	if (true == m_bPlayerChecck) //  플레이어와 특정 거리 이하로 들어와서 조우 하면
+	if (true == m_bPlayerChecck) //  플레이어와 특정 거리 이하로 들어와서 조우 하면 지금은 가까운데 나중에 맵 찍으면 더 멀리서 이 기능 활성화 하고 카메라 몬스터로 이동
 	{
 		//m_pTransformCom->Turn(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION), TimeDelta);
 		//m_pTransformCom->Chase(m_vTargetPos, TimeDelta, 3.f);
+		//_vector vLook = m_pPlayerTransform->Get_State(CTransform::STATE_LOOK);
+		//m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
 		m_bPlayerChecck = false;
 		m_CurrAnim = S_START;
 	}
 
-	
-	Set_Skill04(TimeDelta); // 조우 후 공격 패턴 1
+	if (m_PrevAnim == S_START && true == m_pModelCom->Get_AnimFinished())
+	{
+		m_bCheck = true;
+		m_bAttack = true;
+		m_CurrAnim = S_SKILL04_1;
+	}
 
-	//if (m_eType._Hp <= 500.f)
-	//	Set_Skill01(TimeDelta);
-	//
-	//if(m_eType._Hp <= 250.f)
-	//	Set_Skill05(TimeDelta); // 패턴 1 이후 패턴 2
+	if (m_PrevAnim == S_SKILL04_1 && true == m_pModelCom->Get_AnimFinished())
+	{
+		//m_pModelCom->Set_AnimTick(m_f * (_double)5.f);
+		m_CurrAnim = S_SKILL04_2;
+		m_bAttackTime = false;
+		//Add_Effect();
+		// 애니메이션 끝나면 지형이 부서지는 이팩트 생성
+	}
+
+	if (m_PrevAnim == S_SKILL04_2 && true == m_pModelCom->Get_AnimFinished())
+	{
+		// 이팩트 FadeIn,Out 후  삭제처리 	
+		m_CurrAnim = S_SKILL04_3;
+		m_bAttack = false;
+	}
+
+	if (false == m_bAttack && m_PrevAnim == S_SKILL04_3 && true == m_pModelCom->Get_AnimFinished())
+		m_CurrAnim = S_WAIT;
+
+	//Set_Skill04(TimeDelta); // 조우 후 공격 패턴 1
+
+	if (m_eType._Hp <= 500.f)
+		Set_Skill01(TimeDelta);
+	
+	if(m_eType._Hp <= 250.f)
+		Set_Skill05(TimeDelta); // 패턴 1 이후 패턴 2
 	//애니메이션이 모두 끝났다면 조건 추가 
 
 	return OBJ_NOEVENT;
@@ -380,15 +409,25 @@ void CAncient_StonGolem::Set_Skill05(_double TimeDelta)
 	
 }
 
+HRESULT CAncient_StonGolem::Add_Effect()
+{
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect"), TEXT("Layer_Effect"))))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(CGameInstance);
+}
+
 void CAncient_StonGolem::Set_Time()
 {
-	if (m_fTime <= 120.f)
-		m_fTime--;
+	if (m_fTime <= m_AnimDuration)
+		m_fTime - m_AnimTimeAcc;
 
-	if (m_fTime == 0.f)
+	if (m_fTime <= 2.0)
 	{
 		m_bAttackTime = true;
-		m_fTime = 120.f;
+		m_fTime = m_AnimDuration;
 	}
 }
 

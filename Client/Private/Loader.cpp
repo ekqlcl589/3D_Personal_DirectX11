@@ -21,6 +21,8 @@
 
 #include "TestTile.h"
 
+#include "Effect.h"
+
 #include "PlayerHPBar.h"
 #include "PlayerMPBar.h"
 #include "PlayerSkill.h"
@@ -273,6 +275,17 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/StaticMesh/TrainingRoom/TraningRoom.fbx", CModel::MODEL_NONANIM, LocalMatrix55))))
 		return E_FAIL;
 
+#pragma region Effect
+
+	_matrix		LocalMatrix555 = XMMatrixIdentity();
+	LocalMatrix555 = XMMatrixScaling(0.1f, 0.1f, 0.1f);
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Effect"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/GH_Rock01.fbx", CModel::MODEL_ANIM, LocalMatrix555))))
+		return E_FAIL;
+
+#pragma endregion Effect
+
 	lstrcpy(m_szLoadingText, TEXT("셰이더를 로딩중입니다."));
 	/* For.Prototype_Component_Terrain_Shader */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Terrain_Shader"),
@@ -394,6 +407,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CSkyBox::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect"),
+		CEffect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
 	m_isFinished = true;

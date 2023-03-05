@@ -107,10 +107,10 @@ void CTransform::Jump(_double dTimeDelta, _bool* isJump)
 {
 	if (m_fTimer < 0.3f)
 	{
-		_vector		vPosition = Get_State(STATE_POSITION);
-		_vector		vLook = Get_State(STATE_LOOK);
+		_vector	vPosition = Get_State(STATE_POSITION);
+		_vector	vLook = Get_State(STATE_LOOK);
 
-		_float3		vPos;
+		_float3	vPos;
 		XMStoreFloat3(&vPos, vPosition);
 
 		m_fTimer += (_float)dTimeDelta;
@@ -123,8 +123,8 @@ void CTransform::Jump(_double dTimeDelta, _bool* isJump)
 	else
 	{
 		m_fTimer = 0.f;
-		_vector		vPosition = Get_State(STATE_POSITION);
-		_vector		vLook = Get_State(STATE_LOOK);
+		_vector	vPosition = Get_State(STATE_POSITION);
+		_vector	vLook = Get_State(STATE_LOOK);
 
 		_float3		vPos;
 		XMStoreFloat3(&vPos, vPosition);
@@ -208,6 +208,16 @@ void CTransform::Chase(_fvector vTargetPos, _double TimeDelta, _float fLimitDist
 _float CTransform::Compute_Distance(_fvector vTargetPos)
 {
 	return XMVectorGetX(XMVector3Length(vTargetPos - Get_State(CTransform::STATE_POSITION)));
+}
+
+void CTransform::CameraMove(_fvector vTargetPos, _fvector vAxis, _double TimeDelta, _float fLimitDist)
+{
+	LookAt(vTargetPos);
+
+	//Turn(vAxis, TimeDelta);
+	if (fLimitDist <= Compute_Distance(vTargetPos))
+		Go_Straight(TimeDelta);
+
 }
 
 HRESULT CTransform::SetUp_ShaderResource(CShader * pShaderCom, const char * pConstantName)

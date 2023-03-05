@@ -118,6 +118,9 @@
     <Filter Include="02.GameObject\09. Mouse">
       <UniqueIdentifier>{c8a123a3-ca07-44ea-b51d-e78f02ff72c7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\10. Effrect">
+      <UniqueIdentifier>{5ee27f7a-c4a3-48e3-9760-2466a536b75b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -213,6 +216,9 @@
     <ClInclude Include="..\Public\Mouse.h">
       <Filter>02.GameObject\09. Mouse</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Effect.h">
+      <Filter>02.GameObject\10. Effrect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -295,6 +301,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Mouse.cpp">
       <Filter>02.GameObject\09. Mouse</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect.cpp">
+      <Filter>02.GameObject\10. Effrect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
