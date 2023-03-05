@@ -50,10 +50,10 @@ void CAnimation::Play_Animation(_double TimeDelta, const vector<class CBone*>& B
 	m_TimeAcc += m_TickPerSecond * TimeDelta;
 	m_isFinished = false;
 
-	if (m_TimeAcc >= m_Duration)
+	if (m_TimeAcc >= m_Duration) // 애니메이션이 전체 시간을 넘어간 거니까 다시 0 초기화를 해주는게 맞는데 
 	{
 		Set_CurrKeyFrame();
-
+		m_isFinished = true;
 	}
 
 	m_iChannelIndex = 0;
@@ -62,7 +62,6 @@ void CAnimation::Play_Animation(_double TimeDelta, const vector<class CBone*>& B
 		pChannel->Invalidate_Transform(m_TimeAcc, &m_CurrKeyFrame[m_iChannelIndex], Bones);
 		m_iChannelIndex += 1;
 	}
-		
 }
 
 _bool CAnimation::Play_Animation_Last(_double TimeDelta, const vector<class CBone*>& Bones, CAnimation* pAnim, _bool& bCheck)
@@ -73,10 +72,10 @@ _bool CAnimation::Play_Animation_Last(_double TimeDelta, const vector<class CBon
 
 	if (m_TickPerSecond >= 25.0)
 	{
-		m_Ratio = 8.0;
+		m_Ratio = 10.0;
 		bCheck = false;
 
-		//return true; // 주석 없었음
+		return true; // 주석 없었음
 	}
 
 	if(m_TimeAcc <= m_Ratio)
@@ -118,7 +117,7 @@ void CAnimation::Set_CurrKeyFrame()
 	{
 		iter = 0;
 	}
-	m_isFinished = true;
+	//m_isFinished = true;
 	//m_TimeAcc = 0.0;
 }
 

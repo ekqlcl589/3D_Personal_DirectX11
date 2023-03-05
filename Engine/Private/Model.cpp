@@ -151,6 +151,12 @@ HRESULT CModel::Play_Animation(_double TimeDelta)
 	if (m_iCurrAnimation == m_iNextAnimation && m_Check == false)
 	{	
 		m_vecAnimations[m_iCurrAnimation]->Play_Animation(TimeDelta, m_vecBones);
+
+		if (true == m_vecAnimations[m_iCurrAnimation]->Get_AnimFinished())
+		{
+			m_vecAnimations[m_iCurrAnimation]->Set_TimeAcc();
+			m_vecAnimations[m_iCurrAnimation]->Set_CurrKeyFrame();
+		}
 	}
 	else
 	{
