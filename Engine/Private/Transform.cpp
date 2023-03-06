@@ -224,6 +224,23 @@ void CTransform::CameraMove(_fvector vTargetPos, _fvector vAxis, _double TimeDel
 
 }
 
+void CTransform::Chase_Tatget(_fvector vPargetPos, _float fSpeed, _double TimeDelta)
+{
+	_vector vPosition = Get_State(CTransform::STATE_POSITION);
+
+	_float3 fPos;
+
+	XMStoreFloat3(&fPos, vPosition);
+	_float fTempYPos = fPos.y;
+
+	_vector vDir = vPargetPos - vPosition;
+
+	vPosition += XMVector3Normalize(vDir) * fSpeed * TimeDelta;
+
+	Set_State(CTransform::STATE_POSITION, vPosition);
+
+}
+
 HRESULT CTransform::SetUp_ShaderResource(CShader * pShaderCom, const char * pConstantName)
 {
 	return 	pShaderCom->Set_Matrix(pConstantName, &m_WorldMatrix);

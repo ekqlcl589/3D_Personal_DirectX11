@@ -38,7 +38,7 @@ HRESULT CAncient_StonGolem::Initialize(void * pArg)
 	//
 	//memcpy(&m_MonsterState, pArg, sizeof m_MonsterState);
 
-	_float3 fPosition = { 10.f, 1.f, 10.f };
+	_float3 fPosition = { 10.f, 0.f, 20.f };
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPosition));
 
@@ -76,14 +76,6 @@ void CAncient_StonGolem::Tick(_double TimeDelta)
 		Set_State(TimeDelta);
 
 		Set_AnimationState(m_CurrAnim);
-
-		//if (true == m_bPlayerChecck)
-		//{
-		//	Set_Anim();
-		//
-		//}
-		cout << m_eType._Hp << endl;
-
 	}
 	else
 		return;
@@ -277,19 +269,18 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 		}
 	}
 
+
 	if (true == m_bPlayerChecck) //  플레이어와 특정 거리 이하로 들어와서 조우 하면 지금은 가까운데 나중에 맵 찍으면 더 멀리서 이 기능 활성화 하고 카메라 몬스터로 이동
 	{
-		//m_pTransformCom->Turn(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION), TimeDelta);
-		//m_pTransformCom->Chase(m_vTargetPos, TimeDelta, 3.f);
-		//_vector vLook = m_pPlayerTransform->Get_State(CTransform::STATE_LOOK);
-		//m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
-		m_bPlayerChecck = false;
-		m_CurrAnim = S_START;
+		m_pTransformCom->Chase_Tatget(m_vTargetPos, 5.f, TimeDelta);
+		m_CurrAnim = S_RUN;
 	}
+	else if(false == m_bPlayerChecck && false == m_bAttack)
+		m_CurrAnim = S_RESPAN;
 
-	if (m_PrevAnim == S_START && true == m_pModelCom->Get_AnimFinished())
+	if (m_PrevAnim == S_RESPAN && true == m_pModelCom->Get_AnimFinished())
 	{
-		m_bCheck = true;
+ 		m_bCheck = true;
 		m_bAttack = true;
 		m_CurrAnim = S_SKILL04_1;
 	}
@@ -310,7 +301,7 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 		m_bAttack = false;
 	}
 
-	if (false == m_bAttack && m_PrevAnim == S_SKILL04_3 && true == m_pModelCom->Get_AnimFinished())
+	if (false == m_bAttack && m_PrevAnim == S_SKILL04_3 && true == m_pModelCom->Get_LerpAnimFinished())
 		m_CurrAnim = S_WAIT;
 
 	//Set_Skill04(TimeDelta); // 조우 후 공격 패턴 1

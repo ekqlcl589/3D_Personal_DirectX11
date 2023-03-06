@@ -58,6 +58,9 @@ public:
 	void CameraMove(_fvector vTargetPos, _fvector vAxis, _double TimeDelta, _float fLimitDist = 0.1);
 
 public:
+	void Chase_Tatget(_fvector vPargetPos, _float fSpeed, _double TimeDelta);
+
+public:
 	HRESULT SetUp_ShaderResource(class CShader* pShaderCom, const char* pConstantName);
 
 private:

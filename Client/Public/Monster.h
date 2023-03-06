@@ -53,7 +53,7 @@ protected:
 	_uint iId = { 0 };
 	void Collision_ToPlayer();
 	void OnCollisionEnter();
-	void ChaseToPlayer();
+	void ChaseToPlayer(_double TimeDelta);
 	void KnockBack(_double TimeDelta);
 
 	_float3 m_fDistance = { 5.f, 5.f, 5.f };

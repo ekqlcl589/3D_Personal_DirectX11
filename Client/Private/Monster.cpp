@@ -33,6 +33,7 @@ HRESULT CMonster::Initialize(void * pArg)
 
 	m_pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
 
+
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
@@ -45,8 +46,9 @@ void CMonster::Tick(_double TimeDelta)
 	if (nullptr != m_pColliderCom)
 		m_pColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
 
+	m_vTargetPos = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION);// -m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
-	ChaseToPlayer();
+	ChaseToPlayer(TimeDelta);
 }
 
 void CMonster::LateTick(_double TimeDelta)
@@ -105,19 +107,23 @@ void CMonster::OnCollisionEnter()
 {
 }
 
-void CMonster::ChaseToPlayer()
+void CMonster::ChaseToPlayer(_double TimeDelta)
 {
 	if (false == m_bCheck)
 	{
-
-		m_vTargetPos = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION);// -m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-
-		m_fTagetDistance = 5.f;
+		m_fTagetDistance = 30.f;
 
 		if (m_pTransformCom->Compute_Distance(m_vTargetPos) <= m_fTagetDistance)
+		{
 			m_bPlayerChecck = true;
-		else
+			//m_pTransformCom->Chase_Tatget(m_vTargetPos, 3.f, TimeDelta);
+
+		}
+		if (m_pTransformCom->Compute_Distance(m_vTargetPos) <= 5.f)
+		{
 			m_bPlayerChecck = false;
+
+		}
 	}
 }
 

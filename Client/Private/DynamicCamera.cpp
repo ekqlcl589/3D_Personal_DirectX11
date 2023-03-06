@@ -55,16 +55,16 @@ HRESULT CDynamicCamera::Render()
 
 void CDynamicCamera::Key_Input(_double TimeDelta)
 {
-	if (m_pInstance->Get_DIKeyState(DIK_W))
+	if (m_pInstance->Get_DIKeyState(DIK_UP))
 		m_Transform->Go_Straight(TimeDelta);
 
-	if (m_pInstance->Get_DIKeyState(DIK_S))
+	if (m_pInstance->Get_DIKeyState(DIK_DOWN))
 		m_Transform->Go_Back(TimeDelta);
 
-	if (m_pInstance->Get_DIKeyState(DIK_A))
+	if (m_pInstance->Get_DIKeyState(DIK_LEFT))
 		m_Transform->Go_Left(TimeDelta);
 
-	if (m_pInstance->Get_DIKeyState(DIK_D))
+	if (m_pInstance->Get_DIKeyState(DIK_RIGHT))
 		m_Transform->Go_Right(TimeDelta);
 
 	if (m_pInstance->Get_DIKeyState(DIK_TAB))
