@@ -121,6 +121,9 @@
     <Filter Include="02.GameObject\10. Effrect">
       <UniqueIdentifier>{5ee27f7a-c4a3-48e3-9760-2466a536b75b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\00. BackGround\LoadingImg">
+      <UniqueIdentifier>{3ad8090d-34ed-422b-b157-f9727f750639}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -219,6 +222,9 @@
     <ClInclude Include="..\Public\Effect.h">
       <Filter>02.GameObject\10. Effrect</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\LoadingImg.h">
+      <Filter>02.GameObject\00. BackGround\LoadingImg</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -304,6 +310,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Effect.cpp">
       <Filter>02.GameObject\10. Effrect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\LoadingImg.cpp">
+      <Filter>02.GameObject\00. BackGround\LoadingImg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

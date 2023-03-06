@@ -77,12 +77,10 @@ void CPlayer_Body::Tick(_double TimeDelta)
 	__super::Tick(TimeDelta);
 
 	Key_Input(TimeDelta);
-	Jump(TimeDelta);
+	//Jump(TimeDelta);
 	Dash(TimeDelta);
 
 	Animation_State(m_tInfo.CurrAnimState, TimeDelta);
-
-	//CombatWait();
 
 	for (_uint i = 0; i < WEAPON_END; i++)
 	{
@@ -222,18 +220,18 @@ void CPlayer_Body::Key_Input(_double TimeDelta)
 	_vector vPos;
 	vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
-	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_UP))
+	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_W))
 	{
 		m_pTransformCom->Go_Straight(TimeDelta);
 		m_tInfo.CurrAnimState = ANIM_RUN;
 
 	}
-	else if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_UP))
+	else if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_W))
 	{
 		m_tInfo.CurrAnimState = ANIM_IDEL;
 	}
 
-	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_DOWN))
+	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_S))
 	{
 		m_pTransformCom->Go_Back(TimeDelta);
 		m_tInfo.CurrAnimState = ANIM_RUN;
@@ -248,7 +246,7 @@ void CPlayer_Body::Key_Input(_double TimeDelta)
 	else if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_NUMPAD0))
 		m_bDeah = false;
 
-	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_LEFT))
+	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_A))
 	{
 		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * -1.f);
 		//m_tInfo.CurrAnimState = ANIM_RUN_L;
@@ -257,7 +255,7 @@ void CPlayer_Body::Key_Input(_double TimeDelta)
 	//	m_tInfo.CurrAnimState = ANIM_RUN_END;
 
 
-	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_RIGHT))
+	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_D))
 	{
 		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta);
 		//m_tInfo.CurrAnimState = ANIM_RUN_R;
@@ -270,28 +268,23 @@ void CPlayer_Body::Key_Input(_double TimeDelta)
 	if (false == m_bJump)
 	{
 		if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_LB))
-		{
-
 			Attack_Combo(TimeDelta);
-		}
 	}
 	else
 	{
 		if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_LB))
 		{
-			Jump_Attack(TimeDelta, vPos);
+			m_JumpAttack = true;
+			Jump_Attack(TimeDelta);
 		}
 	}
 
-	//else if (CKeyMgr::GetInstance()->Mouse_Up(DIMK_LB))
-	//	m_tInfo.CurrAnimState = ANIM_COMBAT_WAIT;
-
-	//else
-	//	m_tInfo.CurrAnimState = ANIM_IDEL;
-
-
 	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_SPACE))
+	{
 		m_bJump = true;
+		m_bSIbal = true;
+
+	}
 
 #pragma region SkillMotion Test 
 
@@ -303,6 +296,9 @@ void CPlayer_Body::Key_Input(_double TimeDelta)
 		m_pModelCom->SetUp_Animation(43);
 
 #pragma endregion 
+
+	Jump(TimeDelta);
+
 }
 
 void CPlayer_Body::Animation_State(PLAYERANIMSTATE eType, _double TimeDelta)
@@ -403,20 +399,20 @@ void CPlayer_Body::Attack_Combo(_double TimeDelta)
 	{
 	
 		m_tInfo.CurrAnimState = ANIM_ATTACK_COMBO1;
-		m_pTransformCom->Go_Straight(TimeDelta);
+		m_pTransformCom->Go_Straight(0.05); // 루트 모션이 없어서 움직임 제어 직접 해줘야 함 
 	}
 
 	if (m_tInfo.prevAnimState == ANIM_ATTACK_COMBO1 && true != m_pModelCom->Get_AnimFinished())
 	{
 		m_tInfo.CurrAnimState = ANIM_ATTACK_COMBO2;
-		m_pTransformCom->Go_Straight(TimeDelta);
+		m_pTransformCom->Go_Straight(0.05);
 
 	}
 
 	else if (m_tInfo.prevAnimState == ANIM_ATTACK_COMBO2 && true != m_pModelCom->Get_AnimFinished())
 	{
 		m_tInfo.CurrAnimState = ANIM_ATTACK_COMBO3;
-		m_pTransformCom->Go_Straight(TimeDelta);
+		m_pTransformCom->Go_Straight(0.07);
 
 	}
 
@@ -442,58 +438,98 @@ void CPlayer_Body::Jump(_double TimeDelta)
 
 	_float3	vPos;
 
+	XMStoreFloat3(&vPos, vPosition);
+
+	if (true == m_JumpAttack)
+		m_fGravity = 0.f;
+	else
+		m_fGravity = 0.1f + (TimeDelta * 0.5);
+
+	if (false == m_bCheck)
+	{
+		if (false == m_bFall)
+			vPos.y += m_fGravity;
+		else
+			vPos.y -= m_fGravity;
+
+	}
 	if (true == m_bJump)
 	{
-		if (m_fTime < 1.f)
+		if (true == m_bSIbal)
 		{
-			m_tInfo.CurrAnimState = ANIM_JUMP_ING;
-			m_AnimTickPerSecond = 0.5f;
-
-			if (m_tInfo.prevAnimState == ANIM_JUMP && true == m_pModelCom->Get_AnimFinished())
-			{
-				m_AnimTickPerSecond = 0.5f;
-
-				m_tInfo.CurrAnimState = ANIM_JUMP_ING;
-			}
-
-			XMStoreFloat3(&vPos, vPosition);
-
-			m_fTime += (_float)TimeDelta;
-
-			//vPos.y += (0.5f * m_fTime +(1.f * -1.f * pow(m_fTime, 2)));
-			vPos.y += 0.5f * m_fPower * (TimeDelta);
-
-			vPosition = XMLoadFloat3(&vPos);
-			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+			m_tInfo.CurrAnimState = ANIM_JUMP; // 여기도 조건 잡아줘서 넘어가게 -> 아니면 계속 이게 들어 옴
+			_double sibal = 0.02;
+			m_pModelCom->Set_AnimTick(sibal);
 		}
-		else
+		m_bSIbal = false;
+		m_pModelCom->Set_AnimTick(m_AnimTickPerSecond);
+
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&vPos));
+
+		//if (m_tInfo.prevAnimState == ANIM_JUMP && true == m_pModelCom->Get_AnimFinished())
+		//{
+		//	m_tInfo.CurrAnimState = ANIM_JUMP_ING;
+		//}
+
+		if (vPos.y >= 5.f) // 공중에 있고, 공격중이 아니라면 // 여기
 		{
-			_vector	vposition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-		
-			_float3		vpos;
-			XMStoreFloat3(&vpos, vposition);
-		
+			m_bFall = true;
 			m_tInfo.CurrAnimState = ANIM_JUMP_LENDING;
-		
-			if (vpos.y >= 0.25f)
-			{
-				vpos.y = 0.25f;
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&vPos)); // 렌딩 끝나면 아이들 모션 적용 
+
+			if (m_tInfo.prevAnimState == ANIM_JUMP_LENDING && m_pModelCom->Get_AnimFinished())
 				m_tInfo.CurrAnimState = ANIM_IDEL;
-				m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&vpos));
-				m_fTime = 0.f;
-				m_bJump = false;
+
+		}
+		// 여기에 들어오는 조건이 좀 잡기 빡셈 점프는 업데이트를 계속 돌고 있고, 점프어택이 들어 가면 점프 어택이 돌아 가면서 그 사이 값을 어떻게 잡아야 할 지 모르겠음.. 시발;
+		if (vPos.y >= 1.5f && m_tInfo.CurrAnimState == ANIM_JUMP_ATTACK1) // 공중에 있고, 공격중이라면
+		{
+			m_bCheck = true;
+
+			if (true == m_bLendiongCheck)
+				m_fGravity = 0.f;
+
+		}
+			if( false == m_bLendiongCheck) // 공격이 끝났다면 여기 
+			{
+				//m_tInfo.CurrAnimState = ANIM_JUMP_LENDING;
+
+				m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&vPos));
+
+				if (m_tInfo.prevAnimState == ANIM_JUMP_LENDING && m_pModelCom->Get_AnimFinished())
+					m_tInfo.CurrAnimState = ANIM_IDEL;
+
 			}
+
+		if (vPos.y <= 0.0f) //  이 씨발 y 조절 어케 하는데 
+		{
+			vPos.y = 0.00f;
+			m_tInfo.CurrAnimState = ANIM_IDEL;
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&vPos));
+			m_fGravity = 0.f;
+			m_bFall = false;
+			m_bJump = false;
+			m_bCheck = false;
 		}
 	}
 
 }
 
-void CPlayer_Body::Jump_Attack(_double TimeDelta, _vector fPos)
+void CPlayer_Body::Jump_Attack(_double TimeDelta)
 {
+	m_JumpAttack = true;
+	m_bLendiongCheck = true;
+	
+	_vector	vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	_float3	vPos;
+
+	XMStoreFloat3(&vPos, vPosition);
+
 	if (true == m_bJump)
 	{
-		m_JumpAttack = true;
 		m_tInfo.CurrAnimState = ANIM_JUMP_ATTACK1;
+
 	}
 
 	if (m_tInfo.prevAnimState == ANIM_JUMP_ATTACK1 && true != m_pModelCom->Get_AnimFinished())
@@ -504,11 +540,16 @@ void CPlayer_Body::Jump_Attack(_double TimeDelta, _vector fPos)
 		m_tInfo.CurrAnimState = ANIM_JUMP_ATTACK3;
 	}
 
-	if (m_tInfo.prevAnimState == ANIM_JUMP_ATTACK3 && true == m_pModelCom->Get_AnimFinished())
+	if (m_tInfo.prevAnimState == ANIM_JUMP_ATTACK3 && true == m_pModelCom->Get_LerpAnimFinished())
 	{
 		m_tInfo.CurrAnimState = ANIM_JUMP_LENDING;
-		m_bJump = false;
+		//m_bJump = false;
 		m_JumpAttack = false;
+		m_bLendiongCheck = false;
+		m_bFall = true;
+		m_bCheck = false;
+	
+
 	}
 
 	if (false == m_JumpAttack && m_tInfo.prevAnimState == ANIM_JUMP_LENDING && true == m_pModelCom->Get_AnimFinished())

@@ -3,6 +3,7 @@
 #include "..\Public\Loader.h"
 #include "GameInstance.h"
 #include "BackGround.h"
+#include "LoadingImg.h"
 #include "Calulator.h"
 #include "Texture.h"
 #include "Terrain.h"
@@ -102,9 +103,9 @@ HRESULT CLoader::Loading_ForLogo()
 		CBackGround::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Loading"),
-	//	CBackGround::Create(m_pDevice, m_pContext))))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Loading"),
+		CLoadingImg::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 #pragma endregion
 

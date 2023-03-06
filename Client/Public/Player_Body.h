@@ -52,7 +52,7 @@ public:
 	void Attack_Combo(_double TimeDelta);
 	
 	void Jump(_double TimeDelta);
-	void Jump_Attack(_double TimeDelta, _vector fPos);
+	void Jump_Attack(_double TimeDelta);
 
 	void Dash(_double TimeDelta);
 	void DashAttack(_double TimeDelta);
@@ -103,6 +103,10 @@ private:
 
 	_bool m_bJump = false;
 	_bool m_JumpAttack = false;
+	_bool m_bFall = false;
+	_bool m_bLendiongCheck = false;
+	_bool m_bCheck = false;
+	_bool m_bSIbal = false;
 
 	_float m_fPower = 0.5f;
 	_float m_fTime = 0.f;

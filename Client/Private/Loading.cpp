@@ -14,6 +14,9 @@ CLoading::CLoading(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 
 HRESULT CLoading::Initialize(LEVELID eNextLevel)
 {
+	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_LoadingImg"))))
+		return E_FAIL;
+
 
 	m_eNextLevelID = eNextLevel;
 
@@ -74,6 +77,19 @@ void CLoading::Tick(_double TimeDelta)
 #endif
 }
 
+
+HRESULT CLoading::Ready_Layer_BackGround(const _tchar * pLayerTag)
+{
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOADING, TEXT("Prototype_GameObject_Loading"), pLayerTag)))
+		return E_FAIL;
+
+	Safe_Release(pGameInstance);
+
+	return S_OK;
+}
 
 CLoading * CLoading::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, LEVELID eNextLevel)
 {

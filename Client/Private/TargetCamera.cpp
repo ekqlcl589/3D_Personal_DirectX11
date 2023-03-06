@@ -100,9 +100,9 @@ void CTargetCamera::Target_Renewal(_double TimeDelta)
 	//	m_Transform->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * Mouse * 0.1f);
 	//}
 	//
-	m_Transform->LookAt(XMLoadFloat3(&fTarget));
+	//m_Transform->LookAt(XMLoadFloat3(&fTarget));
 	//m_Transform->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fTarget));
-	//m_Transform->Chase(XMLoadFloat3(&fTarget), TimeDelta, m_fDis);
+	m_Transform->Chase(XMLoadFloat3(&fTarget), TimeDelta, m_fDis);
 	//m_Transform->CameraMove(XMLoadFloat3(&fTarget), XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * Mouse * 0.1f);
 	RELEASE_INSTANCE(CGameInstance);
 }
