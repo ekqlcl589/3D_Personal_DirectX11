@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\Ancient_StonGolem.h"
+#include "MonsterWeapon.h"
 #include "GameInstance.h"
 #include "KeyMgr.h"
 #include "Effect.h"
@@ -34,8 +35,6 @@ HRESULT CAncient_StonGolem::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	if (FAILED(Add_Coll()))
-		return E_FAIL;
 
 	m_eCollisionState = OBJ_BOSS1;
 
@@ -93,6 +92,10 @@ void CAncient_StonGolem::LateTick(_double TimeDelta)
 	if (false == m_bDead)
 	{
 		__super::LateTick(TimeDelta);
+
+		//if (FAILED(Add_Coll())) 잠시 보류 
+		//	return;
+
 
 		m_pModelCom->Play_Animation(TimeDelta);
 		m_AnimDuration = m_pModelCom->Get_AnimDuration();
@@ -171,7 +174,45 @@ HRESULT CAncient_StonGolem::Add_Coll()
 {
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-	// 몰?루
+	CBone* pBone = m_pModelCom->Get_BonePtr("Bip001-L-Hand");
+
+	//Bip001-L-Hand
+	//Bip001-R-Hand
+
+	if (nullptr == pBone)
+		return E_FAIL;
+
+	//_matrix ParentMatrix = XMLoadFloat4x4(&pBone->Get_CombinedTransformMatrix()) * XMLoadFloat4x4(&m_pModelCom->Get_LocalMatrix());
+
+	//ParentMatrix.r[0] = XMVector3Normalize(ParentMatrix.r[0]);
+	//ParentMatrix.r[1] = XMVector3Normalize(ParentMatrix.r[1]);
+	//ParentMatrix.r[2] = XMVector3Normalize(ParentMatrix.r[2]);
+
+	//_float4x4 WorlMatrix;
+	//XMStoreFloat4x4(&WorlMatrix, ParentMatrix * m_pTransformCom->Get_WorldMatrix());// m_Weapon.pParentTransform->Get_WorldMatrix());
+
+	//CCollider::COLLIDERDESC CollDesc;
+	//CollDesc.vScale = _float3(5.f, 5.f, 5.f);
+	//CollDesc.vCenter = _float3(0.f, CollDesc.vScale.y * 0.5f, 0.f);
+
+	//_vector vPos = XMVector4Transform(XMLoadFloat3(&CollDesc.vCenter) ,XMLoadFloat4x4(&WorlMatrix));
+
+
+	//XMStoreFloat3(&CollDesc.vCenter, vPos);
+	//if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_OBB"),
+	//	TEXT("Com_Collider1"), (CComponent**)&m_pColliderCom, &CollDesc)))
+	//	return E_FAIL;
+
+	CMonsterWeapon::WEAPONDESC WeaponDesc = { pBone, m_pModelCom->Get_LocalMatrix(), m_pTransformCom };
+	Safe_AddRef(pBone);
+
+	CGameObject* pWeapon = pInstance->Clone_GameObject_Add_Layer(TEXT("Prototype_GameObject_Weapon"), &WeaponDesc);
+
+	if (nullptr == pWeapon)
+		return E_FAIL;
+
+	m_vecWeapon[WEAPON_MONSTER].push_back(pWeapon);
+
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
@@ -484,7 +525,6 @@ HRESULT CAncient_StonGolem::Add_Components()
 
 	TransformDesc.fSpeed = 3.f;
 	TransformDesc.fRotation = XMConvertToRadians(90.0f);
-
 
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Transform"),
 		TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))

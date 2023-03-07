@@ -124,6 +124,9 @@
     <Filter Include="02.GameObject\00. BackGround\LoadingImg">
       <UniqueIdentifier>{3ad8090d-34ed-422b-b157-f9727f750639}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\06. Monster\MonsterWeapon">
+      <UniqueIdentifier>{36aada05-29d6-4923-b255-0696013e0813}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -225,6 +228,9 @@
     <ClInclude Include="..\Public\LoadingImg.h">
       <Filter>02.GameObject\00. BackGround\LoadingImg</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\MonsterWeapon.h">
+      <Filter>02.GameObject\06. Monster\MonsterWeapon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -313,6 +319,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\LoadingImg.cpp">
       <Filter>02.GameObject\00. BackGround\LoadingImg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MonsterWeapon.cpp">
+      <Filter>02.GameObject\06. Monster\MonsterWeapon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -56,6 +56,11 @@ HRESULT CGameObject::Render()
 
 void CGameObject::KnockBack(_double TimeDelta)
 {
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+
+
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 HRESULT CGameObject::Add_Component(_uint iLevelIndex, const _tchar * pPrototypeTag, const _tchar * pComponentTag, CComponent ** ppOut, void * pArg)

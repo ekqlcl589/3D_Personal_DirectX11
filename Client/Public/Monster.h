@@ -18,6 +18,7 @@ class CMonster  abstract: public CGameObject
 {
 protected:
 	enum COLLIDER { COLLIDER_AABB, COLLIDER_OBB, COLLIDER_SPHERE, COLLIDER_END };
+	enum WEAPON { WEAPON_MONSTER, WEAPON_END };
 
 public:
 	typedef struct MonsterState
@@ -72,6 +73,9 @@ protected:
 	MONSTERINFO m_eType;
 
 	_float3 m_fHorizontal_Power = { 1.f, 1.f, 1.f };
+
+protected:
+	vector<CGameObject*> m_vecWeapon[WEAPON_END];
 
 public:
 	virtual CGameObject* Clone(void* pArg = nullptr) = 0;

@@ -47,7 +47,6 @@ void CCollisionMgr::OnCollision(COLLISIONSTATE eType, COLLISIONSTATE eType2)
 
 			if (isColl)
 			{
-				//Src.second->KnockBack(1.0);
 				Src.second->OnCollision(Dest.second);
 				Dest.second->OnCollision(Src.second);
 			}

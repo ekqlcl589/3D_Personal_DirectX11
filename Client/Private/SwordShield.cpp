@@ -235,6 +235,4 @@ void CSwordShield::Free()
 		Safe_Release(m_Weapon.pBonePtr);
 
 	Safe_Release(m_pColliderCom);
-
-
 }

@@ -200,12 +200,11 @@ void CPlayer_Body::OnCollision(CGameObject * pObj)
 
 	switch (eType)
 	{
-	case Engine::OBJ_WEAPON_KARMA14:
-		break;
 	case Engine::OBJ_BOSS1:
 		Hit(10);
 		break;
 	case Engine::OBJ_BOSS2:
+		Hit(10);
 		break;
 	case Engine::OBJ_END:
 		break;
