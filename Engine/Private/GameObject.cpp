@@ -33,24 +33,29 @@ HRESULT CGameObject::Initialize(void * pArg)
 
 void CGameObject::Tick(_double TimeDelta)
 {
-}
-
-void CGameObject::LateTick(_double TimeDelta)
-{
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	pGameInstance->OnCollision(OBJ_PLAYER, OBJ_BOSS1);
-	pGameInstance->OnCollision(OBJ_WEAPON_SS, OBJ_BOSS1);
+	pGameInstance->OnCollision(OBJ_PLAYER, OBJ_BOSS1); // 플레이어와 보스 충돌 
+	pGameInstance->OnCollision(OBJ_WEAPON_SS, OBJ_BOSS1); // 무기와 보스 충돌 
 
 
 	Safe_Release(pGameInstance);
 
 }
 
+void CGameObject::LateTick(_double TimeDelta)
+{
+
+}
+
 HRESULT CGameObject::Render()
 {
 	return S_OK;
+}
+
+void CGameObject::KnockBack(_double TimeDelta)
+{
 }
 
 HRESULT CGameObject::Add_Component(_uint iLevelIndex, const _tchar * pPrototypeTag, const _tchar * pComponentTag, CComponent ** ppOut, void * pArg)

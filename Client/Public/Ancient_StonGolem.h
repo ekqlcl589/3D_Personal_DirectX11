@@ -20,6 +20,9 @@ public:
 
 	virtual void OnCollision(CGameObject* pObj)override;
 
+public:
+	HRESULT Add_Coll();
+
 	void Set_AnimationState(STONGOLEMANIMSTATE eType);
 	_uint Set_State(_double TimeDelta);
 

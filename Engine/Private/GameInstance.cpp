@@ -67,10 +67,12 @@ HRESULT CGameInstance::Tick_Engine(_double TimeDelta)
 
 	m_pLevel_Manager->Tick_Level(TimeDelta);
 
-	m_pObject_Manager->Tick(TimeDelta);
+	m_pObject_Manager->Tick(TimeDelta); // 충돌 처리 ~, ~ 가 충돌 했다?
 	m_pPipeLine->Tick(TimeDelta);
+	// 여기서 콜리전 매니저의 틱을 만들어서 부르고 
+	m_pCollision_Mgr->Tick(TimeDelta); // 여기서 충돌
 
-	m_pObject_Manager->LateTick(TimeDelta);
+	m_pObject_Manager->LateTick(TimeDelta); // 충돌 후 행동? 넉백? 데미지 처리? 
 
 	return S_OK;
 }

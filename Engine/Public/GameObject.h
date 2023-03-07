@@ -22,6 +22,8 @@ public:
 
 	virtual void OnCollision(CGameObject* pObj) {}
 
+	void KnockBack(_double TimeDelta);
+
 	void Set_ObjType(COLLISIONSTATE eObjID) { m_eCollisionState = eObjID; }
 
 	COLLISIONSTATE Get_ObjType() { return m_eCollisionState; }

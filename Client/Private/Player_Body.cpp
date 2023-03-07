@@ -367,6 +367,22 @@ void CPlayer_Body::Animation_State(PLAYERANIMSTATE eType, _double TimeDelta)
 			m_iAnimIndex = 24;
 			break;
 
+		case ANIM_STUN:
+			m_iAnimIndex = 16;
+			break;
+
+		case ANIM_SKILL_E:
+			m_iAnimIndex = 38;
+			break;
+
+		case ANIM_SKILL_F:
+			m_iAnimIndex = 42;
+			break;
+
+		case ANIM_SKILL_R:
+			m_iAnimIndex = 43;
+			break;
+
 		case ANIM_END:
 		default:
 			break;
@@ -380,8 +396,43 @@ void CPlayer_Body::Animation_State(PLAYERANIMSTATE eType, _double TimeDelta)
 
 void CPlayer_Body::Hit(const _int & _Damage)
 {
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+	CTransform* pMonsterTransform = nullptr;
+
+	pMonsterTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Com_Transform")));
+
+	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	_vector vMonPos = pMonsterTransform->Get_State(CTransform::STATE_POSITION);
+
+	_vector vDir = vMonPos - vPosition;
+
+	_vector vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vDir);
+
+	_vector vUp = XMVector3Cross(vDir, vRight);
+
+	_float3 vScale = m_pTransformCom->Get_Scale();
+
+	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVector3Normalize(vRight) * vScale.x);
+	m_pTransformCom->Set_State(CTransform::STATE_UP, XMVector3Normalize(vUp) * vScale.y);
+	m_pTransformCom->Set_State(CTransform::STATE_LOOK, XMVector3Normalize(vDir) * vScale.z);
+
+	vPosition -= XMVector3Normalize(vDir) * 0.1f;
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+
+	RELEASE_INSTANCE(CGameInstance);
+
+
 	m_tInfo._Hp -= _Damage;
-	m_pModelCom->SetUp_Animation(16);	
+	m_tInfo.CurrAnimState = ANIM_STUN;
+
+	if (m_tInfo.prevAnimState == ANIM_STUN && true == m_pModelCom->Get_AnimFinished())
+		m_tInfo.CurrAnimState = ANIM_COMBAT_WAIT;
+
+	if (m_tInfo.prevAnimState == ANIM_COMBAT_WAIT == true == m_pModelCom->Get_AnimFinished())
+		m_tInfo.CurrAnimState = ANIM_IDEL;
 }
 
 void CPlayer_Body::Attack()

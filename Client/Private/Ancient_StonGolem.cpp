@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "KeyMgr.h"
 #include "Effect.h"
+#include "Bone.h"
 
 CAncient_StonGolem::CAncient_StonGolem(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CMonster(pDevice, pContext)
@@ -31,6 +32,9 @@ HRESULT CAncient_StonGolem::Initialize(void * pArg)
 		return E_FAIL;
 
 	if (FAILED(Add_Components()))
+		return E_FAIL;
+
+	if (FAILED(Add_Coll()))
 		return E_FAIL;
 
 	m_eCollisionState = OBJ_BOSS1;
@@ -163,6 +167,16 @@ void CAncient_StonGolem::OnCollision(CGameObject * pObj)
 }
 
 
+HRESULT CAncient_StonGolem::Add_Coll()
+{
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+	// 몰?루
+	RELEASE_INSTANCE(CGameInstance);
+
+	return S_OK;
+}
+
 void CAncient_StonGolem::Set_AnimationState(STONGOLEMANIMSTATE eType)
 {
 	if (m_CurrAnim != m_PrevAnim)
@@ -287,16 +301,16 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 
 	if (m_PrevAnim == S_SKILL04_2 && true != m_pModelCom->Get_AnimFinished())
 	{
-		if (m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 3.0)
+		if (m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 5.0)
 		{
 			_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
 			m_pTransformCom->Chase_Tatget(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION), 1.f, TimeDelta);
 			//vPos += m_pPlayerTransform->Get_State(CTransform::STATE_POSITION);
 
-			if (m_pModelCom->Get_AnimTimeAcc() >= 80.0)
+			if (m_pModelCom->Get_AnimTimeAcc() >= 90.0)
 			{
-				vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+				vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION); // 시발 이거 또 이대로 계속 고정 되는 건 아니겠지?
 			}
 
 		}
@@ -425,6 +439,7 @@ void CAncient_StonGolem::Set_Skill09(_double TimeDelta)
 	{
 		m_bAttack = true;
 		m_CurrAnim = S_SKILL09;
+		m_pTransformCom->Go_Straight(TimeDelta);
 	}
 
 	if (m_PrevAnim == S_SKILL09 && m_pModelCom->Get_AnimFinished())

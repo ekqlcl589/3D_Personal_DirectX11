@@ -9,6 +9,17 @@ CCollisionMgr::CCollisionMgr()
 }
 
 
+HRESULT CCollisionMgr::Tick(_double TimeDelta)
+{
+	if (m_fCollTime <= 3.f) // 3초간은 충돌이 일어나지 않음
+	{
+
+	}
+
+
+	return S_OK;
+}
+
 HRESULT CCollisionMgr::Add_Collider(COLLISIONSTATE eType, int iNum, CGameObject* pObj)
 {
 	for (auto& iter = m_mapObj[eType].begin(); iter != m_mapObj[eType].end(); iter++)
@@ -36,6 +47,7 @@ void CCollisionMgr::OnCollision(COLLISIONSTATE eType, COLLISIONSTATE eType2)
 
 			if (isColl)
 			{
+				//Src.second->KnockBack(1.0);
 				Src.second->OnCollision(Dest.second);
 				Dest.second->OnCollision(Src.second);
 			}
