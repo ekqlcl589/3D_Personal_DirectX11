@@ -19,7 +19,8 @@ HRESULT CAncient_StonGolem::Initialize_Prototype()
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
 
-
+	// 5보다 멀 면 battack false
+	// 5 보다 가까우면 battack true
 
 	return S_OK;
 }
@@ -76,6 +77,8 @@ void CAncient_StonGolem::Tick(_double TimeDelta)
 		Set_State(TimeDelta);
 
 		Set_AnimationState(m_CurrAnim);
+
+
 	}
 	else
 		return;
@@ -90,6 +93,7 @@ void CAncient_StonGolem::LateTick(_double TimeDelta)
 		m_pModelCom->Play_Animation(TimeDelta);
 		m_AnimDuration = m_pModelCom->Get_AnimDuration();
 		m_AnimTimeAcc = m_pModelCom->Get_AnimTimeAcc();
+
 		Set_Time();
 
 		Collision_ToPlayer();
@@ -141,7 +145,7 @@ void CAncient_StonGolem::OnCollision(CGameObject * pObj)
 	switch (eType)
 	{
 	case Engine::OBJ_PLAYER:
-		m_b = true;
+		//m_b = true;
 		break;
 	case Engine::OBJ_WEAPON_SS:
 	{
@@ -278,40 +282,39 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 	else if(false == m_bPlayerChecck && false == m_bAttack)
 		m_CurrAnim = S_RESPAN;
 
-	if (m_PrevAnim == S_RESPAN && true == m_pModelCom->Get_AnimFinished())
+	if(false == m_bSkill4)
+		Set_Skill04(TimeDelta); // 조우 후 공격 패턴 1
+
+	if (m_PrevAnim == S_SKILL04_2 && true != m_pModelCom->Get_AnimFinished())
 	{
- 		m_bCheck = true;
-		m_bAttack = true;
-		m_CurrAnim = S_SKILL04_1;
+		if (m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 3.0)
+		{
+			_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+			m_pTransformCom->Chase_Tatget(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION), 1.f, TimeDelta);
+			//vPos += m_pPlayerTransform->Get_State(CTransform::STATE_POSITION);
+
+			if (m_pModelCom->Get_AnimTimeAcc() >= 80.0)
+			{
+				vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			}
+
+		}
+
 	}
 
-	if (m_PrevAnim == S_SKILL04_1 && true == m_pModelCom->Get_AnimFinished())
-	{
-		//m_pModelCom->Set_AnimTick(m_f * (_double)5.f);
-		m_CurrAnim = S_SKILL04_2;
-		m_bAttackTime = false;
-		//Add_Effect();
-		// 애니메이션 끝나면 지형이 부서지는 이팩트 생성
-	}
 
-	if (m_PrevAnim == S_SKILL04_2 && true == m_pModelCom->Get_AnimFinished())
-	{
-		// 이팩트 FadeIn,Out 후  삭제처리 	
-		m_CurrAnim = S_SKILL04_3;
-		m_bAttack = false;
-	}
-
-	if (false == m_bAttack && m_PrevAnim == S_SKILL04_3 && true == m_pModelCom->Get_LerpAnimFinished())
-		m_CurrAnim = S_WAIT;
-
-	//Set_Skill04(TimeDelta); // 조우 후 공격 패턴 1
-
+	int iRand = rand() % 2;
+	
+	if(true == m_bSkill4)
+ 		iRand ? Set_Skill07(TimeDelta) : Set_Skill09(TimeDelta);
+	
 	if (m_eType._Hp <= 500.f)
-		Set_Skill01(TimeDelta);
+		Set_Skill01(TimeDelta); // 체력이 반 이하로 떨어지면 
 	
 	if(m_eType._Hp <= 250.f)
-		Set_Skill05(TimeDelta); // 패턴 1 이후 패턴 2
-	//애니메이션이 모두 끝났다면 조건 추가 
+		Set_Skill05(TimeDelta); // 체력이 25% 이하로 떨어지면 몸을 웅크리면서 체력 회복 패턴 사용 
+	////애니메이션이 모두 끝났다면 조건 추가 
 
 	return OBJ_NOEVENT;
 }
@@ -344,7 +347,7 @@ void CAncient_StonGolem::Set_Skill02(_double TimeDelta)
 
 void CAncient_StonGolem::Set_Skill04(_double TimeDelta)
 {
-	if (m_PrevAnim == S_START && true == m_pModelCom->Get_AnimFinished())
+	if (m_PrevAnim == S_RESPAN && true == m_pModelCom->Get_AnimFinished())
 	{
 		m_bCheck = true;
 		m_bAttack = true;
@@ -353,25 +356,29 @@ void CAncient_StonGolem::Set_Skill04(_double TimeDelta)
 
 	if (m_PrevAnim == S_SKILL04_1 && true == m_pModelCom->Get_AnimFinished())
 	{
-		//m_pModelCom->Set_AnimTick(m_f * (_double)5.f);
-		cout << m_CurrAnim << endl;
 		m_CurrAnim = S_SKILL04_2;
+
+		if (m_pModelCom->Get_AnimTimeAcc() == (m_pModelCom->Get_AnimDuration() / 2))
+			m_bjump = true;
 		// 애니메이션 끝나면 지형이 부서지는 이팩트 생성
 	}
-	//cout << m_CurrAnim << endl;
 
-	//if (m_PrevAnim == S_SKILL04_2 && true == m_pModelCom->Get_AnimFinished())
-	//{
-	//	// 이팩트 FadeIn,Out 후  삭제처리 
-	//	cout << m_CurrAnim << endl;
-	//
-	//	m_CurrAnim = S_SKILL04_3;
-	//	m_bAttack = false;
-	//}
-	//
-	////cout << m_CurrAnim << endl;
-	//if (false == m_bAttack && m_PrevAnim == S_SKILL04_3 && true == m_pModelCom->Get_AnimFinished())
-	//	m_CurrAnim = S_WAIT;
+	if (m_PrevAnim == S_SKILL04_2 && true == m_pModelCom->Get_AnimFinished())
+	{
+		// 이팩트 FadeIn,Out 후  삭제처리 
+		m_AnimDuration;  
+		m_AnimTimeAcc; // 이게 duration의 절반이 되면 플레이어를 향해 움직여야 하고 
+		//한 80퍼 쯤 진행되면 움직임 멈추고 그자리에 찍혀 있어야 함 
+		m_CurrAnim = S_SKILL04_3;
+	}
+	
+	if (m_PrevAnim == S_SKILL04_3 && true == m_pModelCom->Get_AnimFinished())
+	{
+		m_bSkill4 = true;
+		//m_bAttack = false;
+
+		m_CurrAnim = S_WAIT;
+	}
 
 }
 
@@ -396,6 +403,35 @@ void CAncient_StonGolem::Set_Skill05(_double TimeDelta)
 		m_CurrAnim = S_WAIT;
 
 	
+}
+
+void CAncient_StonGolem::Set_Skill07(_double TimeDelta)
+{
+	if (m_PrevAnim == S_WAIT || m_PrevAnim == S_RESPAN && m_pModelCom->Get_AnimFinished())
+	{
+		m_bAttack = true;
+		m_CurrAnim = S_SKILL07;
+	}
+
+	if (m_PrevAnim == S_SKILL07 && m_pModelCom->Get_AnimFinished())
+	{
+		m_CurrAnim = S_WAIT;
+	}
+}
+
+void CAncient_StonGolem::Set_Skill09(_double TimeDelta)
+{
+	if (m_PrevAnim == S_WAIT || m_PrevAnim == S_RESPAN && m_pModelCom->Get_AnimFinished())
+	{
+		m_bAttack = true;
+		m_CurrAnim = S_SKILL09;
+	}
+
+	if (m_PrevAnim == S_SKILL09 && m_pModelCom->Get_AnimFinished())
+	{
+		m_CurrAnim = S_WAIT;
+	}
+
 }
 
 HRESULT CAncient_StonGolem::Add_Effect()
@@ -431,7 +467,7 @@ HRESULT CAncient_StonGolem::Add_Components()
 	CTransform::TRANSFORM_DESC		TransformDesc;
 	ZeroMemory(&TransformDesc, sizeof(CTransform::TRANSFORM_DESC));
 
-	TransformDesc.fSpeed = 5.f;
+	TransformDesc.fSpeed = 3.f;
 	TransformDesc.fRotation = XMConvertToRadians(90.0f);
 
 
@@ -453,7 +489,7 @@ HRESULT CAncient_StonGolem::Add_Components()
 	ColliderDesc.vScale = _float3(3.f, 3.f, 3.f);
 	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vScale.y * 0.5f, 0.f);
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_OBB"),
 		TEXT("Com_Collider"), (CComponent**)&m_pColliderCom, &ColliderDesc)))
 		return E_FAIL;
 

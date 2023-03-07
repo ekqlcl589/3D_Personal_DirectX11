@@ -31,9 +31,9 @@ public:
 	void Set_Skill04(_double TimeDelta);
 	void Set_Skill05(_double TimeDelta);
 	//void Set_Skill06(_double TimeDelta);
-	//void Set_Skill07(_double TimeDelta);
+	void Set_Skill07(_double TimeDelta);
 	//void Set_Skill08(_double TimeDelta);
-	//void Set_Skill09(_double TimeDelta);
+	void Set_Skill09(_double TimeDelta);
 	//void Set_Skill10(_double TimeDelta);
 
 public:
@@ -57,10 +57,11 @@ private:
 	_double m_fTime = 0.0;
 	_bool m_bAttackTime = false;
 
+
 	_double m_AnimDuration = { 0.0 };
 	_double m_AnimTimeAcc = { 0.0 };
 
-	_bool m_b = false;
+	_bool m_bSkill4 = false;
 
 public:
 	static CAncient_StonGolem* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

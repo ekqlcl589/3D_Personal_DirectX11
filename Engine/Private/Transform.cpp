@@ -231,11 +231,20 @@ void CTransform::Chase_Tatget(_fvector vPargetPos, _float fSpeed, _double TimeDe
 	_float3 fPos;
 
 	XMStoreFloat3(&fPos, vPosition);
-	_float fTempYPos = fPos.y;
 
 	_vector vDir = vPargetPos - vPosition;
 
-	vPosition += XMVector3Normalize(vDir) * fSpeed * TimeDelta;
+	_vector vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vDir);
+
+	_vector vUp = XMVector3Cross(vDir, vRight);
+
+	_float3 vScale = Get_Scale();
+
+	Set_State(CTransform::STATE_RIGHT, XMVector3Normalize(vRight) * vScale.x);
+	Set_State(CTransform::STATE_UP, XMVector3Normalize(vUp) * vScale.y);
+	Set_State(CTransform::STATE_LOOK, XMVector3Normalize(vDir) * vScale.z);
+
+	vPosition += XMVector3Normalize(vDir) * m_TransformDesc.fSpeed * TimeDelta;
 
 	Set_State(CTransform::STATE_POSITION, vPosition);
 

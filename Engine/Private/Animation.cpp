@@ -72,7 +72,7 @@ _bool CAnimation::Play_Animation_Last(_double TimeDelta, const vector<class CBon
 
 	if (m_TickPerSecond >= 25.0)
 	{
-		m_Ratio = 10.0;
+		m_Ratio = 8.0;
 		bCheck = false;
 
 		return true; // 주석 없었음

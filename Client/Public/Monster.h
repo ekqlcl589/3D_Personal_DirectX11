@@ -67,6 +67,7 @@ protected:
 
 	_bool m_bPlayerChecck = false;
 	_bool m_bCheck = false;
+	_bool m_bjump = false;
 
 	MONSTERINFO m_eType;
 

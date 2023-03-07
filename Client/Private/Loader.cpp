@@ -221,7 +221,7 @@ HRESULT CLoader::Loading_ForGamePlay()
 #pragma endregion Weapon
 
 	_matrix		LocalMatrix66 = XMMatrixIdentity();
-	LocalMatrix66 = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(90.0f));
+	LocalMatrix66 = XMMatrixScaling(0.01f, 0.01f, 0.01f) *XMMatrixRotationY(XMConvertToRadians(270.0f));
 
 #pragma region Monster
 	/* For.Prototype_Component_Model_TestMonster */

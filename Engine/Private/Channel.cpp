@@ -112,7 +112,7 @@ void CChannel::Linear_Transform(_double TrackPosition, _uint* pCurrKeyFrame, con
 	m_AnimTic = fAnimTick;
 
 	if (m_AnimTic >= 25.0)
-		m_Ratio = 10.0;
+		m_Ratio = 8.0;
 
 	_double Ratio = (TrackPosition / m_Ratio);
 	for (auto& iter = mn_Test.begin(); iter != mn_Test.end(); iter++)

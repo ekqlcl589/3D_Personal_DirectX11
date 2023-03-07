@@ -37,6 +37,15 @@ void CGameObject::Tick(_double TimeDelta)
 
 void CGameObject::LateTick(_double TimeDelta)
 {
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	pGameInstance->OnCollision(OBJ_PLAYER, OBJ_BOSS1);
+	pGameInstance->OnCollision(OBJ_WEAPON_SS, OBJ_BOSS1);
+
+
+	Safe_Release(pGameInstance);
+
 }
 
 HRESULT CGameObject::Render()
