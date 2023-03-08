@@ -11,11 +11,15 @@ CCollisionMgr::CCollisionMgr()
 
 HRESULT CCollisionMgr::Tick(_double TimeDelta)
 {
+	if (true == m_bIsColl)
+	{
+		m_fCollTime = 3.f;
+	}
 	if (m_fCollTime <= 3.f) // 3초간은 충돌이 일어나지 않음
 	{
-
+		m_fCollTime -= (_float)TimeDelta;
+		
 	}
-
 
 	return S_OK;
 }
@@ -43,9 +47,9 @@ void CCollisionMgr::OnCollision(COLLISIONSTATE eType, COLLISIONSTATE eType2)
 			if (nullptr == SrcColl || nullptr == DestColl)
 				continue;
 
-			_bool isColl = SrcColl->Collision(DestColl);
+			m_bIsColl = SrcColl->Collision(DestColl);
 
-			if (isColl)
+			if (m_bIsColl)
 			{
 				Src.second->OnCollision(Dest.second);
 				Dest.second->OnCollision(Src.second);
@@ -69,18 +73,4 @@ HRESULT CCollisionMgr::Delete_CollideObj(COLLISIONSTATE eObjID, int iNum)
 
 void CCollisionMgr::Free()
 {
-	//for (auto& Pair : m_mapObj)
-	//{
-	//	for (auto& Obj : Pair)
-	//	{
-	//		Safe_Release(Obj.second);
-	//
-	//	}
-	//}
-
-	//for (_uint i = 0; i < OBJ_END; i++)
-	//{
-	//	for (auto& pair : m_mapObj[OBJ_END])
-	//		Safe_Release(pair.second);
-	//}
 }

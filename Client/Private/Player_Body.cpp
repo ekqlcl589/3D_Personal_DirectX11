@@ -75,9 +75,9 @@ void CPlayer_Body::Tick(_double TimeDelta)
 	}
 
 	__super::Tick(TimeDelta);
-
+	cout << m_tInfo._Hp << endl;
 	Key_Input(TimeDelta);
-	//Jump(TimeDelta);
+
 	Dash(TimeDelta);
 
 	Animation_State(m_tInfo.CurrAnimState, TimeDelta);
@@ -200,11 +200,26 @@ void CPlayer_Body::OnCollision(CGameObject * pObj)
 
 	switch (eType)
 	{
+	case Engine::OBJ_PLAYER:
+		break;
+	case Engine::OBJ_WEAPON_SS:
+		break;
+	case Engine::OBJ_WEAPON_SS1:
+		break;
 	case Engine::OBJ_BOSS1:
-		Hit(10);
+		break;
+	case Engine::OBJ_WEAPON_KARMA14:
 		break;
 	case Engine::OBJ_BOSS2:
+		break;
+	case Engine::OBJ_MONSTER_WEAPONL:
+		Hit(10); // 몬스터 공격력 가져와서 대입 
+		break;
+	case Engine::OBJ_MONSTER_WEAPONR:
 		Hit(10);
+		break;
+	case Engine::OBJ_MONSTER_BODY:
+		Damage(10);
 		break;
 	case Engine::OBJ_END:
 		break;
@@ -395,6 +410,16 @@ void CPlayer_Body::Animation_State(PLAYERANIMSTATE eType, _double TimeDelta)
 
 void CPlayer_Body::Hit(const _int & _Damage)
 {
+	m_tInfo._Hp -= _Damage;
+	m_tInfo.CurrAnimState = ANIM_STUN;
+
+	if (m_tInfo.prevAnimState == ANIM_STUN && true == m_pModelCom->Get_AnimFinished())
+		m_tInfo.CurrAnimState = ANIM_COMBAT_WAIT;
+
+	if (m_tInfo.prevAnimState == ANIM_COMBAT_WAIT == true == m_pModelCom->Get_AnimFinished())
+		m_tInfo.CurrAnimState = ANIM_IDEL;
+
+
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
 	CTransform* pMonsterTransform = nullptr;
@@ -417,21 +442,25 @@ void CPlayer_Body::Hit(const _int & _Damage)
 	m_pTransformCom->Set_State(CTransform::STATE_UP, XMVector3Normalize(vUp) * vScale.y);
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, XMVector3Normalize(vDir) * vScale.z);
 
-	vPosition -= XMVector3Normalize(vDir) * 0.1f;
+	vPosition -= XMVector3Normalize(vDir) * 0.05f;
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 
 	RELEASE_INSTANCE(CGameInstance);
 
+}
 
+void CPlayer_Body::Damage(const _int & _Damage)
+{
 	m_tInfo._Hp -= _Damage;
-	m_tInfo.CurrAnimState = ANIM_STUN;
+	//m_tInfo.CurrAnimState = ANIM_STUN;
+	//
+	//if (m_tInfo.prevAnimState == ANIM_STUN && true == m_pModelCom->Get_AnimFinished())
+	//	m_tInfo.CurrAnimState = ANIM_COMBAT_WAIT;
+	//
+	//if (m_tInfo.prevAnimState == ANIM_COMBAT_WAIT == true == m_pModelCom->Get_AnimFinished())
+	//	m_tInfo.CurrAnimState = ANIM_IDEL;
 
-	if (m_tInfo.prevAnimState == ANIM_STUN && true == m_pModelCom->Get_AnimFinished())
-		m_tInfo.CurrAnimState = ANIM_COMBAT_WAIT;
-
-	if (m_tInfo.prevAnimState == ANIM_COMBAT_WAIT == true == m_pModelCom->Get_AnimFinished())
-		m_tInfo.CurrAnimState = ANIM_IDEL;
 }
 
 void CPlayer_Body::Attack()

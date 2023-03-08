@@ -15,10 +15,12 @@
 #include "Player_Body.h"
 #include "Hair.h"
 #include "PlayerTop.h"
-
 #include "SwordShield.h"
 
+
+
 #include "Ancient_StonGolem.h"
+#include "MonsterWeapon.h"
 
 #include "TestTile.h"
 
@@ -356,6 +358,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster"),
 		CAncient_StonGolem::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster_Weapon"),
+		CMonsterWeapon::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Hair"),

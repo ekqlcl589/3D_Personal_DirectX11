@@ -18,7 +18,7 @@ class CMonster  abstract: public CGameObject
 {
 protected:
 	enum COLLIDER { COLLIDER_AABB, COLLIDER_OBB, COLLIDER_SPHERE, COLLIDER_END };
-	enum WEAPON { WEAPON_MONSTER, WEAPON_END };
+	enum WEAPON { WEAPON_MONSTERL, WEAPON_MONSTERR, WEAPON_MONSTERBODY,WEAPON_END };
 
 public:
 	typedef struct MonsterState

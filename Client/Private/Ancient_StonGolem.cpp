@@ -35,6 +35,9 @@ HRESULT CAncient_StonGolem::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
+	if (FAILED(Add_Coll())) 
+		return	E_FAIL;
+
 
 	m_eCollisionState = OBJ_BOSS1;
 
@@ -81,6 +84,17 @@ void CAncient_StonGolem::Tick(_double TimeDelta)
 
 		Set_AnimationState(m_CurrAnim);
 
+		for (_uint i = 0; i < WEAPON_END; i++)
+		{
+			for (auto& pWeapon : m_vecWeapon[i])
+			{
+				if (nullptr != pWeapon)
+					pWeapon->Tick(TimeDelta);
+			}
+		}
+
+		if (nullptr != m_pColliderCom)
+			m_pColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
 
 	}
 	else
@@ -93,10 +107,6 @@ void CAncient_StonGolem::LateTick(_double TimeDelta)
 	{
 		__super::LateTick(TimeDelta);
 
-		//if (FAILED(Add_Coll())) 잠시 보류 
-		//	return;
-
-
 		m_pModelCom->Play_Animation(TimeDelta);
 		m_AnimDuration = m_pModelCom->Get_AnimDuration();
 		m_AnimTimeAcc = m_pModelCom->Get_AnimTimeAcc();
@@ -105,11 +115,29 @@ void CAncient_StonGolem::LateTick(_double TimeDelta)
 
 		Collision_ToPlayer();
 
-		//if (true == m_b)
-		//	KnockBack(TimeDelta);
-
 		if (nullptr != m_pRendererCom)
+		{
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
+
+			for (_uint i = 0; i < WEAPON_END; i++)
+			{
+				for (auto& pWeapon : m_vecWeapon[i])
+				{
+					if (nullptr != pWeapon)
+						m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, pWeapon);
+				}
+			}
+
+		}
+
+		for (_uint i = 0; i < WEAPON_END; i++)
+		{
+			for (auto& pWeapon : m_vecWeapon[i])
+			{
+				if (nullptr != pWeapon)
+					pWeapon->LateTick(TimeDelta);
+			}
+		}
 
 	}
 	else
@@ -141,6 +169,13 @@ HRESULT CAncient_StonGolem::Render()
 
 		m_pModelCom->Render(i);
 	}
+
+#ifdef _DEBUG
+
+	if (nullptr != m_pColliderCom)
+		m_pColliderCom->Render();
+
+#endif
 
 	return S_OK;
 }
@@ -174,44 +209,30 @@ HRESULT CAncient_StonGolem::Add_Coll()
 {
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-	CBone* pBone = m_pModelCom->Get_BonePtr("Bip001-L-Hand");
+	CBone* pBoneL = m_pModelCom->Get_BonePtr("Bip001-L-Finger21");
+	CBone* pBoneR = m_pModelCom->Get_BonePtr("Bip001-R-Finger21");
+	CBone* pBoneSpine = m_pModelCom->Get_BonePtr("Bip001-Spine1");
 
-	//Bip001-L-Hand
-	//Bip001-R-Hand
-
-	if (nullptr == pBone)
+	if (nullptr == pBoneL || nullptr == pBoneR || nullptr == pBoneSpine)
 		return E_FAIL;
 
-	//_matrix ParentMatrix = XMLoadFloat4x4(&pBone->Get_CombinedTransformMatrix()) * XMLoadFloat4x4(&m_pModelCom->Get_LocalMatrix());
+	CMonsterWeapon::WEAPONDESC WeaponDesc = { pBoneL, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CMonsterWeapon::WEAPON_MONSTER_L };
+	CMonsterWeapon::WEAPONDESC WeaponDesc1 = { pBoneR, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CMonsterWeapon::WEAPON_MONSTER_R };
+	CMonsterWeapon::WEAPONDESC WeaponDesc2 = { pBoneSpine, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CMonsterWeapon::WEAPON_MONSTER_BODY };
+	Safe_AddRef(pBoneL);
+	Safe_AddRef(pBoneR);
+	Safe_AddRef(pBoneSpine);
 
-	//ParentMatrix.r[0] = XMVector3Normalize(ParentMatrix.r[0]);
-	//ParentMatrix.r[1] = XMVector3Normalize(ParentMatrix.r[1]);
-	//ParentMatrix.r[2] = XMVector3Normalize(ParentMatrix.r[2]);
+	CGameObject* pWeapon = pInstance->Clone_GameObject_Add_Layer(TEXT("Prototype_GameObject_Monster_Weapon"), &WeaponDesc);
+	CGameObject* pWeaponR = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Monster_Weapon"), &WeaponDesc1);
+	CGameObject* pWeaponSpine = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Monster_Weapon"), &WeaponDesc2);
 
-	//_float4x4 WorlMatrix;
-	//XMStoreFloat4x4(&WorlMatrix, ParentMatrix * m_pTransformCom->Get_WorldMatrix());// m_Weapon.pParentTransform->Get_WorldMatrix());
-
-	//CCollider::COLLIDERDESC CollDesc;
-	//CollDesc.vScale = _float3(5.f, 5.f, 5.f);
-	//CollDesc.vCenter = _float3(0.f, CollDesc.vScale.y * 0.5f, 0.f);
-
-	//_vector vPos = XMVector4Transform(XMLoadFloat3(&CollDesc.vCenter) ,XMLoadFloat4x4(&WorlMatrix));
-
-
-	//XMStoreFloat3(&CollDesc.vCenter, vPos);
-	//if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_OBB"),
-	//	TEXT("Com_Collider1"), (CComponent**)&m_pColliderCom, &CollDesc)))
-	//	return E_FAIL;
-
-	CMonsterWeapon::WEAPONDESC WeaponDesc = { pBone, m_pModelCom->Get_LocalMatrix(), m_pTransformCom };
-	Safe_AddRef(pBone);
-
-	CGameObject* pWeapon = pInstance->Clone_GameObject_Add_Layer(TEXT("Prototype_GameObject_Weapon"), &WeaponDesc);
-
-	if (nullptr == pWeapon)
+	if (nullptr == pWeapon || nullptr == pWeaponR || nullptr == pWeaponSpine)
 		return E_FAIL;
 
-	m_vecWeapon[WEAPON_MONSTER].push_back(pWeapon);
+	m_vecWeapon[WEAPON_MONSTERL].push_back(pWeapon);
+	m_vecWeapon[WEAPON_MONSTERR].push_back(pWeaponR);
+	m_vecWeapon[WEAPON_MONSTERBODY].push_back(pWeaponSpine);
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -466,6 +487,8 @@ void CAncient_StonGolem::Set_Skill07(_double TimeDelta)
 	{
 		m_bAttack = true;
 		m_CurrAnim = S_SKILL07;
+		m_pTransformCom->Go_Straight(0.5);
+
 	}
 
 	if (m_PrevAnim == S_SKILL07 && m_pModelCom->Get_AnimFinished())
@@ -480,7 +503,7 @@ void CAncient_StonGolem::Set_Skill09(_double TimeDelta)
 	{
 		m_bAttack = true;
 		m_CurrAnim = S_SKILL09;
-		m_pTransformCom->Go_Straight(TimeDelta);
+		m_pTransformCom->Go_Straight(0.5);
 	}
 
 	if (m_PrevAnim == S_SKILL09 && m_pModelCom->Get_AnimFinished())
@@ -617,4 +640,15 @@ CGameObject * CAncient_StonGolem::Clone(void * pArg)
 void CAncient_StonGolem::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pColliderCom);
+
+	for (_uint i = 0; i < WEAPON_END; ++i)
+	{
+		for (auto& pWeapon : m_vecWeapon[i])
+			Safe_Release(pWeapon);
+
+		m_vecWeapon[i].clear();
+	}
+
 }

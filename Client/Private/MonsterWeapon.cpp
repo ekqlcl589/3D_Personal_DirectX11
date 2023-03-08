@@ -17,9 +17,6 @@ HRESULT CMonsterWeapon::Initialize_Prototype()
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
 
-	m_Weapon.WeaponType = WEAPON_MONSTER;
-	m_eCollisionState = OBJ_BOSS1;
-
 	return S_OK;
 }
 
@@ -33,6 +30,13 @@ HRESULT CMonsterWeapon::Initialize(void * pArg)
 	if (nullptr != pArg)
 		memcpy(&m_Weapon, pArg, sizeof m_Weapon);
 
+	if (m_Weapon.WeaponType == WEAPON_MONSTER_L)
+		m_eCollisionState = OBJ_MONSTER_WEAPONL;
+	else if (m_Weapon.WeaponType == WEAPON_MONSTER_R)
+		m_eCollisionState = OBJ_MONSTER_WEAPONR;
+	else if (m_Weapon.WeaponType == WEAPON_MONSTER_BODY)
+		m_eCollisionState = OBJ_MONSTER_BODY; // 아 이거 몬스터 여러마리로 바뀌면 좀 골치 아파 지겠는데..?
+
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
@@ -42,10 +46,19 @@ HRESULT CMonsterWeapon::Initialize(void * pArg)
 void CMonsterWeapon::Tick(_double TimeDelta)
 {
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	if (m_Weapon.WeaponType == WEAPON_MONSTER_L)
+		pInstance->Add_Collider(m_eCollisionState, 6, this);
 
-	pInstance->Add_Collider(m_eCollisionState, 3, this);
+	else if(m_Weapon.WeaponType == WEAPON_MONSTER_R)
+		pInstance->Add_Collider(m_eCollisionState, 7, this);
+
+	else if (m_Weapon.WeaponType == WEAPON_MONSTER_BODY)
+		pInstance->Add_Collider(m_eCollisionState, 8, this);
 
 	RELEASE_INSTANCE(CGameInstance);
+
+	if (nullptr != m_pColliderCom)
+		m_pColliderCom->Update(XMLoadFloat4x4(&m_WorldMatrix));
 
 }
 
@@ -65,6 +78,30 @@ void CMonsterWeapon::LateTick(_double TimeDelta)
 
 HRESULT CMonsterWeapon::Render()
 {
+	if (FAILED(__super::Render()))
+		return E_FAIL;
+	
+	if (FAILED(SetUp_ShaderResources()))
+		return E_FAIL;
+	
+	_uint		iNumMeshes = m_pModelCom->Get_NumMeshes();
+	
+	for (_uint i = 0; i < iNumMeshes; i++)
+	{
+		m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
+	
+		m_pShaderCom->Begin(0);
+	
+		//m_pModelCom->Render(i);
+	}
+
+#ifdef _DEBUG
+
+	if (nullptr != m_pColliderCom)
+		m_pColliderCom->Render();
+
+#endif
+
 	return S_OK;
 }
 
@@ -88,15 +125,31 @@ HRESULT CMonsterWeapon::Add_Components()
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
-	CCollider::COLLIDERDESC ColliderDesc;
-	ZeroMemory(&ColliderDesc, sizeof ColliderDesc);
 
-	ColliderDesc.vScale = _float3(1.f, 1.f, 1.f);
-	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vScale.y * 0.5f, 0.f);
+	if (m_Weapon.WeaponType == WEAPON_MONSTER_L || m_Weapon.WeaponType == WEAPON_MONSTER_R)
+	{
+		CCollider::COLLIDERDESC ColliderDesc;
+		ZeroMemory(&ColliderDesc, sizeof ColliderDesc);
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"),
-		TEXT("Com_Collider"), (CComponent**)&m_pColliderCom, &ColliderDesc)))
-		return E_FAIL;
+		ColliderDesc.vScale = _float3(2.f, 2.f, 2.f);
+		ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vScale.y * 0.5f, 0.f);
+
+		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_SPHERE"),
+			TEXT("Com_Collider"), (CComponent**)&m_pColliderCom, &ColliderDesc)))
+			return E_FAIL;
+	}
+	else if(m_Weapon.WeaponType == WEAPON_MONSTER_BODY)
+	{
+		CCollider::COLLIDERDESC ColliderDesc;
+		ZeroMemory(&ColliderDesc, sizeof ColliderDesc);
+
+		ColliderDesc.vScale = _float3(5.f, 2.f, 5.f);
+		ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vScale.y * 0.5f, 0.f);
+		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_OBB"),
+			TEXT("Com_Collider"), (CComponent**)&m_pColliderCom, &ColliderDesc)))
+			return E_FAIL;
+
+	}
 
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModel"),
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
@@ -176,4 +229,9 @@ void CMonsterWeapon::Free()
 		Safe_Release(m_Weapon.pBonePtr);
 
 	Safe_Release(m_pColliderCom);
+	Safe_Release(m_pTransformCom);
+	Safe_Release(m_pModelCom);
+	Safe_Release(m_pShaderCom);
+	Safe_Release(m_pRendererCom);
+
 }

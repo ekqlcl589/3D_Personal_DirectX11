@@ -13,6 +13,7 @@ class CCollider;
 
 END
 
+BEGIN(Client)
 class CMonsterWeapon final :
 	public CGameObject
 {
@@ -20,7 +21,7 @@ public:
 	enum COLLIDER { COLLIDER_AABB, COLLIDER_OBB, COLLIDER_SPHERE, COLLIDER_END };
 
 public:
-	enum WEAPONTYPE { WEAPON_MONSTER, WEAPON_END };
+	enum WEAPONTYPE { WEAPON_MONSTER_L, WEAPON_MONSTER_R, WEAPON_MONSTER_BODY, WEAPON_END };
 	typedef struct tagWeaponDesc
 	{
 		CBone* pBonePtr;
@@ -63,3 +64,4 @@ public:
 
 };
 
+END

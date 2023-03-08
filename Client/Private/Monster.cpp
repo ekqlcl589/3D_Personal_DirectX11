@@ -43,9 +43,6 @@ void CMonster::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 
-	if (nullptr != m_pColliderCom)
-		m_pColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
-
 	m_vTargetPos = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION);// -m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
 	ChaseToPlayer(TimeDelta);
@@ -61,12 +58,6 @@ HRESULT CMonster::Render()
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 
-#ifdef _DEBUG
-
-	if (nullptr != m_pColliderCom)
-		m_pColliderCom->Render();
-
-#endif
 
 	return S_OK;
 }
@@ -143,7 +134,6 @@ void CMonster::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pColliderCom);
 
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pModelCom);

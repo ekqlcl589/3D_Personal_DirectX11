@@ -48,6 +48,8 @@ public:
 
 public:
 	void Hit(const _int& _Damage);
+	void Damage(const _int& _Damage);
+
 	void Attack();
 	void Attack_Combo(_double TimeDelta);
 	
