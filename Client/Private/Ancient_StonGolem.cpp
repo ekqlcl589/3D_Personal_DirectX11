@@ -80,6 +80,19 @@ void CAncient_StonGolem::Tick(_double TimeDelta)
 		}
 		__super::Tick(TimeDelta);
 
+		if (true == m_bTest)
+		{
+			_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			_float3 fPos;
+
+			XMStoreFloat3(&fPos, vPos);
+
+			fPos.x = Lerp(fPos.x, fPos.x + 0.03f, m_dLerpTime);
+			fPos.y = Lerp(fPos.y, fPos.y + 0.f, m_dLerpTime);
+			fPos.z = Lerp(fPos.z, fPos.z + 0.03f, m_dLerpTime);
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPos));
+
+		}
 		Set_State(TimeDelta);
 
 		Set_AnimationState(m_CurrAnim);
@@ -486,28 +499,33 @@ void CAncient_StonGolem::Set_Skill07(_double TimeDelta)
 	if (m_PrevAnim == S_WAIT || m_PrevAnim == S_RESPAN && m_pModelCom->Get_AnimFinished())
 	{
 		m_bAttack = true;
+		m_bTest = true;
 		m_CurrAnim = S_SKILL07;
-		m_pTransformCom->Go_Straight(0.5);
 
 	}
 
 	if (m_PrevAnim == S_SKILL07 && m_pModelCom->Get_AnimFinished())
 	{
+		m_dLerpTime = 0.f;
+		m_bTest = false;
 		m_CurrAnim = S_WAIT;
 	}
 }
 
 void CAncient_StonGolem::Set_Skill09(_double TimeDelta)
 {
+
 	if (m_PrevAnim == S_WAIT || m_PrevAnim == S_RESPAN && m_pModelCom->Get_AnimFinished())
 	{
 		m_bAttack = true;
+		m_bTest = true;
 		m_CurrAnim = S_SKILL09;
-		m_pTransformCom->Go_Straight(0.5);
 	}
 
 	if (m_PrevAnim == S_SKILL09 && m_pModelCom->Get_AnimFinished())
 	{
+		m_dLerpTime = 0.f;
+		m_bTest = false;
 		m_CurrAnim = S_WAIT;
 	}
 

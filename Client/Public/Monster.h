@@ -74,6 +74,10 @@ protected:
 
 	_float3 m_fHorizontal_Power = { 1.f, 1.f, 1.f };
 
+	_float Lerp(_float Start, _float End, _double Dist) { return (_float)(((1 - Dist)*Start) + (Dist*End)); }
+	_float m_dLerpTime = 0.f;
+	_bool m_bTest = false;
+
 protected:
 	vector<CGameObject*> m_vecWeapon[WEAPON_END];
 

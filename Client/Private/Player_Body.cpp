@@ -76,8 +76,29 @@ void CPlayer_Body::Tick(_double TimeDelta)
 
 	__super::Tick(TimeDelta);
 	cout << m_tInfo._Hp << endl;
+
+	m_dLerpTime += TimeDelta*1.1f;
+	if (m_dLerpTime >= 1)
+	{
+		m_dLerpTime = 1.0;
+	}
+
 	Key_Input(TimeDelta);
 
+	if (true == m_bTest)
+	{
+		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+		_float3 fPos;
+
+		XMStoreFloat3(&fPos, vPos);
+
+		fPos.x = Lerp(fPos.x, fPos.x + 0.003f, m_dLerpTime);
+		fPos.y = Lerp(fPos.y, fPos.y + 0.f, m_dLerpTime);
+		fPos.z = Lerp(fPos.z, fPos.z + 0.003f, m_dLerpTime);
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPos));
+
+	}
 	Dash(TimeDelta);
 
 	Animation_State(m_tInfo.CurrAnimState, TimeDelta);
@@ -453,13 +474,34 @@ void CPlayer_Body::Hit(const _int & _Damage)
 void CPlayer_Body::Damage(const _int & _Damage)
 {
 	m_tInfo._Hp -= _Damage;
-	//m_tInfo.CurrAnimState = ANIM_STUN;
-	//
-	//if (m_tInfo.prevAnimState == ANIM_STUN && true == m_pModelCom->Get_AnimFinished())
-	//	m_tInfo.CurrAnimState = ANIM_COMBAT_WAIT;
-	//
-	//if (m_tInfo.prevAnimState == ANIM_COMBAT_WAIT == true == m_pModelCom->Get_AnimFinished())
-	//	m_tInfo.CurrAnimState = ANIM_IDEL;
+
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+	CTransform* pMonsterTransform = nullptr;
+
+	pMonsterTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Com_Transform")));
+
+	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	_vector vMonPos = pMonsterTransform->Get_State(CTransform::STATE_POSITION);
+
+	_vector vDir = vMonPos - vPosition;
+
+	_vector vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vDir);
+
+	_vector vUp = XMVector3Cross(vDir, vRight);
+
+	_float3 vScale = m_pTransformCom->Get_Scale();
+
+	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVector3Normalize(vRight) * vScale.x);
+	m_pTransformCom->Set_State(CTransform::STATE_UP, XMVector3Normalize(vUp) * vScale.y);
+	m_pTransformCom->Set_State(CTransform::STATE_LOOK, XMVector3Normalize(vDir) * vScale.z);
+
+	vPosition -= XMVector3Normalize(vDir);
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+
+	RELEASE_INSTANCE(CGameInstance);
 
 }
 
@@ -477,33 +519,39 @@ void CPlayer_Body::Attack_Combo(_double TimeDelta)
 	if (false == m_bJump)
 	{
 	
+		m_bTest = true;
 		m_tInfo.CurrAnimState = ANIM_ATTACK_COMBO1;
-		m_pTransformCom->Go_Straight(0.05); // 루트 모션이 없어서 움직임 제어 직접 해줘야 함 
+		//m_pTransformCom->Go_Straight(0.05); // 루트 모션이 없어서 움직임 제어 직접 해줘야 함 
 	}
 
 	if (m_tInfo.prevAnimState == ANIM_ATTACK_COMBO1 && true != m_pModelCom->Get_AnimFinished())
 	{
 		m_tInfo.CurrAnimState = ANIM_ATTACK_COMBO2;
-		m_pTransformCom->Go_Straight(0.05);
+		//m_pTransformCom->Go_Straight(0.05);
 
 	}
 
 	else if (m_tInfo.prevAnimState == ANIM_ATTACK_COMBO2 && true != m_pModelCom->Get_AnimFinished())
 	{
 		m_tInfo.CurrAnimState = ANIM_ATTACK_COMBO3;
-		m_pTransformCom->Go_Straight(0.07);
+		//m_pTransformCom->Go_Straight(0.07);
+		m_bTest = false;
 
 	}
 
 	if (m_tInfo.prevAnimState == ANIM_ATTACK_COMBO3 && true == m_pModelCom->Get_LerpAnimFinished())
 	{
 		m_tInfo.CurrAnimState = ANIM_COMBAT_WAIT;
-
+		m_bTest = false;
+		m_dLerpTime = 0.f;
 	}
 
 	if (false == m_AttackCheck && m_tInfo.prevAnimState == ANIM_COMBAT_WAIT && true == m_pModelCom->Get_AnimFinished())
 	{
+		m_dLerpTime = 0.f;
+
 		m_AttackCheck = false;
+		m_bTest = false;
 		m_tInfo.CurrAnimState = ANIM_IDEL;
 	}
 

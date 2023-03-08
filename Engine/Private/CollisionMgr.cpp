@@ -36,6 +36,10 @@ HRESULT CCollisionMgr::Add_Collider(COLLISIONSTATE eType, int iNum, CGameObject*
 	return S_OK;
 }
 
+void CCollisionMgr::OnCollisionEnter()
+{
+}
+
 void CCollisionMgr::OnCollision(COLLISIONSTATE eType, COLLISIONSTATE eType2)
 {
 	for (auto& Src : m_mapObj[eType])
@@ -56,6 +60,10 @@ void CCollisionMgr::OnCollision(COLLISIONSTATE eType, COLLISIONSTATE eType2)
 			}
 		}
 	}
+}
+
+void CCollisionMgr::StandColiision()
+{
 }
 
 HRESULT CCollisionMgr::Delete_CollideObj(COLLISIONSTATE eObjID, int iNum)

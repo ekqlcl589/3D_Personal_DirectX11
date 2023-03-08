@@ -46,6 +46,13 @@ void CMonster::Tick(_double TimeDelta)
 	m_vTargetPos = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION);// -m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
 	ChaseToPlayer(TimeDelta);
+
+	m_dLerpTime += TimeDelta*1.1f;
+	if (m_dLerpTime >= 1)
+	{
+		m_dLerpTime = 1.0;
+	}
+
 }
 
 void CMonster::LateTick(_double TimeDelta)

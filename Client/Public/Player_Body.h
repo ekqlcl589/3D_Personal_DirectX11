@@ -45,6 +45,8 @@ public:
 public:
 	PLAYERINFO& Get_Info() { return m_tInfo; }
 
+	_float   Lerp(_float Start, _float End, _double Dist) { return (_float)(((1 - Dist)*Start) + (Dist*End)); }
+	_float m_dLerpTime = 0.f;
 
 public:
 	void Hit(const _int& _Damage);
@@ -119,6 +121,8 @@ private:
 	_bool m_bDeah = false;
 
 	_bool m_bStart = false;
+
+	_bool m_bTest = false;
 
 public:
 	static CPlayer_Body* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
