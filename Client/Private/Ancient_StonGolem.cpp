@@ -87,9 +87,9 @@ void CAncient_StonGolem::Tick(_double TimeDelta)
 
 			XMStoreFloat3(&fPos, vPos);
 
-			fPos.x = Lerp(fPos.x, fPos.x + 0.03f, m_dLerpTime);
-			fPos.y = Lerp(fPos.y, fPos.y + 0.f, m_dLerpTime);
-			fPos.z = Lerp(fPos.z, fPos.z + 0.03f, m_dLerpTime);
+			fPos.x = Lerp(fPos.x, fPos.x - 0.01f, m_dLerpTime);
+			fPos.y = Lerp(fPos.y, fPos.y - 0.f, m_dLerpTime);
+			fPos.z = Lerp(fPos.z, fPos.z - 0.01f, m_dLerpTime);
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPos));
 
 		}
@@ -333,7 +333,6 @@ void CAncient_StonGolem::Set_AnimationState(STONGOLEMANIMSTATE eType)
 		
 		}
 		m_pModelCom->SetUp_Animation(m_iAnimIndex);
-
 		m_PrevAnim = m_CurrAnim;
 	}
 
@@ -398,6 +397,7 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 	if(true == m_bSkill4)
  		iRand ? Set_Skill07(TimeDelta) : Set_Skill09(TimeDelta);
 	
+
 	if (m_eType._Hp <= 500.f)
 		Set_Skill01(TimeDelta); // 체력이 반 이하로 떨어지면 
 	
@@ -476,6 +476,7 @@ void CAncient_StonGolem::Set_Skill05(_double TimeDelta)
 	if (m_PrevAnim == S_WAIT && m_pModelCom->Get_AnimFinished())
 	{
 		m_bAttack = true;
+
 		m_CurrAnim = S_SKILL05_1;
 	}
 
@@ -498,13 +499,12 @@ void CAncient_StonGolem::Set_Skill07(_double TimeDelta)
 {
 	if (m_PrevAnim == S_WAIT || m_PrevAnim == S_RESPAN && m_pModelCom->Get_AnimFinished())
 	{
-		m_bAttack = true;
-		m_bTest = true;
+		//m_bAttack = true;
 		m_CurrAnim = S_SKILL07;
 
 	}
 
-	if (m_PrevAnim == S_SKILL07 && m_pModelCom->Get_AnimFinished())
+	if (m_PrevAnim == S_SKILL07 && true == m_pModelCom->Get_AnimFinished())
 	{
 		m_dLerpTime = 0.f;
 		m_bTest = false;
@@ -522,7 +522,7 @@ void CAncient_StonGolem::Set_Skill09(_double TimeDelta)
 		m_CurrAnim = S_SKILL09;
 	}
 
-	if (m_PrevAnim == S_SKILL09 && m_pModelCom->Get_AnimFinished())
+	if (m_PrevAnim == S_SKILL09 && true == m_pModelCom->Get_AnimFinished())
 	{
 		m_dLerpTime = 0.f;
 		m_bTest = false;

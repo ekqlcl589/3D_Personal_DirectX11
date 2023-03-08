@@ -257,17 +257,23 @@ void CPlayer_Body::Key_Input(_double TimeDelta)
 
 	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_W))
 	{
+		m_bTest = false;
+
 		m_pTransformCom->Go_Straight(TimeDelta);
 		m_tInfo.CurrAnimState = ANIM_RUN;
 
 	}
 	else if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_W))
 	{
+		m_bTest = false;
+
 		m_tInfo.CurrAnimState = ANIM_IDEL;
 	}
 
 	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_S))
 	{
+		m_bTest = false;
+
 		m_pTransformCom->Go_Back(TimeDelta);
 		m_tInfo.CurrAnimState = ANIM_RUN;
 
@@ -283,6 +289,8 @@ void CPlayer_Body::Key_Input(_double TimeDelta)
 
 	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_A))
 	{
+		m_bTest = false;
+
 		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * -1.f);
 		//m_tInfo.CurrAnimState = ANIM_RUN_L;
 	}
@@ -292,6 +300,8 @@ void CPlayer_Body::Key_Input(_double TimeDelta)
 
 	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_D))
 	{
+		m_bTest = false;
+
 		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta);
 		//m_tInfo.CurrAnimState = ANIM_RUN_R;
 	}
@@ -487,6 +497,8 @@ void CPlayer_Body::Damage(const _int & _Damage)
 
 	_vector vDir = vMonPos - vPosition;
 
+	_vector vTest = vPosition - vMonPos;
+
 	_vector vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vDir);
 
 	_vector vUp = XMVector3Cross(vDir, vRight);
@@ -497,9 +509,15 @@ void CPlayer_Body::Damage(const _int & _Damage)
 	m_pTransformCom->Set_State(CTransform::STATE_UP, XMVector3Normalize(vUp) * vScale.y);
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, XMVector3Normalize(vDir) * vScale.z);
 
-	vPosition -= XMVector3Normalize(vDir);
+	/*
+		m_tInfo.fX = tTargetInfo.fX - (tTargetInfo.fCX + m_tInfo.fCX) * 0.5f;
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+		m_tInfo.fX += (m_fSpeed + 300.f + fDashTime) * m_Dir;
+
+	*/
+	//vPosition = vDir - vPosition; // 겹친만큼 밀어줘야 함 -> 계산을 콜리전 매니저에서? 아님 콜라이더에서? 
+	//
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 
 	RELEASE_INSTANCE(CGameInstance);
 
