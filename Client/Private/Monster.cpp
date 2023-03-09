@@ -30,7 +30,7 @@ HRESULT CMonster::Initialize(void * pArg)
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
 	m_pTarget = static_cast<CPlayer_Body*>(pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player")));
-
+	
 	m_pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
 
 
@@ -139,6 +139,7 @@ void CMonster::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pColliderCom);
 
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pModelCom);

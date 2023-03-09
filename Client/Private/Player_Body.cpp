@@ -58,6 +58,9 @@ HRESULT CPlayer_Body::Initialize(void * pArg)
 
 	m_eCollisionState = OBJ_PLAYER;
 
+	m_iObjID = 0;
+
+
 	return S_OK;
 }
 
@@ -67,14 +70,15 @@ void CPlayer_Body::Tick(_double TimeDelta)
 	{
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-		pInstance->Add_Collider(m_eCollisionState, 0, this);
+		pInstance->Add_Collider(m_eCollisionState, Set_ObjID(m_iObjID), this);
 
 		RELEASE_INSTANCE(CGameInstance);
+		
 
-		m_bStart = true;
 	}
 
 	__super::Tick(TimeDelta);
+
 	cout << m_tInfo._Hp << endl;
 
 	m_dLerpTime += TimeDelta*1.1f;
@@ -216,7 +220,7 @@ HRESULT CPlayer_Body::Render()
 	return S_OK;
 }
 
-void CPlayer_Body::OnCollision(CGameObject * pObj)
+void CPlayer_Body::OnCollision(CGameObject * pObj) // LateTick에서 불림
 {
 	COLLISIONSTATE eType = pObj->Get_ObjType();
 

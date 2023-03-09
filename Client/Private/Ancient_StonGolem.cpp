@@ -38,9 +38,16 @@ HRESULT CAncient_StonGolem::Initialize(void * pArg)
 
 	m_eCollisionState = OBJ_BOSS1;
 
+	m_iObjID = 3;
 	//ZeroMemory(&m_MonsterState, sizeof(MONSTERSTATE));
 	//
 	//memcpy(&m_MonsterState, pArg, sizeof m_MonsterState);
+
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+	pInstance->Add_Collider(m_eCollisionState, Set_ObjID(m_iObjID), this);
+
+	RELEASE_INSTANCE(CGameInstance);
 
 	_float3 fPosition = { 10.f, 0.f, 20.f };
 
@@ -59,22 +66,19 @@ HRESULT CAncient_StonGolem::Initialize(void * pArg)
 
 void CAncient_StonGolem::Tick(_double TimeDelta)
 {
+	m_CoolTime += TimeDelta;
+	if (m_CoolTime > 2.f)
+	{
+			m_isColl = false;
+			m_CoolTime = 0.0;
+	}
+
 	if (false == m_bDead)
 	{
 		if (m_eType._Hp <= 0.f)
 			m_eType._Hp = 1.f;
 
-		if (false == m_bStart)
-		{
-			CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-
-			pInstance->Add_Collider(m_eCollisionState, 3, this);
-
-			RELEASE_INSTANCE(CGameInstance);
-
-			m_bStart = true;
-
-		}
+		cout << m_eType._Hp << endl;
 		__super::Tick(TimeDelta);
 
 		if (true == m_bTest)
@@ -124,8 +128,11 @@ void CAncient_StonGolem::LateTick(_double TimeDelta)
 
 		Set_Time();
 
-		Collision_ToPlayer();
+#ifdef _DEBUG
 
+		//Collision_ToPlayer();
+
+#endif
 		if (nullptr != m_pRendererCom)
 		{
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
@@ -199,11 +206,22 @@ void CAncient_StonGolem::OnCollision(CGameObject * pObj)
 	{
 	case Engine::OBJ_PLAYER:
 		//m_b = true;
+		if (!m_isColl)
+		{
+			m_eType._Hp -= 10.f;
+			m_isColl = true;
+		}
 		break;
 	case Engine::OBJ_WEAPON_SS:
 	{
 		//if(true == m_bAttackTime)
-		//m_eType._Hp -= 10.f;
+	
+		if (!m_isColl)
+		{
+			m_eType._Hp -= 10.f;
+			m_isColl = true;
+		}
+		
 		break;
 	}
 	case Engine::OBJ_WEAPON_KARMA14:

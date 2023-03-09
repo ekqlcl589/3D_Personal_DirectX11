@@ -15,12 +15,17 @@ private:
 public:
 	HRESULT Tick(_double TimeDelta); // 한 프레임 돌리고 충돌 저장 
 
-	HRESULT Add_Collider(COLLISIONSTATE eType, int iNum, CGameObject* pObj);
-	void OnCollisionEnter();
-	void OnCollision(COLLISIONSTATE eType, COLLISIONSTATE eType2);
-	void StandColiision();
+	HRESULT Add_Collider(COLLISIONSTATE eType, int iNum, CGameObject* pObj); // 충돌체들 map에 push
+
+	void OnCollisionEnter(COLLISIONSTATE eType, COLLISIONSTATE eType2); // 충돌 여부 판별 
+
+	void OnCollision(COLLISIONSTATE eType, COLLISIONSTATE eType2); // 충돌 했다면
+
+	void OncollisionStay(COLLISIONSTATE eType); // 전 프레임에 충돌 했다면 안 함
 
 	HRESULT Delete_CollideObj(COLLISIONSTATE eObjID, int iNum);
+
+	class CGameObject* Find_Collider(const _tchar* pColliderTag, COLLISIONSTATE eType);
 
 private:
 	unordered_map<_uint, CGameObject*> m_mapObj[OBJ_END];

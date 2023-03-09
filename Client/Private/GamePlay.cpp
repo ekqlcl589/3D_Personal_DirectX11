@@ -32,8 +32,8 @@ HRESULT CGamePlay::Initialize()
 	//LoadMonster(L"../Data/Monster.dat");
 
 
-	//if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
-	//	return E_FAIL;
+	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
+		return E_FAIL;
 
 	if (FAILED(Ready_UI(TEXT("Layer_UI"))))
 		return E_FAIL;
@@ -81,7 +81,7 @@ HRESULT CGamePlay::Ready_Layer_Camera(const _tchar * pLayerTag)
 	ZeroMemory(&CameraDesc, sizeof CameraDesc);
 
 	CameraDesc.vEye = _float3(0.f, 10.f, -9.f);
-	CameraDesc.vAt = _float3(0.f, 0.f, 0.f);
+	CameraDesc.vAt = _float3(0.f, 5.f, 0.f);
 	CameraDesc.vAxisY = _float3(0.f, 1.f, 0.f);
 	
 	CameraDesc.vFov = XMConvertToRadians(60.f);

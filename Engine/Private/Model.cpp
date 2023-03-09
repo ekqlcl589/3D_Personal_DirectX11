@@ -382,11 +382,12 @@ void CModel::Free()
 		Safe_Release(pAnim);
 	m_vecAnimations.clear();
 
+	for (auto& pMesh : m_vecMesh)
+		Safe_Release(pMesh);
+	m_vecMesh.clear();
+
 	for (auto& pBone : m_vecBones)
 		Safe_Release(pBone);
 	m_vecBones.clear();
 
-	for (auto& pMesh : m_vecMesh)
-		Safe_Release(pMesh);
-	m_vecMesh.clear();
 }

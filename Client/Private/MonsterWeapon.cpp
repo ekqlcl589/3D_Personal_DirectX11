@@ -40,22 +40,23 @@ HRESULT CMonsterWeapon::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	return S_OK;
-}
-
-void CMonsterWeapon::Tick(_double TimeDelta)
-{
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 	if (m_Weapon.WeaponType == WEAPON_MONSTER_L)
 		pInstance->Add_Collider(m_eCollisionState, 6, this);
 
-	else if(m_Weapon.WeaponType == WEAPON_MONSTER_R)
+	else if (m_Weapon.WeaponType == WEAPON_MONSTER_R)
 		pInstance->Add_Collider(m_eCollisionState, 7, this);
 
 	else if (m_Weapon.WeaponType == WEAPON_MONSTER_BODY)
 		pInstance->Add_Collider(m_eCollisionState, 8, this);
 
 	RELEASE_INSTANCE(CGameInstance);
+
+	return S_OK;
+}
+
+void CMonsterWeapon::Tick(_double TimeDelta)
+{
 
 	if (nullptr != m_pColliderCom)
 		m_pColliderCom->Update(XMLoadFloat4x4(&m_WorldMatrix));

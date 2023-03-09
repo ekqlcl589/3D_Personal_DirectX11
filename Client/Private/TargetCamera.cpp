@@ -75,13 +75,16 @@ void CTargetCamera::Target_Renewal(_double TimeDelta)
 {
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
+	_vector vRight = m_Transform->Get_State(CTransform::STATE_RIGHT);
+	_vector vPos = m_Transform->Get_State(CTransform::STATE_POSITION);
+
 	CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
 
-	_vector fPosition = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
+	_vector vPosition = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
 
 	_float3 fTarget;
 
-	XMStoreFloat3(&fTarget, fPosition);
+	XMStoreFloat3(&fTarget, vPosition);
 	
 	fTarget.y += m_fDis;
 	fTarget.z -= 6.f;
@@ -90,17 +93,13 @@ void CTargetCamera::Target_Renewal(_double TimeDelta)
 
 	_long Mouse = 0;
 
-	if (Mouse = m_pInstance->Get_DIMouseMove(DIMM_X))
-	{
-		pPlayerTransform->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * Mouse * 0.1f);
-		//m_Transform->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * Mouse * 0.1f);
-	}
+	_vector vDir = XMVector3Normalize(m_Transform->Get_State(CTransform::STATE_LOOK));
 
-	if (Mouse = m_pInstance->Get_DIMouseMove(DIMM_Y))
-	{
-		//pPlayerTransform->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * Mouse * 0.1f);
-		m_Transform->Turn(m_Transform->Get_State(CTransform::STATE_RIGHT), TimeDelta * Mouse * 0.1f);
-	}
+	//if (Mouse = m_pInstance->Get_DIMouseMove(DIMM_X))
+	//{
+	//	//pPlayerTransform->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * Mouse * 0.1f);
+	//	m_Transform->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * Mouse * 0.1f);
+	//}
 
 	RELEASE_INSTANCE(CGameInstance);
 }

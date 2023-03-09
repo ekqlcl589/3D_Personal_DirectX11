@@ -22,17 +22,19 @@ public:
 
 	virtual void OnCollision(CGameObject* pObj) {}
 
-	void KnockBack(_double TimeDelta);
+	void KnockBack(_uint iDamage, _double TimeDelta);
+	void Hit(_uint iDamage);
 
 	void Set_ObjType(COLLISIONSTATE eObjID) { m_eCollisionState = eObjID; }
 
 	COLLISIONSTATE Get_ObjType() { return m_eCollisionState; }
 	CCollider* Get_Collider() { return m_pColliderCom; }
 
+	_bool Get_isColl() { return m_isColl; }
 	_bool Get_Dead() { return m_bDead; }
 	void Set_Dead() { m_bDead = true; }
 
-	void Set_ObjID(int& iObjID) { m_iObjID = iObjID; }
+	int Set_ObjID(int& iObjID) { return m_iObjID = iObjID; }
 	int	Get_ObjID() { return m_iObjID; }
 
 protected:
@@ -41,6 +43,7 @@ protected:
 
 	CCollider* m_pColliderCom = { nullptr };
 	COLLISIONSTATE m_eCollisionState = OBJ_END;
+	_bool m_isColl = { false };
 
 	_bool m_isCloned = { false };
 	_bool m_bDead = { false };
