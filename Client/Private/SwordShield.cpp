@@ -64,7 +64,7 @@ void CSwordShield::Tick(_double TimeDelta)
 
 		m_bStart = true;
 
-	} // 얘네는 하나가 아니라서 업데이트 돌려줘야 함
+	} // 얘네는 하나가 아
 
 	__super::Tick(TimeDelta);
 }

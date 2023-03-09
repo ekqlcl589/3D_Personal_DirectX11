@@ -67,7 +67,7 @@ HRESULT CAncient_StonGolem::Initialize(void * pArg)
 void CAncient_StonGolem::Tick(_double TimeDelta)
 {
 	m_CoolTime += TimeDelta;
-	if (m_CoolTime > 2.f)
+	if (m_CoolTime > 1.5f)
 	{
 			m_isColl = false;
 			m_CoolTime = 0.0;
@@ -205,7 +205,6 @@ void CAncient_StonGolem::OnCollision(CGameObject * pObj)
 	switch (eType)
 	{
 	case Engine::OBJ_PLAYER:
-		//m_b = true;
 		if (!m_isColl)
 		{
 			m_eType._Hp -= 10.f;
@@ -213,8 +212,7 @@ void CAncient_StonGolem::OnCollision(CGameObject * pObj)
 		}
 		break;
 	case Engine::OBJ_WEAPON_SS:
-	{
-		//if(true == m_bAttackTime)
+	
 	
 		if (!m_isColl)
 		{
@@ -223,7 +221,7 @@ void CAncient_StonGolem::OnCollision(CGameObject * pObj)
 		}
 		
 		break;
-	}
+	
 	case Engine::OBJ_WEAPON_KARMA14:
 		break;
 	case Engine::OBJ_END:

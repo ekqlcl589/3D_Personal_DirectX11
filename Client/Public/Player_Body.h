@@ -112,9 +112,10 @@ private:
 	_bool m_bCheck = false;
 	_bool m_bSIbal = false;
 
-	_float m_fPower = 0.5f;
+	_float m_fPower = 0.05f;
 	_float m_fTime = 0.f;
 
+	_bool m_Hit = false;
 	_float m_HitDelay = 0.f;
 	_float m_ComboTime = 0.f;
 

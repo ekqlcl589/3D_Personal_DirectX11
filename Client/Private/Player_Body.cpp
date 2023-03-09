@@ -60,21 +60,22 @@ HRESULT CPlayer_Body::Initialize(void * pArg)
 
 	m_iObjID = 0;
 
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+	pInstance->Add_Collider(m_eCollisionState, Set_ObjID(m_iObjID), this);
+
+	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
 }
 
 void CPlayer_Body::Tick(_double TimeDelta)
 {
-	if (false == m_bStart)
+	m_HitDelay += TimeDelta;
+	if (m_HitDelay >= 1.5f)
 	{
-		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-
-		pInstance->Add_Collider(m_eCollisionState, Set_ObjID(m_iObjID), this);
-
-		RELEASE_INSTANCE(CGameInstance);
-		
-
+		m_Hit = false;
+		m_HitDelay = 0.0;
 	}
 
 	__super::Tick(TimeDelta);
@@ -233,20 +234,45 @@ void CPlayer_Body::OnCollision(CGameObject * pObj) // LateTick에서 불림
 	case Engine::OBJ_WEAPON_SS1:
 		break;
 	case Engine::OBJ_BOSS1:
+		if (!m_Hit)
+		{
+			Hit(10); // 몬스터 공격력 가져와서 대입 
+			m_Hit = true;
+		}
+
 		break;
 	case Engine::OBJ_WEAPON_KARMA14:
 		break;
 	case Engine::OBJ_BOSS2:
 		break;
 	case Engine::OBJ_MONSTER_WEAPONL:
-		Hit(10); // 몬스터 공격력 가져와서 대입 
+	
+		if (!m_Hit)
+		{
+			Hit(10); // 몬스터 공격력 가져와서 대입 
+			m_Hit = true;
+		}
 		break;
+	
 	case Engine::OBJ_MONSTER_WEAPONR:
-		Hit(10);
+	{
+		if (!m_Hit)
+		{
+			Hit(10); // 몬스터 공격력 가져와서 대입 
+			m_Hit = true;
+		}
 		break;
+	}
 	case Engine::OBJ_MONSTER_BODY:
-		Damage(10);
+	
+		if (!m_Hit)
+		{
+			Damage(10); // 몬스터 공격력 가져와서 대입 
+			m_Hit = true;
+		}
+
 		break;
+	
 	case Engine::OBJ_END:
 		break;
 	default:
@@ -282,6 +308,12 @@ void CPlayer_Body::Key_Input(_double TimeDelta)
 		m_pTransformCom->Go_Back(TimeDelta);
 		m_tInfo.CurrAnimState = ANIM_RUN;
 
+	}
+	else if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_S))
+	{
+		m_bTest = false;
+
+		m_tInfo.CurrAnimState = ANIM_IDEL;
 	}
 
 	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_LSHIFT))

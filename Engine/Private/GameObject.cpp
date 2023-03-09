@@ -40,7 +40,14 @@ void CGameObject::Tick(_double TimeDelta)
 	pGameInstance->OnCollision(OBJ_PLAYER, OBJ_MONSTER_WEAPONL); // 플레이어와 보스 왼 팔 충돌 
 	pGameInstance->OnCollision(OBJ_PLAYER, OBJ_MONSTER_WEAPONR); // 플레이어와 보스 오른 팔 충돌 
 	pGameInstance->OnCollision(OBJ_PLAYER, OBJ_MONSTER_BODY); // 플레이어와 보스 몸통 충돌 
- 	pGameInstance->OnCollision(OBJ_WEAPON_SS, OBJ_BOSS1); // 무기와 보스 충돌 
+ 	pGameInstance->OnCollision(OBJ_WEAPON_SS, OBJ_MONSTER_WEAPONL); // 무기와 보스 충돌 
+	pGameInstance->OnCollision(OBJ_WEAPON_SS, OBJ_MONSTER_WEAPONR);
+	pGameInstance->OnCollision(OBJ_WEAPON_SS, OBJ_MONSTER_BODY);
+
+	pGameInstance->OnCollision(OBJ_BOSS1, OBJ_PLAYER); // 플레이어와 보스 충돌 
+	pGameInstance->OnCollision(OBJ_MONSTER_WEAPONL, OBJ_PLAYER); // 플레이어와 보스 왼 팔 충돌 
+	pGameInstance->OnCollision(OBJ_MONSTER_WEAPONR, OBJ_PLAYER); // 플레이어와 보스 오른 팔 충돌 
+	pGameInstance->OnCollision(OBJ_MONSTER_BODY, OBJ_PLAYER); // 플레이어와 보스 몸통 충돌 
 
 	Safe_Release(pGameInstance);
 
