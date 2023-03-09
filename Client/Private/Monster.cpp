@@ -106,8 +106,6 @@ void CMonster::ChaseToPlayer(_double TimeDelta)
 {
 	if (false == m_bCheck)
 	{
-		m_fTagetDistance = 30.f;
-
 		if (m_pTransformCom->Compute_Distance(m_vTargetPos) <= m_fTagetDistance)
 		{
 			m_bPlayerChecck = true;

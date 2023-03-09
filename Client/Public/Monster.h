@@ -58,7 +58,7 @@ protected:
 	void KnockBack(_double TimeDelta);
 
 	_float3 m_fDistance = { 5.f, 5.f, 5.f };
-	_float m_fTagetDistance = 0.f;
+	_float m_fTagetDistance = 30.f;
 
 	_float3 m_fToTagetPos = { 0.f, 0.f, 0.f };
 	_vector m_vTargetPos;

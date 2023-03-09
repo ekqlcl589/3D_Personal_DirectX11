@@ -21,9 +21,6 @@ HRESULT CAncient_StonGolem::Initialize_Prototype()
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
 
-	// 5보다 멀 면 battack false
-	// 5 보다 가까우면 battack true
-
 	return S_OK;
 }
 
@@ -93,6 +90,7 @@ void CAncient_StonGolem::Tick(_double TimeDelta)
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPos));
 
 		}
+
 		Set_State(TimeDelta);
 
 		Set_AnimationState(m_CurrAnim);
@@ -367,11 +365,19 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 		m_pTransformCom->Chase_Tatget(m_vTargetPos, 5.f, TimeDelta);
 		m_CurrAnim = S_RUN;
 	}
-	else if(false == m_bPlayerChecck && false == m_bAttack)
+	else if (false == m_bPlayerChecck && false == m_bRespwan)
+	{
 		m_CurrAnim = S_RESPAN;
+		_double TickPerSecond = 45.0;
+		m_pModelCom->Set_AnimTick(TickPerSecond);
+	}
 
-	if(false == m_bSkill4)
+	Run(TimeDelta);
+
+	if (false == m_bSkill4)
+	{
 		Set_Skill04(TimeDelta); // 조우 후 공격 패턴 1
+	}
 
 	if (m_PrevAnim == S_SKILL04_2 && true != m_pModelCom->Get_AnimFinished())
 	{
@@ -392,11 +398,9 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 	}
 
 
-	int iRand = rand() % 2;
+	Set_Skill07(TimeDelta);
 	
-	if(true == m_bSkill4)
- 		iRand ? Set_Skill07(TimeDelta) : Set_Skill09(TimeDelta);
-	
+	// 란듐 ㄴㄴ 이러면 공격이 끝나지 않아서 나를 따라오지 않음 
 
 	if (m_eType._Hp <= 500.f)
 		Set_Skill01(TimeDelta); // 체력이 반 이하로 떨어지면 
@@ -410,6 +414,31 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 
 void CAncient_StonGolem::Run(_double TimeDelta)
 {
+	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION); // 자기 위치에 고정 
+	// 5보다 멀 면 battack false -> 플레이어를 따라오게
+	// 5 보다 가까우면 battack true -> 공격, 공격 중 플레이어가 멀어져도 일단 공격 모션은 끝 까지 
+	// Chase to Target 후 첫 공격 패턴 4_1 이 후 사용 되는 함수 
+	if (true == m_bCheck && false == m_bAttack) // 이게 밑에서 발동하는 란듐 공격 7, 9 때문에 조건이 안 먹을 가능성이 높음 
+	{
+		if (m_pTransformCom->Compute_Distance(m_vTargetPos) <= 10.f) // 타겟과의 거리가 10 보다 적으면 
+		{
+			m_pTransformCom->Chase_Tatget(m_vTargetPos, 5.f, TimeDelta);
+			m_CurrAnim = S_RUN;
+		}
+		if (m_pTransformCom->Compute_Distance(m_vTargetPos) <= 5.f)
+		{
+			//if (true == m_pModelCom->Get_AnimFinished())
+			//{
+				m_CurrAnim = S_WAIT; // 보간이 안 되고 넘어가는 느낌 
+				m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition); // 자기 위치에 고정 
+
+
+			//}
+		}
+	}
+
+	Set_Skill09(TimeDelta);
+
 }
 
 void CAncient_StonGolem::Set_Skill01(_double TimeDelta)
@@ -439,7 +468,9 @@ void CAncient_StonGolem::Set_Skill04(_double TimeDelta)
 	if (m_PrevAnim == S_RESPAN && true == m_pModelCom->Get_AnimFinished())
 	{
 		m_bCheck = true;
+		m_bRespwan = true;
 		m_bAttack = true;
+		m_bPlayerChecck = false;
 		m_CurrAnim = S_SKILL04_1;
 	}
 
@@ -464,7 +495,7 @@ void CAncient_StonGolem::Set_Skill04(_double TimeDelta)
 	if (m_PrevAnim == S_SKILL04_3 && true == m_pModelCom->Get_AnimFinished())
 	{
 		m_bSkill4 = true;
-		//m_bAttack = false;
+		m_bAttack = false; // false로 한 번 돌려서 거리가 멀어졌다면 따라 오게 
 
 		m_CurrAnim = S_WAIT;
 	}
@@ -497,9 +528,10 @@ void CAncient_StonGolem::Set_Skill05(_double TimeDelta)
 
 void CAncient_StonGolem::Set_Skill07(_double TimeDelta)
 {
-	if (m_PrevAnim == S_WAIT || m_PrevAnim == S_RESPAN && m_pModelCom->Get_AnimFinished())
+	if (false == m_bAttack && m_PrevAnim == S_WAIT && m_pModelCom->Get_AnimFinished())
 	{
-		//m_bAttack = true;
+		m_bAttack = true; // 여기서 다시 true를 줘서 거리가 멀어도 한 번 트루가 됐다면 나를 계속 따라오지 못하게 
+		//m_bTest = true; // 차라리 7번이 앞으로 조금 이동 하는 
 		m_CurrAnim = S_SKILL07;
 
 	}
@@ -508,6 +540,7 @@ void CAncient_StonGolem::Set_Skill07(_double TimeDelta)
 	{
 		m_dLerpTime = 0.f;
 		m_bTest = false;
+		m_bAttack = false; // 다시 false;
 		m_CurrAnim = S_WAIT;
 	}
 }
@@ -515,17 +548,22 @@ void CAncient_StonGolem::Set_Skill07(_double TimeDelta)
 void CAncient_StonGolem::Set_Skill09(_double TimeDelta)
 {
 
-	if (m_PrevAnim == S_WAIT || m_PrevAnim == S_RESPAN && m_pModelCom->Get_AnimFinished())
+	if (m_pTransformCom->Compute_Distance(m_vTargetPos) <= 3.f)
 	{
-		m_bAttack = true;
-		m_bTest = true;
-		m_CurrAnim = S_SKILL09;
+		if (false == m_bAttack &&  m_PrevAnim == S_WAIT && m_pModelCom->Get_AnimFinished())
+		{
+			m_bAttack = true;
+			//m_bTest = true;
+			m_CurrAnim = S_SKILL09;
+		}
+
 	}
 
 	if (m_PrevAnim == S_SKILL09 && true == m_pModelCom->Get_AnimFinished())
 	{
 		m_dLerpTime = 0.f;
 		m_bTest = false;
+		m_bAttack = false;
 		m_CurrAnim = S_WAIT;
 	}
 
