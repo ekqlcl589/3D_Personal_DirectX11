@@ -96,8 +96,9 @@ void CPlayer_Body::Tick(_double TimeDelta)
 		fPos.x = Lerp(fPos.x, fPos.x + 0.003f, m_dLerpTime);
 		fPos.y = Lerp(fPos.y, fPos.y + 0.f, m_dLerpTime);
 		fPos.z = Lerp(fPos.z, fPos.z + 0.003f, m_dLerpTime);
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPos));
+		//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPos));
 
+		m_pTransformCom->Go_Straight(0.003);
 	}
 	Dash(TimeDelta);
 
@@ -279,12 +280,12 @@ void CPlayer_Body::Key_Input(_double TimeDelta)
 
 	}
 
-	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_NUMPAD0))
+	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_LSHIFT))
 	{
 		m_bDeah = true;
 
 	}
-	else if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_NUMPAD0))
+	else if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_LSHIFT))
 		m_bDeah = false;
 
 	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_A))
@@ -716,16 +717,14 @@ void CPlayer_Body::Dash(_double TimeDelta)
 		_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 		_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 
-		_vector vDir = XMVector3Cross(XMVector3Normalize(vPosition), XMVector3Normalize(vLook));
-
-		vPosition += vDir;
+		vPosition += vLook;
 
 		_float3 fPos;
 		XMStoreFloat3(&fPos, vPosition);
 
 		fPos.x += m_fPower;
 		fPos.z += m_fPower;
-		m_pTransformCom->Go_Straight(TimeDelta);
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPos));
 		m_bDeah = false;
 
 	}
