@@ -25,7 +25,7 @@ HRESULT CAnimation::Initialize(aiAnimation * pAIAnimation, CModel* pModel)
 {
 	strcpy_s(m_szName, pAIAnimation->mName.data);
 
-	m_Duration = pAIAnimation->mDuration * 0.9;
+	m_Duration = pAIAnimation->mDuration;
 
 	m_SecondTick = m_TickPerSecond = pAIAnimation->mTicksPerSecond;
 

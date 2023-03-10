@@ -80,8 +80,6 @@ void CPlayer_Body::Tick(_double TimeDelta)
 
 	__super::Tick(TimeDelta);
 
-	cout << m_tInfo._Hp << endl;
-
 	m_dLerpTime += TimeDelta*1.1f;
 	if (m_dLerpTime >= 1)
 	{
@@ -212,7 +210,7 @@ HRESULT CPlayer_Body::Render()
 	}
 
 #ifdef _DEBUG
-
+	
 	if (nullptr != m_pColliderCom)
 		m_pColliderCom->Render();
 
@@ -510,7 +508,7 @@ void CPlayer_Body::Hit(const _int & _Damage)
 	m_pTransformCom->Set_State(CTransform::STATE_UP, XMVector3Normalize(vUp) * vScale.y);
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, XMVector3Normalize(vDir) * vScale.z);
 
-	vPosition -= XMVector3Normalize(vDir) * 0.05f;
+	vPosition -= XMVector3Normalize(vDir) * 0.1f;
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 

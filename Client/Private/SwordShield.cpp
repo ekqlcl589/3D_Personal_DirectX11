@@ -17,13 +17,13 @@ HRESULT CSwordShield::Initialize_Prototype()
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
 
-	if (m_Weapon.WeaponType == WEAPON_SHILED)
-		m_eCollisionState = OBJ_WEAPON_SS1;
-	else
-	{
+	//if (m_Weapon.WeaponType == WEAPON_SHILED)
+	//	m_eCollisionState = OBJ_WEAPON_SS1;
+	//else
+	//{
 		m_eCollisionState = OBJ_WEAPON_SS;
 
-	}
+	//}
 
 	return S_OK;
 }
@@ -40,6 +40,8 @@ HRESULT CSwordShield::Initialize(void * pArg)
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
+
+	m_eCollisionState = OBJ_WEAPON_SS;
 
 	m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(270.0f));
 

@@ -78,7 +78,6 @@ void CAncient_StonGolem::Tick(_double TimeDelta)
 		if (m_eType._Hp <= 0.f)
 			m_eType._Hp = 1.f;
 
-		cout << m_eType._Hp << endl;
 		__super::Tick(TimeDelta);
 
 		if (true == m_bTest)
@@ -207,7 +206,7 @@ void CAncient_StonGolem::OnCollision(CGameObject * pObj)
 	case Engine::OBJ_PLAYER:
 		if (!m_isColl)
 		{
-			m_eType._Hp -= 10.f;
+			m_eType._Hp -= 50.f;
 			m_isColl = true;
 		}
 		break;
@@ -216,7 +215,7 @@ void CAncient_StonGolem::OnCollision(CGameObject * pObj)
 	
 		if (!m_isColl)
 		{
-			m_eType._Hp -= 10.f;
+			m_eType._Hp -= 50.f;
 			m_isColl = true;
 		}
 		
@@ -347,6 +346,7 @@ void CAncient_StonGolem::Set_AnimationState(STONGOLEMANIMSTATE eType)
 		
 		}
 		m_pModelCom->SetUp_Animation(m_iAnimIndex);
+		cout << "현재 :" << m_CurrAnim << endl;
 		m_PrevAnim = m_CurrAnim;
 	}
 
@@ -378,7 +378,7 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 
 	if (true == m_bPlayerChecck) //  플레이어와 특정 거리 이하로 들어와서 조우 하면 지금은 가까운데 나중에 맵 찍으면 더 멀리서 이 기능 활성화 하고 카메라 몬스터로 이동
 	{
-		m_pTransformCom->Chase_Tatget(m_vTargetPos, 5.f, TimeDelta);
+		m_pTransformCom->Chase_Tatget(m_vTargetPos, 3.f, TimeDelta);
 		m_CurrAnim = S_RUN;
 	}
 	else if (false == m_bPlayerChecck && false == m_bRespwan)
@@ -443,13 +443,9 @@ void CAncient_StonGolem::Run(_double TimeDelta)
 		}
 		if (m_pTransformCom->Compute_Distance(m_vTargetPos) <= 5.f)
 		{
-			//if (true == m_pModelCom->Get_AnimFinished())
-			//{
-				m_CurrAnim = S_WAIT; // 보간이 안 되고 넘어가는 느낌 
-				m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition); // 자기 위치에 고정 
+			m_CurrAnim = S_WAIT; // 보간이 안 되고 넘어가는 느낌 
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition); // 자기 위치에 고정 
 
-
-			//}
 		}
 	}
 
@@ -459,7 +455,7 @@ void CAncient_StonGolem::Run(_double TimeDelta)
 
 void CAncient_StonGolem::Set_Skill01(_double TimeDelta)
 {
-	if (m_CurrAnim == S_WAIT && true == m_pModelCom->Get_AnimFinished())
+	if (m_PrevAnim == S_WAIT && true == m_pModelCom->Get_AnimFinished())
 	{
 		m_bAttack = true;
 		m_CurrAnim = S_SKILL01;
@@ -564,7 +560,7 @@ void CAncient_StonGolem::Set_Skill07(_double TimeDelta)
 void CAncient_StonGolem::Set_Skill09(_double TimeDelta)
 {
 
-	if (m_pTransformCom->Compute_Distance(m_vTargetPos) <= 3.f)
+	if (m_pTransformCom->Compute_Distance(m_vTargetPos) <= 4.f)
 	{
 		if (false == m_bAttack &&  m_PrevAnim == S_WAIT && m_pModelCom->Get_AnimFinished())
 		{
@@ -636,7 +632,7 @@ HRESULT CAncient_StonGolem::Add_Components()
 	CCollider::COLLIDERDESC ColliderDesc;
 	ZeroMemory(&ColliderDesc, sizeof ColliderDesc);
 
-	ColliderDesc.vScale = _float3(3.f, 3.f, 3.f);
+	ColliderDesc.vScale = _float3(2.f, 2.f, 2.f);
 	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vScale.y * 0.5f, 0.f);
 
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_OBB"),
