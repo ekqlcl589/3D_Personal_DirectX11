@@ -35,19 +35,26 @@ void CGameObject::Tick(_double TimeDelta)
 {
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
-
-	pGameInstance->OnCollision(OBJ_PLAYER, OBJ_BOSS1); // 플레이어와 보스 충돌 
+	//							맞음     ,  떄림
 	pGameInstance->OnCollision(OBJ_PLAYER, OBJ_MONSTER_WEAPONL); // 플레이어와 보스 왼 팔 충돌 
 	pGameInstance->OnCollision(OBJ_PLAYER, OBJ_MONSTER_WEAPONR); // 플레이어와 보스 오른 팔 충돌 
 	pGameInstance->OnCollision(OBJ_PLAYER, OBJ_MONSTER_BODY); // 플레이어와 보스 몸통 충돌 
- 	pGameInstance->OnCollision(OBJ_WEAPON_SS, OBJ_MONSTER_WEAPONL); // 무기와 보스 충돌 
-	pGameInstance->OnCollision(OBJ_WEAPON_SS, OBJ_MONSTER_WEAPONR);
-	pGameInstance->OnCollision(OBJ_WEAPON_SS, OBJ_MONSTER_BODY);
+	// 새로 추가한 무기 
+	pGameInstance->OnCollision(OBJ_WEAPON_KARMA14, OBJ_MONSTER_BODY);
+	pGameInstance->OnCollision(OBJ_WEAPON_KARMA14, OBJ_MONSTER_WEAPONL);
+	pGameInstance->OnCollision(OBJ_WEAPON_KARMA14, OBJ_MONSTER_WEAPONR);
+	pGameInstance->OnCollision(OBJ_WEAPON_KARMA14, OBJ_BOSS1);
+	
+	pGameInstance->OnCollision(OBJ_BOSS1, OBJ_WEAPON_KARMA14);
 
 	pGameInstance->OnCollision(OBJ_BOSS1, OBJ_PLAYER); // 플레이어와 보스 충돌 
 	pGameInstance->OnCollision(OBJ_MONSTER_WEAPONL, OBJ_PLAYER); // 플레이어와 보스 왼 팔 충돌 
 	pGameInstance->OnCollision(OBJ_MONSTER_WEAPONR, OBJ_PLAYER); // 플레이어와 보스 오른 팔 충돌 
 	pGameInstance->OnCollision(OBJ_MONSTER_BODY, OBJ_PLAYER); // 플레이어와 보스 몸통 충돌 
+	pGameInstance->OnCollision(OBJ_MONSTER_BODY, OBJ_WEAPON_KARMA14); // 플레이어와 보스 몸통 충돌 
+	pGameInstance->OnCollision(OBJ_MONSTER_WEAPONL, OBJ_PLAYER); // 플레이어와 보스 몸통 충돌 
+	pGameInstance->OnCollision(OBJ_MONSTER_WEAPONR, OBJ_PLAYER); // 플레이어와 보스 몸통 충돌 
+
 
 	Safe_Release(pGameInstance);
 

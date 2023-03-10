@@ -1,18 +1,18 @@
 #include "stdafx.h"
-#include "..\Public\MonsterWeapon.h"
+#include "..\Public\TwoHandedSword.h"
 #include "GameInstance.h"
 
-CMonsterWeapon::CMonsterWeapon(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
-	: CGameObject(pDevice, pContext)
+CTwoHandedSword::CTwoHandedSword(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+	: CWeapon(pDevice, pContext)
 {
 }
 
-CMonsterWeapon::CMonsterWeapon(const CMonsterWeapon & rhs)
-	: CGameObject(rhs)
+CTwoHandedSword::CTwoHandedSword(const CTwoHandedSword & rhs)
+	: CWeapon(rhs)
 {
 }
 
-HRESULT CMonsterWeapon::Initialize_Prototype()
+HRESULT CTwoHandedSword::Initialize_Prototype()
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
@@ -20,9 +20,12 @@ HRESULT CMonsterWeapon::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CMonsterWeapon::Initialize(void * pArg)
+HRESULT CTwoHandedSword::Initialize(void * pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
+		return E_FAIL;
+
+	if (FAILED(Add_Components()))
 		return E_FAIL;
 
 	ZeroMemory(&m_Weapon, sizeof m_Weapon);
@@ -30,40 +33,30 @@ HRESULT CMonsterWeapon::Initialize(void * pArg)
 	if (nullptr != pArg)
 		memcpy(&m_Weapon, pArg, sizeof m_Weapon);
 
-	if (m_Weapon.WeaponType == WEAPON_MONSTER_L)
-		m_eCollisionState = OBJ_MONSTER_WEAPONL;
-	else if (m_Weapon.WeaponType == WEAPON_MONSTER_R)
-		m_eCollisionState = OBJ_MONSTER_WEAPONR;
-	else if (m_Weapon.WeaponType == WEAPON_MONSTER_BODY)
-		m_eCollisionState = OBJ_MONSTER_BODY; // 아 이거 몬스터 여러마리로 바뀌면 좀 골치 아파 지겠는데..?
 
-	if (FAILED(Add_Components()))
-		return E_FAIL;
+	m_eCollisionState = OBJ_WEAPON_KARMA14;
+
+	m_iObjID = 4;
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-	if (m_Weapon.WeaponType == WEAPON_MONSTER_L)
-		pInstance->Add_Collider(m_eCollisionState, 6, this);
 
-	else if (m_Weapon.WeaponType == WEAPON_MONSTER_R)
-		pInstance->Add_Collider(m_eCollisionState, 7, this);
-	else if (m_Weapon.WeaponType == WEAPON_MONSTER_BODY)
-		pInstance->Add_Collider(m_eCollisionState, 8, this);
-
+	pInstance->Add_Collider(m_eCollisionState, Set_ObjID(m_iObjID), this);
 
 	RELEASE_INSTANCE(CGameInstance);
+
+	m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(270.0f));
+
 
 	return S_OK;
 }
 
-void CMonsterWeapon::Tick(_double TimeDelta)
+void CTwoHandedSword::Tick(_double TimeDelta)
 {
-
-	if (nullptr != m_pColliderCom)
-		m_pColliderCom->Update(XMLoadFloat4x4(&m_WorldMatrix));
+	__super::Tick(TimeDelta);
 
 }
 
-void CMonsterWeapon::LateTick(_double TimeDelta)
+void CTwoHandedSword::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
 
@@ -77,36 +70,30 @@ void CMonsterWeapon::LateTick(_double TimeDelta)
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * ParentMatrix * m_Weapon.pParentTransform->Get_WorldMatrix());
 }
 
-HRESULT CMonsterWeapon::Render()
+HRESULT CTwoHandedSword::Render()
 {
 	if (FAILED(__super::Render()))
 		return E_FAIL;
-	
+
 	if (FAILED(SetUp_ShaderResources()))
 		return E_FAIL;
-	
+
 	_uint		iNumMeshes = m_pModelCom->Get_NumMeshes();
-	
+
 	for (_uint i = 0; i < iNumMeshes; i++)
 	{
 		m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
-	
+
 		m_pShaderCom->Begin(0);
-	
-		//m_pModelCom->Render(i);
+
+		m_pModelCom->Render(i);
 	}
 
-#ifdef _DEBUG
-
-	if (nullptr != m_pColliderCom)
-		m_pColliderCom->Render();
-
-#endif
 
 	return S_OK;
 }
 
-void CMonsterWeapon::OnCollision(CGameObject * pObj)
+void CTwoHandedSword::OnCollision(CGameObject * pObj)
 {
 	COLLISIONSTATE eType = pObj->Get_ObjType();
 
@@ -125,10 +112,16 @@ void CMonsterWeapon::OnCollision(CGameObject * pObj)
 	case Engine::OBJ_BOSS2:
 		break;
 	case Engine::OBJ_MONSTER_WEAPONL:
+		cout << "왼 타격" << endl;
+
 		break;
 	case Engine::OBJ_MONSTER_WEAPONR:
+		cout << "오른 타격" << endl;
+
 		break;
 	case Engine::OBJ_MONSTER_BODY:
+		cout << "몸통 OBB 타격" << endl;
+
 		break;
 	case Engine::OBJ_END:
 		break;
@@ -137,7 +130,7 @@ void CMonsterWeapon::OnCollision(CGameObject * pObj)
 	}
 }
 
-HRESULT CMonsterWeapon::Add_Components()
+HRESULT CTwoHandedSword::Add_Components()
 {
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"),
 		TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom)))
@@ -153,36 +146,22 @@ HRESULT CMonsterWeapon::Add_Components()
 		TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Weapon_SS"),
+	/* For.Com_Model */
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Weapon_TS"),
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
+	CCollider::COLLIDERDESC ColliderDesc;
+	ZeroMemory(&ColliderDesc, sizeof ColliderDesc);
 
-	if (m_Weapon.WeaponType == WEAPON_MONSTER_L || m_Weapon.WeaponType == WEAPON_MONSTER_R)
-	{
-		CCollider::COLLIDERDESC ColliderDesc;
-		ZeroMemory(&ColliderDesc, sizeof ColliderDesc);
+	ColliderDesc.vScale = _float3(0.5f, 2.5f, 0.5f);
+	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vScale.y * 0.5f, 0.f);
 
-		ColliderDesc.vScale = _float3(2.f, 2.f, 2.f);
-		ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vScale.y * 0.5f, 0.f);
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_OBB"),
+		TEXT("Com_Collider_TS"), (CComponent**)&m_pColliderCom, &ColliderDesc)))
+		return E_FAIL;
 
-		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_SPHERE"),
-			TEXT("Com_Collider"), (CComponent**)&m_pColliderCom, &ColliderDesc)))
-			return E_FAIL;
-	}
-	else if(m_Weapon.WeaponType == WEAPON_MONSTER_BODY)
-	{
-		CCollider::COLLIDERDESC ColliderDesc;
-		ZeroMemory(&ColliderDesc, sizeof ColliderDesc);
-
-		ColliderDesc.vScale = _float3(5.f, 2.f, 5.f);
-		ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vScale.y * 0.5f, 0.f);
-		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_OBB"),
-			TEXT("Com_Collider"), (CComponent**)&m_pColliderCom, &ColliderDesc)))
-			return E_FAIL;
-
-	}
-
+	/* For.Com_Shader */
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModel"),
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
@@ -190,7 +169,7 @@ HRESULT CMonsterWeapon::Add_Components()
 	return S_OK;
 }
 
-HRESULT CMonsterWeapon::SetUp_ShaderResources()
+HRESULT CTwoHandedSword::SetUp_ShaderResources()
 {
 	if (nullptr == m_pShaderCom)
 		return E_FAIL;
@@ -227,33 +206,33 @@ HRESULT CMonsterWeapon::SetUp_ShaderResources()
 	return S_OK;
 }
 
-CMonsterWeapon * CMonsterWeapon::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CWeapon * CTwoHandedSword::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {
-	CMonsterWeapon* pInstance = new CMonsterWeapon(pDevice, pContext);
+	CTwoHandedSword* pInstance = new CTwoHandedSword(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Created : CMonsterWeapon");
+		MSG_BOX("Failed to Created : SwordShield");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject * CMonsterWeapon::Clone(void * pArg)
+CGameObject * CTwoHandedSword::Clone(void * pArg)
 {
-	CMonsterWeapon* pInstance = new CMonsterWeapon(*this);
+	CTwoHandedSword* pInstance = new CTwoHandedSword(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CMonsterWeapon");
+		MSG_BOX("Failed to Cloned : CTwoHandedSword");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CMonsterWeapon::Free()
+void CTwoHandedSword::Free()
 {
 	__super::Free();
 
@@ -261,9 +240,4 @@ void CMonsterWeapon::Free()
 		Safe_Release(m_Weapon.pBonePtr);
 
 	Safe_Release(m_pColliderCom);
-	Safe_Release(m_pTransformCom);
-	Safe_Release(m_pModelCom);
-	Safe_Release(m_pShaderCom);
-	Safe_Release(m_pRendererCom);
-
 }

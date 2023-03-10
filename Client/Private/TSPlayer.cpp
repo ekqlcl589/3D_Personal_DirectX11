@@ -1,27 +1,27 @@
 #include "stdafx.h"
-#include "..\Public\Player_Body.h"
+#include "..\Public\TSPlayer.h"
 
 #include "GameInstance.h"
 #include "KeyMgr.h"
 #include "Player.h"
 #include "Hair.h"
 #include "PlayerTop.h"
-#include "SwordShield.h"
+#include "TwoHandedSword.h"
 
 #include "TargetCamera.h"
 
-CPlayer_Body::CPlayer_Body(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CTSPlayer::CTSPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
 {
 }
 
-CPlayer_Body::CPlayer_Body(const CPlayer_Body & rhs)
+CTSPlayer::CTSPlayer(const CTSPlayer & rhs)
 	: CGameObject(rhs)
 	, m_tInfo(rhs.m_tInfo)
 {
 }
 
-HRESULT CPlayer_Body::Initialize_Prototype()
+HRESULT CTSPlayer::Initialize_Prototype()
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
@@ -42,7 +42,7 @@ HRESULT CPlayer_Body::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CPlayer_Body::Initialize(void * pArg)
+HRESULT CTSPlayer::Initialize(void * pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -69,7 +69,7 @@ HRESULT CPlayer_Body::Initialize(void * pArg)
 	return S_OK;
 }
 
-void CPlayer_Body::Tick(_double TimeDelta)
+void CTSPlayer::Tick(_double TimeDelta)
 {
 	m_HitDelay += TimeDelta;
 	if (m_HitDelay >= 1.5f)
@@ -101,7 +101,7 @@ void CPlayer_Body::Tick(_double TimeDelta)
 		fPos.z = Lerp(fPos.z, fPos.z + 0.003f, m_dLerpTime);
 		//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPos));
 
-		m_pTransformCom->Go_Straight(0.003);
+		//m_pTransformCom->Go_Straight(0.003);
 	}
 	Dash(TimeDelta);
 
@@ -129,7 +129,7 @@ void CPlayer_Body::Tick(_double TimeDelta)
 		m_pColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
 }
 
-void CPlayer_Body::LateTick(_double TimeDelta)
+void CTSPlayer::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
 
@@ -186,7 +186,7 @@ void CPlayer_Body::LateTick(_double TimeDelta)
 
 }
 
-HRESULT CPlayer_Body::Render()
+HRESULT CTSPlayer::Render()
 {
 	if (FAILED(__super::Render()))
 		return E_FAIL;
@@ -219,7 +219,7 @@ HRESULT CPlayer_Body::Render()
 	return S_OK;
 }
 
-void CPlayer_Body::OnCollision(CGameObject * pObj) // LateTick에서 불림
+void CTSPlayer::OnCollision(CGameObject * pObj) // LateTick에서 불림
 {
 	COLLISIONSTATE eType = pObj->Get_ObjType();
 
@@ -236,7 +236,6 @@ void CPlayer_Body::OnCollision(CGameObject * pObj) // LateTick에서 불림
 		{
 			Hit(10); // 몬스터 공격력 가져와서 대입 
 			m_Hit = true;
-			cout << "몸통" << endl;
 		}
 
 		break;
@@ -250,8 +249,7 @@ void CPlayer_Body::OnCollision(CGameObject * pObj) // LateTick에서 불림
 		{
 			Hit(10); // 몬스터 공격력 가져와서 대입 
 			m_Hit = true;
-			cout << "왼팔" << endl;
-
+			cout << "왼 팔 히트" << endl;
 		}
 		break;
 	
@@ -261,7 +259,7 @@ void CPlayer_Body::OnCollision(CGameObject * pObj) // LateTick에서 불림
 		{
 			Hit(10); // 몬스터 공격력 가져와서 대입 
 			m_Hit = true;
-			cout << "오른" << endl;
+			cout << "오른 팔 히트" << endl;
 
 		}
 		break;
@@ -272,7 +270,7 @@ void CPlayer_Body::OnCollision(CGameObject * pObj) // LateTick에서 불림
 		{
 			Damage(10); // 몬스터 공격력 가져와서 대입 
 			m_Hit = true;
-			cout << "바디" << endl;
+			cout << "몸통 히트" << endl;
 
 		}
 
@@ -285,7 +283,7 @@ void CPlayer_Body::OnCollision(CGameObject * pObj) // LateTick에서 불림
 	}
 }
 
-void CPlayer_Body::Key_Input(_double TimeDelta)
+void CTSPlayer::Key_Input(_double TimeDelta)
 {
 
 	_vector vPos;
@@ -388,7 +386,7 @@ void CPlayer_Body::Key_Input(_double TimeDelta)
 
 }
 
-void CPlayer_Body::Animation_State(PLAYERANIMSTATE eType, _double TimeDelta)
+void CTSPlayer::Animation_State(PLAYERANIMSTATE eType, _double TimeDelta)
 {
 	if (m_tInfo.CurrAnimState != m_tInfo.prevAnimState )
 	{
@@ -481,7 +479,7 @@ void CPlayer_Body::Animation_State(PLAYERANIMSTATE eType, _double TimeDelta)
 
 }
 
-void CPlayer_Body::Hit(const _int & _Damage)
+void CTSPlayer::Hit(const _int & _Damage)
 {
 	m_tInfo._Hp -= _Damage;
 	m_tInfo.CurrAnimState = ANIM_STUN;
@@ -523,7 +521,7 @@ void CPlayer_Body::Hit(const _int & _Damage)
 
 }
 
-void CPlayer_Body::Damage(const _int & _Damage)
+void CTSPlayer::Damage(const _int & _Damage)
 {
 	m_tInfo._Hp -= _Damage;
 
@@ -565,14 +563,14 @@ void CPlayer_Body::Damage(const _int & _Damage)
 
 }
 
-void CPlayer_Body::Attack()
+void CTSPlayer::Attack()
 {
 	m_tInfo.CurrAnimState = ANIM_ATTACK;
 	m_bAnimCheck = true;
 
 }
 
-void CPlayer_Body::Attack_Combo(_double TimeDelta)
+void CTSPlayer::Attack_Combo(_double TimeDelta)
 {
 	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 
@@ -617,7 +615,7 @@ void CPlayer_Body::Attack_Combo(_double TimeDelta)
 
 }
 
-void CPlayer_Body::Jump(_double TimeDelta)
+void CTSPlayer::Jump(_double TimeDelta)
 {
 	m_JumpAttack = false;
 
@@ -702,7 +700,7 @@ void CPlayer_Body::Jump(_double TimeDelta)
 
 }
 
-void CPlayer_Body::Jump_Attack(_double TimeDelta)
+void CTSPlayer::Jump_Attack(_double TimeDelta)
 {
 	m_JumpAttack = true;
 	m_bLendiongCheck = true;
@@ -749,7 +747,7 @@ void CPlayer_Body::Jump_Attack(_double TimeDelta)
 
 }
 
-void CPlayer_Body::Dash(_double TimeDelta)
+void CTSPlayer::Dash(_double TimeDelta)
 {
 	if (true == m_bDeah)
 	{
@@ -771,7 +769,7 @@ void CPlayer_Body::Dash(_double TimeDelta)
 	}
 }
 
-void CPlayer_Body::DashAttack(_double TimeDelta)
+void CTSPlayer::DashAttack(_double TimeDelta)
 {
 	if (m_bDeah)
 	{
@@ -780,7 +778,7 @@ void CPlayer_Body::DashAttack(_double TimeDelta)
 	}
 }
 
-void CPlayer_Body::CombatWait()
+void CTSPlayer::CombatWait()
 {
 	cout << m_tInfo.CurrAnimState << endl;
 
@@ -813,7 +811,7 @@ void CPlayer_Body::CombatWait()
 
 }
 
-HRESULT CPlayer_Body::Add_Components()
+HRESULT CTSPlayer::Add_Components()
 {
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"),
 		TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom)))
@@ -853,7 +851,7 @@ HRESULT CPlayer_Body::Add_Components()
 	return S_OK;
 }
 
-HRESULT CPlayer_Body::Add_Parts() 
+HRESULT CTSPlayer::Add_Parts() 
 {
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
@@ -918,36 +916,31 @@ HRESULT CPlayer_Body::Add_Parts()
 	return S_OK;
 }
 
-HRESULT CPlayer_Body::Add_Weapon()
+HRESULT CTSPlayer::Add_Weapon()
 {
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
 	CBone* pBonePtr = m_pModelCom->Get_BonePtr("Weapon_Hand_R"); // 전투가 아닐 때 붙이는 뼈 == Weapon_Spine_R
-	CBone* pBonePtrL = m_pModelCom->Get_BonePtr("Weapon_Hand_L");
 
-	if (nullptr == pBonePtr || nullptr == pBonePtrL)
+	if (nullptr == pBonePtr)
 		return E_FAIL;
 
-	CSwordShield::WEAPONDESC WeaponDesc = { pBonePtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CSwordShield::WEAPON_SWORD };
-	CSwordShield::WEAPONDESC WeaponDesc1 = { pBonePtrL, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CSwordShield::WEAPON_SHILED };
+	CTwoHandedSword::WEAPONDESC WeaponDesc = { pBonePtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom};
 	Safe_AddRef(pBonePtr);
-	Safe_AddRef(pBonePtrL);
 
-	CGameObject* pWeapon = pInstance->Clone_GameObject_Add_Layer(TEXT("Prototype_GameObject_Weapon"), &WeaponDesc);
-	CGameObject* pShield = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Weapon"), &WeaponDesc1);
+	CGameObject* pWeapon = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Weapon_TS"), &WeaponDesc);
 
-	if (nullptr == pWeapon || nullptr == pShield)
+	if (nullptr == pWeapon)
 		return E_FAIL;
 
-	m_vecWeapon[WEAPON_SS].push_back(pWeapon);
-	m_vecWeapon[WEAPON_SHIELD].push_back(pShield);
+	m_vecWeapon[WEAPON_KARMA14].push_back(pWeapon);
 
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
 }
 
-HRESULT CPlayer_Body::SetUp_ShaderResources()
+HRESULT CTSPlayer::SetUp_ShaderResources()
 {
 	if (nullptr == m_pShaderCom)
 		return E_FAIL;
@@ -983,33 +976,33 @@ HRESULT CPlayer_Body::SetUp_ShaderResources()
 	return S_OK;
 }
 
-CPlayer_Body * CPlayer_Body::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CTSPlayer * CTSPlayer::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {
-	CPlayer_Body*		pInstance = new CPlayer_Body(pDevice, pContext);
+	CTSPlayer*		pInstance = new CTSPlayer(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Created : CPlayer_Body");
+		MSG_BOX("Failed to Created : CTSPlayer");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject * CPlayer_Body::Clone(void * pArg)
+CGameObject * CTSPlayer::Clone(void * pArg)
 {
-	CPlayer_Body*		pInstance = new CPlayer_Body(*this);
+	CTSPlayer*		pInstance = new CTSPlayer(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CPlayer_Body");
+		MSG_BOX("Failed to Cloned : CTSPlayer");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CPlayer_Body::Free()
+void CTSPlayer::Free()
 {
 	__super::Free();
 

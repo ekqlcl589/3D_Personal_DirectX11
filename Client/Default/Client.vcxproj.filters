@@ -91,9 +91,6 @@
     <Filter Include="02.GameObject\05. Player\Weapon\SwordShield">
       <UniqueIdentifier>{ea3e2b8c-cf6e-4861-acc0-b1a30891d6de}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\05. Player\Weapon\Karma14">
-      <UniqueIdentifier>{9b7d2fe8-a816-4a95-ba1e-62035d408407}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\05. Player\Head">
       <UniqueIdentifier>{d3aa1365-11a5-4a2b-a0de-e72e73126680}</UniqueIdentifier>
     </Filter>
@@ -126,6 +123,9 @@
     </Filter>
     <Filter Include="02.GameObject\06. Monster\MonsterWeapon">
       <UniqueIdentifier>{36aada05-29d6-4923-b255-0696013e0813}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\05. Player\Weapon\TS">
+      <UniqueIdentifier>{9b7d2fe8-a816-4a95-ba1e-62035d408407}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -231,6 +231,12 @@
     <ClInclude Include="..\Public\MonsterWeapon.h">
       <Filter>02.GameObject\06. Monster\MonsterWeapon</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\TSPlayer.h">
+      <Filter>02.GameObject\05. Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TwoHandedSword.h">
+      <Filter>02.GameObject\05. Player\Weapon\TS</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -322,6 +328,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\MonsterWeapon.cpp">
       <Filter>02.GameObject\06. Monster\MonsterWeapon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TSPlayer.cpp">
+      <Filter>02.GameObject\05. Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TwoHandedSword.cpp">
+      <Filter>02.GameObject\05. Player\Weapon\TS</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

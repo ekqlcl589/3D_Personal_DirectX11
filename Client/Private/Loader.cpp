@@ -11,11 +11,13 @@
 #include "Mouse.h"
 #include "Cube.h"
 
-#include "Player.h"
-#include "Player_Body.h"
 #include "Hair.h"
+#include "Player.h"
+#include "TSPlayer.h"
 #include "PlayerTop.h"
+#include "Player_Body.h"
 #include "SwordShield.h"
+#include "TwoHandedSword.h"
 
 
 
@@ -204,8 +206,12 @@ HRESULT CLoader::Loading_ForGamePlay()
 	_matrix		LocalMatrix2 = XMMatrixIdentity();
 	LocalMatrix2 = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(270.0f));
 
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Player_Body"),
+	//	CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Body/Player.fbx", CModel::MODEL_ANIM, LocalMatrix2))))
+	//	return E_FAIL;
+
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Player_Body"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Body/Player.fbx", CModel::MODEL_ANIM, LocalMatrix2))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Body/TSPlayer.fbx", CModel::MODEL_ANIM, LocalMatrix2))))
 		return E_FAIL;
 
 	_matrix		LocalMatrix6 = XMMatrixIdentity();
@@ -218,6 +224,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Weapon_Shield"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Weapon/SS/Shield.fbx", CModel::MODEL_NONANIM, LocalMatrix6))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Weapon_TS"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Weapon/TS/TS.fbx", CModel::MODEL_NONANIM, LocalMatrix6))))
 		return E_FAIL;
 
 #pragma endregion Weapon
@@ -348,12 +358,20 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CPlayer::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	//if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player_Body"),
+	//	CPlayer_Body::Create(m_pDevice, m_pContext))))
+	//	return E_FAIL;
+
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player_Body"),
-		CPlayer_Body::Create(m_pDevice, m_pContext))))
+		CTSPlayer::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon"),
 		CSwordShield::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon_TS"),
+		CTwoHandedSword::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster"),

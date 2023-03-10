@@ -125,7 +125,7 @@ void CAncient_StonGolem::LateTick(_double TimeDelta)
 		m_AnimDuration = m_pModelCom->Get_AnimDuration();
 		m_AnimTimeAcc = m_pModelCom->Get_AnimTimeAcc();
 
-		Set_Time();
+		//Set_Time();
 
 #ifdef _DEBUG
 
@@ -204,30 +204,24 @@ void CAncient_StonGolem::OnCollision(CGameObject * pObj)
 	switch (eType)
 	{
 	case Engine::OBJ_PLAYER:
-		if (!m_isColl)
-		{
-			m_eType._Hp -= 50.f;
-			m_isColl = true;
-		}
 		break;
 	case Engine::OBJ_WEAPON_SS:
-	
-	
-		if (!m_isColl)
-		{
-			m_eType._Hp -= 50.f;
-			m_isColl = true;
-		}
-		
 		break;
 	
 	case Engine::OBJ_WEAPON_KARMA14:
+		if (!m_isColl)
+		{
+			m_eType._Hp -= 50.f;
+			m_isColl = true;
+			cout << "몬스터 체력 : " << m_eType._Hp << endl;
+		}
 		break;
 	case Engine::OBJ_END:
 		break;
 	default:
 		break;
 	}
+
 }
 
 
@@ -346,7 +340,7 @@ void CAncient_StonGolem::Set_AnimationState(STONGOLEMANIMSTATE eType)
 		
 		}
 		m_pModelCom->SetUp_Animation(m_iAnimIndex);
-		cout << "현재 :" << m_CurrAnim << endl;
+		cout << "현재 애님 인덱스 :" << m_CurrAnim << endl;
 		m_PrevAnim = m_CurrAnim;
 	}
 
@@ -629,15 +623,6 @@ HRESULT CAncient_StonGolem::Add_Components()
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
-	CCollider::COLLIDERDESC ColliderDesc;
-	ZeroMemory(&ColliderDesc, sizeof ColliderDesc);
-
-	ColliderDesc.vScale = _float3(2.f, 2.f, 2.f);
-	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vScale.y * 0.5f, 0.f);
-
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_OBB"),
-		TEXT("Com_Collider"), (CComponent**)&m_pColliderCom, &ColliderDesc)))
-		return E_FAIL;
 
 	return S_OK;
 }
