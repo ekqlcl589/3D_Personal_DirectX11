@@ -55,6 +55,11 @@ public:
 	CModel* m_pModelCom = { nullptr };
 
 	_bool m_bStart = { false };
+
+private:
+	_float HitTime = 0.f;
+	_bool m_bColl = false;
+
 public:
 	WEAPONDESC m_Weapon;
 	_float4x4 m_WorldMatrix;

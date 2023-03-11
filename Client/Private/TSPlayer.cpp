@@ -36,6 +36,8 @@ HRESULT CTSPlayer::Initialize_Prototype()
 	m_tInfo.CurrAnimState = ANIM_IDEL;
 	m_tInfo.prevAnimState = ANIM_END;
 
+	m_tInfo.CurrAnim = TS_WAIT;
+	m_tInfo.PrevAnim = TS_END;
 	m_bJump = false;
 
 
@@ -105,7 +107,8 @@ void CTSPlayer::Tick(_double TimeDelta)
 	}
 	Dash(TimeDelta);
 
-	Animation_State(m_tInfo.CurrAnimState, TimeDelta);
+	//Animation_State(m_tInfo.CurrAnimState, TimeDelta);
+	Animation(m_tInfo.CurrAnim, TimeDelta);
 
 	for (_uint i = 0; i < WEAPON_END; i++)
 	{
@@ -236,6 +239,8 @@ void CTSPlayer::OnCollision(CGameObject * pObj) // LateTick에서 불림
 		{
 			Hit(10); // 몬스터 공격력 가져와서 대입 
 			m_Hit = true;
+			cout << "지웠던 obj_boss 한테 히트" << endl;
+
 		}
 
 		break;
@@ -294,14 +299,16 @@ void CTSPlayer::Key_Input(_double TimeDelta)
 		m_bTest = false;
 
 		m_pTransformCom->Go_Straight(TimeDelta);
-		m_tInfo.CurrAnimState = ANIM_RUN;
+		m_tInfo.CurrAnim = TS_RUN_END;
+		//m_tInfo.CurrAnimState = ANIM_RUN;
 
 	}
 	else if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_W))
 	{
 		m_bTest = false;
 
-		m_tInfo.CurrAnimState = ANIM_IDEL;
+		m_tInfo.CurrAnim = TS_WAIT;
+		//m_tInfo.CurrAnimState = ANIM_IDEL;
 	}
 
 	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_S))
@@ -309,14 +316,17 @@ void CTSPlayer::Key_Input(_double TimeDelta)
 		m_bTest = false;
 
 		m_pTransformCom->Go_Back(TimeDelta);
-		m_tInfo.CurrAnimState = ANIM_RUN;
+		m_tInfo.CurrAnim = TS_RUN_END;
+		//m_tInfo.CurrAnimState = ANIM_RUN;
 
 	}
 	else if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_S))
 	{
 		m_bTest = false;
 
-		m_tInfo.CurrAnimState = ANIM_IDEL;
+		m_tInfo.CurrAnim = TS_WAIT;
+
+		//m_tInfo.CurrAnimState = ANIM_IDEL;
 	}
 
 	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_LSHIFT))
@@ -352,8 +362,14 @@ void CTSPlayer::Key_Input(_double TimeDelta)
 
 	if (false == m_bJump)
 	{
-		if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_LB))
-			Attack_Combo(TimeDelta);
+		if (false == m_bDeah)
+		{
+			if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_LB))
+				Attack_Combo(TimeDelta);
+		}
+		else
+			if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_LB))
+				DashAttack(TimeDelta);
 	}
 	else
 	{
@@ -374,11 +390,11 @@ void CTSPlayer::Key_Input(_double TimeDelta)
 #pragma region SkillMotion Test 
 
 	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_E))
-		m_pModelCom->SetUp_Animation(38);
+		m_pModelCom->SetUp_Animation(39);
 	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_R))
-		m_pModelCom->SetUp_Animation(42);
-	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_F))
 		m_pModelCom->SetUp_Animation(43);
+	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_F))
+		m_pModelCom->SetUp_Animation(46);
 
 #pragma endregion 
 
@@ -417,15 +433,15 @@ void CTSPlayer::Animation_State(PLAYERANIMSTATE eType, _double TimeDelta)
 			break;
 
 		case ANIM_ATTACK_COMBO1:
-			m_iAnimIndex = 26;
+			m_iAnimIndex = 59;
 			break;
 
 		case ANIM_ATTACK_COMBO2:
-			m_iAnimIndex = 27;
+			m_iAnimIndex = 60;
 			break;
 
 		case ANIM_ATTACK_COMBO3:
-			m_iAnimIndex = 28;
+			m_iAnimIndex = 61;
 			break;
 
 		case ANIM_COMBAT_WAIT:
@@ -477,6 +493,145 @@ void CTSPlayer::Animation_State(PLAYERANIMSTATE eType, _double TimeDelta)
 		m_tInfo.prevAnimState = m_tInfo.CurrAnimState;
 	}
 
+}
+
+void CTSPlayer::Animation(TSPLAYERANIM eType, _double TimeDelta)
+{
+	if (m_tInfo.CurrAnim != m_tInfo.PrevAnim)
+	{
+		switch (eType)
+		{
+		case Engine::TS_JUMP:
+			m_iAnimIndex = 4;
+			break;
+		case Engine::TS_JUMP_DOWN:
+			break;
+		case Engine::TS_JUMP_LENDING:
+			m_iAnimIndex = 2;
+			break;
+		case Engine::TS_JUMP_UP:
+			break;
+		case Engine::TS_JUMP_START:
+			break;
+		case Engine::TS_COMBAT_WAIT:
+			m_iAnimIndex = 5;
+			break;
+		case Engine::TS_DASH:
+			m_iAnimIndex = 6;
+			break;
+		case Engine::TS_DIE:
+			break;
+		case Engine::TS_RESPWAN:
+			break;
+		case Engine::TS_RUN_L:
+			m_iAnimIndex = 6;
+			break;
+		case Engine::TS_RUN_R:
+			break;
+		case Engine::TS_RUN_END:
+			m_iAnimIndex = 9;
+			break;
+		case Engine::TS_STANSUP_ROLLING:
+			break;
+		case Engine::TS_STANDUP_ATTACK:
+			break;
+		case Engine::TS_START:
+			break;
+		case Engine::TS_STURN_LOOP:
+			break;
+		case Engine::TS_NOENERGY:
+			break;
+		case Engine::TS_NOENERGY_RUN:
+			break;
+		case Engine::TS_WAIT:
+			m_iAnimIndex = 19;
+
+			break;
+		case Engine::TS_WAIT_HABBIT:
+			break;
+		case Engine::TS_WALK:
+			break;
+		case Engine::TS_AIR_COMBO01:
+			m_iAnimIndex = 22;
+			break;
+		case Engine::TS_AIR_COMBO02:
+			m_iAnimIndex = 23;
+			break;
+		case Engine::TS_AIR_COMBO03:
+			m_iAnimIndex = 24;
+			break;
+		case Engine::TS_AIR_COMBO04:
+			m_iAnimIndex = 25;
+			break;
+		case Engine::TS_AIR_COMBO04_LENDING:
+			m_iAnimIndex = 26;
+			break;
+		case Engine::TS_AVOID_ATTACK:
+			m_iAnimIndex = 27;
+			break;
+		case Engine::TS_BASIC_COMBO02_END:
+			m_iAnimIndex = 28;
+			break;
+		case Engine::TS_BASIC_COMBO02_LOOP:
+			m_iAnimIndex = 29;
+			break;
+		case Engine::TS_BASIC_COMBO03_START:
+			m_iAnimIndex = 30;
+			break;
+		case Engine::TS_DASHCOMBO:
+			m_iAnimIndex = 31;
+			break;
+		case Engine::TS_SKILL_GROUNDCRASH:
+			m_iAnimIndex = 32;
+			break;
+		case Engine::TS_SKILL_OUTRAGE_END:
+			m_iAnimIndex = 38;
+			break;
+		case Engine::TS_SKILL_OUTRAGE_START:
+			m_iAnimIndex = 39;
+			break;
+		case Engine::TS_SKILL_PRIERCINGRUSH_START_END:
+			m_iAnimIndex = 43;
+			break;
+		case Engine::TS_RAGESKILL_ARMAGEDDONBLADE:
+			m_iAnimIndex = 44;
+			break;
+		case Engine::TS_RAGESKILL_DOUBLESLASH:
+			m_iAnimIndex = 45;
+			break;
+		case Engine::TS_SKILL_ROCKBREAK:
+			m_iAnimIndex = 46;
+			break;
+		case Engine::TS_SPECIALCOMBO_CRASH:
+			m_iAnimIndex = 47;
+			break;
+		case Engine::TS_SPECIALCOMBO_CRASH_READY:
+			m_iAnimIndex = 48;
+			break;
+		case Engine::TS_FRONT_EVASION:
+			m_iAnimIndex = 57;
+			break;
+		case Engine::TS_BACK_EVASION:
+			m_iAnimIndex = 58;
+			break;
+		case Engine::TS_BASIC_COMBO01:
+			m_iAnimIndex = 59;
+			break;
+		case Engine::TS_BASIC_COMBO02:
+			m_iAnimIndex = 60;
+			break;
+		case Engine::TS_BASIC_COMBO03:
+			m_iAnimIndex = 61;
+			break;
+		case Engine::TS_END:
+			break;
+		default:
+			break;
+		}
+		m_pModelCom->SetUp_Animation(m_iAnimIndex);
+
+		m_tInfo.PrevAnim = m_tInfo.CurrAnim;
+	}
 }
 
 void CTSPlayer::Hit(const _int & _Damage)
@@ -578,39 +733,39 @@ void CTSPlayer::Attack_Combo(_double TimeDelta)
 	{
 	
 		m_bTest = true;
-		m_tInfo.CurrAnimState = ANIM_ATTACK_COMBO1;
+		m_tInfo.CurrAnim = TS_BASIC_COMBO01;
 		//m_pTransformCom->Go_Straight(0.05); // 루트 모션이 없어서 움직임 제어 직접 해줘야 함 
 	}
 
-	if (m_tInfo.prevAnimState == ANIM_ATTACK_COMBO1 && true != m_pModelCom->Get_AnimFinished())
+	if (m_tInfo.PrevAnim == TS_BASIC_COMBO01 && true != m_pModelCom->Get_AnimFinished())
 	{
-		m_tInfo.CurrAnimState = ANIM_ATTACK_COMBO2;
+		m_tInfo.CurrAnim = TS_BASIC_COMBO02;
 		//m_pTransformCom->Go_Straight(0.05);
 
 	}
 
-	else if (m_tInfo.prevAnimState == ANIM_ATTACK_COMBO2 && true != m_pModelCom->Get_AnimFinished())
+	else if (m_tInfo.PrevAnim == TS_BASIC_COMBO02 && true != m_pModelCom->Get_AnimFinished())
 	{
-		m_tInfo.CurrAnimState = ANIM_ATTACK_COMBO3;
+		m_tInfo.CurrAnim = TS_BASIC_COMBO03;
 		//m_pTransformCom->Go_Straight(0.07);
 		m_bTest = false;
 
 	}
 
-	if (m_tInfo.prevAnimState == ANIM_ATTACK_COMBO3 && true == m_pModelCom->Get_LerpAnimFinished())
+	if (m_tInfo.PrevAnim == TS_BASIC_COMBO03 && true == m_pModelCom->Get_LerpAnimFinished())
 	{
-		m_tInfo.CurrAnimState = ANIM_COMBAT_WAIT;
+		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
 		m_bTest = false;
 		m_dLerpTime = 0.f;
 	}
 
-	if (false == m_AttackCheck && m_tInfo.prevAnimState == ANIM_COMBAT_WAIT && true == m_pModelCom->Get_AnimFinished())
+	if (false == m_AttackCheck && m_tInfo.PrevAnim == TS_COMBAT_WAIT && true == m_pModelCom->Get_AnimFinished())
 	{
 		m_dLerpTime = 0.f;
 
 		m_AttackCheck = false;
 		m_bTest = false;
-		m_tInfo.CurrAnimState = ANIM_IDEL;
+		m_tInfo.CurrAnim = TS_WAIT;
 	}
 
 }
@@ -635,14 +790,14 @@ void CTSPlayer::Jump(_double TimeDelta)
 		if (false == m_bFall)
 			vPos.y += m_fGravity;
 		else
-			vPos.y -= m_fGravity;
+			vPos.y -= m_fGravity + 0.05f;
 
 	}
 	if (true == m_bJump)
 	{
 		if (true == m_bSIbal)
 		{
-			m_tInfo.CurrAnimState = ANIM_JUMP; // 여기도 조건 잡아줘서 넘어가게 -> 아니면 계속 이게 들어 옴
+			m_tInfo.CurrAnim = TS_JUMP; // 여기도 조건 잡아줘서 넘어가게 -> 아니면 계속 이게 들어 옴
 			_double sibal = 0.02;
 			m_pModelCom->Set_AnimTick(sibal);
 		}
@@ -659,15 +814,15 @@ void CTSPlayer::Jump(_double TimeDelta)
 		if (vPos.y >= 5.f) // 공중에 있고, 공격중이 아니라면 // 여기
 		{
 			m_bFall = true;
-			m_tInfo.CurrAnimState = ANIM_JUMP_LENDING;
+			m_tInfo.CurrAnim = TS_JUMP_LENDING;
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&vPos)); // 렌딩 끝나면 아이들 모션 적용 
 
-			if (m_tInfo.prevAnimState == ANIM_JUMP_LENDING && m_pModelCom->Get_AnimFinished())
-				m_tInfo.CurrAnimState = ANIM_IDEL;
+			if (m_tInfo.PrevAnim == TS_JUMP_LENDING && m_pModelCom->Get_AnimFinished())
+				m_tInfo.CurrAnim = TS_WAIT;
 
 		}
 		// 여기에 들어오는 조건이 좀 잡기 빡셈 점프는 업데이트를 계속 돌고 있고, 점프어택이 들어 가면 점프 어택이 돌아 가면서 그 사이 값을 어떻게 잡아야 할 지 모르겠음.. 시발;
-		if (vPos.y >= 1.5f && m_tInfo.CurrAnimState == ANIM_JUMP_ATTACK1) // 공중에 있고, 공격중이라면
+		if (vPos.y >= 1.5f && m_tInfo.CurrAnim == TS_AIR_COMBO01) // 공중에 있고, 공격중이라면
 		{
 			m_bCheck = true;
 
@@ -681,15 +836,15 @@ void CTSPlayer::Jump(_double TimeDelta)
 
 				m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&vPos));
 
-				if (m_tInfo.prevAnimState == ANIM_JUMP_LENDING && m_pModelCom->Get_AnimFinished())
-					m_tInfo.CurrAnimState = ANIM_IDEL;
+				if (m_tInfo.PrevAnim == TS_AIR_COMBO04_LENDING && m_pModelCom->Get_AnimFinished())
+					m_tInfo.CurrAnim = TS_COMBAT_WAIT;
 
 			}
 
 		if (vPos.y <= 0.0f) //  이 씨발 y 조절 어케 하는데 
 		{
 			vPos.y = 0.00f;
-			m_tInfo.CurrAnimState = ANIM_IDEL;
+			m_tInfo.CurrAnim = TS_WAIT;
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&vPos));
 			m_fGravity = 0.f;
 			m_bFall = false;
@@ -713,21 +868,26 @@ void CTSPlayer::Jump_Attack(_double TimeDelta)
 
 	if (true == m_bJump)
 	{
-		m_tInfo.CurrAnimState = ANIM_JUMP_ATTACK1;
+		m_tInfo.CurrAnim = TS_AIR_COMBO01;
 
 	}
 
-	if (m_tInfo.prevAnimState == ANIM_JUMP_ATTACK1 && true != m_pModelCom->Get_AnimFinished())
-		m_tInfo.CurrAnimState = ANIM_JUMP_ATTACK2;
+	if (m_tInfo.PrevAnim == TS_AIR_COMBO01 && true != m_pModelCom->Get_AnimFinished())
+		m_tInfo.CurrAnim = TS_AIR_COMBO02;
 
-	if (m_tInfo.prevAnimState == ANIM_JUMP_ATTACK2 && true != m_pModelCom->Get_AnimFinished())
+	if (m_tInfo.PrevAnim == TS_AIR_COMBO02 && true != m_pModelCom->Get_AnimFinished())
 	{
-		m_tInfo.CurrAnimState = ANIM_JUMP_ATTACK3;
+		m_tInfo.CurrAnim = TS_AIR_COMBO03;
 	}
 
-	if (m_tInfo.prevAnimState == ANIM_JUMP_ATTACK3 && true == m_pModelCom->Get_LerpAnimFinished())
+	if (m_tInfo.PrevAnim == TS_AIR_COMBO03 && true != m_pModelCom->Get_AnimFinished())
 	{
-		m_tInfo.CurrAnimState = ANIM_JUMP_LENDING;
+		m_tInfo.CurrAnim = TS_AIR_COMBO04;
+	}
+
+	if (m_tInfo.PrevAnim == TS_AIR_COMBO04 && true == m_pModelCom->Get_LerpAnimFinished())
+	{
+		m_tInfo.CurrAnim = TS_AIR_COMBO04_LENDING;
 		//m_bJump = false;
 		m_JumpAttack = false;
 		m_bLendiongCheck = false;
@@ -737,10 +897,9 @@ void CTSPlayer::Jump_Attack(_double TimeDelta)
 
 	}
 
-	if (false == m_JumpAttack && m_tInfo.prevAnimState == ANIM_JUMP_LENDING && true == m_pModelCom->Get_AnimFinished())
+	if (false == m_JumpAttack && m_tInfo.PrevAnim == TS_AIR_COMBO04_LENDING && true == m_pModelCom->Get_AnimFinished())
 	{
-		m_tInfo.CurrAnimState = ANIM_IDEL;
-		cout << m_tInfo.CurrAnimState << endl;
+		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
 	}
 
 	
@@ -771,11 +930,7 @@ void CTSPlayer::Dash(_double TimeDelta)
 
 void CTSPlayer::DashAttack(_double TimeDelta)
 {
-	if (m_bDeah)
-	{
-		if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_LB))
-			m_tInfo.CurrAnimState = ANIM_SKILL_RAGE; //아 시발 ㅋㅋ 이넘값 안 넣었네 ㅋㅋ
-	}
+	m_tInfo.CurrAnim = TS_DASHCOMBO; //아 시발 ㅋㅋ 이넘값 안 넣었네 ㅋㅋ
 }
 
 void CTSPlayer::CombatWait()

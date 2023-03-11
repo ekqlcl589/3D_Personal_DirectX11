@@ -43,6 +43,8 @@ public:
 	virtual HRESULT Render();
 
 	virtual _uint OnDead();
+	MONSTERINFO Get_Info() { return m_eType; }
+	void Set_Info(_float fDamage) { m_eType._Hp -= fDamage; }
 protected:
 	CShader* m_pShaderCom = { nullptr };
 	CRenderer* m_pRendererCom = { nullptr };

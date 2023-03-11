@@ -212,8 +212,8 @@ void CAncient_StonGolem::OnCollision(CGameObject * pObj)
 		if (!m_isColl)
 		{
 			m_eType._Hp -= 50.f;
+			cout << "칼 한테 맞아서 몬스터 체력 : " << m_eType._Hp << endl;
 			m_isColl = true;
-			cout << "몬스터 체력 : " << m_eType._Hp << endl;
 		}
 		break;
 	case Engine::OBJ_END:

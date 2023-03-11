@@ -112,16 +112,10 @@ void CTwoHandedSword::OnCollision(CGameObject * pObj)
 	case Engine::OBJ_BOSS2:
 		break;
 	case Engine::OBJ_MONSTER_WEAPONL:
-		cout << "왼 타격" << endl;
-
 		break;
 	case Engine::OBJ_MONSTER_WEAPONR:
-		cout << "오른 타격" << endl;
-
 		break;
 	case Engine::OBJ_MONSTER_BODY:
-		cout << "몸통 OBB 타격" << endl;
-
 		break;
 	case Engine::OBJ_END:
 		break;

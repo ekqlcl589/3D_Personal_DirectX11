@@ -67,19 +67,16 @@ HRESULT CGameInstance::Tick_Engine(_double TimeDelta)
 
 	m_pLevel_Manager->Tick_Level(TimeDelta);
 
-	m_pObject_Manager->Tick(TimeDelta); // 충돌 했나 안 했나 판별 
+	m_pObject_Manager->Tick(TimeDelta);
 	m_pPipeLine->Tick(TimeDelta);
-	// 여기서 콜리전 매니저의 틱을 만들어서 부르고 
-	//m_pCollision_Mgr->Tick(TimeDelta); // 여기서 충돌
 									  // 맞음    ,  떄림 
 	m_pCollision_Mgr->OnCollisionEnter(OBJ_PLAYER, OBJ_MONSTER_BODY);
 	m_pCollision_Mgr->OnCollisionEnter(OBJ_PLAYER, OBJ_MONSTER_WEAPONL);
 	m_pCollision_Mgr->OnCollisionEnter(OBJ_PLAYER, OBJ_MONSTER_WEAPONR);
-	m_pCollision_Mgr->OnCollisionEnter(OBJ_WEAPON_KARMA14, OBJ_MONSTER_BODY);
-	m_pCollision_Mgr->OnCollisionEnter(OBJ_WEAPON_KARMA14, OBJ_BOSS1);
+
 	m_pCollision_Mgr->OnCollisionEnter(OBJ_MONSTER_BODY, OBJ_WEAPON_KARMA14);
 
-	m_pObject_Manager->LateTick(TimeDelta); // 충돌 후 행동? 넉백? 데미지 처리? -> OnCollision
+	m_pObject_Manager->LateTick(TimeDelta); 
 
 	return S_OK;
 }

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\MonsterWeapon.h"
 #include "GameInstance.h"
+#include "Ancient_StonGolem.h"
 
 CMonsterWeapon::CMonsterWeapon(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -44,11 +45,10 @@ HRESULT CMonsterWeapon::Initialize(void * pArg)
 	if (m_Weapon.WeaponType == WEAPON_MONSTER_L)
 		pInstance->Add_Collider(m_eCollisionState, 6, this);
 
-	else if (m_Weapon.WeaponType == WEAPON_MONSTER_R)
+	if (m_Weapon.WeaponType == WEAPON_MONSTER_R)
 		pInstance->Add_Collider(m_eCollisionState, 7, this);
-	else if (m_Weapon.WeaponType == WEAPON_MONSTER_BODY)
+	if (m_Weapon.WeaponType == WEAPON_MONSTER_BODY)
 		pInstance->Add_Collider(m_eCollisionState, 8, this);
-
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -57,6 +57,13 @@ HRESULT CMonsterWeapon::Initialize(void * pArg)
 
 void CMonsterWeapon::Tick(_double TimeDelta)
 {
+	HitTime += TimeDelta;
+	if (HitTime > 1.5f)
+	{
+		m_bColl = false;
+		HitTime = 0.0;
+	}
+
 
 	if (nullptr != m_pColliderCom)
 		m_pColliderCom->Update(XMLoadFloat4x4(&m_WorldMatrix));
@@ -121,7 +128,23 @@ void CMonsterWeapon::OnCollision(CGameObject * pObj)
 	case Engine::OBJ_BOSS1:
 		break;
 	case Engine::OBJ_WEAPON_KARMA14:
+	{
+		if (!m_bColl)
+		{
+			CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+			CGameObject* pOwner = nullptr;
+
+			pOwner = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
+
+			_float Hp = static_cast<CAncient_StonGolem*>(pOwner)->Get_Info()._Hp;
+			Hp = 50.f;
+			static_cast<CAncient_StonGolem*>(pOwner)->Set_Info(Hp);
+			cout << "Ä®ÇÑÅ× ¸ÂÀ½" << static_cast<CAncient_StonGolem*>(pOwner)->Get_Info()._Hp << endl;
+			m_bColl = true;
+			RELEASE_INSTANCE(CGameInstance)
+		}
 		break;
+	}
 	case Engine::OBJ_BOSS2:
 		break;
 	case Engine::OBJ_MONSTER_WEAPONL:
@@ -170,7 +193,8 @@ HRESULT CMonsterWeapon::Add_Components()
 			TEXT("Com_Collider"), (CComponent**)&m_pColliderCom, &ColliderDesc)))
 			return E_FAIL;
 	}
-	else if(m_Weapon.WeaponType == WEAPON_MONSTER_BODY)
+	
+	if(m_Weapon.WeaponType == WEAPON_MONSTER_BODY)
 	{
 		CCollider::COLLIDERDESC ColliderDesc;
 		ZeroMemory(&ColliderDesc, sizeof ColliderDesc);
@@ -178,7 +202,7 @@ HRESULT CMonsterWeapon::Add_Components()
 		ColliderDesc.vScale = _float3(5.f, 2.f, 5.f);
 		ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vScale.y * 0.5f, 0.f);
 		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_OBB"),
-			TEXT("Com_Collider"), (CComponent**)&m_pColliderCom, &ColliderDesc)))
+			TEXT("Com_Collider1"), (CComponent**)&m_pColliderCom, &ColliderDesc)))
 			return E_FAIL;
 
 	}

@@ -236,7 +236,7 @@ void CPlayer_Body::OnCollision(CGameObject * pObj) // LateTick에서 불림
 		{
 			Hit(10); // 몬스터 공격력 가져와서 대입 
 			m_Hit = true;
-			cout << "몸통" << endl;
+			cout << "몬스터 몸통 한테 맞음" << endl;
 		}
 
 		break;
@@ -250,7 +250,7 @@ void CPlayer_Body::OnCollision(CGameObject * pObj) // LateTick에서 불림
 		{
 			Hit(10); // 몬스터 공격력 가져와서 대입 
 			m_Hit = true;
-			cout << "왼팔" << endl;
+			cout << "왼팔한테 맞음" << endl;
 
 		}
 		break;
@@ -261,7 +261,7 @@ void CPlayer_Body::OnCollision(CGameObject * pObj) // LateTick에서 불림
 		{
 			Hit(10); // 몬스터 공격력 가져와서 대입 
 			m_Hit = true;
-			cout << "오른" << endl;
+			cout << "오른한테 맞음" << endl;
 
 		}
 		break;
@@ -272,7 +272,7 @@ void CPlayer_Body::OnCollision(CGameObject * pObj) // LateTick에서 불림
 		{
 			Damage(10); // 몬스터 공격력 가져와서 대입 
 			m_Hit = true;
-			cout << "바디" << endl;
+			cout << "바디한테 맞음" << endl;
 
 		}
 
