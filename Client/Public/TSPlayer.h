@@ -59,6 +59,8 @@ public:
 	void Attack_Special(_double TimeDelta);
 	void Attack_Special2(_double TimeDelta);
 
+	void Attack_Go(_double TimeDelta);
+
 	void Jump(_double TimeDelta);
 	void Jump_Attack(_double TimeDelta);
 
@@ -119,7 +121,7 @@ private:
 	_bool m_bCheck = false;
 	_bool m_bSIbal = false;
 
-	_float m_fPower = 0.05f;
+	_float m_fPower = 0.005f;
 	_float m_fTime = 0.f;
 
 	_bool m_Hit = false;

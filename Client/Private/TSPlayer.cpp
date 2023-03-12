@@ -84,8 +84,6 @@ void CTSPlayer::Tick(_double TimeDelta)
 
 	Key_Input(TimeDelta);
 
-	Dash(TimeDelta);
-
 	Animation(m_tInfo.CurrAnim, TimeDelta);
 
 
@@ -310,11 +308,10 @@ void CTSPlayer::Key_Input(_double TimeDelta)
 
 	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_LSHIFT))
 	{
-		m_bDeah = true;
+		m_tInfo.CurrAnim = TS_DASH;
 
+		m_bDeah = true;
 	}
-	else if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_LSHIFT))
-		m_bDeah = false;
 
 	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_A))
 	{
@@ -394,8 +391,6 @@ void CTSPlayer::Key_Input(_double TimeDelta)
 
 	}
 
-	CombatWait();
-
 #pragma region SkillMotion Test 
 
 	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_E))
@@ -407,6 +402,11 @@ void CTSPlayer::Key_Input(_double TimeDelta)
 
 #pragma endregion 
 
+	Attack_Go(TimeDelta);
+
+	CombatWait();
+
+	Dash(TimeDelta);
 
 	Jump(TimeDelta);
 
@@ -737,8 +737,6 @@ void CTSPlayer::Attack()
 
 void CTSPlayer::Attack_Combo(_double TimeDelta)
 {
-	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
-
 	if (false == m_bJump)
 	{
 	
@@ -746,22 +744,18 @@ void CTSPlayer::Attack_Combo(_double TimeDelta)
 		m_AttackCheck = true;
 		m_ComboCheck2 = true;
 		m_tInfo.CurrAnim = TS_BASIC_COMBO01;
-		//m_pTransformCom->Go_Straight(0.05); // 루트 모션이 없어서 움직임 제어 직접 해줘야 함 
 	}
 
 	if (m_tInfo.PrevAnim == TS_BASIC_COMBO01 && true != m_pModelCom->Get_AnimFinished())
 	{
 		m_ComboCheck = true;
-		//m_ComboCheck2 = false;
 		m_tInfo.CurrAnim = TS_BASIC_COMBO02;
-		//m_pTransformCom->Go_Straight(0.05);
 
 	}
 
 	else if (m_tInfo.PrevAnim == TS_BASIC_COMBO02 && true != m_pModelCom->Get_AnimFinished())
 	{
 		m_tInfo.CurrAnim = TS_BASIC_COMBO03;
-		//m_pTransformCom->Go_Straight(0.07);
 		m_bTest = false;
 
 	}
@@ -821,6 +815,64 @@ void CTSPlayer::Attack_Special2(_double TimeDelta)
 	}
 }
 
+void CTSPlayer::Attack_Go(_double TimeDelta)
+{
+	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+	_float3 fPos;
+
+	if (true == m_AttackCheck &&  m_tInfo.CurrAnim == TS_BASIC_COMBO01)
+	{
+		m_pTransformCom->Go_Straight(TimeDelta * 0.09);
+
+		if (m_pModelCom->Get_AnimTimeAcc() >= 7.0)
+		{
+			vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		}
+		
+	}
+
+	if (true == m_AttackCheck &&  m_tInfo.CurrAnim == TS_BASIC_COMBO02)
+	{
+		if (m_pModelCom->Get_AnimTimeAcc() >= 9.0)
+		{
+			m_pTransformCom->Go_Straight(TimeDelta * 0.09);
+
+			if (m_pModelCom->Get_AnimTimeAcc() >= 15.0)
+			{
+				vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			}
+		}
+	}
+
+
+	if (true == m_AttackCheck &&  m_tInfo.CurrAnim == TS_BASIC_COMBO03)
+	{
+		if (m_pModelCom->Get_AnimTimeAcc() >= 10.0)
+		{
+			m_pTransformCom->Go_Straight(TimeDelta * 0.13);
+
+			if (m_pModelCom->Get_AnimTimeAcc() >= 23.0)
+			{
+				vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			}
+		}
+	}
+
+	if (m_tInfo.CurrAnim == TS_BASIC_COMBO02_END)
+	{
+		if (m_pModelCom->Get_AnimTimeAcc() >= 8.0)
+		{
+			m_pTransformCom->Go_Straight(TimeDelta * 0.13);
+
+			if (m_pModelCom->Get_AnimTimeAcc() >= 18.0)
+			{
+				vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			}
+		}
+	}
+}
+
 void CTSPlayer::Jump(_double TimeDelta)
 {
 	m_JumpAttack = false;
@@ -834,14 +886,14 @@ void CTSPlayer::Jump(_double TimeDelta)
 	if (true == m_JumpAttack)
 		m_fGravity = 0.f;
 	else
-		m_fGravity = 0.1f + (TimeDelta * 0.5);
+		m_fGravity = 0.2f + (TimeDelta * 0.5);
 
 	if (false == m_bCheck)
 	{
 		if (false == m_bFall)
 			vPos.y += m_fGravity;
 		else
-			vPos.y -= m_fGravity + 0.05f;
+			vPos.y -= m_fGravity + 0.1f;
 
 	}
 	if (true == m_bJump)
@@ -934,6 +986,7 @@ void CTSPlayer::Jump_Attack(_double TimeDelta)
 	if (m_tInfo.PrevAnim == TS_AIR_COMBO03 && true != m_pModelCom->Get_AnimFinished())
 	{
 		m_tInfo.CurrAnim = TS_AIR_COMBO04;
+		m_pModelCom->Set_AnimTick(30.0);
 	}
 
 	if (m_tInfo.PrevAnim == TS_AIR_COMBO04 && true == m_pModelCom->Get_LerpAnimFinished())
@@ -959,22 +1012,30 @@ void CTSPlayer::Jump_Attack(_double TimeDelta)
 
 void CTSPlayer::Dash(_double TimeDelta)
 {
-	if (true == m_bDeah)
+	//if (true == m_bDeah)
+	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+	_float3 fPos;
+	if(true == m_bDeah && m_tInfo.PrevAnim == TS_DASH && true != m_pModelCom->Get_AnimFinished())
 	{
-		m_tInfo.CurrAnimState = ANIM_RUN_L;
+		if(m_pModelCom->Get_AnimTimeAcc() >= 4.0)
+		{
+			vPosition += vLook;
 
-		_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-		_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+			XMStoreFloat3(&fPos, vPosition);
 
-		vPosition += vLook;
+			fPos.x += m_fPower * TimeDelta;
+			fPos.z += m_fPower * TimeDelta;
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPos));
 
-		_float3 fPos;
-		XMStoreFloat3(&fPos, vPosition);
+			if (m_pModelCom->Get_AnimTimeAcc() >= 6.0)
+			{
+				m_bDeah = false;
+				m_tInfo.CurrAnim = TS_WAIT;
+				_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
-		fPos.x += m_fPower;
-		fPos.z += m_fPower;
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPos));
-		m_bDeah = false;
+			}
+		}
 
 	}
 }
@@ -982,6 +1043,7 @@ void CTSPlayer::Dash(_double TimeDelta)
 void CTSPlayer::DashAttack(_double TimeDelta)
 {
 	m_tInfo.CurrAnim = TS_DASHCOMBO;
+
 }
 
 void CTSPlayer::CombatWait()
@@ -996,6 +1058,12 @@ void CTSPlayer::CombatWait()
 	{
 		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
 
+	}
+
+	if (m_tInfo.PrevAnim == TS_DASHCOMBO && true == m_pModelCom->Get_AnimFinished())
+	{
+		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
+		m_bDeah = false;
 	}
 
 	if (false == m_AttackCheck && m_tInfo.PrevAnim == TS_COMBAT_WAIT && true == m_pModelCom->Get_AnimFinished())
