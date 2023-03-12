@@ -74,7 +74,7 @@ HRESULT CTSPlayer::Initialize(void * pArg)
 void CTSPlayer::Tick(_double TimeDelta)
 {
 	m_HitDelay += TimeDelta;
-	if (m_HitDelay >= 1.5f)
+	if (m_HitDelay >= 1.5)
 	{
 		m_Hit = false;
 		m_HitDelay = 0.0;
@@ -212,14 +212,6 @@ void CTSPlayer::OnCollision(CGameObject * pObj) // LateTick에서 불림
 	case Engine::OBJ_WEAPON_SS1:
 		break;
 	case Engine::OBJ_BOSS1:
-		if (!m_Hit)
-		{
-			Hit(10); // 몬스터 공격력 가져와서 대입 
-			m_Hit = true;
-			cout << "지웠던 obj_boss 한테 히트" << endl;
-
-		}
-
 		break;
 	case Engine::OBJ_WEAPON_KARMA14:
 		break;
@@ -247,14 +239,18 @@ void CTSPlayer::OnCollision(CGameObject * pObj) // LateTick에서 불림
 		break;
 	}
 	case Engine::OBJ_MONSTER_BODY:
-	
+		//m_tInfo.CurrAnim = TS_STURN_LOOP;
+
 		if (!m_Hit)
 		{
 			Damage(10); // 몬스터 공격력 가져와서 대입 
 			m_Hit = true;
+			m_NoStraight = true;
 			cout << "몸통 히트" << endl;
 
 		}
+		else
+			m_NoStraight = false;
 
 		break;
 	
@@ -274,10 +270,11 @@ void CTSPlayer::Key_Input(_double TimeDelta)
 	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_W))
 	{
 		m_bTest = false;
+		m_Dir = FRONT;
 
-		m_pTransformCom->Go_Straight(TimeDelta);
-		m_tInfo.CurrAnim = TS_RUN_END;
-		//m_tInfo.CurrAnimState = ANIM_RUN;
+		if(!m_NoStraight)
+			m_pTransformCom->Go_Straight(TimeDelta);
+		m_tInfo.CurrAnim = TS_RUN_END; // 이게 그냥 RUN인데 enum값을 안 넣어서 이걸로 씀 ㅋㅋ
 
 	}
 	else if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_W))
@@ -285,16 +282,15 @@ void CTSPlayer::Key_Input(_double TimeDelta)
 		m_bTest = false;
 
 		m_tInfo.CurrAnim = TS_WAIT;
-		//m_tInfo.CurrAnimState = ANIM_IDEL;
 	}
 
 	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_S))
 	{
 		m_bTest = false;
+		m_Dir = BACK;
 
 		m_pTransformCom->Go_Back(TimeDelta);
 		m_tInfo.CurrAnim = TS_RUN_END;
-		//m_tInfo.CurrAnimState = ANIM_RUN;
 
 	}
 	else if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_S))
@@ -303,7 +299,6 @@ void CTSPlayer::Key_Input(_double TimeDelta)
 
 		m_tInfo.CurrAnim = TS_WAIT;
 
-		//m_tInfo.CurrAnimState = ANIM_IDEL;
 	}
 
 	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_LSHIFT))
@@ -312,6 +307,12 @@ void CTSPlayer::Key_Input(_double TimeDelta)
 
 		m_bDeah = true;
 	}
+
+	//if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_Z))
+	//{
+	//	m_tInfo.CurrAnim = TS_FRONT_EVASION;
+	//	m_Evasion = true;
+	//}
 
 	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_A))
 	{
@@ -401,6 +402,7 @@ void CTSPlayer::Key_Input(_double TimeDelta)
 		m_pModelCom->SetUp_Animation(46); // 공중에서 쓰는 스킬인가;
 
 #pragma endregion 
+	Evasion(TimeDelta);
 
 	Attack_Go(TimeDelta);
 
@@ -678,6 +680,7 @@ void CTSPlayer::Hit(const _int & _Damage)
 	m_pTransformCom->Set_State(CTransform::STATE_UP, XMVector3Normalize(vUp) * vScale.y);
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, XMVector3Normalize(vDir) * vScale.z);
 
+	// 충돌 시 밀려 나야 함 
 	vPosition -= XMVector3Normalize(vDir) * 0.1f;
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
@@ -714,16 +717,7 @@ void CTSPlayer::Damage(const _int & _Damage)
 	m_pTransformCom->Set_State(CTransform::STATE_UP, XMVector3Normalize(vUp) * vScale.y);
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, XMVector3Normalize(vDir) * vScale.z);
 
-	/*
-		m_tInfo.fX = tTargetInfo.fX - (tTargetInfo.fCX + m_tInfo.fCX) * 0.5f;
-
-		m_tInfo.fX += (m_fSpeed + 300.f + fDashTime) * m_Dir;
-
-	*/
-	//vPosition = vDir - vPosition; // 겹친만큼 밀어줘야 함 -> 계산을 콜리전 매니저에서? 아님 콜라이더에서? 
-	//
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
-
+	// 서로 겹치지 않게 해야 함
 	RELEASE_INSTANCE(CGameInstance);
 
 }
@@ -739,7 +733,7 @@ void CTSPlayer::Attack_Combo(_double TimeDelta)
 {
 	if (false == m_bJump)
 	{
-	
+
 		m_bTest = true;
 		m_AttackCheck = true;
 		m_ComboCheck2 = true;
@@ -827,9 +821,10 @@ void CTSPlayer::Attack_Go(_double TimeDelta)
 
 		if (m_pModelCom->Get_AnimTimeAcc() >= 7.0)
 		{
-			vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			if(!m_NoStraight)
+				vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 		}
-		
+
 	}
 
 	if (true == m_AttackCheck &&  m_tInfo.CurrAnim == TS_BASIC_COMBO02)
@@ -840,7 +835,8 @@ void CTSPlayer::Attack_Go(_double TimeDelta)
 
 			if (m_pModelCom->Get_AnimTimeAcc() >= 15.0)
 			{
-				vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+				if (!m_NoStraight)
+					vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 			}
 		}
 	}
@@ -854,7 +850,8 @@ void CTSPlayer::Attack_Go(_double TimeDelta)
 
 			if (m_pModelCom->Get_AnimTimeAcc() >= 23.0)
 			{
-				vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+				if (!m_NoStraight)
+					vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 			}
 		}
 	}
@@ -865,9 +862,10 @@ void CTSPlayer::Attack_Go(_double TimeDelta)
 		{
 			m_pTransformCom->Go_Straight(TimeDelta * 0.13);
 
-			if (m_pModelCom->Get_AnimTimeAcc() >= 18.0)
+			if (m_pModelCom->Get_AnimTimeAcc() >= 13.0)
 			{
-				vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+				if (!m_NoStraight)
+					vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 			}
 		}
 	}
@@ -978,11 +976,6 @@ void CTSPlayer::Jump_Attack(_double TimeDelta)
 	if (m_tInfo.PrevAnim == TS_AIR_COMBO01 && true != m_pModelCom->Get_AnimFinished())
 		m_tInfo.CurrAnim = TS_AIR_COMBO03;
 
-	//if (m_tInfo.PrevAnim == TS_AIR_COMBO02 && true != m_pModelCom->Get_AnimFinished())
-	//{
-	//	m_tInfo.CurrAnim = TS_AIR_COMBO03;
-	//}
-
 	if (m_tInfo.PrevAnim == TS_AIR_COMBO03 && true != m_pModelCom->Get_AnimFinished())
 	{
 		m_tInfo.CurrAnim = TS_AIR_COMBO04;
@@ -992,7 +985,6 @@ void CTSPlayer::Jump_Attack(_double TimeDelta)
 	if (m_tInfo.PrevAnim == TS_AIR_COMBO04 && true == m_pModelCom->Get_LerpAnimFinished())
 	{
 		m_tInfo.CurrAnim = TS_AIR_COMBO04_LENDING;
-		//m_bJump = false;
 		m_JumpAttack = false;
 		m_bLendiongCheck = false;
 		m_bFall = true;
@@ -1032,11 +1024,10 @@ void CTSPlayer::Dash(_double TimeDelta)
 			{
 				m_bDeah = false;
 				m_tInfo.CurrAnim = TS_WAIT;
-				_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+				vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
 			}
 		}
-
 	}
 }
 
@@ -1066,11 +1057,60 @@ void CTSPlayer::CombatWait()
 		m_bDeah = false;
 	}
 
+	if (m_tInfo.PrevAnim == TS_FRONT_EVASION && m_pModelCom->Get_AnimFinished())
+	{
+		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
+		m_Evasion = false;
+	}
+
 	if (false == m_AttackCheck && m_tInfo.PrevAnim == TS_COMBAT_WAIT && true == m_pModelCom->Get_AnimFinished())
 	{
 		m_tInfo.CurrAnim = TS_WAIT;
 	
 	}
+}
+
+void CTSPlayer::Evasion(_double TimeDelta)
+{
+	//오 시발 잠시 유기 duration에 비해 tick이 너무 빠르고 타이밍 잡기 개 빡셈;
+	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+
+	_float3 fPos;
+
+	if (m_Evasion && m_tInfo.PrevAnim == TS_FRONT_EVASION && true != m_pModelCom->Get_AnimFinished())
+	{
+		if (m_pModelCom->Get_AnimTimeAcc() >= 1.0)
+		{
+			vPosition += vLook;
+
+			XMStoreFloat3(&fPos, vPosition);
+
+			fPos.x += 0.001f * TimeDelta;
+			fPos.z += 0.001f * TimeDelta;
+
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPos));
+
+			if (m_pModelCom->Get_AnimTimeAcc() >= 3.0)
+			{
+				m_Evasion = false;
+				m_tInfo.CurrAnim = TS_COMBAT_WAIT;
+				vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			}
+		}
+	}
+	//else if (m_Evasion && m_Dir == BACK)
+	//{
+	//	vPosition += vLook;
+	//
+	//	XMStoreFloat3(&fPos, vPosition);
+	//
+	//	fPos.x -= 0.005 * TimeDelta;
+	//	fPos.z -= 0.005 * TimeDelta;
+	//
+	//	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPos));
+	//
+	//}
 }
 
 HRESULT CTSPlayer::Add_Components()
@@ -1187,7 +1227,7 @@ HRESULT CTSPlayer::Add_Weapon()
 	if (nullptr == pBonePtr)
 		return E_FAIL;
 
-	CTwoHandedSword::WEAPONDESC WeaponDesc = { pBonePtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom};
+	CTwoHandedSword::WEAPONDESC WeaponDesc = { pBonePtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CTwoHandedSword::WEAPON_TS, OBJ_WEAPON_KARMA14};
 	Safe_AddRef(pBonePtr);
 
 	CGameObject* pWeapon = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Weapon_TS"), &WeaponDesc);

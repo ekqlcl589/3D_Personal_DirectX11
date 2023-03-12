@@ -30,6 +30,8 @@ HRESULT CCollisionMgr::Add_Collider(COLLISIONSTATE eType, int iNum, CGameObject*
 
 void CCollisionMgr::OnCollisionEnter(COLLISIONSTATE eType, COLLISIONSTATE eType2)
 {
+	//OncollisionStay(eType);
+
 	if (true == m_bIsColl)
 	{
 		for (auto& Src : m_mapObj[eType])
@@ -67,7 +69,10 @@ void CCollisionMgr::OnCollision(COLLISIONSTATE eType, COLLISIONSTATE eType2)
 			if (nullptr == SrcColl || nullptr == DestColl)
 				continue;
 
-			m_bIsColl = SrcColl->Collision(DestColl); // 충돌 정보 저장
+			if (true == SrcColl->Collision(DestColl)) // 충돌 정보 저장
+				m_bIsColl = true;
+			else
+				m_bIsColl = false;
 
 		}
 	}
@@ -77,8 +82,8 @@ void CCollisionMgr::OnCollision(COLLISIONSTATE eType, COLLISIONSTATE eType2)
 void CCollisionMgr::OncollisionStay(COLLISIONSTATE eType)
 {
 	// 한 번 충돌 했다면 
-	//for (auto& iter : m_mapObj[eType])
-		//Delete_CollideObj(eType, iter.second->Get_ObjID());
+	for (auto& iter : m_mapObj[eType])
+		Delete_CollideObj(eType, iter.second->Get_ObjID());
 
 	//for (auto& iter = m_mapObj[eType].begin(); iter != m_mapObj[eType].end(); iter++)
 	//{

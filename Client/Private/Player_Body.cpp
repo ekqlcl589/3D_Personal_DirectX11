@@ -72,7 +72,7 @@ HRESULT CPlayer_Body::Initialize(void * pArg)
 void CPlayer_Body::Tick(_double TimeDelta)
 {
 	m_HitDelay += TimeDelta;
-	if (m_HitDelay >= 1.5f)
+	if (m_HitDelay >= 1.5)
 	{
 		m_Hit = false;
 		m_HitDelay = 0.0;
@@ -928,8 +928,8 @@ HRESULT CPlayer_Body::Add_Weapon()
 	if (nullptr == pBonePtr || nullptr == pBonePtrL)
 		return E_FAIL;
 
-	CSwordShield::WEAPONDESC WeaponDesc = { pBonePtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CSwordShield::WEAPON_SWORD };
-	CSwordShield::WEAPONDESC WeaponDesc1 = { pBonePtrL, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CSwordShield::WEAPON_SHILED };
+	CSwordShield::WEAPONDESC WeaponDesc = { pBonePtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom };
+	CSwordShield::WEAPONDESC WeaponDesc1 = { pBonePtrL, m_pModelCom->Get_LocalMatrix(), m_pTransformCom };
 	Safe_AddRef(pBonePtr);
 	Safe_AddRef(pBonePtrL);
 

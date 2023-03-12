@@ -116,7 +116,7 @@ private:
 	_float m_fTime = 0.f;
 
 	_bool m_Hit = false;
-	_float m_HitDelay = 0.f;
+	_double m_HitDelay = 0.0;
 	_float m_ComboTime = 0.f;
 
 	_bool m_bDeah = false;

@@ -34,7 +34,7 @@ HRESULT CTwoHandedSword::Initialize(void * pArg)
 		memcpy(&m_Weapon, pArg, sizeof m_Weapon);
 
 
-	m_eCollisionState = OBJ_WEAPON_KARMA14;
+	m_eCollisionState = m_Weapon.eColl;
 
 	m_iObjID = 4;
 

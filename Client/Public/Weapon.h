@@ -23,13 +23,14 @@ protected:
 	enum COLLIDER { COLLIDER_AABB, COLLIDER_OBB, COLLIDER_SPHERE, COLLIDER_END };
 
 public:
-	enum WEAPONTYPE {WEAPON_SWORD, WEAPON_SHILED, WEAPON_MONSTER, WEAPON_END};
+	enum WEAPONTYPE {WEAPON_SWORD, WEAPON_SHILED, WEAPON_TS, WEAPON_MONSTER, WEAPON_END};
 	typedef struct tagWeaponDesc
 	{
 		CBone* pBonePtr;
 		_float4x4 matParentLocal;
 		CTransform* pParentTransform;
 		WEAPONTYPE WeaponType;
+		COLLISIONSTATE eColl;
 	}WEAPONDESC;
 
 protected:

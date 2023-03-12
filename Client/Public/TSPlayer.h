@@ -19,7 +19,7 @@ class CTSPlayer final : public CGameObject
 public:
 	enum PARTS {PART_HEAD, PART_HAIR_B, PART_HAIR_F, PART_HAIR_S, PART_HAIR_T, PART_TOP, PART_PANTS, PART_END};
 	enum WEAPON { WEAPON_SS, WEAPON_SHIELD, WEAPON_KARMA14, WEAPON_END };
-
+	enum DIR {FRONT, BACK, DIR_END };
 public:
 	enum  
 	{ COLLIDER_AABB, COLLIDER_OBB, COLLIDER_SPHERE, COLLIDER_END };
@@ -54,6 +54,7 @@ public:
 	void Hit(const _int& _Damage);
 	void Damage(const _int& _Damage);
 
+private:
 	void Attack();
 	void Attack_Combo(_double TimeDelta);
 	void Attack_Special(_double TimeDelta);
@@ -68,11 +69,11 @@ public:
 	void DashAttack(_double TimeDelta);
 
 	void CombatWait();
-public:
-	CTransform* Get_Transform() {
-		return m_pTransformCom;
-	}
 
+	void Evasion(_double TimeDelta);
+
+public:
+	CTransform* Get_Transform() { return m_pTransformCom; }
 
 private:
 	CShader* m_pShaderCom = { nullptr };
@@ -83,7 +84,8 @@ private:
 private:
 	vector<CGameObject*> m_vecParts[PART_END];
 	vector<CGameObject*> m_vecWeapon[WEAPON_END];
-	
+	DIR m_Dir;
+
 private:
 	HRESULT Add_Components();
 	HRESULT Add_Parts();
@@ -113,6 +115,8 @@ private:
 
 	_bool m_bAnimCheck = false;
 
+	_bool m_Evasion = false;
+
 	_bool m_bJump = false;
 	_bool m_JumpAttack = false;
 	_bool m_bFall = false;
@@ -125,7 +129,10 @@ private:
 	_float m_fTime = 0.f;
 
 	_bool m_Hit = false;
-	_float m_HitDelay = 0.f;
+	_double m_HitDelay = 0.0;
+
+	_bool m_NoStraight = false;
+	
 	_float m_ComboTime = 0.f;
 
 	_bool m_bDeah = false;
