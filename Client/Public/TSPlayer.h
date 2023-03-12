@@ -56,7 +56,9 @@ public:
 
 	void Attack();
 	void Attack_Combo(_double TimeDelta);
-	
+	void Attack_Special(_double TimeDelta);
+	void Attack_Special2(_double TimeDelta);
+
 	void Jump(_double TimeDelta);
 	void Jump_Attack(_double TimeDelta);
 
@@ -105,12 +107,15 @@ private:
 	_bool m_WeaponChange = false;
 	_bool m_AttackCheck = false;
 	_bool m_ComboCheck = false;
+	_bool m_ComboCheck2 = false;
+
 	_bool m_bAnimCheck = false;
 
 	_bool m_bJump = false;
 	_bool m_JumpAttack = false;
 	_bool m_bFall = false;
 	_bool m_bLendiongCheck = false;
+
 	_bool m_bCheck = false;
 	_bool m_bSIbal = false;
 

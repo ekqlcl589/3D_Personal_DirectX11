@@ -82,33 +82,12 @@ void CTSPlayer::Tick(_double TimeDelta)
 
 	__super::Tick(TimeDelta);
 
-	m_dLerpTime += TimeDelta*1.1f;
-	if (m_dLerpTime >= 1)
-	{
-		m_dLerpTime = 1.0;
-	}
-
 	Key_Input(TimeDelta);
 
-	if (true == m_bTest)
-	{
-		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-
-		_float3 fPos;
-
-		XMStoreFloat3(&fPos, vPos);
-
-		fPos.x = Lerp(fPos.x, fPos.x + 0.003f, m_dLerpTime);
-		fPos.y = Lerp(fPos.y, fPos.y + 0.f, m_dLerpTime);
-		fPos.z = Lerp(fPos.z, fPos.z + 0.003f, m_dLerpTime);
-		//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPos));
-
-		//m_pTransformCom->Go_Straight(0.003);
-	}
 	Dash(TimeDelta);
 
-	//Animation_State(m_tInfo.CurrAnimState, TimeDelta);
 	Animation(m_tInfo.CurrAnim, TimeDelta);
+
 
 	for (_uint i = 0; i < WEAPON_END; i++)
 	{
@@ -364,16 +343,44 @@ void CTSPlayer::Key_Input(_double TimeDelta)
 	{
 		if (false == m_bDeah)
 		{
-			if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_LB))
+			if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_LB)) // 점프중이 아니고 대시 상태가 아니라면 
 				Attack_Combo(TimeDelta);
 		}
 		else
-			if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_LB))
+		{
+			if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_LB))// 점프중이 아니고 대시 상태라면 
 				DashAttack(TimeDelta);
+		}
+
+		if (m_AttackCheck)
+		{
+			if (m_ComboCheck2 && CKeyMgr::GetInstance()->Mouse_Pressing(DIMK_RB))
+			{
+				Attack_Special2(TimeDelta);
+			}
+			else if (m_ComboCheck2 && CKeyMgr::GetInstance()->Mouse_Up(DIMK_RB))
+			{
+				m_ComboCheck2 = false;
+				Attack_Special2(TimeDelta);
+
+			}
+
+			if (m_ComboCheck && CKeyMgr::GetInstance()->Mouse_Pressing(DIMK_RB))
+			{
+				Attack_Special(TimeDelta);
+			}
+			else if (m_ComboCheck && CKeyMgr::GetInstance()->Mouse_Up(DIMK_RB))
+			{
+				m_ComboCheck = false;
+				Attack_Special(TimeDelta);
+
+			}
+		}
+
 	}
 	else
 	{
-		if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_LB))
+		if (CKeyMgr::GetInstance()->Mouse_Down(DIMK_LB)) // 점프중일 때 
 		{
 			m_JumpAttack = true;
 			Jump_Attack(TimeDelta);
@@ -387,16 +394,19 @@ void CTSPlayer::Key_Input(_double TimeDelta)
 
 	}
 
+	CombatWait();
+
 #pragma region SkillMotion Test 
 
 	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_E))
-		m_pModelCom->SetUp_Animation(39);
+		m_pModelCom->SetUp_Animation(39); // Start_End 나눠져 있음 
 	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_R))
-		m_pModelCom->SetUp_Animation(43);
+		m_pModelCom->SetUp_Animation(43); // 애는 단일로 쓰기에는 스킬이라는 느낌이 안 남
 	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_F))
-		m_pModelCom->SetUp_Animation(46);
+		m_pModelCom->SetUp_Animation(46); // 공중에서 쓰는 스킬인가;
 
 #pragma endregion 
+
 
 	Jump(TimeDelta);
 
@@ -733,12 +743,16 @@ void CTSPlayer::Attack_Combo(_double TimeDelta)
 	{
 	
 		m_bTest = true;
+		m_AttackCheck = true;
+		m_ComboCheck2 = true;
 		m_tInfo.CurrAnim = TS_BASIC_COMBO01;
 		//m_pTransformCom->Go_Straight(0.05); // 루트 모션이 없어서 움직임 제어 직접 해줘야 함 
 	}
 
 	if (m_tInfo.PrevAnim == TS_BASIC_COMBO01 && true != m_pModelCom->Get_AnimFinished())
 	{
+		m_ComboCheck = true;
+		//m_ComboCheck2 = false;
 		m_tInfo.CurrAnim = TS_BASIC_COMBO02;
 		//m_pTransformCom->Go_Straight(0.05);
 
@@ -754,6 +768,7 @@ void CTSPlayer::Attack_Combo(_double TimeDelta)
 
 	if (m_tInfo.PrevAnim == TS_BASIC_COMBO03 && true == m_pModelCom->Get_LerpAnimFinished())
 	{
+		m_AttackCheck = false;
 		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
 		m_bTest = false;
 		m_dLerpTime = 0.f;
@@ -763,11 +778,47 @@ void CTSPlayer::Attack_Combo(_double TimeDelta)
 	{
 		m_dLerpTime = 0.f;
 
-		m_AttackCheck = false;
 		m_bTest = false;
 		m_tInfo.CurrAnim = TS_WAIT;
 	}
 
+}
+
+void CTSPlayer::Attack_Special(_double TimeDelta)
+{
+	if (true == m_AttackCheck)
+	{
+		if (m_tInfo.CurrAnim == TS_BASIC_COMBO02 && true != m_pModelCom->Get_AnimFinished())
+		{
+			m_tInfo.CurrAnim = TS_SPECIALCOMBO_CRASH_READY;
+		}
+	}
+
+	if (m_tInfo.CurrAnim == TS_SPECIALCOMBO_CRASH_READY && false == m_ComboCheck)
+	{
+		m_AttackCheck = false;
+		m_tInfo.CurrAnim = TS_SPECIALCOMBO_CRASH;
+	}
+}
+
+void CTSPlayer::Attack_Special2(_double TimeDelta)
+{
+	if (true == m_AttackCheck)
+	{
+		if (m_tInfo.CurrAnim == TS_BASIC_COMBO01 && true != m_pModelCom->Get_AnimFinished())
+		{
+			m_tInfo.CurrAnim = TS_BASIC_COMBO03_START;
+			m_tInfo.CurrAnim = TS_BASIC_COMBO02_LOOP; //
+
+		}
+
+	}
+
+	if (m_tInfo.CurrAnim == TS_BASIC_COMBO02_LOOP && false == m_ComboCheck2)
+	{
+		m_AttackCheck = false;
+		m_tInfo.CurrAnim = TS_BASIC_COMBO02_END;
+	}
 }
 
 void CTSPlayer::Jump(_double TimeDelta)
@@ -873,12 +924,12 @@ void CTSPlayer::Jump_Attack(_double TimeDelta)
 	}
 
 	if (m_tInfo.PrevAnim == TS_AIR_COMBO01 && true != m_pModelCom->Get_AnimFinished())
-		m_tInfo.CurrAnim = TS_AIR_COMBO02;
-
-	if (m_tInfo.PrevAnim == TS_AIR_COMBO02 && true != m_pModelCom->Get_AnimFinished())
-	{
 		m_tInfo.CurrAnim = TS_AIR_COMBO03;
-	}
+
+	//if (m_tInfo.PrevAnim == TS_AIR_COMBO02 && true != m_pModelCom->Get_AnimFinished())
+	//{
+	//	m_tInfo.CurrAnim = TS_AIR_COMBO03;
+	//}
 
 	if (m_tInfo.PrevAnim == TS_AIR_COMBO03 && true != m_pModelCom->Get_AnimFinished())
 	{
@@ -930,40 +981,28 @@ void CTSPlayer::Dash(_double TimeDelta)
 
 void CTSPlayer::DashAttack(_double TimeDelta)
 {
-	m_tInfo.CurrAnim = TS_DASHCOMBO; //아 시발 ㅋㅋ 이넘값 안 넣었네 ㅋㅋ
+	m_tInfo.CurrAnim = TS_DASHCOMBO;
 }
 
 void CTSPlayer::CombatWait()
 {
-	cout << m_tInfo.CurrAnimState << endl;
-
-	if (m_tInfo.prevAnimState == ANIM_ATTACK_COMBO3 && true == m_pModelCom->Get_AnimFinished())
+	if (false == m_AttackCheck && m_tInfo.PrevAnim == TS_SPECIALCOMBO_CRASH && true == m_pModelCom->Get_AnimFinished()) // CRASH가 두 번 들어 갔다가 끊기는 느낌 
 	{
-		cout << m_tInfo.CurrAnimState << endl;
-		if(true == m_pModelCom->Get_LerpAnimFinished())
-			m_tInfo.CurrAnimState = ANIM_COMBAT_WAIT;
-		m_AttackCheck = false;
-
-	}
-
-	if (false == m_AttackCheck && m_tInfo.prevAnimState == ANIM_COMBAT_WAIT && true == m_pModelCom->Get_AnimFinished())
-	{
-		m_tInfo.CurrAnimState = ANIM_IDEL;
-	}
-
-	if (m_tInfo.prevAnimState == ANIM_JUMP_ATTACK3 && true == m_pModelCom->Get_AnimFinished())
-	{
-		m_bJump = false;
-		m_fGravity = 5.f;
-		m_tInfo.CurrAnimState = ANIM_JUMP_LENDING;
-	}
+		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
 	
-	if (m_tInfo.prevAnimState == ANIM_JUMP_LENDING && true == m_pModelCom->Get_AnimFinished())
-	{
-		m_tInfo.CurrAnimState = ANIM_IDEL;
-		m_JumpAttack = true;
 	}
 
+	if (false == m_AttackCheck && m_tInfo.PrevAnim == TS_BASIC_COMBO02_END && true == m_pModelCom->Get_AnimFinished()) // CRASH가 두 번 들어 갔다가 끊기는 느낌 
+	{
+		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
+
+	}
+
+	if (false == m_AttackCheck && m_tInfo.PrevAnim == TS_COMBAT_WAIT && true == m_pModelCom->Get_AnimFinished())
+	{
+		m_tInfo.CurrAnim = TS_WAIT;
+	
+	}
 }
 
 HRESULT CTSPlayer::Add_Components()
