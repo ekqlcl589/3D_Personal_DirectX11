@@ -31,6 +31,7 @@ public:
 private:
 	CShader* m_pShaderCom = { nullptr };
 	_float3 m_fPosition = { 0.f, 0.f, 0.f };
+	_float m_CoolTime = 0.f;
 
 public:
 	static CSkillIcon* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, _float3 fPos);

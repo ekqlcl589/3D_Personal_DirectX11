@@ -56,6 +56,15 @@ HRESULT CSkillIcon::Initialize(void * pArg)
 void CSkillIcon::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
+
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+	CGameObject* pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+
+	m_CoolTime = static_cast<CTSPlayer*>(pPlayer)->Get_Info().m_ESkill;
+
+	RELEASE_INSTANCE(CGameInstance);
+
 }
 
 void CSkillIcon::LateTick(_double TimeDelta)
@@ -115,8 +124,9 @@ HRESULT CSkillIcon::SetUp_ShaderResource()
 
 	if (FAILED(m_pTexture->SetUp_ShaderResource(m_pShaderCom, "g_Texture", 0)))
 		return E_FAIL;
+
 	/* 알파값 받게 만들어서 플레이어로 부터 받은 스킬 쿨타임에 따라 알파값이 점점 ++되는 식으로 
-	if (FAILED(m_pShaderCom->Set_RawValue("g_Texture_a", m_pTexture, 0)))
+	if (FAILED(m_pShaderCom->Set_RawValue("g_Alpha", m_CoolTime, 0)))
 		return E_FAIL;
 		*/
 	return S_OK;

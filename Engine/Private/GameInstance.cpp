@@ -70,7 +70,7 @@ HRESULT CGameInstance::Tick_Engine(_double TimeDelta)
 	m_pObject_Manager->Tick(TimeDelta);
 	m_pPipeLine->Tick(TimeDelta);
 									  // ¸ÂÀ½    ,  ‹š¸² 
-	m_pCollision_Mgr->OnCollisionEnter(OBJ_PLAYER, OBJ_MONSTER_BODY);
+	//m_pCollision_Mgr->OnCollisionEnter(OBJ_PLAYER, OBJ_MONSTER_BODY);
 	m_pCollision_Mgr->OnCollisionEnter(OBJ_PLAYER, OBJ_MONSTER_WEAPONL);
 	m_pCollision_Mgr->OnCollisionEnter(OBJ_PLAYER, OBJ_MONSTER_WEAPONR);
 

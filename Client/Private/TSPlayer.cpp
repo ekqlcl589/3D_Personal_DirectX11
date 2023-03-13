@@ -1088,7 +1088,7 @@ void CTSPlayer::CombatWait()
 		m_bDeah = false;
 	}
 
-	if (m_tInfo.PrevAnim == TS_FRONT_EVASION && m_pModelCom->Get_AnimFinished())
+	if (m_tInfo.PrevAnim == TS_FRONT_EVASION && true == m_pModelCom->Get_AnimFinished())
 	{
 		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
 		m_Evasion = false;

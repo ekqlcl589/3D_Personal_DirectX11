@@ -36,7 +36,7 @@ void CGameObject::Tick(_double TimeDelta)
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 	//							맞음     ,  떄림
-	pGameInstance->OnCollision(OBJ_PLAYER, OBJ_MONSTER_BODY); // 플레이어와 보스 몸통 충돌 
+	//pGameInstance->OnCollision(OBJ_PLAYER, OBJ_MONSTER_BODY); // 플레이어와 보스 몸통 충돌 
 	pGameInstance->OnCollision(OBJ_PLAYER, OBJ_MONSTER_WEAPONL); // 플레이어와 보스 왼 팔 충돌 
 	pGameInstance->OnCollision(OBJ_PLAYER, OBJ_MONSTER_WEAPONR); // 플레이어와 보스 오른 팔 충돌 
 
