@@ -177,6 +177,7 @@
     <ClInclude Include="..\Public\Logo.h" />
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\Public\Monster.h" />
+    <ClInclude Include="..\Public\MonsterHPBar.h" />
     <ClInclude Include="..\Public\MonsterWeapon.h" />
     <ClInclude Include="..\Public\Mouse.h" />
     <ClInclude Include="..\Public\Player.h" />
@@ -186,6 +187,7 @@
     <ClInclude Include="..\Public\PlayerSkill.h" />
     <ClInclude Include="..\Public\PlayerTop.h" />
     <ClInclude Include="..\Public\Player_Body.h" />
+    <ClInclude Include="..\Public\SkillIcon.h" />
     <ClInclude Include="..\Public\SkyBox.h" />
     <ClInclude Include="..\Public\SwordShield.h" />
     <ClInclude Include="..\Public\TargetCamera.h" />
@@ -213,6 +215,7 @@
     <ClCompile Include="..\Private\Logo.cpp" />
     <ClCompile Include="..\Private\MainApp.cpp" />
     <ClCompile Include="..\Private\Monster.cpp" />
+    <ClCompile Include="..\Private\MonsterHPBar.cpp" />
     <ClCompile Include="..\Private\MonsterWeapon.cpp" />
     <ClCompile Include="..\Private\Mouse.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
@@ -222,6 +225,7 @@
     <ClCompile Include="..\Private\PlayerSkill.cpp" />
     <ClCompile Include="..\Private\PlayerTop.cpp" />
     <ClCompile Include="..\Private\Player_Body.cpp" />
+    <ClCompile Include="..\Private\SkillIcon.cpp" />
     <ClCompile Include="..\Private\SkyBox.cpp" />
     <ClCompile Include="..\Private\SwordShield.cpp" />
     <ClCompile Include="..\Private\TargetCamera.cpp" />

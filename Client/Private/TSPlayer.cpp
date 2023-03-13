@@ -7,8 +7,7 @@
 #include "Hair.h"
 #include "PlayerTop.h"
 #include "TwoHandedSword.h"
-
-#include "TargetCamera.h"
+#include "Ancient_StonGolem.h"
 
 CTSPlayer::CTSPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -33,8 +32,11 @@ HRESULT CTSPlayer::Initialize_Prototype()
 	m_tInfo._Hp = 100.f;
 	m_tInfo._MaxMp = 100.f;
 	m_tInfo._Mp = 100;
-	m_tInfo.CurrAnimState = ANIM_IDEL;
-	m_tInfo.prevAnimState = ANIM_END;
+
+	m_tInfo.m_ESkill = 10.f;
+	m_tInfo.m_RSkill = 15.f;
+	m_tInfo.m_FSkill = 20.f; // 아 시발 ㅋㅋㅋ 멤버 변순데 m_ 붙였네 ㅄㅋㅋ
+	m_tInfo.m_RageSkill = 30.f;
 
 	m_tInfo.CurrAnim = TS_WAIT;
 	m_tInfo.PrevAnim = TS_END;
@@ -73,13 +75,31 @@ HRESULT CTSPlayer::Initialize(void * pArg)
 
 void CTSPlayer::Tick(_double TimeDelta)
 {
-	m_HitDelay += TimeDelta;
-	if (m_HitDelay >= 1.5)
-	{
-		m_Hit = false;
-		m_HitDelay = 0.0;
-	}
+	//CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	//
+	//CGameObject* pMonster = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
+	//
+	//_float hp = static_cast<CAncient_StonGolem*>(pMonster)->Get_Info()._Hp;
+	//
+	//RELEASE_INSTANCE(CGameInstance);
 
+	//if (hp > 0)
+	//{
+	//	m_HitDelay += TimeDelta;
+	//	if (m_HitDelay >= 1.5)
+	//	{
+	//		m_Hit = false;
+	//		m_HitDelay = 0.0;
+	//	}
+	//}
+
+	if (false == m_Eskill)
+	{
+		m_tInfo.m_ESkill += TimeDelta;
+		cout << "스킬 쿨타임 :" << m_tInfo.m_ESkill << endl;
+		if (m_tInfo.m_ESkill >= 10.f)
+			m_tInfo.m_ESkill = 10.f;
+	}
 	__super::Tick(TimeDelta);
 
 	Key_Input(TimeDelta);
@@ -199,65 +219,71 @@ HRESULT CTSPlayer::Render()
 	return S_OK;
 }
 
-void CTSPlayer::OnCollision(CGameObject * pObj) // LateTick에서 불림
+void CTSPlayer::OnCollision(CGameObject * pObj, _bool* pColl)
 {
 	COLLISIONSTATE eType = pObj->Get_ObjType();
 
-	switch (eType)
+	//pColl = &m_Hit;
+	//pColl = &m_Hit;
+	m_Hit = pColl;
+	if (true == m_Hit)
 	{
-	case Engine::OBJ_PLAYER:
-		break;
-	case Engine::OBJ_WEAPON_SS:
-		break;
-	case Engine::OBJ_WEAPON_SS1:
-		break;
-	case Engine::OBJ_BOSS1:
-		break;
-	case Engine::OBJ_WEAPON_KARMA14:
-		break;
-	case Engine::OBJ_BOSS2:
-		break;
-	case Engine::OBJ_MONSTER_WEAPONL:
-	
-		if (!m_Hit)
+		switch (eType)
 		{
-			Hit(10); // 몬스터 공격력 가져와서 대입 
-			m_Hit = true;
-			cout << "왼 팔 히트" << endl;
-		}
-		break;
-	
-	case Engine::OBJ_MONSTER_WEAPONR:
-	{
-		if (!m_Hit)
-		{
-			Hit(10); // 몬스터 공격력 가져와서 대입 
-			m_Hit = true;
-			cout << "오른 팔 히트" << endl;
+		case Engine::OBJ_PLAYER:
+			break;
+		case Engine::OBJ_WEAPON_SS:
+			break;
+		case Engine::OBJ_WEAPON_SS1:
+			break;
+		case Engine::OBJ_BOSS1:
+			break;
+		case Engine::OBJ_WEAPON_KARMA14:
+			break;
+		case Engine::OBJ_BOSS2:
+			break;
+		case Engine::OBJ_MONSTER_WEAPONL:
 
-		}
-		break;
-	}
-	case Engine::OBJ_MONSTER_BODY:
-		//m_tInfo.CurrAnim = TS_STURN_LOOP;
+			if (!m_Hit)
+			{
+				//Hit(10); // 몬스터 공격력 가져와서 대입 
+				m_Hit = true;
+				cout << "왼 팔 히트" << endl;
+			}
+			break;
 
-		if (!m_Hit)
+		case Engine::OBJ_MONSTER_WEAPONR:
 		{
-			Damage(10); // 몬스터 공격력 가져와서 대입 
-			m_Hit = true;
+			if (!m_Hit)
+			{
+				//Hit(10); // 몬스터 공격력 가져와서 대입 
+				m_Hit = true;
+				cout << "오른 팔 히트" << endl;
+
+			}
+			break;
+		}
+		case Engine::OBJ_MONSTER_BODY:
+			//m_tInfo.CurrAnim = TS_STURN_LOOP;
+
+			//if (!m_Hit)
+			//{
+			//Damage(10); // 몬스터 공격력 가져와서 대입 
+			//m_Hit = true;
 			m_NoStraight = true;
 			cout << "몸통 히트" << endl;
+			//pColl = false;
+		//}
+		//else
+		//	m_NoStraight = false;
 
+			break;
+
+		case Engine::OBJ_END:
+			break;
+		default:
+			break;
 		}
-		else
-			m_NoStraight = false;
-
-		break;
-	
-	case Engine::OBJ_END:
-		break;
-	default:
-		break;
 	}
 }
 
@@ -272,7 +298,7 @@ void CTSPlayer::Key_Input(_double TimeDelta)
 		m_bTest = false;
 		m_Dir = FRONT;
 
-		if(!m_NoStraight)
+		//if(!m_NoStraight)
 			m_pTransformCom->Go_Straight(TimeDelta);
 		m_tInfo.CurrAnim = TS_RUN_END; // 이게 그냥 RUN인데 enum값을 안 넣어서 이걸로 씀 ㅋㅋ
 
@@ -395,7 +421,11 @@ void CTSPlayer::Key_Input(_double TimeDelta)
 #pragma region SkillMotion Test 
 
 	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_E))
-		m_pModelCom->SetUp_Animation(39); // Start_End 나눠져 있음 
+	{
+		if(m_tInfo.m_ESkill >= 10.f)
+			m_Eskill = true; // Start_End 나눠져 있음 
+	}
+
 	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_R))
 		m_pModelCom->SetUp_Animation(43); // 애는 단일로 쓰기에는 스킬이라는 느낌이 안 남
 	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_F))
@@ -412,6 +442,7 @@ void CTSPlayer::Key_Input(_double TimeDelta)
 
 	Jump(TimeDelta);
 
+	E_Skill(TimeDelta);
 }
 
 void CTSPlayer::Animation_State(PLAYERANIMSTATE eType, _double TimeDelta)
@@ -1063,6 +1094,13 @@ void CTSPlayer::CombatWait()
 		m_Evasion = false;
 	}
 
+	if (false == m_Eskill && m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_END && true == m_pModelCom->Get_AnimFinished())
+	{
+		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
+		m_tInfo.m_ESkill = 0.f;
+
+	}
+
 	if (false == m_AttackCheck && m_tInfo.PrevAnim == TS_COMBAT_WAIT && true == m_pModelCom->Get_AnimFinished())
 	{
 		m_tInfo.CurrAnim = TS_WAIT;
@@ -1111,6 +1149,24 @@ void CTSPlayer::Evasion(_double TimeDelta)
 	//	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPos));
 	//
 	//}
+}
+
+void CTSPlayer::E_Skill(_double TimeDelta)
+{
+	// 키 인풋으로 시작? ㄴㄴ 이건 항상 돌면서 keyinput에서는 bool만 true로 바꿔주는 식으로 
+	if (m_Eskill && m_tInfo.m_ESkill >= 10.f)
+	{
+		m_tInfo.CurrAnim = TS_SKILL_OUTRAGE_START;
+
+		if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_START && true == m_pModelCom->Get_AnimFinished())
+		{
+			m_tInfo.CurrAnim = TS_SKILL_OUTRAGE_END;
+			m_Eskill = false;
+		}
+
+
+	}
+
 }
 
 HRESULT CTSPlayer::Add_Components()

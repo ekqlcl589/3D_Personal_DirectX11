@@ -249,13 +249,17 @@ namespace Engine
 	typedef struct tagPlayerInfo
 	{
 		_uint _Lv;
+
 		_float _MaxHp;
 		_float _Hp;
 		_float _MaxMp;
 		_float _Mp;
 		_float _MaxExp;
-		_float _Exp;
-		_float _AddExp;
+
+		_float m_ESkill;
+		_float m_RSkill;
+		_float m_FSkill;
+		_float m_RageSkill;
 
 		_uint _ATK;
 		_uint _DEF;

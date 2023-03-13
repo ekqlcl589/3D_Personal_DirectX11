@@ -197,8 +197,10 @@ HRESULT CAncient_StonGolem::Render()
 	return S_OK;
 }
 
-void CAncient_StonGolem::OnCollision(CGameObject * pObj)
+void CAncient_StonGolem::OnCollision(CGameObject * pObj, _bool* pColl)
 {
+	//pColl = &m_isColl;
+
 	COLLISIONSTATE eType = pObj->Get_ObjType();
 
 	switch (eType)
@@ -214,6 +216,7 @@ void CAncient_StonGolem::OnCollision(CGameObject * pObj)
 			m_eType._Hp -= 50.f;
 			cout << "칼 한테 맞아서 몬스터 체력 : " << m_eType._Hp << endl;
 			m_isColl = true;
+			pColl = false;
 		}
 		break;
 	case Engine::OBJ_END:

@@ -32,30 +32,19 @@ void CCollisionMgr::OnCollisionEnter(COLLISIONSTATE eType, COLLISIONSTATE eType2
 {
 	//OncollisionStay(eType);
 
-	if (true == m_bIsColl)
+	if (m_CollCheck)
 	{
 		for (auto& Src : m_mapObj[eType])
 		{
 			for (auto& Dest : m_mapObj[eType2])
 			{
-				Src.second->OnCollision(Dest.second);
-				Dest.second->OnCollision(Src.second);
+				Src.second->OnCollision(Dest.second, &m_CollCheck);
+				Dest.second->OnCollision(Src.second, &m_CollCheck);
+				// 한 번 충돌 했다면 충돌 정보를 삭제 해야 하는데 어디서 삭제를 해야하지..?
 			}
 		}
+		m_CollCheck = false;
 	}
-	//else
-	//{
-	//	for (auto& Src : m_mapObj[eType])
-	//	{
-	//		for (auto& Dest : m_mapObj[eType2])
-	//		{
-	//
-	//			OncollisionStay(Src.second->Get_ObjType());
-	//			OncollisionStay(Dest.second->Get_ObjType());
-	//		}
-	//	}
-	//}
-
 }
 
 void CCollisionMgr::OnCollision(COLLISIONSTATE eType, COLLISIONSTATE eType2)
@@ -69,10 +58,9 @@ void CCollisionMgr::OnCollision(COLLISIONSTATE eType, COLLISIONSTATE eType2)
 			if (nullptr == SrcColl || nullptr == DestColl)
 				continue;
 
-			if (true == SrcColl->Collision(DestColl)) // 충돌 정보 저장
-				m_bIsColl = true;
-			else
-				m_bIsColl = false;
+			m_bIsColl = SrcColl->Collision(DestColl); // 충돌 정보 저장
+			m_CollCheck = m_bIsColl;
+			m_bIsColl = false;
 
 		}
 	}
@@ -127,3 +115,10 @@ CGameObject * CCollisionMgr::Find_Collider(const _tchar * pColliderTag, COLLISIO
 void CCollisionMgr::Free()
 {
 }
+
+
+//vector<_uint> collinfo;
+//collinfo[0][1]
+//
+// 충돌id 0 : 플레이어와 몬스터의 충돌
+// 충돌id 1 : 플레이어칼과 몬스터 충돌

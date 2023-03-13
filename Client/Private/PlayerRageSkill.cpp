@@ -42,7 +42,7 @@ HRESULT CPlayerRageSkill::Initialize(void * pArg)
 	m_fY = g_iWinSizeY >> 1;
 
 	XMStoreFloat4x4(&m_WorldMatrix,
-		XMMatrixScaling(175.f, 175.f, 1.f) * XMMatrixTranslation(m_fX - 875.f, -m_fY + 200.f, 0.f));
+		XMMatrixScaling(105.f, 105.f, 1.f) * XMMatrixTranslation(m_fX - 825.f, -m_fY + 175.f, 0.2f));
 
 	XMStoreFloat4x4(&m_ViewMatrix,
 		XMMatrixIdentity());

@@ -23,11 +23,13 @@
 
 #include "Ancient_StonGolem.h"
 #include "MonsterWeapon.h"
+#include "MonsterHPBar.h"
 
 #include "TestTile.h"
 
 #include "Effect.h"
 
+#include "SkillIcon.h"
 #include "PlayerHPBar.h"
 #include "PlayerMPBar.h"
 #include "PlayerSkill.h"
@@ -154,7 +156,7 @@ HRESULT CLoader::Loading_ForGamePlay()
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_HPBar"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/GUI_Common_gauge_Fill_01_Red_ver2.png")))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/GUI_Common_gauge_Fill_01_White_ver2.png")))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_MPBar"),
@@ -171,6 +173,26 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Round"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/GUI_Round_BG_ver2.png")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_MonsterHPBar"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/GUI_Common_gauge_Fill_01_Red_ver2.png")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_ESkill"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/SkillIcon/Icon_NormalSkill_TS_OutRage.png")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_RSkill"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/SkillIcon/Icon_NormalSkill_TS_OutRage.png")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_FSkill"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/SkillIcon/Icon_RageSkill_TS_ArmageddonBlade.png")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Rage_Skill"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/SkillIcon/Icon_RageSkill_TS_DoubleSlash.png")))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Sky */
@@ -348,9 +370,6 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CTerrain::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Cube"),
-	//	CCube::Create(m_pDevice, m_pContext))))
-	//	return E_FAIL;
 
 	/* For.Prototype_GameObject_Player */
 
@@ -386,10 +405,6 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CHair::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player_Top"),
-	//	CPlayerTop::Create(m_pDevice, m_pContext))))
-	//	return E_FAIL;
-
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_HPBar"),
 		CPlayerHPBar::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -402,9 +417,9 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CPlayerRageSkill::Create(m_pDevice, m_pContext))))
 		return E_FAIL; 
 
-	_float3 fE = { 765.f, 170.f, 0.f };
-	_float3 fR = { 690.f, 170.f, 0.f };
-	_float3 fF = { 615.f, 170.f, 0.f };
+	_float3 fE = { 755.f, 150.f, 0.f };
+	_float3 fR = { 700.f, 150.f, 0.f };
+	_float3 fF = { 645.f, 150.f, 0.f };
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Skill_E"),
 		CPlayerSkill::Create(m_pDevice, m_pContext, fE))))
@@ -416,6 +431,14 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Skill_F"),
 		CPlayerSkill::Create(m_pDevice, m_pContext, fF))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player_Skill_Icon"),
+		CSkillIcon::Create(m_pDevice, m_pContext, fE))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster_HPBar"),
+		CMonsterHPBar::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Mouse"),

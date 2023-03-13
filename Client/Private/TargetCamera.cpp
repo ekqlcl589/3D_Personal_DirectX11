@@ -75,7 +75,7 @@ void CTargetCamera::Target_Renewal(_double TimeDelta)
 {
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-	_vector vRight = m_Transform->Get_State(CTransform::STATE_RIGHT);
+	_vector vUp = m_Transform->Get_State(CTransform::STATE_UP);
 	_vector vPos = m_Transform->Get_State(CTransform::STATE_POSITION);
 
 	CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
@@ -95,11 +95,11 @@ void CTargetCamera::Target_Renewal(_double TimeDelta)
 
 	_vector vDir = XMVector3Normalize(m_Transform->Get_State(CTransform::STATE_LOOK));
 
-	//if (Mouse = m_pInstance->Get_DIMouseMove(DIMM_X))
-	//{
-	//	//pPlayerTransform->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * Mouse * 0.1f);
-	//	m_Transform->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * Mouse * 0.1f);
-	//}
+//	if (Mouse = m_pInstance->Get_DIMouseMove(DIMM_X))
+//	{
+//		//pPlayerTransform->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * Mouse * 0.1f);
+//		m_Transform->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * Mouse * 0.05f);
+//	}
 
 	RELEASE_INSTANCE(CGameInstance);
 }

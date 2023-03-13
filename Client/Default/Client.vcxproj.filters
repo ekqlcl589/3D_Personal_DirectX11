@@ -127,6 +127,12 @@
     <Filter Include="02.GameObject\05. Player\Weapon\TS">
       <UniqueIdentifier>{9b7d2fe8-a816-4a95-ba1e-62035d408407}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04. UI\Monster">
+      <UniqueIdentifier>{c6a09d12-c9d4-4578-b77b-691ba0b71231}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04. UI\Player\Skill_Icon">
+      <UniqueIdentifier>{98c4ddd8-2f3e-4c42-96e7-ec1ad9c5f93d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -237,6 +243,12 @@
     <ClInclude Include="..\Public\TwoHandedSword.h">
       <Filter>02.GameObject\05. Player\Weapon\TS</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\MonsterHPBar.h">
+      <Filter>02.GameObject\04. UI\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SkillIcon.h">
+      <Filter>02.GameObject\04. UI\Player\Skill_Icon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -334,6 +346,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\TwoHandedSword.cpp">
       <Filter>02.GameObject\05. Player\Weapon\TS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MonsterHPBar.cpp">
+      <Filter>02.GameObject\04. UI\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SkillIcon.cpp">
+      <Filter>02.GameObject\04. UI\Player\Skill_Icon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

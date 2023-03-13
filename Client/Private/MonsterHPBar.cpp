@@ -1,25 +1,23 @@
 #include "stdafx.h"
-#include "..\Public\PlayerSkill.h"
+#include "..\Public\MonsterHPBar.h"
 
 #include "GameInstance.h"
-#include "Transform.h"
 #include "Shader.h"
 #include "Texture.h"
 #include "Layer.h"
-#include "Player.h"
+#include "Ancient_StonGolem.h"
 
-CPlayerSkill::CPlayerSkill(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CMonsterHPBar::CMonsterHPBar(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CUI(pDevice, pContext)
 {
 }
 
-CPlayerSkill::CPlayerSkill(const CPlayerSkill & rhs)
+CMonsterHPBar::CMonsterHPBar(const CMonsterHPBar & rhs)
 	: CUI(rhs)
-	, m_fPosition(rhs.m_fPosition)
 {
 }
 
-HRESULT CPlayerSkill::Initialize_Prototype()
+HRESULT CMonsterHPBar::Initialize_Prototype()
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
@@ -27,7 +25,7 @@ HRESULT CPlayerSkill::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CPlayerSkill::Initialize(void * pArg)
+HRESULT CMonsterHPBar::Initialize(void * pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -43,9 +41,8 @@ HRESULT CPlayerSkill::Initialize(void * pArg)
 	m_fX = g_iWinSizeX >> 1;
 	m_fY = g_iWinSizeY >> 1;
 
-	m_pTransform->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_fPosition));
 	XMStoreFloat4x4(&m_WorldMatrix,
-		XMMatrixScaling(60.f, 60.f, 1.f) * XMMatrixTranslation(m_fX - m_fPosition.x, -m_fY + m_fPosition.y, 0.2f));
+		XMMatrixScaling(700.f, 20.f, 1.f) * XMMatrixTranslation(m_fX - g_iWinSizeX * 0.5f, -m_fY + 680.f, 0.f));
 
 	XMStoreFloat4x4(&m_ViewMatrix,
 		XMMatrixIdentity());
@@ -57,19 +54,42 @@ HRESULT CPlayerSkill::Initialize(void * pArg)
 	return S_OK;
 }
 
-void CPlayerSkill::Tick(_double TimeDelta)
+void CMonsterHPBar::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 
 }
 
-void CPlayerSkill::LateTick(_double TimeDelta)
+void CMonsterHPBar::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
 
+	_float VertexHpY = 0.f;
+	_float TexHpY = 0.f;
+
+	CGameInstance* p = GET_INSTANCE(CGameInstance);
+	CGameObject* pPlayer = nullptr;
+
+	pPlayer = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
+
+	_float MaxHP = static_cast<CAncient_StonGolem*>(pPlayer)->Get_Info()._MaxHp;
+	_float HP = static_cast<CAncient_StonGolem*>(pPlayer)->Get_Info()._Hp;
+
+	if (HP > MaxHP)
+		HP = MaxHP;
+
+	if (HP <= 0)
+		HP = 0;
+
+	TexHpY = 0.5f - abs(HP / MaxHP);
+	VertexHpY = (-TexHpY);
+
+	//m_pVIBuffer_Rect->Set_Buffer(TexHpY, VertexHpY);
+
+	RELEASE_INSTANCE(CGameInstance);
 }
 
-HRESULT CPlayerSkill::Render()
+HRESULT CMonsterHPBar::Render()
 {
 	if (FAILED(SetUp_ShaderResource()))
 		return E_FAIL;
@@ -82,7 +102,7 @@ HRESULT CPlayerSkill::Render()
 	return S_OK;
 }
 
-HRESULT CPlayerSkill::Add_Components()
+HRESULT CMonsterHPBar::Add_Components()
 {
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"),
 		TEXT("Com_Renderer"), (CComponent**)&m_pRenderer)))
@@ -100,15 +120,14 @@ HRESULT CPlayerSkill::Add_Components()
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Skill"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_MonsterHPBar"),
 		TEXT("Com_Texture"), (CComponent**)&m_pTexture)))
 		return E_FAIL;
-
 
 	return S_OK;
 }
 
-HRESULT CPlayerSkill::SetUp_ShaderResource()
+HRESULT CMonsterHPBar::SetUp_ShaderResource()
 {
 	if (nullptr == m_pShaderCom)
 		return E_FAIL;
@@ -126,31 +145,29 @@ HRESULT CPlayerSkill::SetUp_ShaderResource()
 	return S_OK;
 }
 
-CPlayerSkill * CPlayerSkill::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, _float3 fPos)
+CMonsterHPBar * CMonsterHPBar::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {
-	CPlayerSkill * pInstance = new CPlayerSkill(pDevice, pContext);
-	pInstance->m_fPosition = fPos;
-
+	CMonsterHPBar * pInstance = new CMonsterHPBar(pDevice, pContext);
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("RageSkill Create Fail");
+		MSG_BOX("HPBar Create Fail");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-CGameObject * CPlayerSkill::Clone(void * pArg)
+CGameObject * CMonsterHPBar::Clone(void * pArg)
 {
-	CPlayerSkill * pInstance = new CPlayerSkill(*this);
+	CMonsterHPBar * pInstance = new CMonsterHPBar(*this);
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("RageSkill Clone Fail");
+		MSG_BOX("HPBar Clone Fail");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CPlayerSkill::Free()
+void CMonsterHPBar::Free()
 {
 	Safe_Release(m_pShaderCom);
 	__super::Free();

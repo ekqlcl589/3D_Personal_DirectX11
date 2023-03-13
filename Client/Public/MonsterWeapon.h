@@ -42,7 +42,7 @@ public:
 	virtual void LateTick(_double TimeDelta);
 	virtual HRESULT Render();
 
-	virtual void OnCollision(CGameObject* pObj)override;
+	virtual void OnCollision(CGameObject* pObj, _bool* pColl)override;
 
 private:
 	HRESULT Add_Components();

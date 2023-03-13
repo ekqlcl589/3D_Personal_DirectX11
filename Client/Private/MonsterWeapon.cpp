@@ -113,9 +113,11 @@ HRESULT CMonsterWeapon::Render()
 	return S_OK;
 }
 
-void CMonsterWeapon::OnCollision(CGameObject * pObj)
+void CMonsterWeapon::OnCollision(CGameObject * pObj, _bool* pColl)
 {
 	COLLISIONSTATE eType = pObj->Get_ObjType();
+
+	pColl = &m_bColl;
 
 	switch (eType)
 	{

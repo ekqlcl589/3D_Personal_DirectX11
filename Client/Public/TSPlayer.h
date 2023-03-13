@@ -36,7 +36,7 @@ public:
 	virtual void LateTick(_double TimeDelta) override;
 	virtual HRESULT Render() override;
 
-	virtual void OnCollision(CGameObject* pObj)override;
+	virtual void OnCollision(CGameObject* pObj, _bool* pColl)override;
 
 public:
 	void Key_Input(_double TimeDelta);
@@ -71,6 +71,8 @@ private:
 	void CombatWait();
 
 	void Evasion(_double TimeDelta);
+
+	void E_Skill(_double TimeDelta);
 
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
@@ -140,6 +142,9 @@ private:
 	_bool m_bStart = false;
 
 	_bool m_bTest = false;
+
+private:
+	_bool m_Eskill = false;
 
 public:
 	static CTSPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

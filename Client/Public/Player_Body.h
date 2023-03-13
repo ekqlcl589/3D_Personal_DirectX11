@@ -35,7 +35,7 @@ public:
 	virtual void LateTick(_double TimeDelta) override;
 	virtual HRESULT Render() override;
 
-	virtual void OnCollision(CGameObject* pObj)override;
+	virtual void OnCollision(CGameObject* pObj, _bool* pColl)override;
 
 public:
 	void Key_Input(_double TimeDelta);

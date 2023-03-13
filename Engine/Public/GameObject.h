@@ -20,7 +20,7 @@ public:
 	virtual void LateTick(_double TimeDelta);
 	virtual HRESULT Render();
 
-	virtual void OnCollision(CGameObject* pObj) {}
+	virtual void OnCollision(CGameObject* pObj, _bool* pColl) {}
 
 	void KnockBack(_uint iDamage, _double TimeDelta);
 	void Hit(_uint iDamage);

@@ -1,25 +1,21 @@
 #include "stdafx.h"
-#include "..\Public\PlayerSkill.h"
+#include "..\Public\SkillIcon.h"
 
 #include "GameInstance.h"
-#include "Transform.h"
-#include "Shader.h"
-#include "Texture.h"
-#include "Layer.h"
-#include "Player.h"
+#include "TSPlayer.h"
 
-CPlayerSkill::CPlayerSkill(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CSkillIcon::CSkillIcon(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CUI(pDevice, pContext)
 {
 }
 
-CPlayerSkill::CPlayerSkill(const CPlayerSkill & rhs)
+CSkillIcon::CSkillIcon(const CSkillIcon & rhs)
 	: CUI(rhs)
 	, m_fPosition(rhs.m_fPosition)
 {
 }
 
-HRESULT CPlayerSkill::Initialize_Prototype()
+HRESULT CSkillIcon::Initialize_Prototype()
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
@@ -27,7 +23,7 @@ HRESULT CPlayerSkill::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CPlayerSkill::Initialize(void * pArg)
+HRESULT CSkillIcon::Initialize(void * pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -45,7 +41,7 @@ HRESULT CPlayerSkill::Initialize(void * pArg)
 
 	m_pTransform->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_fPosition));
 	XMStoreFloat4x4(&m_WorldMatrix,
-		XMMatrixScaling(60.f, 60.f, 1.f) * XMMatrixTranslation(m_fX - m_fPosition.x, -m_fY + m_fPosition.y, 0.2f));
+		XMMatrixScaling(55.f, 55.f, 1.f) * XMMatrixTranslation(m_fX - m_fPosition.x, -m_fY + m_fPosition.y, 0.1f));
 
 	XMStoreFloat4x4(&m_ViewMatrix,
 		XMMatrixIdentity());
@@ -57,19 +53,17 @@ HRESULT CPlayerSkill::Initialize(void * pArg)
 	return S_OK;
 }
 
-void CPlayerSkill::Tick(_double TimeDelta)
+void CSkillIcon::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
-
 }
 
-void CPlayerSkill::LateTick(_double TimeDelta)
+void CSkillIcon::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
-
 }
 
-HRESULT CPlayerSkill::Render()
+HRESULT CSkillIcon::Render()
 {
 	if (FAILED(SetUp_ShaderResource()))
 		return E_FAIL;
@@ -82,7 +76,7 @@ HRESULT CPlayerSkill::Render()
 	return S_OK;
 }
 
-HRESULT CPlayerSkill::Add_Components()
+HRESULT CSkillIcon::Add_Components()
 {
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"),
 		TEXT("Com_Renderer"), (CComponent**)&m_pRenderer)))
@@ -100,15 +94,14 @@ HRESULT CPlayerSkill::Add_Components()
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Skill"),
-		TEXT("Com_Texture"), (CComponent**)&m_pTexture)))
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_ESkill"),
+		TEXT("Com_ESKILL_Texture"), (CComponent**)&m_pTexture)))
 		return E_FAIL;
-
 
 	return S_OK;
 }
 
-HRESULT CPlayerSkill::SetUp_ShaderResource()
+HRESULT CSkillIcon::SetUp_ShaderResource()
 {
 	if (nullptr == m_pShaderCom)
 		return E_FAIL;
@@ -122,35 +115,38 @@ HRESULT CPlayerSkill::SetUp_ShaderResource()
 
 	if (FAILED(m_pTexture->SetUp_ShaderResource(m_pShaderCom, "g_Texture", 0)))
 		return E_FAIL;
-
+	/* 알파값 받게 만들어서 플레이어로 부터 받은 스킬 쿨타임에 따라 알파값이 점점 ++되는 식으로 
+	if (FAILED(m_pShaderCom->Set_RawValue("g_Texture_a", m_pTexture, 0)))
+		return E_FAIL;
+		*/
 	return S_OK;
 }
 
-CPlayerSkill * CPlayerSkill::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, _float3 fPos)
+CSkillIcon * CSkillIcon::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, _float3 fPos)
 {
-	CPlayerSkill * pInstance = new CPlayerSkill(pDevice, pContext);
+	CSkillIcon * pInstance = new CSkillIcon(pDevice, pContext);
 	pInstance->m_fPosition = fPos;
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("RageSkill Create Fail");
+		MSG_BOX("CSkillIcon Create Fail");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-CGameObject * CPlayerSkill::Clone(void * pArg)
+CGameObject * CSkillIcon::Clone(void * pArg)
 {
-	CPlayerSkill * pInstance = new CPlayerSkill(*this);
+	CSkillIcon * pInstance = new CSkillIcon(*this);
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("RageSkill Clone Fail");
+		MSG_BOX("CSkillIcon Clone Fail");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CPlayerSkill::Free()
+void CSkillIcon::Free()
 {
 	Safe_Release(m_pShaderCom);
 	__super::Free();
