@@ -40,6 +40,7 @@ private: //»çº»°´Ã¼
 	unordered_map<const _tchar*, class CLayer*>* m_pLayers = { nullptr };
 	typedef unordered_map<const _tchar*, class CLayer*> LAYERS;
 
+
 private:
 	_uint m_iNumLevels = { 0 };
 

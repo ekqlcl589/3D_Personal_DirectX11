@@ -57,12 +57,12 @@ HRESULT CMonsterWeapon::Initialize(void * pArg)
 
 void CMonsterWeapon::Tick(_double TimeDelta)
 {
-	HitTime += TimeDelta;
-	if (HitTime > 1.5f)
-	{
-		m_bColl = false;
-		HitTime = 0.0;
-	}
+	//HitTime += TimeDelta;
+	//if (HitTime > 1.5f)
+	//{
+	//	m_bColl = false;
+	//	HitTime = 0.0;
+	//}
 
 
 	if (nullptr != m_pColliderCom)
@@ -113,11 +113,10 @@ HRESULT CMonsterWeapon::Render()
 	return S_OK;
 }
 
-void CMonsterWeapon::OnCollision(CGameObject * pObj, _bool* pColl)
+void CMonsterWeapon::OnCollision(CGameObject * pObj)
 {
 	COLLISIONSTATE eType = pObj->Get_ObjType();
 
-	pColl = &m_bColl;
 
 	switch (eType)
 	{
@@ -131,8 +130,8 @@ void CMonsterWeapon::OnCollision(CGameObject * pObj, _bool* pColl)
 		break;
 	case Engine::OBJ_WEAPON_KARMA14:
 	{
-		if (!m_bColl)
-		{
+		//if (!m_bColl)
+		//{
 			CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 			CGameObject* pOwner = nullptr;
 
@@ -144,7 +143,7 @@ void CMonsterWeapon::OnCollision(CGameObject * pObj, _bool* pColl)
 			cout << "Ä®ÇÑÅ× ¸ÂÀ½" << static_cast<CAncient_StonGolem*>(pOwner)->Get_Info()._Hp << endl;
 			m_bColl = true;
 			RELEASE_INSTANCE(CGameInstance)
-		}
+		//}
 		break;
 	}
 	case Engine::OBJ_BOSS2:

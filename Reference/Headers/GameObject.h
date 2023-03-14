@@ -20,7 +20,7 @@ public:
 	virtual void LateTick(_double TimeDelta);
 	virtual HRESULT Render();
 
-	virtual void OnCollision(CGameObject* pObj, _bool* pColl) {}
+	virtual void OnCollision(CGameObject* pObj) {}
 
 	void KnockBack(_uint iDamage, _double TimeDelta);
 	void Hit(_uint iDamage);
@@ -30,12 +30,20 @@ public:
 	COLLISIONSTATE Get_ObjType() { return m_eCollisionState; }
 	CCollider* Get_Collider() { return m_pColliderCom; }
 
-	_bool Get_isColl() { return m_isColl; }
 	_bool Get_Dead() { return m_bDead; }
 	void Set_Dead() { m_bDead = true; }
 
 	int Set_ObjID(int& iObjID) { return m_iObjID = iObjID; }
 	int	Get_ObjID() { return m_iObjID; }
+
+public: // 새로 만든 vecColl
+	_bool Get_isColl() { return m_isColl; }
+	void Set_isCollied(bool _Collied) { m_isColl = _Collied; }
+	void Add_Collied(CGameObject* _obj) { m_vecColl.insert(_obj); }
+	int Get_CollideSize() { return m_vecColl.size(); }
+	bool Check_Collied(CGameObject* _obj) { return m_vecColl.find(_obj) != m_vecColl.end(); }
+	bool Erase_Collied(CGameObject* _obj) { return m_vecColl.erase(_obj) ? true : false; }
+
 
 protected:
 	ID3D11Device* m_pDevice = { nullptr };
@@ -52,6 +60,9 @@ protected:
 
 protected:
 	unordered_map<const _tchar*, class CComponent*>			m_Components;
+
+protected:
+	set<CGameObject*> m_vecColl;
 
 public:
 	/* 내 멤버변수에도 컴포넌트 보관 + 부모의 맵에도 보관한다 */

@@ -93,9 +93,8 @@ HRESULT CTwoHandedSword::Render()
 	return S_OK;
 }
 
-void CTwoHandedSword::OnCollision(CGameObject * pObj, _bool* pColl)
+void CTwoHandedSword::OnCollision(CGameObject * pObj)
 {
-	pColl;
 
 	COLLISIONSTATE eType = pObj->Get_ObjType();
 

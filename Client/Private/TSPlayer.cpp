@@ -96,7 +96,7 @@ void CTSPlayer::Tick(_double TimeDelta)
 	if (false == m_Eskill)
 	{
 		m_tInfo.m_ESkill += TimeDelta;
-		cout << "스킬 쿨타임 :" << m_tInfo.m_ESkill << endl;
+		//cout << "스킬 쿨타임 :" << m_tInfo.m_ESkill << endl;
 		if (m_tInfo.m_ESkill >= 10.f)
 			m_tInfo.m_ESkill = 10.f;
 	}
@@ -219,72 +219,64 @@ HRESULT CTSPlayer::Render()
 	return S_OK;
 }
 
-void CTSPlayer::OnCollision(CGameObject * pObj, _bool* pColl)
+void CTSPlayer::OnCollision(CGameObject * pObj)
 {
 	COLLISIONSTATE eType = pObj->Get_ObjType();
 
 	//pColl = &m_Hit;
 	//pColl = &m_Hit;
-	m_Hit = pColl;
-	if (true == m_Hit)
+	switch (eType)
 	{
-		switch (eType)
-		{
-		case Engine::OBJ_PLAYER:
-			break;
-		case Engine::OBJ_WEAPON_SS:
-			break;
-		case Engine::OBJ_WEAPON_SS1:
-			break;
-		case Engine::OBJ_BOSS1:
-			break;
-		case Engine::OBJ_WEAPON_KARMA14:
-			break;
-		case Engine::OBJ_BOSS2:
-			break;
-		case Engine::OBJ_MONSTER_WEAPONL:
+	case Engine::OBJ_PLAYER:
+		break;
+	case Engine::OBJ_WEAPON_SS:
+		break;
+	case Engine::OBJ_WEAPON_SS1:
+		break;
+	case Engine::OBJ_BOSS1:
+		break;
+	case Engine::OBJ_WEAPON_KARMA14:
+		break;
+	case Engine::OBJ_BOSS2:
+		break;
+	case Engine::OBJ_MONSTER_WEAPONL:
 
-			if (!m_Hit)
-			{
-				//Hit(10); // 몬스터 공격력 가져와서 대입 
-				m_Hit = true;
-				cout << "왼 팔 히트" << endl;
-			}
-			break;
+		Hit(10); // 몬스터 공격력 가져와서 대입 
+		m_Hit = true;
+		cout << "왼 팔 히트" << endl;
+		break;
 
-		case Engine::OBJ_MONSTER_WEAPONR:
-		{
-			if (!m_Hit)
-			{
-				//Hit(10); // 몬스터 공격력 가져와서 대입 
-				m_Hit = true;
-				cout << "오른 팔 히트" << endl;
+	case Engine::OBJ_MONSTER_WEAPONR:
+	{
+		//Hit(10); // 몬스터 공격력 가져와서 대입 
+		m_Hit = true;
+		cout << "오른 팔 히트" << endl;
 
-			}
-			break;
-		}
-		case Engine::OBJ_MONSTER_BODY:
-			//m_tInfo.CurrAnim = TS_STURN_LOOP;
-
-			//if (!m_Hit)
-			//{
-			//Damage(10); // 몬스터 공격력 가져와서 대입 
-			//m_Hit = true;
-			m_NoStraight = true;
-			cout << "몸통 히트" << endl;
-			//pColl = false;
-		//}
-		//else
-		//	m_NoStraight = false;
-
-			break;
-
-		case Engine::OBJ_END:
-			break;
-		default:
-			break;
-		}
+		break;
 	}
+	case Engine::OBJ_MONSTER_BODY:
+		//m_tInfo.CurrAnim = TS_STURN_LOOP;
+
+		//if (!m_Hit)
+		//{
+		//	Damage(10); // 몬스터 공격력 가져와서 대입 
+		//	m_Hit = true;
+		//	m_NoStraight = true;
+		//	cout << "몸통 히트" << endl;
+		//}
+		//pColl = false;
+	//}
+	//else
+	//	m_NoStraight = false;
+
+		break;
+
+	case Engine::OBJ_END:
+		break;
+	default:
+		break;
+	}
+
 }
 
 void CTSPlayer::Key_Input(_double TimeDelta)

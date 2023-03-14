@@ -219,11 +219,9 @@ HRESULT CPlayer_Body::Render()
 	return S_OK;
 }
 
-void CPlayer_Body::OnCollision(CGameObject * pObj, _bool* pColl) // LateTick에서 불림
+void CPlayer_Body::OnCollision(CGameObject * pObj) // LateTick에서 불림
 {
 	COLLISIONSTATE eType = pObj->Get_ObjType();
-
-	pColl = &m_Hit;
 
 	switch (eType)
 	{
