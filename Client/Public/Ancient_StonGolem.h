@@ -26,6 +26,8 @@ public:
 	void Set_AnimationState(STONGOLEMANIMSTATE eType);
 	_uint Set_State(_double TimeDelta);
 
+	void Attack_Go(_double TimeDelta);
+
 public:
 	void Run(_double TimeDelta);
 	void Set_Skill01(_double TimeDelta);

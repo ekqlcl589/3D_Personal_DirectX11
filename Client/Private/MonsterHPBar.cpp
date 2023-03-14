@@ -36,6 +36,9 @@ HRESULT CMonsterHPBar::Initialize(void * pArg)
 	if (FAILED(SetUp_ShaderResource()))
 		return E_FAIL;
 
+	//m_pVIBuffer_Rect->Free();
+	//m_pVIBuffer_Rect->Initialize_Prototype();
+
 	m_fSizeX = g_iWinSizeX;
 	m_fSizeY = g_iWinSizeY;
 	m_fX = g_iWinSizeX >> 1;

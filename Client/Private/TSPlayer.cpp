@@ -248,7 +248,7 @@ void CTSPlayer::OnCollision(CGameObject * pObj)
 
 	case Engine::OBJ_MONSTER_WEAPONR:
 	{
-		//Hit(10); // 몬스터 공격력 가져와서 대입 
+		Hit(10); // 몬스터 공격력 가져와서 대입 
 		m_Hit = true;
 		cout << "오른 팔 히트" << endl;
 
@@ -573,6 +573,7 @@ void CTSPlayer::Animation(TSPLAYERANIM eType, _double TimeDelta)
 		case Engine::TS_START:
 			break;
 		case Engine::TS_STURN_LOOP:
+			m_iAnimIndex = 16;
 			break;
 		case Engine::TS_NOENERGY:
 			break;
@@ -672,43 +673,43 @@ void CTSPlayer::Animation(TSPLAYERANIM eType, _double TimeDelta)
 void CTSPlayer::Hit(const _int & _Damage)
 {
 	m_tInfo._Hp -= _Damage;
-	m_tInfo.CurrAnimState = ANIM_STUN;
+	m_tInfo.CurrAnim = TS_STURN_LOOP;
 
-	if (m_tInfo.prevAnimState == ANIM_STUN && true == m_pModelCom->Get_AnimFinished())
-		m_tInfo.CurrAnimState = ANIM_COMBAT_WAIT;
+	if (m_tInfo.PrevAnim == TS_STURN_LOOP && true == m_pModelCom->Get_AnimFinished())
+		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
 
-	if (m_tInfo.prevAnimState == ANIM_COMBAT_WAIT == true == m_pModelCom->Get_AnimFinished())
-		m_tInfo.CurrAnimState = ANIM_IDEL;
+	if (m_tInfo.PrevAnim == TS_COMBAT_WAIT == true == m_pModelCom->Get_AnimFinished())
+		m_tInfo.CurrAnim = TS_WAIT;
 
 
-	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	//CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	//
+	//CTransform* pMonsterTransform = nullptr;
+	//
+	//pMonsterTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Com_Transform")));
+	//
+	//_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	//
+	//_vector vMonPos = pMonsterTransform->Get_State(CTransform::STATE_POSITION);
+	//
+	//_vector vDir = vMonPos - vPosition;
+	//
+	//_vector vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vDir);
+	//
+	//_vector vUp = XMVector3Cross(vDir, vRight);
+	//
+	//_float3 vScale = m_pTransformCom->Get_Scale();
+	//
+	//m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVector3Normalize(vRight) * vScale.x);
+	//m_pTransformCom->Set_State(CTransform::STATE_UP, XMVector3Normalize(vUp) * vScale.y);
+	//m_pTransformCom->Set_State(CTransform::STATE_LOOK, XMVector3Normalize(vDir) * vScale.z);
+	//
+	//// 충돌 시 밀려 나야 함 
+	//vPosition -= XMVector3Normalize(vDir) * 0.1f;
+	//
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 
-	CTransform* pMonsterTransform = nullptr;
-
-	pMonsterTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Com_Transform")));
-
-	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-
-	_vector vMonPos = pMonsterTransform->Get_State(CTransform::STATE_POSITION);
-
-	_vector vDir = vMonPos - vPosition;
-
-	_vector vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vDir);
-
-	_vector vUp = XMVector3Cross(vDir, vRight);
-
-	_float3 vScale = m_pTransformCom->Get_Scale();
-
-	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVector3Normalize(vRight) * vScale.x);
-	m_pTransformCom->Set_State(CTransform::STATE_UP, XMVector3Normalize(vUp) * vScale.y);
-	m_pTransformCom->Set_State(CTransform::STATE_LOOK, XMVector3Normalize(vDir) * vScale.z);
-
-	// 충돌 시 밀려 나야 함 
-	vPosition -= XMVector3Normalize(vDir) * 0.1f;
-
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
-
-	RELEASE_INSTANCE(CGameInstance);
+	//RELEASE_INSTANCE(CGameInstance);
 
 }
 
@@ -1092,6 +1093,9 @@ void CTSPlayer::CombatWait()
 		m_tInfo.m_ESkill = 0.f;
 
 	}
+
+	if (m_tInfo.PrevAnim == TS_STURN_LOOP && true == m_pModelCom->Get_AnimFinished())
+		m_tInfo.CurrAnim = TS_COMBAT_WAIT;// 여기가 범인인가 
 
 	if (false == m_AttackCheck && m_tInfo.PrevAnim == TS_COMBAT_WAIT && true == m_pModelCom->Get_AnimFinished())
 	{

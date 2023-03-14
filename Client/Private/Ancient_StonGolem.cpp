@@ -58,8 +58,10 @@ HRESULT CAncient_StonGolem::Initialize(void * pArg)
 
 	m_f = m_pModelCom->Get_AnimTick();
 
-	m_CurrAnim = S_WAIT;
+	m_CurrAnim = S_RESPAN;
 	m_pModelCom->SetUp_Animation(m_CurrAnim);
+
+	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(195.0f));
 
 	return S_OK;
 }
@@ -80,21 +82,9 @@ void CAncient_StonGolem::Tick(_double TimeDelta)
 
 		__super::Tick(TimeDelta);
 
-		if (true == m_bTest)
-		{
-			_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-			_float3 fPos;
-
-			XMStoreFloat3(&fPos, vPos);
-
-			fPos.x = Lerp(fPos.x, fPos.x - 0.01f, m_dLerpTime);
-			fPos.y = Lerp(fPos.y, fPos.y - 0.f, m_dLerpTime);
-			fPos.z = Lerp(fPos.z, fPos.z - 0.01f, m_dLerpTime);
-			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPos));
-
-		}
-
 		Set_State(TimeDelta);
+
+		Attack_Go(TimeDelta);
 
 		Set_AnimationState(m_CurrAnim);
 
@@ -211,12 +201,7 @@ void CAncient_StonGolem::OnCollision(CGameObject * pObj)
 		break;
 	
 	case Engine::OBJ_WEAPON_KARMA14:
-		if (!m_isColl)
-		{
-			m_eType._Hp -= 50.f;
-			cout << "칼 한테 맞아서 몬스터 체력 : " << m_eType._Hp << endl;
-			m_isColl = true;
-		}
+		// 몬스터 자체의 콜리전을 없애서 맞을 일 없음 -> monsterweapon 클래스에서 히트 처리 
 		break;
 	case Engine::OBJ_END:
 		break;
@@ -372,16 +357,10 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 	}
 
 
-	if (true == m_bPlayerChecck) //  플레이어와 특정 거리 이하로 들어와서 조우 하면 지금은 가까운데 나중에 맵 찍으면 더 멀리서 이 기능 활성화 하고 카메라 몬스터로 이동
+	if (true == m_bPlayerChecck && m_PrevAnim == S_RESPAN && true == m_pModelCom->Get_AnimFinished()) //  플레이어와 특정 거리 이하로 들어와서 조우 하면 지금은 가까운데 나중에 맵 찍으면 더 멀리서 이 기능 활성화 하고 카메라 몬스터로 이동
 	{
 		m_pTransformCom->Chase_Tatget(m_vTargetPos, 3.f, TimeDelta);
 		m_CurrAnim = S_RUN;
-	}
-	else if (false == m_bPlayerChecck && false == m_bRespwan)
-	{
-		m_CurrAnim = S_RESPAN;
-		_double TickPerSecond = 45.0;
-		m_pModelCom->Set_AnimTick(TickPerSecond);
 	}
 
 	Run(TimeDelta);
@@ -397,7 +376,7 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 		{
 			_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
-			m_pTransformCom->Chase_Tatget(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION), 1.f, TimeDelta);
+			m_pTransformCom->Chase_Tatget(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION), 5.f, TimeDelta * 4.0);
 			//vPos += m_pPlayerTransform->Get_State(CTransform::STATE_POSITION);
 
 			if (m_pModelCom->Get_AnimTimeAcc() >= 90.0)
@@ -412,8 +391,6 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 
 	Set_Skill07(TimeDelta);
 	
-	// 란듐 ㄴㄴ 이러면 공격이 끝나지 않아서 나를 따라오지 않음 
-
 	if (m_eType._Hp <= 500.f)
 		Set_Skill01(TimeDelta); // 체력이 반 이하로 떨어지면 
 	
@@ -422,6 +399,54 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 	////애니메이션이 모두 끝났다면 조건 추가 
 
 	return OBJ_NOEVENT;
+}
+
+void CAncient_StonGolem::Attack_Go(_double TimeDelta)
+{
+	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	_float3 fPos;
+	XMStoreFloat3(&fPos, vPosition);
+
+	if (true == m_bAttack && m_CurrAnim == S_SKILL01)
+	{
+		if (m_pModelCom->Get_AnimTimeAcc() >= 60.0)
+		{
+			m_pTransformCom->Go_Straight(0.1 * TimeDelta);
+			cout << fPos.x << endl;
+			cout << fPos.z << endl;
+
+			if (m_pModelCom->Get_AnimTimeAcc() >= 87.0)
+				vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		}
+	}
+
+	if (true == m_bAttack && m_CurrAnim == S_SKILL07)
+	{
+		if (m_pModelCom->Get_AnimTimeAcc() >= 42.0)
+		{
+			cout << fPos.x << endl;
+			cout << fPos.z << endl;
+			m_pTransformCom->Go_Back(TimeDelta * 0.1);
+		}
+
+		if (m_pModelCom->Get_AnimTimeAcc() >= 79.0)
+		{
+			cout << fPos.x << endl;
+			cout << fPos.z << endl;
+
+			m_pTransformCom->Go_Straight(TimeDelta * 0.1);
+		}
+
+		if (m_pModelCom->Get_AnimTimeAcc() >= 107.0)
+		{
+
+			cout << fPos.x << endl;
+			cout << fPos.z << endl;
+
+			vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		}
+	}
 }
 
 void CAncient_StonGolem::Run(_double TimeDelta)
@@ -451,7 +476,7 @@ void CAncient_StonGolem::Run(_double TimeDelta)
 
 void CAncient_StonGolem::Set_Skill01(_double TimeDelta)
 {
-	if (m_PrevAnim == S_WAIT && true == m_pModelCom->Get_AnimFinished())
+	if (m_PrevAnim == S_WAIT && true != m_pModelCom->Get_AnimFinished())
 	{
 		m_bAttack = true;
 		m_CurrAnim = S_SKILL01;
@@ -512,7 +537,7 @@ void CAncient_StonGolem::Set_Skill04(_double TimeDelta)
 
 void CAncient_StonGolem::Set_Skill05(_double TimeDelta)
 {
-	if (m_PrevAnim == S_WAIT && m_pModelCom->Get_AnimFinished())
+	if (m_PrevAnim == S_WAIT && true != m_pModelCom->Get_AnimFinished())
 	{
 		m_bAttack = true;
 
@@ -520,7 +545,10 @@ void CAncient_StonGolem::Set_Skill05(_double TimeDelta)
 	}
 
 	else if (m_PrevAnim == S_SKILL05_1 && true == m_pModelCom->Get_AnimFinished())
+	{
 		m_CurrAnim = S_SKILL05_2;
+
+	}
 
 	else if (m_PrevAnim == S_SKILL05_2 && true == m_pModelCom->Get_AnimFinished())
 	{
@@ -536,7 +564,7 @@ void CAncient_StonGolem::Set_Skill05(_double TimeDelta)
 
 void CAncient_StonGolem::Set_Skill07(_double TimeDelta)
 {
-	if (false == m_bAttack && m_PrevAnim == S_WAIT && m_pModelCom->Get_AnimFinished())
+	if (false == m_bAttack && m_PrevAnim == S_WAIT && true != m_pModelCom->Get_AnimFinished())
 	{
 		m_bAttack = true; // 여기서 다시 true를 줘서 거리가 멀어도 한 번 트루가 됐다면 나를 계속 따라오지 못하게 
 		//m_bTest = true; // 차라리 7번이 앞으로 조금 이동 하는 

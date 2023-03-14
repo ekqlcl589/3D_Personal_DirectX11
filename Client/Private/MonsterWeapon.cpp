@@ -57,17 +57,22 @@ HRESULT CMonsterWeapon::Initialize(void * pArg)
 
 void CMonsterWeapon::Tick(_double TimeDelta)
 {
-	//HitTime += TimeDelta;
-	//if (HitTime > 1.5f)
-	//{
-	//	m_bColl = false;
-	//	HitTime = 0.0;
-	//}
-
 
 	if (nullptr != m_pColliderCom)
 		m_pColliderCom->Update(XMLoadFloat4x4(&m_WorldMatrix));
 
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	CGameObject* pOwner = nullptr;
+
+	pOwner = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
+
+	_bool Dead = static_cast<CAncient_StonGolem*>(pOwner)->Get_Dead();
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	if (Dead)
+		m_bDead = true;
+	return;
 }
 
 void CMonsterWeapon::LateTick(_double TimeDelta)
@@ -138,10 +143,9 @@ void CMonsterWeapon::OnCollision(CGameObject * pObj)
 			pOwner = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
 
 			_float Hp = static_cast<CAncient_StonGolem*>(pOwner)->Get_Info()._Hp;
-			Hp = 50.f;
+			Hp = 15.f;
 			static_cast<CAncient_StonGolem*>(pOwner)->Set_Info(Hp);
 			cout << "Ä®ÇÑÅ× ¸ÂÀ½" << static_cast<CAncient_StonGolem*>(pOwner)->Get_Info()._Hp << endl;
-			m_bColl = true;
 			RELEASE_INSTANCE(CGameInstance)
 		//}
 		break;

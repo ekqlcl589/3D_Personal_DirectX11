@@ -173,7 +173,7 @@ void CCollisionMgr::Check_Collision(COLLISIONSTATE eType, COLLISIONSTATE eType2)
 			}
 			else
 			{
-				Dest.second->Erase_Collied(Src.second);
+				Dest.second->Erase_Collied(Src.second); // 리스트에서 제거 
 				Src.second->Erase_Collied(Dest.second);
 			}
 
