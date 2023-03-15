@@ -9,12 +9,12 @@ END
 
 BEGIN(Client)
 
-class CPlayerRageSkill final : public CUI
+class CSkillIconRage final : public CUI
 {
 private:
-	CPlayerRageSkill(ID3D11Device * pDevice, ID3D11DeviceContext * pContext);
-	CPlayerRageSkill(const CPlayerRageSkill& rhs);
-	virtual ~CPlayerRageSkill() = default;
+	CSkillIconRage(ID3D11Device * pDevice, ID3D11DeviceContext * pContext);
+	CSkillIconRage(const CSkillIconRage& rhs);
+	virtual ~CSkillIconRage() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype();
@@ -30,12 +30,12 @@ public:
 private:
 	CShader* m_pShaderCom = { nullptr };
 	_float3 m_fPosition = { 0.f, 0.f, 0.f };
+	_float m_CoolTime = 0.f;
 
 public:
-	static CPlayerRageSkill* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, _float3 fPos);
+	static CSkillIconRage* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, _float3 fPos);
 	virtual CGameObject * Clone(void * pArg) override;
 	virtual void Free()override;
-
 };
 
 END

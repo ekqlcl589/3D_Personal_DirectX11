@@ -30,6 +30,10 @@
 #include "Effect.h"
 
 #include "SkillIcon.h"
+#include "SkillIconR.h"
+#include "SkillIconF.h"
+#include "SkillIconRage.h"
+
 #include "PlayerHPBar.h"
 #include "PlayerMPBar.h"
 #include "PlayerSkill.h"
@@ -184,7 +188,7 @@ HRESULT CLoader::Loading_ForGamePlay()
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_RSkill"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/SkillIcon/Icon_NormalSkill_TS_OutRage.png")))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/SkillIcon/Icon_NormalSkill_TS_RockBreak.png")))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_FSkill"),
@@ -260,7 +264,7 @@ HRESULT CLoader::Loading_ForGamePlay()
 #pragma region Monster
 	/* For.Prototype_Component_Model_TestMonster */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Boss0"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Ancient_Ston_Golem.fbx", CModel::MODEL_ANIM, LocalMatrix66))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Ston_Golem.fbx", CModel::MODEL_ANIM, LocalMatrix66))))
 		return E_FAIL;
 
 #pragma endregion Monster
@@ -413,14 +417,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CPlayerMPBar::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_RageSkill"),
-		CPlayerRageSkill::Create(m_pDevice, m_pContext))))
-		return E_FAIL; 
-
 	_float3 fE = { 755.f, 150.f, 0.f };
 	_float3 fR = { 700.f, 150.f, 0.f };
 	_float3 fF = { 645.f, 150.f, 0.f };
-
+	_float3 Rage = { 825.f, 175.f, 0.f };
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Skill_E"),
 		CPlayerSkill::Create(m_pDevice, m_pContext, fE))))
 		return E_FAIL;
@@ -433,8 +433,21 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CPlayerSkill::Create(m_pDevice, m_pContext, fF))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_RageSkill"),
+		CPlayerRageSkill::Create(m_pDevice, m_pContext, Rage))))
+		return E_FAIL;
+
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player_Skill_Icon"),
 		CSkillIcon::Create(m_pDevice, m_pContext, fE))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player_Skill_IconR"),
+		CSkillIconR::Create(m_pDevice, m_pContext, fR))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player_Skill_IconF"),
+		CSkillIconF::Create(m_pDevice, m_pContext, fF))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player_Skill_IconRage"),
+		CSkillIconRage::Create(m_pDevice, m_pContext, Rage))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster_HPBar"),

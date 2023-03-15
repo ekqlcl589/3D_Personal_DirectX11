@@ -149,6 +149,13 @@ HRESULT CGamePlay::Ready_UI(const _tchar * pLayerTag)
 	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Player_Skill_Icon"), pLayerTag)))
 		return E_FAIL;
 
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Player_Skill_IconR"), pLayerTag)))
+		return E_FAIL;
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Player_Skill_IconF"), pLayerTag)))
+		return E_FAIL;
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Player_Skill_IconRage"), pLayerTag)))
+		return E_FAIL;
+	
 	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_HPBar"), pLayerTag)))
 		return E_FAIL;
 

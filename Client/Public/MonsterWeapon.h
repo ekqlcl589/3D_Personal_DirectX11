@@ -60,6 +60,8 @@ private:
 	_float HitTime = 0.f;
 	_bool m_bColl = false;
 
+	_bool m_bTakeHit = false;
+
 public:
 	WEAPONDESC m_Weapon;
 	_float4x4 m_WorldMatrix;

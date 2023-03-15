@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\MonsterWeapon.h"
 #include "GameInstance.h"
+#include "TSPlayer.h"
 #include "Ancient_StonGolem.h"
 
 CMonsterWeapon::CMonsterWeapon(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -63,11 +64,8 @@ void CMonsterWeapon::Tick(_double TimeDelta)
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 	CGameObject* pOwner = nullptr;
-
 	pOwner = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
-
 	_bool Dead = static_cast<CAncient_StonGolem*>(pOwner)->Get_Dead();
-
 	RELEASE_INSTANCE(CGameInstance);
 
 	if (Dead)
@@ -122,6 +120,11 @@ void CMonsterWeapon::OnCollision(CGameObject * pObj)
 {
 	COLLISIONSTATE eType = pObj->Get_ObjType();
 
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	CGameObject* pPlayer = nullptr;
+	pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+	m_bTakeHit = static_cast<CTSPlayer*>(pPlayer)->Get_Attack();
+	RELEASE_INSTANCE(CGameInstance);
 
 	switch (eType)
 	{
@@ -135,19 +138,26 @@ void CMonsterWeapon::OnCollision(CGameObject * pObj)
 		break;
 	case Engine::OBJ_WEAPON_KARMA14:
 	{
-		//if (!m_bColl)
-		//{
+		if (true == m_bTakeHit)
+		{
 			CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 			CGameObject* pOwner = nullptr;
 
 			pOwner = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
 
 			_float Hp = static_cast<CAncient_StonGolem*>(pOwner)->Get_Info()._Hp;
-			Hp = 15.f;
+
+			_bool bDownAttack = static_cast<CAncient_StonGolem*>(pOwner)->Get_Down();
+
+			if (true == bDownAttack)
+				Hp = 30.f;
+			else
+				Hp = 15.f;
+
 			static_cast<CAncient_StonGolem*>(pOwner)->Set_Info(Hp);
 			cout << "Ä®ÇÑÅ× ¸ÂÀ½" << static_cast<CAncient_StonGolem*>(pOwner)->Get_Info()._Hp << endl;
 			RELEASE_INSTANCE(CGameInstance)
-		//}
+		}
 		break;
 	}
 	case Engine::OBJ_BOSS2:

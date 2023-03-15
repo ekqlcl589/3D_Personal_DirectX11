@@ -50,6 +50,9 @@ public:
 	_float   Lerp(_float Start, _float End, _double Dist) { return (_float)(((1 - Dist)*Start) + (Dist*End)); }
 	_float m_dLerpTime = 0.f;
 
+	_bool Get_Attack() { return m_AttackCheck; }
+	_bool Get_DownAttack() { return m_DownAttack; }
+
 public:
 	void Hit(const _int& _Damage);
 	void Damage(const _int& _Damage);
@@ -73,6 +76,9 @@ private:
 	void Evasion(_double TimeDelta);
 
 	void E_Skill(_double TimeDelta);
+	void R_Skill(_double TimeDelta);
+	void F_Skill(_double TimeDelta);
+	void Rage_Skill(_double TimeDelta);
 
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
@@ -143,8 +149,14 @@ private:
 
 	_bool m_bTest = false;
 
+	_bool m_DownAttack = false;
+
 private:
 	_bool m_Eskill = false;
+	_bool m_RsKill = false;
+	_bool m_FsKill = false;
+	_bool m_RagesKill = false;
+
 
 public:
 	static CTSPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

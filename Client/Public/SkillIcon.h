@@ -9,8 +9,7 @@ END
 
 BEGIN(Client)
 
-class CSkillIcon final :
-	public CUI
+class CSkillIcon final : public CUI
 {
 private:
 	CSkillIcon(ID3D11Device * pDevice, ID3D11DeviceContext * pContext);

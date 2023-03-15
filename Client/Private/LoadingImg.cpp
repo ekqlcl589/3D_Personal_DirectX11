@@ -91,6 +91,12 @@ HRESULT CLoadingImg::SetUp_ShaderResource()
 	if (FAILED(m_pTextureCom->SetUp_ShaderResource(m_pShaderCom, "g_Texture", 0)))
 		return E_FAIL;
 
+	float LoadingImg = 100 * 0.1f;
+
+	if (FAILED(m_pShaderCom->Set_RawValue("g_fData", &LoadingImg, sizeof(float))))
+		return E_FAIL;
+
+
 	return S_OK;
 }
 

@@ -36,7 +36,7 @@ HRESULT CTSPlayer::Initialize_Prototype()
 	m_tInfo.m_ESkill = 10.f;
 	m_tInfo.m_RSkill = 15.f;
 	m_tInfo.m_FSkill = 20.f; // 아 시발 ㅋㅋㅋ 멤버 변순데 m_ 붙였네 ㅄㅋㅋ
-	m_tInfo.m_RageSkill = 30.f;
+	m_tInfo.m_RageSkill = 25.f;
 
 	m_tInfo.CurrAnim = TS_WAIT;
 	m_tInfo.PrevAnim = TS_END;
@@ -75,31 +75,31 @@ HRESULT CTSPlayer::Initialize(void * pArg)
 
 void CTSPlayer::Tick(_double TimeDelta)
 {
-	//CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-	//
-	//CGameObject* pMonster = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
-	//
-	//_float hp = static_cast<CAncient_StonGolem*>(pMonster)->Get_Info()._Hp;
-	//
-	//RELEASE_INSTANCE(CGameInstance);
-
-	//if (hp > 0)
-	//{
-	//	m_HitDelay += TimeDelta;
-	//	if (m_HitDelay >= 1.5)
-	//	{
-	//		m_Hit = false;
-	//		m_HitDelay = 0.0;
-	//	}
-	//}
-
 	if (false == m_Eskill)
 	{
 		m_tInfo.m_ESkill += TimeDelta;
-		//cout << "스킬 쿨타임 :" << m_tInfo.m_ESkill << endl;
 		if (m_tInfo.m_ESkill >= 10.f)
 			m_tInfo.m_ESkill = 10.f;
 	}
+	if (false == m_RsKill)
+	{
+		m_tInfo.m_RSkill += TimeDelta;
+		if (m_tInfo.m_RSkill >= 15.f)
+			m_tInfo.m_RSkill = 15.f;
+	}
+	if (false == m_FsKill)
+	{
+		m_tInfo.m_FSkill += TimeDelta;
+		if (m_tInfo.m_FSkill >= 20.f)
+			m_tInfo.m_FSkill = 20.f;
+	}
+	if (false == m_RagesKill)
+	{
+		m_tInfo.m_RageSkill += TimeDelta;
+		if (m_tInfo.m_RageSkill >= 25.f)
+			m_tInfo.m_RageSkill = 25.f;
+	}
+
 	__super::Tick(TimeDelta);
 
 	Key_Input(TimeDelta);
@@ -241,7 +241,7 @@ void CTSPlayer::OnCollision(CGameObject * pObj)
 		break;
 	case Engine::OBJ_MONSTER_WEAPONL:
 
-		Hit(10); // 몬스터 공격력 가져와서 대입 
+		Hit(10); // 몬스터 공격력 가져와서 대입  
 		m_Hit = true;
 		cout << "왼 팔 히트" << endl;
 		break;
@@ -419,9 +419,25 @@ void CTSPlayer::Key_Input(_double TimeDelta)
 	}
 
 	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_R))
-		m_pModelCom->SetUp_Animation(43); // 애는 단일로 쓰기에는 스킬이라는 느낌이 안 남
+	{
+		if (m_tInfo.m_RSkill >= 15.f)
+			m_RsKill = true; // Start_End 나눠져 있음 
+
+	}
+
 	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_F))
-		m_pModelCom->SetUp_Animation(46); // 공중에서 쓰는 스킬인가;
+	{
+		if (m_tInfo.m_FSkill >= 20.f)
+			m_FsKill = true; // Start_End 나눠져 있음 
+
+	}
+
+	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_Q))
+	{
+		if (m_tInfo.m_RageSkill >= 25.f)
+			m_RagesKill = true; // Start_End 나눠져 있음 
+
+	}
 
 #pragma endregion 
 	Evasion(TimeDelta);
@@ -435,6 +451,9 @@ void CTSPlayer::Key_Input(_double TimeDelta)
 	Jump(TimeDelta);
 
 	E_Skill(TimeDelta);
+	R_Skill(TimeDelta);
+	F_Skill(TimeDelta);
+	Rage_Skill(TimeDelta);
 }
 
 void CTSPlayer::Animation_State(PLAYERANIMSTATE eType, _double TimeDelta)
@@ -674,12 +693,15 @@ void CTSPlayer::Hit(const _int & _Damage)
 {
 	m_tInfo._Hp -= _Damage;
 	m_tInfo.CurrAnim = TS_STURN_LOOP;
-
-	if (m_tInfo.PrevAnim == TS_STURN_LOOP && true == m_pModelCom->Get_AnimFinished())
-		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
-
-	if (m_tInfo.PrevAnim == TS_COMBAT_WAIT == true == m_pModelCom->Get_AnimFinished())
-		m_tInfo.CurrAnim = TS_WAIT;
+	cout << m_tInfo.CurrAnim << endl;
+	//if (m_tInfo.PrevAnim == TS_STURN_LOOP && true == m_pModelCom->Get_AnimFinished())
+	//{
+	//	cout <<"상태 : " << m_tInfo.CurrAnim << endl;
+	//	m_tInfo.CurrAnim = TS_COMBAT_WAIT;
+	//}
+	//
+	//if (m_tInfo.PrevAnim == TS_COMBAT_WAIT == true == m_pModelCom->Get_AnimFinished())
+	//	m_tInfo.CurrAnim = TS_WAIT;
 
 
 	//CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
@@ -810,6 +832,9 @@ void CTSPlayer::Attack_Special(_double TimeDelta)
 	{
 		m_AttackCheck = false;
 		m_tInfo.CurrAnim = TS_SPECIALCOMBO_CRASH;
+
+		m_DownAttack = true;
+
 	}
 }
 
@@ -1065,6 +1090,7 @@ void CTSPlayer::CombatWait()
 {
 	if (false == m_AttackCheck && m_tInfo.PrevAnim == TS_SPECIALCOMBO_CRASH && true == m_pModelCom->Get_AnimFinished()) // CRASH가 두 번 들어 갔다가 끊기는 느낌 
 	{
+		m_DownAttack = false;
 		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
 	
 	}
@@ -1087,6 +1113,11 @@ void CTSPlayer::CombatWait()
 		m_Evasion = false;
 	}
 
+	if (m_tInfo.PrevAnim == TS_STURN_LOOP && true == m_pModelCom->Get_AnimFinished())
+	{
+		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
+	}
+
 	if (false == m_Eskill && m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_END && true == m_pModelCom->Get_AnimFinished())
 	{
 		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
@@ -1094,8 +1125,8 @@ void CTSPlayer::CombatWait()
 
 	}
 
-	if (m_tInfo.PrevAnim == TS_STURN_LOOP && true == m_pModelCom->Get_AnimFinished())
-		m_tInfo.CurrAnim = TS_COMBAT_WAIT;// 여기가 범인인가 
+	//if (m_tInfo.PrevAnim == TS_STURN_LOOP && true == m_pModelCom->Get_AnimFinished())
+	//	m_tInfo.CurrAnim = TS_COMBAT_WAIT;// 여기가 범인인가 
 
 	if (false == m_AttackCheck && m_tInfo.PrevAnim == TS_COMBAT_WAIT && true == m_pModelCom->Get_AnimFinished())
 	{
@@ -1158,11 +1189,57 @@ void CTSPlayer::E_Skill(_double TimeDelta)
 		{
 			m_tInfo.CurrAnim = TS_SKILL_OUTRAGE_END;
 			m_Eskill = false;
+
 		}
-
-
 	}
+}
 
+void CTSPlayer::R_Skill(_double TimeDelta)
+{
+	if (m_RsKill && m_tInfo.m_RSkill >= 15.f)
+	{
+		m_tInfo.CurrAnim = TS_SKILL_ROCKBREAK;
+
+		if (m_tInfo.PrevAnim == TS_SKILL_ROCKBREAK && true == m_pModelCom->Get_AnimFinished())
+		{
+			m_tInfo.CurrAnim = TS_COMBAT_WAIT;
+			m_RsKill = false;
+			m_tInfo.m_RSkill = 0.f;
+
+		}
+	}
+}
+
+void CTSPlayer::F_Skill(_double TimeDelta)
+{
+	if (m_FsKill && m_tInfo.m_FSkill >= 20.f)
+	{
+		m_tInfo.CurrAnim = TS_RAGESKILL_ARMAGEDDONBLADE;
+
+		if (m_tInfo.PrevAnim == TS_RAGESKILL_ARMAGEDDONBLADE && true == m_pModelCom->Get_AnimFinished())
+		{
+			m_tInfo.CurrAnim = TS_COMBAT_WAIT;
+			m_FsKill = false;
+			m_tInfo.m_FSkill = 0.f;
+
+		}
+	}
+}
+
+void CTSPlayer::Rage_Skill(_double TimeDelta)
+{
+	if (m_RagesKill && m_tInfo.m_RageSkill >= 25.f)
+	{
+		m_tInfo.CurrAnim = TS_RAGESKILL_DOUBLESLASH;
+
+		if (m_tInfo.PrevAnim == TS_RAGESKILL_DOUBLESLASH && true == m_pModelCom->Get_AnimFinished())
+		{
+			m_tInfo.CurrAnim = TS_COMBAT_WAIT;
+			m_RagesKill = false;
+			m_tInfo.m_RageSkill = 0.f;
+
+		}
+	}
 }
 
 HRESULT CTSPlayer::Add_Components()

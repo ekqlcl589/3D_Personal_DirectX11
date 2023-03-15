@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Monster.h"
 #include "GameInstance.h"
-#include "Player_Body.h"
+#include "TSPlayer.h"
 
 CMonster::CMonster(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -29,7 +29,7 @@ HRESULT CMonster::Initialize(void * pArg)
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-	m_pTarget = static_cast<CPlayer_Body*>(pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player")));
+	m_pTarget = static_cast<CTSPlayer*>(pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player")));
 	
 	m_pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
 
@@ -42,6 +42,14 @@ HRESULT CMonster::Initialize(void * pArg)
 void CMonster::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
+
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+	m_pTarget = static_cast<CTSPlayer*>(pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player")));
+
+	m_bDown = static_cast<CTSPlayer*>(m_pTarget)->Get_DownAttack();
+
+	RELEASE_INSTANCE(CGameInstance);
 
 	m_vTargetPos = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION);// -m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 

@@ -1,21 +1,21 @@
 #include "stdafx.h"
-#include "..\Public\SkillIcon.h"
+#include "..\Public\SkillIconR.h"
 
 #include "GameInstance.h"
 #include "TSPlayer.h"
 
-CSkillIcon::CSkillIcon(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CSkillIconR::CSkillIconR(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CUI(pDevice, pContext)
 {
 }
 
-CSkillIcon::CSkillIcon(const CSkillIcon & rhs)
+CSkillIconR::CSkillIconR(const CSkillIconR & rhs)
 	: CUI(rhs)
 	, m_fPosition(rhs.m_fPosition)
 {
 }
 
-HRESULT CSkillIcon::Initialize_Prototype()
+HRESULT CSkillIconR::Initialize_Prototype()
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
@@ -23,7 +23,7 @@ HRESULT CSkillIcon::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CSkillIcon::Initialize(void * pArg)
+HRESULT CSkillIconR::Initialize(void * pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -53,28 +53,26 @@ HRESULT CSkillIcon::Initialize(void * pArg)
 	return S_OK;
 }
 
-
-void CSkillIcon::Tick(_double TimeDelta)
+void CSkillIconR::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
-
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
 	CGameObject* pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
 
-	m_CoolTime = static_cast<CTSPlayer*>(pPlayer)->Get_Info().m_ESkill;
+	m_CoolTime = static_cast<CTSPlayer*>(pPlayer)->Get_Info().m_RSkill;
 
 	RELEASE_INSTANCE(CGameInstance);
 
 }
 
-void CSkillIcon::LateTick(_double TimeDelta)
+void CSkillIconR::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
 }
 
-HRESULT CSkillIcon::Render()
+HRESULT CSkillIconR::Render()
 {
 	if (FAILED(SetUp_ShaderResource()))
 		return E_FAIL;
@@ -87,7 +85,7 @@ HRESULT CSkillIcon::Render()
 	return S_OK;
 }
 
-HRESULT CSkillIcon::Add_Components()
+HRESULT CSkillIconR::Add_Components()
 {
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"),
 		TEXT("Com_Renderer"), (CComponent**)&m_pRenderer)))
@@ -105,14 +103,14 @@ HRESULT CSkillIcon::Add_Components()
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_ESkill"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_RSkill"),
 		TEXT("Com_ESKILL_Texture"), (CComponent**)&m_pTexture)))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CSkillIcon::SetUp_ShaderResource()
+HRESULT CSkillIconR::SetUp_ShaderResource()
 {
 	if (nullptr == m_pShaderCom)
 		return E_FAIL;
@@ -127,42 +125,39 @@ HRESULT CSkillIcon::SetUp_ShaderResource()
 	if (FAILED(m_pTexture->SetUp_ShaderResource(m_pShaderCom, "g_Texture", 0)))
 		return E_FAIL;
 
-	/* 알파값 받게 만들어서 플레이어로 부터 받은 스킬 쿨타임에 따라 알파값이 점점 ++되는 식으로 
-	
-	*/
 	float uiCoolTime = m_CoolTime*0.1f;
 
 	if (FAILED(m_pShaderCom->Set_RawValue("g_fData", &uiCoolTime, sizeof(float))))
 		return E_FAIL;
-		
+
 	return S_OK;
 }
 
-CSkillIcon * CSkillIcon::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, _float3 fPos)
+CSkillIconR * CSkillIconR::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, _float3 fPos)
 {
-	CSkillIcon * pInstance = new CSkillIcon(pDevice, pContext);
+	CSkillIconR * pInstance = new CSkillIconR(pDevice, pContext);
 	pInstance->m_fPosition = fPos;
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("CSkillIcon Create Fail");
+		MSG_BOX("CSkillIconR Create Fail");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-CGameObject * CSkillIcon::Clone(void * pArg)
+CGameObject * CSkillIconR::Clone(void * pArg)
 {
-	CSkillIcon * pInstance = new CSkillIcon(*this);
+	CSkillIconR * pInstance = new CSkillIconR(*this);
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("CSkillIcon Clone Fail");
+		MSG_BOX("CSkillIconR Clone Fail");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CSkillIcon::Free()
+void CSkillIconR::Free()
 {
 	Safe_Release(m_pShaderCom);
 	__super::Free();

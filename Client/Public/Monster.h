@@ -45,6 +45,7 @@ public:
 	virtual _uint OnDead();
 	MONSTERINFO Get_Info() { return m_eType; }
 	void Set_Info(_float fDamage) { m_eType._Hp -= fDamage; }
+	_bool Get_Down() { return m_bDown; }
 protected:
 	CShader* m_pShaderCom = { nullptr };
 	CRenderer* m_pRendererCom = { nullptr };
@@ -71,6 +72,8 @@ protected:
 	_bool m_bPlayerChecck = false;
 	_bool m_bCheck = false;
 	_bool m_bjump = false;
+
+	_bool m_bDown = false;
 
 	MONSTERINFO m_eType;
 

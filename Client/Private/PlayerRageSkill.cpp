@@ -14,6 +14,7 @@ CPlayerRageSkill::CPlayerRageSkill(ID3D11Device * pDevice, ID3D11DeviceContext *
 
 CPlayerRageSkill::CPlayerRageSkill(const CPlayerRageSkill & rhs)
 	: CUI(rhs)
+	, m_fPosition(rhs.m_fPosition)
 {
 }
 
@@ -41,8 +42,9 @@ HRESULT CPlayerRageSkill::Initialize(void * pArg)
 	m_fX = g_iWinSizeX >> 1;
 	m_fY = g_iWinSizeY >> 1;
 
+	m_pTransform->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_fPosition));
 	XMStoreFloat4x4(&m_WorldMatrix,
-		XMMatrixScaling(105.f, 105.f, 1.f) * XMMatrixTranslation(m_fX - 825.f, -m_fY + 175.f, 0.2f));
+		XMMatrixScaling(105.f, 105.f, 1.f) * XMMatrixTranslation(m_fX - m_fPosition.x, -m_fY + m_fPosition.y, 0.2f));
 
 	XMStoreFloat4x4(&m_ViewMatrix,
 		XMMatrixIdentity());
@@ -122,9 +124,11 @@ HRESULT CPlayerRageSkill::SetUp_ShaderResource()
 	return S_OK;
 }
 
-CPlayerRageSkill * CPlayerRageSkill::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CPlayerRageSkill * CPlayerRageSkill::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, _float3 fPos)
 {
 	CPlayerRageSkill * pInstance = new CPlayerRageSkill(pDevice, pContext);
+	pInstance->m_fPosition = fPos;
+
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
 		MSG_BOX("RageSkill Create Fail");

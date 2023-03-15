@@ -133,6 +133,18 @@
     <Filter Include="02.GameObject\04. UI\Player\Skill_Icon">
       <UniqueIdentifier>{98c4ddd8-2f3e-4c42-96e7-ec1ad9c5f93d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04. UI\Player\Skill_Icon\E">
+      <UniqueIdentifier>{b4f074e6-21cd-445c-a63c-e5ddc29677a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04. UI\Player\Skill_Icon\R">
+      <UniqueIdentifier>{585cdd75-f5db-44af-90e7-3f630b0bbec1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04. UI\Player\Skill_Icon\F">
+      <UniqueIdentifier>{e18d3257-8af2-43eb-9b4e-69fdd5755383}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04. UI\Player\Skill_Icon\Rage">
+      <UniqueIdentifier>{427555d0-9f64-4345-b253-8019d547618a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -247,7 +259,16 @@
       <Filter>02.GameObject\04. UI\Monster</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\SkillIcon.h">
-      <Filter>02.GameObject\04. UI\Player\Skill_Icon</Filter>
+      <Filter>02.GameObject\04. UI\Player\Skill_Icon\E</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SkillIconR.h">
+      <Filter>02.GameObject\04. UI\Player\Skill_Icon\R</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SkillIconF.h">
+      <Filter>02.GameObject\04. UI\Player\Skill_Icon\F</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SkillIconRage.h">
+      <Filter>02.GameObject\04. UI\Player\Skill_Icon\Rage</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -351,7 +372,16 @@
       <Filter>02.GameObject\04. UI\Monster</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\SkillIcon.cpp">
-      <Filter>02.GameObject\04. UI\Player\Skill_Icon</Filter>
+      <Filter>02.GameObject\04. UI\Player\Skill_Icon\E</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SkillIconR.cpp">
+      <Filter>02.GameObject\04. UI\Player\Skill_Icon\R</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SkillIconF.cpp">
+      <Filter>02.GameObject\04. UI\Player\Skill_Icon\F</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SkillIconRage.cpp">
+      <Filter>02.GameObject\04. UI\Player\Skill_Icon\Rage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

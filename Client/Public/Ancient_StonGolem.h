@@ -32,15 +32,20 @@ public:
 	void Run(_double TimeDelta);
 	void Set_Skill01(_double TimeDelta);
 	void Set_Skill02(_double TimeDelta);
-	//void Set_Skill03(_double TimeDelta);
 	void Set_Skill04(_double TimeDelta);
 	void Set_Skill05(_double TimeDelta);
-	//void Set_Skill06(_double TimeDelta);
 	void Set_Skill07(_double TimeDelta);
-	//void Set_Skill08(_double TimeDelta);
 	void Set_Skill09(_double TimeDelta);
-	//void Set_Skill10(_double TimeDelta);
 
+	void Down();
+	void RT_Down();
+
+	void Stand();
+
+	void Dying();
+
+public:
+	STONGOLEMANIMSTATE Get_CurrAnim() { return m_CurrAnim; }
 public:
 	HRESULT Add_Effect();
 	void Set_Time();

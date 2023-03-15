@@ -188,6 +188,9 @@
     <ClInclude Include="..\Public\PlayerTop.h" />
     <ClInclude Include="..\Public\Player_Body.h" />
     <ClInclude Include="..\Public\SkillIcon.h" />
+    <ClInclude Include="..\Public\SkillIconF.h" />
+    <ClInclude Include="..\Public\SkillIconR.h" />
+    <ClInclude Include="..\Public\SkillIconRage.h" />
     <ClInclude Include="..\Public\SkyBox.h" />
     <ClInclude Include="..\Public\SwordShield.h" />
     <ClInclude Include="..\Public\TargetCamera.h" />
@@ -226,6 +229,9 @@
     <ClCompile Include="..\Private\PlayerTop.cpp" />
     <ClCompile Include="..\Private\Player_Body.cpp" />
     <ClCompile Include="..\Private\SkillIcon.cpp" />
+    <ClCompile Include="..\Private\SkillIconF.cpp" />
+    <ClCompile Include="..\Private\SkillIconR.cpp" />
+    <ClCompile Include="..\Private\SkillIconRage.cpp" />
     <ClCompile Include="..\Private\SkyBox.cpp" />
     <ClCompile Include="..\Private\SwordShield.cpp" />
     <ClCompile Include="..\Private\TargetCamera.cpp" />
