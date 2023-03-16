@@ -299,7 +299,7 @@ void CTSPlayer::Key_Input(_double TimeDelta)
 	{
 		m_bTest = false;
 
-		m_tInfo.CurrAnim = TS_WAIT;
+		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
 	}
 
 	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_S))
@@ -684,8 +684,10 @@ void CTSPlayer::Animation(TSPLAYERANIM eType, _double TimeDelta)
 			break;
 		}
 		m_pModelCom->SetUp_Animation(m_iAnimIndex);
+		cout << m_iAnimIndex << " : " << m_tInfo.CurrAnim << endl;
 
 		m_tInfo.PrevAnim = m_tInfo.CurrAnim;
+		cout << m_iAnimIndex << " : " << m_tInfo.PrevAnim << endl;
 	}
 }
 
@@ -1088,14 +1090,14 @@ void CTSPlayer::DashAttack(_double TimeDelta)
 
 void CTSPlayer::CombatWait()
 {
-	if (false == m_AttackCheck && m_tInfo.PrevAnim == TS_SPECIALCOMBO_CRASH && true == m_pModelCom->Get_AnimFinished()) // CRASH°¡ µÎ ¹ø µé¾î °¬´Ù°¡ ²÷±â´Â ´À³¦ 
+	if (false == m_AttackCheck && m_tInfo.PrevAnim == TS_SPECIALCOMBO_CRASH && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 10.0) // CRASH°¡ µÎ ¹ø µé¾î °¬´Ù°¡ ²÷±â´Â ´À³¦ 
 	{
 		m_DownAttack = false;
 		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
 	
 	}
 
-	if (false == m_AttackCheck && m_tInfo.PrevAnim == TS_BASIC_COMBO02_END && true == m_pModelCom->Get_AnimFinished()) // CRASH°¡ µÎ ¹ø µé¾î °¬´Ù°¡ ²÷±â´Â ´À³¦ 
+	if (false == m_AttackCheck && m_tInfo.PrevAnim == TS_BASIC_COMBO02_END &&m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 10.0) // CRASH°¡ µÎ ¹ø µé¾î °¬´Ù°¡ ²÷±â´Â ´À³¦ 
 	{
 		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
 
@@ -1118,7 +1120,7 @@ void CTSPlayer::CombatWait()
 		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
 	}
 
-	if (false == m_Eskill && m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_END && true == m_pModelCom->Get_AnimFinished())
+	if (false == m_Eskill && m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_END && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 25.0)
 	{
 		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
 		m_tInfo.m_ESkill = 0.f;
@@ -1200,7 +1202,7 @@ void CTSPlayer::R_Skill(_double TimeDelta)
 	{
 		m_tInfo.CurrAnim = TS_SKILL_ROCKBREAK;
 
-		if (m_tInfo.PrevAnim == TS_SKILL_ROCKBREAK && true == m_pModelCom->Get_AnimFinished())
+		if (m_tInfo.PrevAnim == TS_SKILL_ROCKBREAK && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 15.0)
 		{
 			m_tInfo.CurrAnim = TS_COMBAT_WAIT;
 			m_RsKill = false;
@@ -1232,7 +1234,7 @@ void CTSPlayer::Rage_Skill(_double TimeDelta)
 	{
 		m_tInfo.CurrAnim = TS_RAGESKILL_DOUBLESLASH;
 
-		if (m_tInfo.PrevAnim == TS_RAGESKILL_DOUBLESLASH && true == m_pModelCom->Get_AnimFinished())
+		if (m_tInfo.PrevAnim == TS_RAGESKILL_DOUBLESLASH && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 30.0)
 		{
 			m_tInfo.CurrAnim = TS_COMBAT_WAIT;
 			m_RagesKill = false;

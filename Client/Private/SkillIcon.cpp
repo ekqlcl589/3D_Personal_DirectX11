@@ -127,9 +127,6 @@ HRESULT CSkillIcon::SetUp_ShaderResource()
 	if (FAILED(m_pTexture->SetUp_ShaderResource(m_pShaderCom, "g_Texture", 0)))
 		return E_FAIL;
 
-	/* 알파값 받게 만들어서 플레이어로 부터 받은 스킬 쿨타임에 따라 알파값이 점점 ++되는 식으로 
-	
-	*/
 	float uiCoolTime = m_CoolTime*0.1f;
 
 	if (FAILED(m_pShaderCom->Set_RawValue("g_fData", &uiCoolTime, sizeof(float))))

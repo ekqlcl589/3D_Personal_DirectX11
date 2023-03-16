@@ -142,12 +142,14 @@ void CMonsterWeapon::OnCollision(CGameObject * pObj)
 		{
 			CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 			CGameObject* pOwner = nullptr;
+			CGameObject* pTarget = nullptr;
 
 			pOwner = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
+			pTarget = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
 
 			_float Hp = static_cast<CAncient_StonGolem*>(pOwner)->Get_Info()._Hp;
 
-			_bool bDownAttack = static_cast<CAncient_StonGolem*>(pOwner)->Get_Down();
+			_bool bDownAttack = static_cast<CTSPlayer*>(pTarget)->Get_DownAttack();
 
 			if (true == bDownAttack)
 				Hp = 30.f;

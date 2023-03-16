@@ -63,8 +63,6 @@ void CSkillIconRage::Tick(_double TimeDelta)
 
 	m_CoolTime = static_cast<CTSPlayer*>(pPlayer)->Get_Info().m_RageSkill;
 
-	cout << m_CoolTime << endl;
-
 	RELEASE_INSTANCE(CGameInstance);
 
 }
@@ -127,7 +125,7 @@ HRESULT CSkillIconRage::SetUp_ShaderResource()
 	if (FAILED(m_pTexture->SetUp_ShaderResource(m_pShaderCom, "g_Texture", 0)))
 		return E_FAIL;
 
-	float uiCoolTime = m_CoolTime*0.04f;
+	float uiCoolTime = m_CoolTime * 0.04f;
 
 	if (FAILED(m_pShaderCom->Set_RawValue("g_fData", &uiCoolTime, sizeof(float))))
 		return E_FAIL;

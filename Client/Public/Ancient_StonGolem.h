@@ -24,6 +24,9 @@ public:
 	HRESULT Add_Coll();
 
 	void Set_AnimationState(STONGOLEMANIMSTATE eType);
+
+	void Set_Test(TESTSTATE eType);
+
 	_uint Set_State(_double TimeDelta);
 
 	void Attack_Go(_double TimeDelta);
@@ -82,6 +85,9 @@ public:
 
 	STONGOLEMANIMSTATE m_CurrAnim;
 	STONGOLEMANIMSTATE m_PrevAnim;
+
+	TESTSTATE m_tCurr;
+	TESTSTATE m_tPrev;
 };
 
 END

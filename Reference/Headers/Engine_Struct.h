@@ -245,6 +245,36 @@ namespace Engine
 		OBJ_END
 	};
 
+	enum TESTSTATE
+	{
+		S_S_START,
+		S_S_DWON,
+		S_S_DIE,
+		S_S_RESPWAN,
+		S_S_RTDOWN,
+		S_S_STAND_END,
+		S_S_STAND_LOOP,
+		S_S_STAND_START,
+		S_S_RUN,
+		S_S_SKILL01,
+		S_S_SKILL02,
+		S_S_SKILL04_1,
+		S_S_SKILL04_2,
+		S_S_SKILL04_3,
+		S_S_SKILL05_1,
+		S_S_SKILL05_2,
+		S_S_SKILL05_3,
+		S_S_SKILL07,
+		S_S_SKILL09,
+		S_S_SKILL10_1,
+		S_S_SKILL10_2,
+		S_S_SKILL10_3,
+		S_S_STANDUP_F,
+		S_S_START2,
+		S_S_STURN,
+		S_S_WAIT,
+		S_S_ANIMEND
+	};
 
 	typedef struct tagPlayerInfo
 	{
