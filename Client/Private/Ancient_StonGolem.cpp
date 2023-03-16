@@ -58,9 +58,6 @@ HRESULT CAncient_StonGolem::Initialize(void * pArg)
 	m_CurrAnim = S_RESPAN;
 	m_pModelCom->SetUp_Animation(m_CurrAnim); 
 
-	//m_tCurr = S_S_RESPWAN;
-	//m_pModelCom->SetUp_Animation(m_tCurr);
-
 	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(195.0f));
 
 	return S_OK;
@@ -182,8 +179,6 @@ HRESULT CAncient_StonGolem::Render()
 
 void CAncient_StonGolem::OnCollision(CGameObject * pObj)
 {
-	//pColl = &m_isColl;
-
 	COLLISIONSTATE eType = pObj->Get_ObjType();
 
 	switch (eType)
@@ -327,98 +322,49 @@ void CAncient_StonGolem::Set_AnimationState(STONGOLEMANIMSTATE eType)
 
 }
 
-void CAncient_StonGolem::Set_Test(TESTSTATE eType)
+void CAncient_StonGolem::Use_Skill(_double TimeDelta)
 {
-	if (m_tCurr != m_tPrev)
-	{
-		switch (eType)
-		{
-		case Engine::S_S_START:
-			m_iAnimIndex = 0;
-			break;
-		case Engine::S_S_DWON:
-			m_iAnimIndex = 1;
-			break;
-		case Engine::S_S_DIE:
-			m_iAnimIndex = 2;
-			break;
-		case Engine::S_S_RESPWAN:
-			m_iAnimIndex = 3;
-			break;
-		case Engine::S_S_RTDOWN:
-			m_iAnimIndex = 4;
-			break;
-		case Engine::S_S_STAND_END:
-			m_iAnimIndex = 5;
-			break;
-		case Engine::S_S_STAND_LOOP:
-			m_iAnimIndex = 6;
-			break;
-		case Engine::S_S_STAND_START:
-			m_iAnimIndex = 7;
-			break;
-		case Engine::S_S_RUN:
-			m_iAnimIndex = 8;
-			break;
-		case Engine::S_S_SKILL01:
-			m_iAnimIndex = 9;
-			break;
-		case Engine::S_S_SKILL02:
-			m_iAnimIndex = 10;
-			break;
-		case Engine::S_S_SKILL04_1:
-			m_iAnimIndex = 11;
-			break;
-		case Engine::S_S_SKILL04_2:
-			m_iAnimIndex = 12;
-			break;
-		case Engine::S_S_SKILL04_3:
-			m_iAnimIndex = 13;
-			break;
-		case Engine::S_S_SKILL05_1:
-			m_iAnimIndex = 14;
-			break;
-		case Engine::S_S_SKILL05_2:
-			m_iAnimIndex = 15;
-			break;
-		case Engine::S_S_SKILL05_3:
-			m_iAnimIndex = 16;
-			break;
-		case Engine::S_S_SKILL07:
-			m_iAnimIndex = 17;
-			break;
-		case Engine::S_S_SKILL09:
-			m_iAnimIndex = 18;
-			break;
-		case Engine::S_S_SKILL10_1:
-			m_iAnimIndex = 19;
-			break;
-		case Engine::S_S_SKILL10_2:
-			m_iAnimIndex = 20;
-			break;
-		case Engine::S_S_SKILL10_3:
-			m_iAnimIndex = 21;
-			break;
-		case Engine::S_S_STANDUP_F:
-			m_iAnimIndex = 22;
-			break;
-		case Engine::S_S_START2:
-			m_iAnimIndex = 23;
-			break;
-		case Engine::S_S_STURN:
-			m_iAnimIndex = 24;
-			break;
-		case Engine::S_S_WAIT:
-			m_iAnimIndex = 25;
-			break;
-		case Engine::S_S_ANIMEND:
-		default:
-			break;
-		}
-		m_pModelCom->SetUp_Animation(m_iAnimIndex);
-		m_tPrev = m_tCurr;
+	int RandSkill = 0;
+	
+	RandSkill = rand() % 3;
 
+	switch (RandSkill)
+	{
+	case 0:
+		Set_Skill01(TimeDelta);
+		break;
+	case 1:
+		Set_Skill07(TimeDelta);
+		break;
+	case 2:
+		Set_Skill02(TimeDelta);
+		break;
+	default:
+		break;
 	}
+	m_SkillDelay = 250.f;
+}
+
+void CAncient_StonGolem::Combat_Wait(_double TimeDelta)
+{
+	if (m_PrevAnim == S_SKILL01 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 67.0) // 그리고 1번 애님 끝나면 바로 2번 실행 
+	{
+		m_CurrAnim = S_WAIT;
+		m_bAttack = false;
+	}
+
+	if (m_PrevAnim == S_SKILL02 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 91.0) // 그리고 1번 애님 끝나면 바로 2번 실행 
+	{
+		m_CurrAnim = S_WAIT;
+		m_bAttack = false;
+	}
+
+	if (m_PrevAnim == S_SKILL07 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 78.0) // 그리고 1번 애님 끝나면 바로 2번 실행 
+	{
+		m_CurrAnim = S_WAIT;
+		m_bAttack = false;
+	}
+
 }
 
 _uint CAncient_StonGolem::Set_State(_double TimeDelta)
@@ -474,39 +420,38 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 	
 	}
 
-	//if (m_PrevAnim == S_WAIT && m_pModelCom->Get_AnimTimeAcc() >= m_pModelCom->Get_AnimDuration() / 2)
-	//{
-	//	int randNum = rand() & 100;
-	//
-	//	if (randNum < 30)
-	//		Set_Skill07(TimeDelta);
-	//	else if (randNum < 60)
-	//		Set_Skill01(TimeDelta);
-	//	else
-	//		Set_Skill04(TimeDelta);
-	//}
-	if(m_eType._Hp <= 250.f)
-		Set_Skill05(TimeDelta); // 체력이 25% 이하로 떨어지면 몸을 웅크리면서 체력 회복 패턴 사용 
-	else if (true == m_bSkill4 && true != m_bCheck)
+	if (m_PrevAnim == S_SKILL05_2 && true != m_pModelCom->Get_AnimFinished())
 	{
-		Set_Skill07(TimeDelta);
-	
-		Set_Skill01(TimeDelta);
+		m_eType._Hp += TimeDelta * 20.f;
+		cout << m_eType._Hp << endl;
 
-		//Set_Skill02(TimeDelta);
+		if (m_eType._Hp >= m_eType._MaxHp)
+		{
+			m_eType._Hp = m_eType._MaxHp;
+			m_CurrAnim = S_SKILL05_3;
+		}
+
+		if (true == m_bDown)
+			RT_Down();
 
 	}
 
-	//if (m_eType._Hp <= 500.f)
-	//	Set_Skill01(TimeDelta); // 체력이 반 이하로 떨어지면 
-	
-	////애니메이션이 모두 끝났다면 조건 추가 
-
+	if(m_eType._Hp <= 250.f)
+		Set_Skill05(TimeDelta); // 체력이 25% 이하로 떨어지면 몸을 웅크리면서 체력 회복 패턴 사용 
+	else
+	{
+		if (!m_bAttack && m_SkillDelay >= 0)
+			--m_SkillDelay;
+		else if (false == m_bRun && true == m_bSkill4 && !m_bAttack && m_SkillDelay < 0)
+			Use_Skill(TimeDelta);
+	}
 	//Stand();
 
 	RT_Down();
 
 	Run(TimeDelta);
+
+	Combat_Wait(TimeDelta);
 
 	return OBJ_NOEVENT;
 }
@@ -551,18 +496,17 @@ void CAncient_StonGolem::Attack_Go(_double TimeDelta)
 void CAncient_StonGolem::Run(_double TimeDelta)
 {
 	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION); // 자기 위치에 고정 
-	// 5보다 멀 면 battack false -> 플레이어를 따라오게
-	// 5 보다 가까우면 battack true -> 공격, 공격 중 플레이어가 멀어져도 일단 공격 모션은 끝 까지 
-	// Chase to Target 후 첫 공격 패턴 4_1 이 후 사용 되는 함수 
-	if (true == m_bCheck && false == m_bAttack) // 이게 밑에서 발동하는 란듐 공격 7, 9 때문에 조건이 안 먹을 가능성이 높음 
+	if (true == m_bCheck && false == m_bAttack) // 무조건 4번 애니메이션 이후
 	{
-		if (m_pTransformCom->Compute_Distance(m_vTargetPos) <= 30.f) // 타겟과의 거리가 10 보다 적으면 
+		if (m_pTransformCom->Compute_Distance(m_vTargetPos) <= 10.f) // 타겟과의 거리가 10 보다 적으면 
 		{
+			m_bRun = true;
 			m_pTransformCom->Chase_Tatget(m_vTargetPos, 5.f, TimeDelta);
 			m_CurrAnim = S_RUN;
 		}
 		if (m_pTransformCom->Compute_Distance(m_vTargetPos) <= 5.f)
 		{
+			m_bRun = false;
 			m_CurrAnim = S_WAIT; 
 			m_bCheck = false;
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition); // 자기 위치에 고정 
@@ -576,24 +520,15 @@ void CAncient_StonGolem::Run(_double TimeDelta)
 
 void CAncient_StonGolem::Set_Skill01(_double TimeDelta)
 {
-	if ( m_PrevAnim == S_SKILL07 && true == m_pModelCom->Get_AnimFinished()) // 그냥 7번 애니메이션 끝나면 바로 1번 실행하는 거로 
-	{
-		m_bAttack = true;
-		m_CurrAnim = S_SKILL01;
-	}
-
-	else if (m_PrevAnim == S_SKILL01 && true == m_pModelCom->Get_AnimFinished()) // 그리고 1번 애님 끝나면 바로 2번 실행 
-	{
-		m_CurrAnim = S_SKILL02;
-		m_bAttack = false;
-	}
-
-	if (false == m_bAttack && m_PrevAnim == S_SKILL02 && true == m_pModelCom->Get_AnimFinished())
-		m_CurrAnim = S_WAIT;
+	m_bAttack = true;
+	m_CurrAnim = S_SKILL01;
 }
 
 void CAncient_StonGolem::Set_Skill02(_double TimeDelta)
 {
+	m_bAttack = true;
+	m_CurrAnim = S_SKILL02;
+
 }
 
 void CAncient_StonGolem::Set_Skill04(_double TimeDelta)
@@ -640,19 +575,18 @@ void CAncient_StonGolem::Set_Skill05(_double TimeDelta)
 		m_CurrAnim = S_SKILL05_1;
 	}
 
-	else if (m_PrevAnim == S_SKILL05_1 && true == m_pModelCom->Get_AnimFinished())
+	else if (m_PrevAnim == S_SKILL05_1 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 59.0)
 	{
 		m_CurrAnim = S_SKILL05_2;
-
 	}
 
-	else if (m_PrevAnim == S_SKILL05_2 && true == m_pModelCom->Get_AnimFinished())
+	else if (m_PrevAnim == S_SKILL05_2 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 928.0)
 	{
 		m_CurrAnim = S_SKILL05_3;
 		m_bAttack = false;
 	}
 
-	if (false == m_bAttack && m_PrevAnim == S_SKILL05_3 && true == m_pModelCom->Get_AnimFinished())
+	if (false == m_bAttack && m_PrevAnim == S_SKILL05_3 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 69.0)
 		m_CurrAnim = S_WAIT;
 
 	
@@ -660,21 +594,10 @@ void CAncient_StonGolem::Set_Skill05(_double TimeDelta)
 
 void CAncient_StonGolem::Set_Skill07(_double TimeDelta)
 {
-	if (false == m_bAttack)// && m_PrevAnim == S_WAIT && true == m_pModelCom->Get_AnimFinished())
-	{
-		m_bAttack = true; // 여기서 다시 true를 줘서 거리가 멀어도 한 번 트루가 됐다면 나를 계속 따라오지 못하게 
-		//m_bTest = true; // 차라리 7번이 앞으로 조금 이동 하는 
-		m_CurrAnim = S_SKILL07;
+	
+	m_bAttack = true; // 여기서 다시 true를 줘서 거리가 멀어도 한 번 트루가 됐다면 나를 계속 따라오지 못하게 
+	m_CurrAnim = S_SKILL07;
 
-	}
-
-	if (m_PrevAnim == S_SKILL07 && true == m_pModelCom->Get_AnimFinished())
-	{
-		m_dLerpTime = 0.f;
-		m_bTest = false;
-		m_bAttack = false; // 다시 false;
-		m_CurrAnim = S_WAIT;
-	}
 }
 
 void CAncient_StonGolem::Set_Skill09(_double TimeDelta)

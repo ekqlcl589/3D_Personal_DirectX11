@@ -25,7 +25,9 @@ public:
 
 	void Set_AnimationState(STONGOLEMANIMSTATE eType);
 
-	void Set_Test(TESTSTATE eType);
+	void Use_Skill(_double TimeDelta);
+
+	void Combat_Wait(_double TimeDelta);
 
 	_uint Set_State(_double TimeDelta);
 
@@ -75,8 +77,10 @@ private:
 	_double m_AnimTimeAcc = { 0.0 };
 
 	_bool m_bSkill4 = false;
+	_bool m_bRun = false;
 
 	_double m_CoolTime = 0.0;
+	_float m_SkillDelay = 250.f;
 
 public:
 	static CAncient_StonGolem* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

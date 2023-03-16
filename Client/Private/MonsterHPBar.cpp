@@ -87,7 +87,7 @@ void CMonsterHPBar::LateTick(_double TimeDelta)
 	TexHpY = 0.5f - abs(HP / MaxHP);
 	VertexHpY = (-TexHpY);
 
-	//m_pVIBuffer_Rect->Set_Buffer(TexHpY, VertexHpY);
+	m_pVIBuffer_Rect->Set_Buffer(TexHpY, VertexHpY);
 
 	RELEASE_INSTANCE(CGameInstance);
 }
