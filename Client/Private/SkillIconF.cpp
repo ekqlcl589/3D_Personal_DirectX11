@@ -125,7 +125,7 @@ HRESULT CSkillIconF::SetUp_ShaderResource()
 	if (FAILED(m_pTexture->SetUp_ShaderResource(m_pShaderCom, "g_Texture", 0)))
 		return E_FAIL;
 
-	float uiCoolTime = m_CoolTime * 0.1f;
+	float uiCoolTime = m_CoolTime * 0.05f;
 
 	if (FAILED(m_pShaderCom->Set_RawValue("g_fData", &uiCoolTime, sizeof(float))))
 		return E_FAIL;

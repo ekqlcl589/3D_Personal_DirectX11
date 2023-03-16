@@ -69,21 +69,21 @@ void CMonsterHPBar::LateTick(_double TimeDelta)
 
 	_float VertexHpY = 0.f;
 	_float TexHpY = 0.f;
-
+	
 	CGameInstance* p = GET_INSTANCE(CGameInstance);
 	CGameObject* pPlayer = nullptr;
-
+	
 	pPlayer = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
-
+	
 	_float MaxHP = static_cast<CAncient_StonGolem*>(pPlayer)->Get_Info()._MaxHp;
 	_float HP = static_cast<CAncient_StonGolem*>(pPlayer)->Get_Info()._Hp;
-
+	
 	if (HP > MaxHP)
 		HP = MaxHP;
-
+	
 	if (HP <= 0)
 		HP = 0;
-
+	
 	TexHpY = 0.5f - abs(HP / MaxHP);
 	VertexHpY = (-TexHpY);
 
