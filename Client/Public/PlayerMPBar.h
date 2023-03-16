@@ -29,7 +29,9 @@ public:
 
 private:
 	CShader* m_pShaderCom = { nullptr };
-
+	
+	_float MaxMP = 0.f;
+	_float MP = 0.f;
 public:
 	static CPlayerMPBar* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext);
 	virtual CGameObject * Clone(void * pArg) override;

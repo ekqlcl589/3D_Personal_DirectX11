@@ -5,7 +5,7 @@
 #include "Shader.h"
 #include "Texture.h"
 #include "Layer.h"
-#include "Player_Body.h"
+#include "TSPlayer.h"
 
 CPlayerMPBar::CPlayerMPBar(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CUI(pDevice, pContext)
@@ -72,8 +72,8 @@ void CPlayerMPBar::LateTick(_double TimeDelta)
 
 	pPlayer = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
 
-	_float MaxMP = static_cast<CPlayer_Body*>(pPlayer)->Get_Info()._MaxMp;
-	_float MP = static_cast<CPlayer_Body*>(pPlayer)->Get_Info()._Mp;
+	MaxMP = static_cast<CTSPlayer*>(pPlayer)->Get_Info()._MaxMp;
+	MP = static_cast<CTSPlayer*>(pPlayer)->Get_Info()._Mp;
 
 	if (MP > MaxMP)
 		MP = MaxMP;
@@ -116,7 +116,7 @@ HRESULT CPlayerMPBar::Add_Components()
 		TEXT("Com_VIBuffer_Rect"), (CComponent**)&m_pVIBuffer_Rect)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader"),
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_ShaderHP"),
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
@@ -140,6 +140,11 @@ HRESULT CPlayerMPBar::SetUp_ShaderResource()
 		return E_FAIL;
 
 	if (FAILED(m_pTexture->SetUp_ShaderResource(m_pShaderCom, "g_Texture", 0)))
+		return E_FAIL;
+
+	float uiHp = MP * 0.01f;
+
+	if (FAILED(m_pShaderCom->Set_RawValue("g_HpData", &uiHp, sizeof(float))))
 		return E_FAIL;
 
 	return S_OK;

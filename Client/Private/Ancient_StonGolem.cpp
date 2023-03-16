@@ -391,12 +391,6 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 	}
 
 
-	//if (true == m_bPlayerChecck && m_PrevAnim == S_RESPAN && true == m_pModelCom->Get_AnimFinished()) //  플레이어와 특정 거리 이하로 들어와서 조우 하면 지금은 가까운데 나중에 맵 찍으면 더 멀리서 이 기능 활성화 하고 카메라 몬스터로 이동
-	//{
-	//	m_pTransformCom->Chase_Tatget(m_vTargetPos, 3.f, TimeDelta);
-	//	m_CurrAnim = S_RUN;
-	//}
-
 	if (false == m_bSkill4)
 	{
 		Set_Skill04(TimeDelta); // 조우 후 공격 패턴 1
@@ -422,7 +416,7 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 
 	if (m_PrevAnim == S_SKILL05_2 && true != m_pModelCom->Get_AnimFinished())
 	{
-		m_eType._Hp += TimeDelta * 20.f;
+		m_eType._Hp += TimeDelta * 25.f;
 		cout << m_eType._Hp << endl;
 
 		if (m_eType._Hp >= m_eType._MaxHp)
@@ -498,7 +492,7 @@ void CAncient_StonGolem::Run(_double TimeDelta)
 	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION); // 자기 위치에 고정 
 	if (true == m_bCheck && false == m_bAttack) // 무조건 4번 애니메이션 이후
 	{
-		if (m_pTransformCom->Compute_Distance(m_vTargetPos) <= 10.f) // 타겟과의 거리가 10 보다 적으면 
+		if (m_pTransformCom->Compute_Distance(m_vTargetPos) <= 30.f) // 타겟과의 거리가 10 보다 적으면 
 		{
 			m_bRun = true;
 			m_pTransformCom->Chase_Tatget(m_vTargetPos, 5.f, TimeDelta);
@@ -629,7 +623,7 @@ void CAncient_StonGolem::Down()
 	// RT_DOWN 함수로 통합 
 }
 
-void CAncient_StonGolem::RT_Down() // 플레이어 쪽에서 불러준다?
+void CAncient_StonGolem::RT_Down() // 플레이어 쪽에서 불러준다? 지랄노.
 {
 	if(true == m_bDown)
 		m_CurrAnim = RTDOWN_F;

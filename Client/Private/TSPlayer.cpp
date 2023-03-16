@@ -75,6 +75,19 @@ HRESULT CTSPlayer::Initialize(void * pArg)
 
 void CTSPlayer::Tick(_double TimeDelta)
 {
+	if (m_tInfo._Hp <= 0.f)
+	{
+		m_tInfo._Hp = 0.f;
+		m_tInfo.CurrAnim = TS_DIE;
+
+		if (m_tInfo.PrevAnim == TS_DIE && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 88.0)
+		{
+			m_tInfo.CurrAnim = TS_COMBAT_WAIT;
+			m_tInfo._Hp = m_tInfo._MaxHp;
+		}
+
+	}
+
 	if (false == m_Eskill)
 	{
 		m_tInfo.m_ESkill += TimeDelta;
@@ -244,6 +257,8 @@ void CTSPlayer::OnCollision(CGameObject * pObj)
 		Hit(10); // 몬스터 공격력 가져와서 대입  
 		m_Hit = true;
 		cout << "왼 팔 히트" << endl;
+		cout << m_tInfo._Hp << endl;
+
 		break;
 
 	case Engine::OBJ_MONSTER_WEAPONR:
@@ -251,6 +266,7 @@ void CTSPlayer::OnCollision(CGameObject * pObj)
 		Hit(10); // 몬스터 공격력 가져와서 대입 
 		m_Hit = true;
 		cout << "오른 팔 히트" << endl;
+		cout << m_tInfo._Hp << endl;
 
 		break;
 	}
@@ -574,6 +590,7 @@ void CTSPlayer::Animation(TSPLAYERANIM eType, _double TimeDelta)
 			m_iAnimIndex = 6;
 			break;
 		case Engine::TS_DIE:
+			m_iAnimIndex = 7;
 			break;
 		case Engine::TS_RESPWAN:
 			break;
@@ -1186,11 +1203,14 @@ void CTSPlayer::E_Skill(_double TimeDelta)
 	if (m_Eskill && m_tInfo.m_ESkill >= 10.f)
 	{
 		m_tInfo.CurrAnim = TS_SKILL_OUTRAGE_START;
+		m_AttackCheck = true;
 
 		if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_START && true == m_pModelCom->Get_AnimFinished())
 		{
 			m_tInfo.CurrAnim = TS_SKILL_OUTRAGE_END;
 			m_Eskill = false;
+			m_AttackCheck = false;
+
 
 		}
 	}
@@ -1201,11 +1221,13 @@ void CTSPlayer::R_Skill(_double TimeDelta)
 	if (m_RsKill && m_tInfo.m_RSkill >= 15.f)
 	{
 		m_tInfo.CurrAnim = TS_SKILL_ROCKBREAK;
+		m_AttackCheck = true;
 
 		if (m_tInfo.PrevAnim == TS_SKILL_ROCKBREAK && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 15.0)
 		{
 			m_tInfo.CurrAnim = TS_COMBAT_WAIT;
 			m_RsKill = false;
+			m_AttackCheck = false;
 			m_tInfo.m_RSkill = 0.f;
 
 		}
@@ -1217,11 +1239,13 @@ void CTSPlayer::F_Skill(_double TimeDelta)
 	if (m_FsKill && m_tInfo.m_FSkill >= 20.f)
 	{
 		m_tInfo.CurrAnim = TS_RAGESKILL_ARMAGEDDONBLADE;
+		m_AttackCheck = true;
 
 		if (m_tInfo.PrevAnim == TS_RAGESKILL_ARMAGEDDONBLADE && true == m_pModelCom->Get_AnimFinished())
 		{
 			m_tInfo.CurrAnim = TS_COMBAT_WAIT;
 			m_FsKill = false;
+			m_AttackCheck = false;
 			m_tInfo.m_FSkill = 0.f;
 
 		}
@@ -1233,11 +1257,13 @@ void CTSPlayer::Rage_Skill(_double TimeDelta)
 	if (m_RagesKill && m_tInfo.m_RageSkill >= 25.f)
 	{
 		m_tInfo.CurrAnim = TS_RAGESKILL_DOUBLESLASH;
+		m_AttackCheck = true;
 
 		if (m_tInfo.PrevAnim == TS_RAGESKILL_DOUBLESLASH && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 30.0)
 		{
 			m_tInfo.CurrAnim = TS_COMBAT_WAIT;
 			m_RagesKill = false;
+			m_AttackCheck = false;
 			m_tInfo.m_RageSkill = 0.f;
 
 		}

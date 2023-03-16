@@ -30,7 +30,8 @@ public:
 private:
 	CShader* m_pShaderCom = { nullptr };
 
-
+	_float MaxHP = 0.f;
+	_float HP = 0.f;
 public:
 	static CMonsterHPBar* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext);
 	virtual CGameObject * Clone(void * pArg) override;
