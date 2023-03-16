@@ -124,6 +124,7 @@ private:
 	_bool m_bAnimCheck = false;
 
 	_bool m_Evasion = false;
+	_bool m_BackEvasion = false;
 
 	_bool m_bJump = false;
 	_bool m_JumpAttack = false;

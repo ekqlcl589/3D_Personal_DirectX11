@@ -455,6 +455,18 @@ void CTSPlayer::Key_Input(_double TimeDelta)
 
 	}
 
+	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_Z))
+	{
+		m_tInfo.CurrAnim = TS_FRONT_EVASION;
+		m_Evasion = true;
+	}
+	else if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_X))
+	{
+		m_tInfo.CurrAnim = TS_BACK_EVASION;
+		m_BackEvasion = true;
+	}
+
+
 #pragma endregion 
 	Evasion(TimeDelta);
 
@@ -701,10 +713,8 @@ void CTSPlayer::Animation(TSPLAYERANIM eType, _double TimeDelta)
 			break;
 		}
 		m_pModelCom->SetUp_Animation(m_iAnimIndex);
-		cout << m_iAnimIndex << " : " << m_tInfo.CurrAnim << endl;
 
 		m_tInfo.PrevAnim = m_tInfo.CurrAnim;
-		cout << m_iAnimIndex << " : " << m_tInfo.PrevAnim << endl;
 	}
 }
 
@@ -712,7 +722,6 @@ void CTSPlayer::Hit(const _int & _Damage)
 {
 	m_tInfo._Hp -= _Damage;
 	m_tInfo.CurrAnim = TS_STURN_LOOP;
-	cout << m_tInfo.CurrAnim << endl;
 	//if (m_tInfo.PrevAnim == TS_STURN_LOOP && true == m_pModelCom->Get_AnimFinished())
 	//{
 	//	cout <<"상태 : " << m_tInfo.CurrAnim << endl;
@@ -1074,25 +1083,23 @@ void CTSPlayer::Dash(_double TimeDelta)
 {
 	//if (true == m_bDeah)
 	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
-	_float3 fPos;
-	if(true == m_bDeah && m_tInfo.PrevAnim == TS_DASH && true != m_pModelCom->Get_AnimFinished())
+
+	if(true == m_bDeah && m_tInfo.PrevAnim == TS_DASH)
 	{
-		if(m_pModelCom->Get_AnimTimeAcc() >= 4.0)
+		if(m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) - 21.0)
 		{
-			vPosition += vLook;
+			m_pTransformCom->Go_Straight(TimeDelta * 2.0);
 
-			XMStoreFloat3(&fPos, vPosition);
-
-			fPos.x += m_fPower * TimeDelta;
-			fPos.z += m_fPower * TimeDelta;
-			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPos));
-
-			if (m_pModelCom->Get_AnimTimeAcc() >= 6.0)
+			if (m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2))
 			{
-				m_bDeah = false;
-				m_tInfo.CurrAnim = TS_WAIT;
 				vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+				if (m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 3.0)
+				{
+					m_bDeah = false;
+					m_tInfo.CurrAnim = TS_COMBAT_WAIT;
+
+				}
 
 			}
 		}
@@ -1107,15 +1114,35 @@ void CTSPlayer::DashAttack(_double TimeDelta)
 
 void CTSPlayer::CombatWait()
 {
+	if (m_tInfo.PrevAnim == TS_BASIC_COMBO01 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 19.0)
+	{
+		m_AttackCheck = false;
+		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
+	}
+
+	if (m_tInfo.PrevAnim == TS_BASIC_COMBO02 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 22.0)
+	{
+		m_AttackCheck = false;
+		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
+	}
+
+	if (m_tInfo.PrevAnim == TS_BASIC_COMBO03 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 30.0)
+	{
+		m_AttackCheck = false;
+		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
+	}
+
 	if (false == m_AttackCheck && m_tInfo.PrevAnim == TS_SPECIALCOMBO_CRASH && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 10.0) // CRASH가 두 번 들어 갔다가 끊기는 느낌 
 	{
 		m_DownAttack = false;
+		m_AttackCheck = false;
 		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
 	
 	}
 
 	if (false == m_AttackCheck && m_tInfo.PrevAnim == TS_BASIC_COMBO02_END &&m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 10.0) // CRASH가 두 번 들어 갔다가 끊기는 느낌 
 	{
+		m_AttackCheck = false;
 		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
 
 	}
@@ -1141,6 +1168,7 @@ void CTSPlayer::CombatWait()
 	{
 		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
 		m_tInfo.m_ESkill = 0.f;
+		
 
 	}
 
@@ -1156,45 +1184,53 @@ void CTSPlayer::CombatWait()
 
 void CTSPlayer::Evasion(_double TimeDelta)
 {
-	//오 시발 잠시 유기 duration에 비해 tick이 너무 빠르고 타이밍 잡기 개 빡셈;
 	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 
-	_float3 fPos;
-
-	if (m_Evasion && m_tInfo.PrevAnim == TS_FRONT_EVASION && true != m_pModelCom->Get_AnimFinished())
+	if (m_Evasion && m_tInfo.PrevAnim == TS_FRONT_EVASION)
 	{
-		if (m_pModelCom->Get_AnimTimeAcc() >= 1.0)
+		if (m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) - 3.0 ) // 이동은 5 ~ 6초 사이에만 하고 애니메이션은 계속 재생? 
 		{
-			vPosition += vLook;
+			// ? 이거 왜 됨?
+			m_pTransformCom->Go_Straight(TimeDelta * 0.9);
 
-			XMStoreFloat3(&fPos, vPosition);
-
-			fPos.x += 0.001f * TimeDelta;
-			fPos.z += 0.001f * TimeDelta;
-
-			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPos));
-
-			if (m_pModelCom->Get_AnimTimeAcc() >= 3.0)
+			if (m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) - 2.8)
 			{
+				vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+				//m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+
+			}
+
+			if (m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 5.0)
+			{
+
 				m_Evasion = false;
 				m_tInfo.CurrAnim = TS_COMBAT_WAIT;
-				vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 			}
 		}
 	}
-	//else if (m_Evasion && m_Dir == BACK)
-	//{
-	//	vPosition += vLook;
-	//
-	//	XMStoreFloat3(&fPos, vPosition);
-	//
-	//	fPos.x -= 0.005 * TimeDelta;
-	//	fPos.z -= 0.005 * TimeDelta;
-	//
-	//	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPos));
-	//
-	//}
+	else if (m_BackEvasion && m_tInfo.PrevAnim == TS_BACK_EVASION)
+	{
+		if (m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) - 3.0) // 이동은 5 ~ 6초 사이에만 하고 애니메이션은 계속 재생? 
+		{
+			// ? 이거 왜 됨?
+			m_pTransformCom->Go_Back(TimeDelta * 0.9);
+
+			if (m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) - 2.8)
+			{
+				vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+				//m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+
+			}
+
+			if (m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 5.0)
+			{
+
+				m_BackEvasion = false;
+				m_tInfo.CurrAnim = TS_COMBAT_WAIT;
+			}
+		}
+
+	}
 }
 
 void CTSPlayer::E_Skill(_double TimeDelta)

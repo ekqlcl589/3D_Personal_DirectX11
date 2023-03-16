@@ -73,10 +73,10 @@ void CAncient_StonGolem::Tick(_double TimeDelta)
 		__super::Tick(TimeDelta);
 
 		Set_State(TimeDelta);
+
 		Attack_Go(TimeDelta);
+
 		Set_AnimationState(m_CurrAnim);
-
-
 
 		for (_uint i = 0; i < WEAPON_END; i++)
 		{
@@ -371,22 +371,15 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 {
 	if (m_eType._Hp <= 1.f)
 	{
+		m_eType._Hp = 1.f;
 		m_CurrAnim = S_SKILL10_1; // 원래는 스킬 모션인데 죽는게 따로 없어서 이걸로 대체 
 
-		if (m_CurrAnim == S_SKILL10_1 && true == m_pModelCom->Get_AnimFinished())
+		if (m_PrevAnim == S_SKILL10_1 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 49.0)
 		{
 			m_eType._Hp = 0.f;
 			m_bDead = true;
+			//OnDead();
 			return OBJ_DEAD;
-		}
-		if (m_PrevAnim == S_SKILL01 && true == m_pModelCom->Get_AnimFinished() && m_pModelCom->Get_LerpAnimFinished())
-		{
-			m_CurrAnim = S_SKILL02;
-		}
-
-		else if (m_PrevAnim == S_SKILL02 && true == m_pModelCom->Get_AnimFinished())
-		{
-			OnDead();
 		}
 	}
 
@@ -502,7 +495,7 @@ void CAncient_StonGolem::Run(_double TimeDelta)
 		{
 			m_bRun = false;
 			m_CurrAnim = S_WAIT; 
-			m_bCheck = false;
+			//m_bCheck = false;
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition); // 자기 위치에 고정 
 
 		}
@@ -631,6 +624,7 @@ void CAncient_StonGolem::RT_Down() // 플레이어 쪽에서 불러준다? 지랄노.
 	if (m_PrevAnim == RTDOWN_F && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 29.0)
 	{
 		m_CurrAnim = DOWN_F;
+		m_bAttack = false;
 	}
 	
 

@@ -55,12 +55,6 @@ void CMonster::Tick(_double TimeDelta)
 
 	ChaseToPlayer(TimeDelta);
 
-	m_dLerpTime += TimeDelta*1.1f;
-	if (m_dLerpTime >= 1)
-	{
-		m_dLerpTime = 1.0;
-	}
-
 }
 
 void CMonster::LateTick(_double TimeDelta)

@@ -6,7 +6,6 @@
 #include "Cube.h"
 #include "Monster.h"
 #include "TestTile.h"
-#include "Player_Body.h"
 
 CGamePlay::CGamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	:CLevel(pDevice, pContext)
@@ -50,7 +49,6 @@ void CGamePlay::Tick(_double TimeDelta)
 	lstrcpy(szWindowText, TEXT("스테이지"));
 	SetWindowText(g_hWnd, szWindowText);
 #endif
-
 }
 
 HRESULT CGamePlay::Ready_Layer_BackGround(const _tchar * pLayerTag)

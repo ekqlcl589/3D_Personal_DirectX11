@@ -91,15 +91,16 @@ void CTargetCamera::Target_Renewal(_double TimeDelta)
 
 	m_Transform->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fTarget));
 
-	_long Mouse = 0;
+	_long MouseX = -1;
+	_long MouseY = -1;
 
 	_vector vDir = XMVector3Normalize(m_Transform->Get_State(CTransform::STATE_LOOK));
 
-//	if (Mouse = m_pInstance->Get_DIMouseMove(DIMM_X))
-//	{
-//		//pPlayerTransform->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * Mouse * 0.1f);
-//		m_Transform->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * Mouse * 0.05f);
-//	}
+	//if (MouseX = m_pInstance->Get_DIMouseMove(DIMM_X))
+	//{
+	//	//pPlayerTransform->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * Mouse * 0.1f);
+	//	m_Transform->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * MouseX * 0.05f);
+	//}
 
 	RELEASE_INSTANCE(CGameInstance);
 }
@@ -111,6 +112,117 @@ void CTargetCamera::Key_Input(_double TimeDelta)
 
 	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_M))
 		m_fDis -= 1.f * TimeDelta;
+}
+
+void CTargetCamera::View_TarGet(_double TimeDelta)
+{
+	if (!m_bTalkState)
+	{
+		if (m_fMaxAtX > 0)
+		{
+			if (m_fMaxAtX > m_CameraDesc.vAt.x)
+			{
+				XMLoadFloat3(&m_CameraDesc.vAt) += XMLoadFloat3(&_float3{ -m_CameraDesc.vEye.x, 0, 0 });
+				XMLoadFloat3(&m_CameraDesc.vEye) += XMLoadFloat3(&_float3{ -m_CameraDesc.vAt.x, 0, 0 });
+
+				m_CameraDesc.vEye.x += 0.1f;
+				m_CameraDesc.vAt.x += 0.1f;
+			}
+			else if (m_fMaxEyeX < m_CameraDesc.vEye.x)
+			{
+				m_CameraDesc.vAt.x = 0;
+				m_CameraDesc.vEye.x = 0;
+				m_fMaxEyeX = 0;
+				m_fMaxAtX = 0;
+			}
+			else
+			{
+				m_fDis = m_fDistanceValue;
+			}
+		}
+		else
+		{
+			if (m_fMaxAtX < m_CameraDesc.vAt.x)
+			{
+				XMLoadFloat3(&m_CameraDesc.vAt) -= XMLoadFloat3(&_float3{ -m_CameraDesc.vEye.x, 0, 0 });
+				XMLoadFloat3(&m_CameraDesc.vEye) -= XMLoadFloat3(&_float3{ -m_CameraDesc.vAt.x, 0, 0 });
+
+				m_CameraDesc.vEye.x -= 0.1f;
+				m_CameraDesc.vAt.x -= 0.1f;
+			}
+			else if (m_fMaxEyeX < m_CameraDesc.vEye.x)
+			{
+				m_CameraDesc.vAt.x = 0;
+				m_CameraDesc.vEye.x = 0;
+				m_fMaxEyeX = 0;
+				m_fMaxAtX = 0;
+			}
+			else
+			{
+				m_fDis = m_fDistanceValue;
+			}
+		}
+	}
+	else if (m_bTalkState)
+	{
+		m_CameraDesc.vAt = m_vNpcPos;
+		//m_vEye.x = m_vNpcPos.x;
+		//m_vEye.y = m_vNpcPos.y;
+		m_bSome = true;
+		if (!m_AdjustX)
+		{
+			if (m_CameraDesc.vEye.x < m_vNpcPos.x)
+			{
+				m_CameraDesc.vEye.x += TimeDelta * 7.f;
+
+				if (m_CameraDesc.vEye.x > m_vNpcPos.x)
+				{
+					m_CameraDesc.vEye.x = m_vNpcPos.x;
+					m_AdjustX = true;
+				}
+			}
+			else if (m_CameraDesc.vEye.x > m_vNpcPos.x)
+			{
+				m_CameraDesc.vEye.x -= TimeDelta * 7.f;
+
+				if (m_CameraDesc.vEye.x < m_vNpcPos.x)
+				{
+					m_CameraDesc.vEye.x = m_vNpcPos.x;
+					m_AdjustX = true;
+				}
+			}
+		}
+
+		if (!m_AdjustY)
+		{
+			if (m_CameraDesc.vEye.y < m_vNpcPos.y)
+			{
+				m_CameraDesc.vEye.y += TimeDelta * 7.f;
+
+				if (m_CameraDesc.vEye.y > m_vNpcPos.y)
+				{
+					m_CameraDesc.vEye.y = m_vNpcPos.y;
+					m_AdjustY = true;
+				}
+			}
+			else if (m_CameraDesc.vEye.y > m_vNpcPos.y)
+			{
+				m_CameraDesc.vEye.y -= TimeDelta * 7.f;
+
+				if (m_CameraDesc.vEye.y < m_vNpcPos.y)
+				{
+					m_CameraDesc.vEye.y = m_vNpcPos.y;
+					m_AdjustY = true;
+				}
+			}
+		}
+
+		if (m_CameraDesc.vEye.z < m_vNpcPos.z - 3.3f)
+		{
+			m_CameraDesc.vEye.z += TimeDelta * 7.f;
+		}
+
+	}
 }
 
 void CTargetCamera::Set_CameraPos(_float x, _float z)
