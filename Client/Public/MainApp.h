@@ -34,6 +34,13 @@ private:
 	ID3D11DeviceContext* m_pDeviceContext = { nullptr };
 	CRenderer* m_pRenderer = { nullptr };
 
+#ifdef _DEBUG
+private:
+	_tchar						m_szFPS[MAX_PATH] = TEXT("");
+	_uint						m_iNumRender = { 0 };
+	_double						m_TimeAcc = { 0.0 };
+#endif
+
 public:
 	static CMainApp* Create();
 

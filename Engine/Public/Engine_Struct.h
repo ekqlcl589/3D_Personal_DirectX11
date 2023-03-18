@@ -231,6 +231,39 @@ namespace Engine
 		S_ANIMEND
 	};
 
+	enum CREATURESTATE
+	{
+		C_DIE,
+		C_RTDOWN_LOOP,
+		C_RTDOWN_START,
+		C_RTSTAND_END,
+		C_RTSTAND_LOOP,
+		C_RTSTAND_START,
+		C_SKILL01_1,
+		C_SKILL01_2,
+		C_SKILL02,
+		C_SKILL03_L,
+		C_SKILL03_R,
+		C_SKILL04,
+		C_SKILL05,
+		C_SKILL07,
+		C_SP_SKILL01_1,
+		C_SP_SKILL01_2_1,
+		C_SP_SKILL01_2_2,
+		C_SP_SKILL01_2_3,
+		C_SP_SKILL01_END,
+		C_SP_SKILL01_WAIT,
+		C_SP_SKILL01_WALK,
+		C_SP_SKILL02,
+		C_SP_SKILL03,
+		C_SP_SKILL03_LOOP,
+		C_RTDOWN_ATTACK,
+		C_START,
+		C_WAIT,
+		C_WALK,
+
+		C_ANIM_END
+	};
 	enum COLLISIONSTATE
 	{
 		OBJ_PLAYER,
@@ -313,6 +346,17 @@ namespace Engine
 		STONGOLEMANIMSTATE prevAnimState;
 
 	}MONSTERINFO;
+
+	typedef struct tagGianticCreatureInfo
+	{
+		_float _MaxHp;
+		_float _Hp;
+		_uint _ATK;
+
+		CREATURESTATE CurrAnim;
+		CREATURESTATE PrevAnim;
+
+	}CREATUREINFO;
 }
 
 

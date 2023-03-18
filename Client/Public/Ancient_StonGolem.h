@@ -51,6 +51,7 @@ public:
 
 public:
 	STONGOLEMANIMSTATE Get_CurrAnim() { return m_CurrAnim; }
+
 public:
 	HRESULT Add_Effect();
 	void Set_Time();

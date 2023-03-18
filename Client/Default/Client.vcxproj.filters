@@ -106,9 +106,6 @@
     <Filter Include="02.GameObject\02.Camera\Target">
       <UniqueIdentifier>{17e46b3f-0e62-4794-8e34-87605e41d199}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\06. Monster\Boss_Ancient_StonGolem">
-      <UniqueIdentifier>{4cc3b2b5-099f-4446-a959-5bfb64114b67}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\08. StaticMesh">
       <UniqueIdentifier>{c5ff6b16-4f93-47f5-aa05-3069c9a268cb}</UniqueIdentifier>
     </Filter>
@@ -120,9 +117,6 @@
     </Filter>
     <Filter Include="02.GameObject\00. BackGround\LoadingImg">
       <UniqueIdentifier>{3ad8090d-34ed-422b-b157-f9727f750639}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\06. Monster\MonsterWeapon">
-      <UniqueIdentifier>{36aada05-29d6-4923-b255-0696013e0813}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObject\05. Player\Weapon\TS">
       <UniqueIdentifier>{9b7d2fe8-a816-4a95-ba1e-62035d408407}</UniqueIdentifier>
@@ -144,6 +138,15 @@
     </Filter>
     <Filter Include="02.GameObject\04. UI\Player\Skill_Icon\Rage">
       <UniqueIdentifier>{427555d0-9f64-4345-b253-8019d547618a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06. Monster\01_Ancient_StonGolem">
+      <UniqueIdentifier>{4cc3b2b5-099f-4446-a959-5bfb64114b67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06. Monster\02_GianticCreature">
+      <UniqueIdentifier>{121214a3-19f6-49c1-a0a5-51ec8018e7fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06. Monster\99.MonsterWeapon">
+      <UniqueIdentifier>{36aada05-29d6-4923-b255-0696013e0813}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -229,7 +232,7 @@
       <Filter>02.GameObject\02.Camera\Target</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Ancient_StonGolem.h">
-      <Filter>02.GameObject\06. Monster\Boss_Ancient_StonGolem</Filter>
+      <Filter>02.GameObject\06. Monster\01_Ancient_StonGolem</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\SwordShield.h">
       <Filter>02.GameObject\05. Player\Weapon\SwordShield</Filter>
@@ -247,7 +250,7 @@
       <Filter>02.GameObject\00. BackGround\LoadingImg</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\MonsterWeapon.h">
-      <Filter>02.GameObject\06. Monster\MonsterWeapon</Filter>
+      <Filter>02.GameObject\06. Monster\99.MonsterWeapon</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\TSPlayer.h">
       <Filter>02.GameObject\05. Player</Filter>
@@ -270,6 +273,7 @@
     <ClInclude Include="..\Public\SkillIconRage.h">
       <Filter>02.GameObject\04. UI\Player\Skill_Icon\Rage</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\GianticCreature.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -342,7 +346,7 @@
       <Filter>02.GameObject\02.Camera\Target</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Ancient_StonGolem.cpp">
-      <Filter>02.GameObject\06. Monster\Boss_Ancient_StonGolem</Filter>
+      <Filter>02.GameObject\06. Monster\01_Ancient_StonGolem</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\SwordShield.cpp">
       <Filter>02.GameObject\05. Player\Weapon\SwordShield</Filter>
@@ -360,7 +364,7 @@
       <Filter>02.GameObject\00. BackGround\LoadingImg</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\MonsterWeapon.cpp">
-      <Filter>02.GameObject\06. Monster\MonsterWeapon</Filter>
+      <Filter>02.GameObject\06. Monster\99.MonsterWeapon</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\TSPlayer.cpp">
       <Filter>02.GameObject\05. Player</Filter>
@@ -383,6 +387,7 @@
     <ClCompile Include="..\Private\SkillIconRage.cpp">
       <Filter>02.GameObject\04. UI\Player\Skill_Icon\Rage</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\GianticCreature.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

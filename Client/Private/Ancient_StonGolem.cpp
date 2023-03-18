@@ -374,7 +374,7 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 		m_eType._Hp = 1.f;
 		m_CurrAnim = S_SKILL10_1; // 원래는 스킬 모션인데 죽는게 따로 없어서 이걸로 대체 
 
-		if (m_PrevAnim == S_SKILL10_1 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 49.0)
+		if (m_PrevAnim == S_SKILL10_1 && true == m_pModelCom->Get_AnimFinished())// m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 45.0)
 		{
 			m_eType._Hp = 0.f;
 			m_bDead = true;

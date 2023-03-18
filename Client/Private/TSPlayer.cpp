@@ -1088,7 +1088,7 @@ void CTSPlayer::Dash(_double TimeDelta)
 	{
 		if(m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) - 21.0)
 		{
-			m_pTransformCom->Go_Straight(TimeDelta * 2.0);
+			m_pTransformCom->Go_Straight(TimeDelta * 1.7);
 
 			if (m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2))
 			{
@@ -1191,7 +1191,7 @@ void CTSPlayer::Evasion(_double TimeDelta)
 		if (m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) - 3.0 ) // 이동은 5 ~ 6초 사이에만 하고 애니메이션은 계속 재생? 
 		{
 			// ? 이거 왜 됨?
-			m_pTransformCom->Go_Straight(TimeDelta * 0.9);
+			m_pTransformCom->Go_Straight(TimeDelta * 1.2);
 
 			if (m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) - 2.8)
 			{
@@ -1213,7 +1213,7 @@ void CTSPlayer::Evasion(_double TimeDelta)
 		if (m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) - 3.0) // 이동은 5 ~ 6초 사이에만 하고 애니메이션은 계속 재생? 
 		{
 			// ? 이거 왜 됨?
-			m_pTransformCom->Go_Back(TimeDelta * 0.9);
+			m_pTransformCom->Go_Back(TimeDelta * 1.2);
 
 			if (m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) - 2.8)
 			{

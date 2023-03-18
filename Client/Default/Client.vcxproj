@@ -170,6 +170,7 @@
     <ClInclude Include="..\Public\DynamicCamera.h" />
     <ClInclude Include="..\Public\Effect.h" />
     <ClInclude Include="..\Public\GamePlay.h" />
+    <ClInclude Include="..\Public\GianticCreature.h" />
     <ClInclude Include="..\Public\Hair.h" />
     <ClInclude Include="..\Public\Loader.h" />
     <ClInclude Include="..\Public\Loading.h" />
@@ -211,6 +212,7 @@
     <ClCompile Include="..\Private\DynamicCamera.cpp" />
     <ClCompile Include="..\Private\Effect.cpp" />
     <ClCompile Include="..\Private\GamePlay.cpp" />
+    <ClCompile Include="..\Private\GianticCreature.cpp" />
     <ClCompile Include="..\Private\Hair.cpp" />
     <ClCompile Include="..\Private\Loader.cpp" />
     <ClCompile Include="..\Private\Loading.cpp" />
