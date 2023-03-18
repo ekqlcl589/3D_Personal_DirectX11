@@ -6,6 +6,7 @@
 #include "Cube.h"
 #include "Monster.h"
 #include "TestTile.h"
+#include "MonsterHPBar.h"
 
 CGamePlay::CGamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	:CLevel(pDevice, pContext)
@@ -153,8 +154,10 @@ HRESULT CGamePlay::Ready_UI(const _tchar * pLayerTag)
 	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Player_Skill_IconRage"), pLayerTag)))
 		return E_FAIL;
 	
-	//if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_HPBar"), pLayerTag)))
-	//	return E_FAIL;
+	CMonsterHPBar::OWNER Owner;
+	Owner = CMonsterHPBar::OWNER_CREATURE;
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_HPBar"), pLayerTag), &Owner))
+		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
 

@@ -11,6 +11,9 @@ BEGIN(Client)
 
 class CMonsterHPBar final : public CUI
 {
+public:
+	enum OWNER {OWNER_GOLEM, OWNER_CREATURE, OWNER_END};
+
 private:
 	CMonsterHPBar(ID3D11Device * pDevice, ID3D11DeviceContext * pContext);
 	CMonsterHPBar(const CMonsterHPBar& rhs);
@@ -29,6 +32,8 @@ public:
 
 private:
 	CShader* m_pShaderCom = { nullptr };
+
+	OWNER m_eOwner;
 
 	_float MaxHP = 0.f;
 	_float HP = 0.f;

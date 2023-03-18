@@ -40,6 +40,8 @@ public:
 
 public:
 	CREATUREINFO Get_Info() { return m_tInfo; }
+	void Set_Info(_uint iDamage) { m_tInfo._Hp -= iDamage; }
+
 
 	_bool Get_Attack() { return m_bAttack; }
 

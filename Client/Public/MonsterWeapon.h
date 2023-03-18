@@ -22,12 +22,16 @@ public:
 
 public:
 	enum WEAPONTYPE { WEAPON_MONSTER_L, WEAPON_MONSTER_R, WEAPON_MONSTER_BODY, WEAPON_END };
+	enum OWNER {OWNER_GOLEM, OWNER_CREATURE, OWNER_END};
+
 	typedef struct tagWeaponDesc
 	{
 		CBone* pBonePtr;
 		_float4x4 matParentLocal;
 		CTransform* pParentTransform;
 		WEAPONTYPE WeaponType;
+		OWNER Owner;
+
 	}WEAPONDESC;
 
 private:
@@ -62,6 +66,9 @@ private:
 
 	_bool m_bTakeHit = false;
 
+private:
+	_bool Dead = false;
+	_float Damage = 0.f;
 public:
 	WEAPONDESC m_Weapon;
 	_float4x4 m_WorldMatrix;

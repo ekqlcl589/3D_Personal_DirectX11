@@ -273,7 +273,9 @@
     <ClInclude Include="..\Public\SkillIconRage.h">
       <Filter>02.GameObject\04. UI\Player\Skill_Icon\Rage</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\GianticCreature.h" />
+    <ClInclude Include="..\Public\GianticCreature.h">
+      <Filter>02.GameObject\06. Monster\02_GianticCreature</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -387,7 +389,9 @@
     <ClCompile Include="..\Private\SkillIconRage.cpp">
       <Filter>02.GameObject\04. UI\Player\Skill_Icon\Rage</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\GianticCreature.cpp" />
+    <ClCompile Include="..\Private\GianticCreature.cpp">
+      <Filter>02.GameObject\06. Monster\02_GianticCreature</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

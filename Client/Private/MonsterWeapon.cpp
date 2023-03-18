@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "TSPlayer.h"
 #include "Ancient_StonGolem.h"
+#include "GianticCreature.h"
 
 CMonsterWeapon::CMonsterWeapon(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -63,13 +64,21 @@ void CMonsterWeapon::Tick(_double TimeDelta)
 		m_pColliderCom->Update(XMLoadFloat4x4(&m_WorldMatrix));
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
 	CGameObject* pOwner = nullptr;
 	pOwner = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
-	_bool Dead = static_cast<CAncient_StonGolem*>(pOwner)->Get_Dead();
+
+	if (m_Weapon.Owner == OWNER_GOLEM)
+		Dead = static_cast<CAncient_StonGolem*>(pOwner)->Get_Dead();
+
+	else if (m_Weapon.Owner == OWNER_CREATURE)
+		Dead = static_cast<CGianticCreature*>(pOwner)->Get_Dead();
+
 	RELEASE_INSTANCE(CGameInstance);
 
 	if (Dead)
 		m_bDead = true;
+
 	return;
 }
 
@@ -147,17 +156,28 @@ void CMonsterWeapon::OnCollision(CGameObject * pObj)
 			pOwner = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
 			pTarget = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
 
-			_float Hp = static_cast<CAncient_StonGolem*>(pOwner)->Get_Info()._Hp;
-
 			_bool bDownAttack = static_cast<CTSPlayer*>(pTarget)->Get_DownAttack();
 
 			if (true == bDownAttack)
-				Hp = 30.f;
+				Damage = 30.f;
 			else
-				Hp = 15.f;
+				Damage = 15.f;
 
-			static_cast<CAncient_StonGolem*>(pOwner)->Set_Info(Hp);
-			cout << "Ä®ÇÑÅ× ¸ÂÀ½" << static_cast<CAncient_StonGolem*>(pOwner)->Get_Info()._Hp << endl;
+			if (m_Weapon.Owner == OWNER_GOLEM)
+			{
+				_uint Hp = static_cast<CAncient_StonGolem*>(pOwner)->Get_Info()._Hp;
+				static_cast<CAncient_StonGolem*>(pOwner)->Set_Info(Damage);
+				cout << "Ä®ÇÑÅ× ¸ÂÀ½" << Hp << endl;
+
+			}
+			else if (m_Weapon.Owner == OWNER_CREATURE)
+			{
+				_uint Hp = static_cast<CGianticCreature*>(pOwner)->Get_Info()._Hp;
+				static_cast<CGianticCreature*>(pOwner)->Set_Info(Damage);
+				cout << "Ä®ÇÑÅ× ¸ÂÀ½" << Hp << endl;
+			}
+
+
 			RELEASE_INSTANCE(CGameInstance)
 		}
 		break;

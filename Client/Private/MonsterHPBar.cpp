@@ -6,6 +6,7 @@
 #include "Texture.h"
 #include "Layer.h"
 #include "Ancient_StonGolem.h"
+#include "GianticCreature.h"
 
 CMonsterHPBar::CMonsterHPBar(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CUI(pDevice, pContext)
@@ -36,8 +37,10 @@ HRESULT CMonsterHPBar::Initialize(void * pArg)
 	if (FAILED(SetUp_ShaderResource()))
 		return E_FAIL;
 
-	//m_pVIBuffer_Rect->Free();
-	//m_pVIBuffer_Rect->Initialize_Prototype();
+	if (nullptr != pArg)
+		memcpy(&m_eOwner, pArg, sizeof OWNER);
+
+	m_eOwner = OWNER_CREATURE;
 
 	m_fSizeX = g_iWinSizeX;
 	m_fSizeY = g_iWinSizeY;
@@ -71,13 +74,21 @@ void CMonsterHPBar::LateTick(_double TimeDelta)
 	_float TexHpY = 0.f;
 	
 	CGameInstance* p = GET_INSTANCE(CGameInstance);
-	CGameObject* pPlayer = nullptr;
+	CGameObject* pMonster = nullptr;
 	
-	pPlayer = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
+	pMonster = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
 	
-	MaxHP = static_cast<CAncient_StonGolem*>(pPlayer)->Get_Info()._MaxHp;
-	HP = static_cast<CAncient_StonGolem*>(pPlayer)->Get_Info()._Hp;
-	
+	if (m_eOwner == OWNER_GOLEM)
+	{
+		MaxHP = static_cast<CAncient_StonGolem*>(pMonster)->Get_Info()._MaxHp;
+		HP = static_cast<CAncient_StonGolem*>(pMonster)->Get_Info()._Hp;
+	}
+	else if (m_eOwner == OWNER_CREATURE)
+	{
+		MaxHP = static_cast<CGianticCreature*>(pMonster)->Get_Info()._MaxHp;
+		HP = static_cast<CGianticCreature*>(pMonster)->Get_Info()._Hp;
+	}
+
 	if (HP > MaxHP)
 		HP = MaxHP;
 	
@@ -86,8 +97,6 @@ void CMonsterHPBar::LateTick(_double TimeDelta)
 	
 	TexHpY = 0.5f - abs(HP / MaxHP);
 	VertexHpY = (-TexHpY);
-
-	//m_pVIBuffer_Rect->Set_Buffer(TexHpY, VertexHpY);
 
 	RELEASE_INSTANCE(CGameInstance);
 }

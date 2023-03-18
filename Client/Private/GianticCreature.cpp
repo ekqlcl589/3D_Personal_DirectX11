@@ -33,6 +33,7 @@ HRESULT CGianticCreature::Initialize(void * pArg)
 		return	E_FAIL;
 
 	_float3 fPosition = { 5.f, 0.f, 10.f }; // 임시 위치값
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPosition));
 
 	m_tInfo._MaxHp = 1000.f;
 	m_tInfo._Hp = 1000.f;
@@ -143,6 +144,35 @@ void CGianticCreature::OnCollision(CGameObject * pObj)
 
 HRESULT CGianticCreature::Add_Coll()
 {
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+ 	CBone* pBoneL = m_pModelCom->Get_BonePtr("L_Finger2");
+	CBone* pBoneR = m_pModelCom->Get_BonePtr("R_Finger2");
+	CBone* pBoneSpine = m_pModelCom->Get_BonePtr("Spine");
+
+	if (nullptr == pBoneL || nullptr == pBoneR || nullptr == pBoneSpine)
+		return E_FAIL;
+
+	CMonsterWeapon::WEAPONDESC WeaponDesc = { pBoneL, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CMonsterWeapon::WEAPON_MONSTER_L, CMonsterWeapon::OWNER_CREATURE };
+	CMonsterWeapon::WEAPONDESC WeaponDesc1 = { pBoneR, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CMonsterWeapon::WEAPON_MONSTER_R, CMonsterWeapon::OWNER_CREATURE };
+	CMonsterWeapon::WEAPONDESC WeaponDesc2 = { pBoneSpine, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CMonsterWeapon::WEAPON_MONSTER_BODY, CMonsterWeapon::OWNER_CREATURE };
+	Safe_AddRef(pBoneL);
+	Safe_AddRef(pBoneR);
+	Safe_AddRef(pBoneSpine);
+
+	CGameObject* pWeapon = pInstance->Clone_GameObject_Add_Layer(TEXT("Prototype_GameObject_Monster_Weapon"), &WeaponDesc);
+	CGameObject* pWeaponR = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Monster_Weapon"), &WeaponDesc1);
+	CGameObject* pWeaponSpine = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Monster_Weapon"), &WeaponDesc2);
+
+	if (nullptr == pWeapon || nullptr == pWeaponR || nullptr == pWeaponSpine)
+		return E_FAIL;
+
+	m_vecWeapon[WEAPON_MONSTERL].push_back(pWeapon);
+	m_vecWeapon[WEAPON_MONSTERR].push_back(pWeaponR);
+	m_vecWeapon[WEAPON_MONSTERBODY].push_back(pWeaponSpine);
+
+	RELEASE_INSTANCE(CGameInstance);
+
 	return S_OK;
 }
 
@@ -157,60 +187,88 @@ void CGianticCreature::Animation(CREATURESTATE eType)
 		switch (eType)
 		{
 		case Engine::C_DIE:
+			m_iAnimIndex = 0;
 			break;
 		case Engine::C_RTDOWN_LOOP:
+			m_iAnimIndex = 1;
 			break;
 		case Engine::C_RTDOWN_START:
+			m_iAnimIndex = 2;
 			break;
 		case Engine::C_RTSTAND_END:
+			m_iAnimIndex = 3;
 			break;
 		case Engine::C_RTSTAND_LOOP:
+			m_iAnimIndex = 4;
 			break;
 		case Engine::C_RTSTAND_START:
+			m_iAnimIndex = 5;
 			break;
 		case Engine::C_SKILL01_1:
+			m_iAnimIndex = 6;
 			break;
 		case Engine::C_SKILL01_2:
+			m_iAnimIndex = 7;
 			break;
 		case Engine::C_SKILL02:
+			m_iAnimIndex = 8;
 			break;
 		case Engine::C_SKILL03_L:
+			m_iAnimIndex = 9;
 			break;
 		case Engine::C_SKILL03_R:
+			m_iAnimIndex = 10;
 			break;
 		case Engine::C_SKILL04:
+			m_iAnimIndex = 11;
 			break;
 		case Engine::C_SKILL05:
+			m_iAnimIndex = 12;
 			break;
 		case Engine::C_SKILL07:
+			m_iAnimIndex = 13;
 			break;
 		case Engine::C_SP_SKILL01_1:
+			m_iAnimIndex = 14;
 			break;
 		case Engine::C_SP_SKILL01_2_1:
+			m_iAnimIndex = 15;
 			break;
 		case Engine::C_SP_SKILL01_2_2:
+			m_iAnimIndex = 16;
 			break;
 		case Engine::C_SP_SKILL01_2_3:
+			m_iAnimIndex = 17;
 			break;
 		case Engine::C_SP_SKILL01_END:
+			m_iAnimIndex = 18;
 			break;
 		case Engine::C_SP_SKILL01_WAIT:
+			m_iAnimIndex = 19;
 			break;
 		case Engine::C_SP_SKILL01_WALK:
+			m_iAnimIndex = 20;
 			break;
 		case Engine::C_SP_SKILL02:
+			m_iAnimIndex = 21;
 			break;
 		case Engine::C_SP_SKILL03:
+			m_iAnimIndex = 22;
 			break;
 		case Engine::C_SP_SKILL03_LOOP:
+			m_iAnimIndex = 23;
 			break;
 		case Engine::C_RTDOWN_ATTACK:
+			m_iAnimIndex = 24;
 			break;
 		case Engine::C_START:
+			m_iAnimIndex = 25;
 			break;
 		case Engine::C_WAIT:
+			m_iAnimIndex = 26;
 			break;
 		case Engine::C_WALK:
+			m_iAnimIndex = 27;
 			break;
 		case Engine::C_ANIM_END:
 			break;
