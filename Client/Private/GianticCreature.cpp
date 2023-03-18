@@ -38,7 +38,9 @@ HRESULT CGianticCreature::Initialize(void * pArg)
 	m_tInfo._MaxHp = 1000.f;
 	m_tInfo._Hp = 1000.f;
 
-	m_tInfo.CurrAnim = C_WAIT; // 일단 정상 생성되는 지 확인
+	m_ePhase = PHASE_1;
+
+	m_tInfo.CurrAnim = C_WAIT;
 	m_pModelCom->SetUp_Animation(m_tInfo.CurrAnim);
 
 	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(195.0f));
@@ -50,11 +52,14 @@ void CGianticCreature::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 
+	if (m_ePhase == PHASE_1 && m_tInfo._Hp <= 300.f)
+		m_ePhase = PHASE_2;
+
 	Animation_State(TimeDelta);
 
-	Animation(m_tInfo.CurrAnim);
+	//Attack_Go(TimeDelta); // 애니메이션이 진행 되면서 앞으로 가야 하니까 중간이 맞다?
 
-	//Attack_Go(TimeDelta);
+	Animation(m_tInfo.CurrAnim);
 
 	for (_uint i = 0; i < WEAPON_END; i++)
 	{
@@ -178,6 +183,21 @@ HRESULT CGianticCreature::Add_Coll()
 
 void CGianticCreature::Animation_State(_double TimeDelta)
 {
+	if (m_tInfo._Hp <= 1.f)
+	{
+		m_tInfo._Hp = 1.f;
+		m_tInfo.CurrAnim = C_DIE;
+
+		if (m_tInfo.PrevAnim == C_DIE && true == m_pModelCom->Get_AnimFinished())
+		{
+			m_tInfo._Hp = 0.f;
+			Set_Dead();
+		}
+	}
+
+	Run(TimeDelta);
+
+	Skill02(TimeDelta);
 }
 
 void CGianticCreature::Animation(CREATURESTATE eType)
@@ -290,6 +310,154 @@ void CGianticCreature::Combat_Wait(_double TimeDelta)
 
 void CGianticCreature::Attack_Go(_double TimeDelta)
 {
+	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+
+}
+
+void CGianticCreature::Run(_double TimeDelta)
+{
+	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	if (false == m_bAttack)
+	{
+		if (m_pTransformCom->Compute_Distance(m_vTargetPos) <= 30.f)
+		{
+			m_bWlak = true;
+			m_tInfo.CurrAnim = C_WALK;
+			m_pTransformCom->Chase_Tatget(m_vTargetPos, 5.f, TimeDelta);
+		}
+		if (m_pTransformCom->Compute_Distance(m_vTargetPos) <= 5.f)
+		{
+			m_bWlak = false;
+			m_tInfo.CurrAnim = C_WAIT;
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+		}
+	}
+}
+
+void CGianticCreature::Skill01(_double TimeDelta)
+{
+	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	if (m_tInfo.PrevAnim == C_WAIT && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 24.0)
+	{
+		vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		m_bAttack = true;
+		m_tInfo.CurrAnim = C_SKILL01_1;
+
+	}
+
+	if (m_tInfo.CurrAnim == C_SKILL01_1 && m_pModelCom->Get_AnimTimeAcc() >= 15.0)
+	{
+		m_pTransformCom->Go_Straight(0.3 * TimeDelta);
+		if (m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 14.0)
+		{
+			vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		}
+	}
+
+	if (m_tInfo.CurrAnim == C_SKILL01_1 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 33.0)
+	{
+		m_tInfo.CurrAnim = C_SKILL01_2;
+	}
+
+	if (m_tInfo.CurrAnim == C_SKILL01_2 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) - 31.5)
+	{
+		vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+		if (m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 8.5)
+		{
+			m_pTransformCom->Go_Back(0.2 * TimeDelta);
+
+			if (m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 25.5)
+			{
+				vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+			}
+		}
+	}
+
+	if (m_tInfo.CurrAnim == C_SKILL01_2 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 49.0)
+	{
+		vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		m_tInfo.CurrAnim = C_WAIT;
+		m_bAttack = false;
+	}
+}
+
+void CGianticCreature::Skill02(_double TimeDelta)
+{
+	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	if (m_tInfo.PrevAnim == C_WAIT && true == m_pModelCom->Get_AnimFinished())
+	{
+		m_tInfo.CurrAnim = C_SKILL02;
+		m_bAttack = true;
+	}
+
+	if (m_tInfo.CurrAnim == C_SKILL02 && m_pModelCom->Get_AnimTimeAcc() >= 10.0)
+	{
+		m_pTransformCom->Go_Straight( TimeDelta * 0.5);
+		
+		if (m_pModelCom->Get_AnimTimeAcc() >= 36.0)
+		{
+			vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		}
+
+		if (m_pModelCom->Get_AnimTimeAcc() >= 94.0)
+		{
+			m_pTransformCom->Go_Back(0.5 * TimeDelta);
+
+			if(m_pModelCom->Get_AnimTimeAcc() >= 114.0)
+				vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+		}
+	}
+	if (m_tInfo.PrevAnim == C_SKILL02 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 84.0)
+	{
+		m_tInfo.CurrAnim = C_WAIT;
+		m_bAttack = false;
+
+	}
+}
+
+void CGianticCreature::Skill04(_double TimeDelta)
+{
+}
+
+void CGianticCreature::Skill05(_double TimeDelta)
+{
+}
+
+void CGianticCreature::Skill07(_double TimeDelta)
+{
+	if (m_tInfo.PrevAnim == C_WAIT && true == m_pModelCom->Get_AnimFinished())
+	{
+		m_tInfo.CurrAnim = C_SP_SKILL01_1;
+	}
+
+	if (m_tInfo.PrevAnim == C_SP_SKILL01_1 && true == m_pModelCom->Get_AnimFinished())
+	{
+		m_tInfo.CurrAnim = C_SP_SKILL01_2_1;
+	}
+	if (m_tInfo.PrevAnim == C_SP_SKILL01_2_1 && true == m_pModelCom->Get_AnimFinished())
+	{
+		m_tInfo.CurrAnim = C_SP_SKILL01_2_2;
+	}
+	if (m_tInfo.PrevAnim == C_SP_SKILL01_2_2 && true == m_pModelCom->Get_AnimFinished())
+	{
+		m_tInfo.CurrAnim = C_SP_SKILL01_2_3;
+	}
+	if (m_tInfo.PrevAnim == C_SP_SKILL01_2_3 && true == m_pModelCom->Get_AnimFinished())
+	{
+		m_tInfo.CurrAnim = C_SP_SKILL01_END;
+	}
+	if (m_tInfo.PrevAnim == C_SP_SKILL01_END && true == m_pModelCom->Get_AnimFinished())
+	{
+		m_tInfo.CurrAnim = C_WAIT;
+	}
+
 }
 
 HRESULT CGianticCreature::Add_Components()

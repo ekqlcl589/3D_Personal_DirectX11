@@ -67,9 +67,6 @@ void CAncient_StonGolem::Tick(_double TimeDelta)
 {
 	if (false == m_bDead)
 	{
-		if (m_eType._Hp <= 0.f)
-			m_eType._Hp = 1.f;
-
 		__super::Tick(TimeDelta);
 
 		Set_State(TimeDelta);

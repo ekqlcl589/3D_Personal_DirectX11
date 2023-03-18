@@ -925,7 +925,7 @@ void CTSPlayer::Attack_Go(_double TimeDelta)
 		{
 			m_pTransformCom->Go_Straight(TimeDelta * 0.13);
 
-			if (m_pModelCom->Get_AnimTimeAcc() >= 23.0)
+			if (m_pModelCom->Get_AnimTimeAcc() >= 21.0)
 			{
 				if (!m_NoStraight)
 					vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
