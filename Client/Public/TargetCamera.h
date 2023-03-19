@@ -25,6 +25,9 @@ public:
 
 public:
 	void Target_Renewal(_double TimeDelta);
+
+	void Test(_double TimeDelta);
+
 	void Key_Input(_double TimeDelta);
 
 public:
@@ -40,10 +43,10 @@ private:
 	void Mouse_Fix();
 
 public:
-	void		Set_TalkState(bool _bTalkState) { m_bTalkState = _bTalkState; }
-	void		Set_NpcPos(_float3 _vNpcPos) { m_vNpcPos = _vNpcPos; }
-	void		Set_bSome(bool _bSome) { m_bSome = _bSome; }
-	void		Set_AdjustXY(bool _AdjustX, bool _AdjustY)
+	void Set_TalkState(bool _bTalkState) { m_bTalkState = _bTalkState; }
+	void Set_NpcPos(_float3 _vNpcPos) { m_vNpcPos = _vNpcPos; }
+	void Set_bSome(bool _bSome) { m_bSome = _bSome; }
+	void Set_AdjustXY(bool _AdjustX, bool _AdjustY)
 	{
 		m_AdjustX = _AdjustX;
 		m_AdjustY = _AdjustY;
@@ -55,8 +58,12 @@ private:
 	_bool m_bCheck = false;
 	_bool m_bFix = false;
 
-	_float3 m_fDistance = { 10.f, 10.f, 10.f };
-	_float m_fDis = 5.f;
+	_float3 m_fDistance = { 0.f, 0.f, 0.f };
+	_float m_fDis = 6.f;
+
+	_vector m_vLook = { 1.0f, 0.f, 0.f };
+
+	_float4x4 m_matWorld;
 
 private:
 	_float m_fDistanceValue = 5.f;

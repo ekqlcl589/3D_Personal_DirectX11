@@ -48,6 +48,7 @@ private:
 	void Skill01_2();
 
 	void Skill02(_double TimeDelta);
+	void Skill03(_double TimeDelta);
 	void Skill04(_double TimeDelta);
 	void Skill05(_double TimeDelta);
 	void Skill07(_double TimeDelta);

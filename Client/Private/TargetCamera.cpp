@@ -25,11 +25,15 @@ HRESULT CTargetCamera::Initialize(void * pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	XMStoreFloat4x4(&m_matWorld, m_Transform->Get_WorldMatrix());
+
 	return S_OK;
 }
 
 void CTargetCamera::Tick(_double TimeDelta)
 {
+	//Test(TimeDelta);
+
 	Target_Renewal(TimeDelta);
 
 	Key_Input(TimeDelta);
@@ -109,6 +113,60 @@ void CTargetCamera::Target_Renewal(_double TimeDelta)
 	//{
 	//	m_Transform->Turn(vRight, TimeDelta * MouseX * 0.05f);
 	//}
+
+	RELEASE_INSTANCE(CGameInstance);
+}
+
+void CTargetCamera::Test(_double TimeDelta)
+{
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+	CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
+
+	_vector vPosition = m_Transform->Get_State(CTransform::STATE_POSITION);
+
+	_vector vTargetPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
+	_vector vLook = pPlayerTransform->Get_State(CTransform::STATE_LOOK);
+
+	_vector vDir = vTargetPos - vPosition;
+
+	_float3 fTarget;
+
+	XMStoreFloat3(&fTarget, vTargetPos);
+
+	_float3 Pos;
+
+	XMStoreFloat3(&Pos, vPosition);
+
+	XMLoadFloat3(&m_fDistance) = (vLook * -1);
+	fTarget.y += 3.f;
+	//fTarget.z = (vTargetPos - m_vLook) * m_fDis;
+	XMStoreFloat(&fTarget.z, (vTargetPos - m_vLook) * m_fDis);
+
+	m_CameraDesc.vEye = fTarget;
+	//m_CameraDesc.vAt = vTargetPos - XMLoadFloat3(&Look);
+	XMStoreFloat3(&m_CameraDesc.vAt, XMLoadFloat3(&m_CameraDesc.vEye) + m_vLook);
+	//m_CameraDesc.vAt = m_CameraDesc.vEye + m_vLook;
+
+	//그러고 멤버 룩을 회전 시켜야 함
+
+	_long MouseX = 0;
+
+	_matrix RotateMat = XMMatrixIdentity();
+
+	
+	if (MouseX = m_pInstance->Get_DIMouseMove(DIMM_Y))
+		RotateMat = XMMatrixRotationY(MouseX * TimeDelta);
+
+	m_vLook = XMVector3TransformNormal(m_vLook, RotateMat);
+
+	cout << fTarget.x <<  "," << fTarget.y << "," << fTarget.z << "," << endl;
+	//m_Transform->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fTarget));
+
+	//if (MouseX = m_pInstance->Get_DIMouseMove(DIMM_Y))
+	//	fTarget.y = MouseX * TimeDelta;
+
+	m_Transform->LookAt(XMLoadFloat3(&fTarget));
 
 	RELEASE_INSTANCE(CGameInstance);
 }
