@@ -7,6 +7,7 @@
 #include "Layer.h"
 #include "Ancient_StonGolem.h"
 #include "GianticCreature.h"
+#include "GrudgeWraith.h"
 
 CMonsterHPBar::CMonsterHPBar(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CUI(pDevice, pContext)
@@ -40,7 +41,7 @@ HRESULT CMonsterHPBar::Initialize(void * pArg)
 	if (nullptr != pArg)
 		memcpy(&m_eOwner, pArg, sizeof OWNER);
 
-	m_eOwner = OWNER_CREATURE;
+	m_eOwner = OWNER_WRAITH;
 
 	m_fSizeX = g_iWinSizeX;
 	m_fSizeY = g_iWinSizeY;
@@ -87,6 +88,12 @@ void CMonsterHPBar::LateTick(_double TimeDelta)
 	{
 		MaxHP = static_cast<CGianticCreature*>(pMonster)->Get_Info()._MaxHp;
 		HP = static_cast<CGianticCreature*>(pMonster)->Get_Info()._Hp;
+	} 
+
+	if (m_eOwner == OWNER_WRAITH)
+	{
+		MaxHP = static_cast<CGrudgeWraith*>(pMonster)->Get_Info()._MaxHp;
+		HP = static_cast<CGrudgeWraith*>(pMonster)->Get_Info()._Hp;
 	}
 
 	if (HP > MaxHP)

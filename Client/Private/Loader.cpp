@@ -23,6 +23,7 @@
 
 #include "Ancient_StonGolem.h"
 #include "GianticCreature.h"
+#include "GrudgeWraith.h"
 
 #include "MonsterWeapon.h"
 #include "MonsterHPBar.h"
@@ -269,8 +270,12 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Ston_Golem.fbx", CModel::MODEL_ANIM, LocalMatrix66))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Boss1"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/GianticCreature/GianticCreature.fbx", CModel::MODEL_ANIM, LocalMatrix66))))
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Boss1"),
+	//	CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/GianticCreature/GianticCreature.fbx", CModel::MODEL_ANIM, LocalMatrix66))))
+	//	return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Boss2"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Grudge_Wraith/GrudgeWraith.fbx", CModel::MODEL_ANIM, LocalMatrix66))))
 		return E_FAIL;
 
 #pragma endregion Monster
@@ -408,8 +413,12 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CAncient_StonGolem::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster1"),
-		CGianticCreature::Create(m_pDevice, m_pContext))))
+	//if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster1"),
+	//	CGianticCreature::Create(m_pDevice, m_pContext))))
+	//	return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster2"),
+		CGrudgeWraith::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster_Weapon"),

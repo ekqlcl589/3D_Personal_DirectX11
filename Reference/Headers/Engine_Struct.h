@@ -264,6 +264,45 @@ namespace Engine
 
 		C_ANIM_END
 	};
+
+	enum WRAITHSTATE
+	{
+		G_Air,
+		G_Avoid,
+		G_Down_B_B,
+		G_Down_F_F,
+		G_DIE,
+		G_RTDown_B_B,
+		G_RTDown_F_F,
+		G_RTStand_Air_Big_B,
+		G_RTStand_Air_Big_F,
+		G_RTStand_Air_Fail,
+		G_RTStand_Air_Lending,
+		G_RTStand_Big_F,
+		G_Run,
+		G_Skill01_1,
+		G_Skill01_2,
+		G_Skill01_3,
+		G_Skill02_1,
+		G_Skill02_2,
+		G_Skill02_3,
+		G_Skill03_1,
+		G_Skill03_2,
+		G_Skill03_3,
+		G_Skill04_1,
+		G_Skill04_2,
+		G_Skill04_3,
+		G_Skill05_1,
+		G_Skill07_1,
+		G_StandUp_B,
+		G_StandUp_F,
+		G_Stun_Loop,
+		G_Wait,
+		G_Walk,
+
+		G_END
+	};
+
 	enum COLLISIONSTATE
 	{
 		OBJ_PLAYER,
@@ -357,6 +396,18 @@ namespace Engine
 		CREATURESTATE PrevAnim;
 
 	}CREATUREINFO;
+
+
+	typedef struct tagGrudgeWraithInfo
+	{
+		_float _MaxHp;
+		_float _Hp;
+		_uint _ATK;
+
+		WRAITHSTATE CurrAnim;
+		WRAITHSTATE PrevAnim;
+
+	}WRAITHINFO;
 }
 
 

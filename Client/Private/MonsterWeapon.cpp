@@ -4,6 +4,7 @@
 #include "TSPlayer.h"
 #include "Ancient_StonGolem.h"
 #include "GianticCreature.h"
+#include "GrudgeWraith.h"
 
 CMonsterWeapon::CMonsterWeapon(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -51,6 +52,9 @@ HRESULT CMonsterWeapon::Initialize(void * pArg)
 		pInstance->Add_Collider(m_eCollisionState, 7, this);
 	if (m_Weapon.WeaponType == WEAPON_MONSTER_BODY)
 		pInstance->Add_Collider(m_eCollisionState, 8, this);
+
+	if(m_Weapon.Owner == OWNER_WRAITH)
+		m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(180.0f));
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -176,7 +180,13 @@ void CMonsterWeapon::OnCollision(CGameObject * pObj)
 				static_cast<CGianticCreature*>(pOwner)->Set_Info(Damage);
 				cout << "Ä®ÇÑÅ× ¸ÂÀ½" << Hp << endl;
 			}
+			else if (m_Weapon.Owner == OWNER_WRAITH)
+			{
+				_uint Hp = static_cast<CGrudgeWraith*>(pOwner)->Get_Info()._Hp;
+				static_cast<CGrudgeWraith*>(pOwner)->Set_Info(Damage);
+				cout << "Ä®ÇÑÅ× ¸ÂÀ½" << Hp << endl;
 
+			}
 
 			RELEASE_INSTANCE(CGameInstance)
 		}
@@ -216,33 +226,63 @@ HRESULT CMonsterWeapon::Add_Components()
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Weapon_SS"),
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
-
-
-	if (m_Weapon.WeaponType == WEAPON_MONSTER_L || m_Weapon.WeaponType == WEAPON_MONSTER_R)
+	if (m_Weapon.Owner == OWNER_WRAITH)
 	{
-		CCollider::COLLIDERDESC ColliderDesc;
-		ZeroMemory(&ColliderDesc, sizeof ColliderDesc);
 
-		ColliderDesc.vScale = _float3(2.f, 2.f, 2.f);
-		ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vScale.y * 0.5f, 0.f);
+		if (m_Weapon.WeaponType == WEAPON_MONSTER_R)
+		{
+			CCollider::COLLIDERDESC ColliderDesc;
+			ZeroMemory(&ColliderDesc, sizeof ColliderDesc);
 
-		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_SPHERE"),
-			TEXT("Com_Collider"), (CComponent**)&m_pColliderCom, &ColliderDesc)))
-			return E_FAIL;
+			ColliderDesc.vScale = _float3(0.5f, 3.f, 0.5f);
+			ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vScale.y * 0.5f, 0.f);
+
+			if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_OBB"),
+				TEXT("Com_Collider"), (CComponent**)&m_pColliderCom, &ColliderDesc)))
+				return E_FAIL;
+		}
+
+		if (m_Weapon.WeaponType == WEAPON_MONSTER_BODY)
+		{
+			CCollider::COLLIDERDESC ColliderDesc;
+			ZeroMemory(&ColliderDesc, sizeof ColliderDesc);
+
+			ColliderDesc.vScale = _float3(1.5f, 1.5f, 2.5f);
+			ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vScale.y * 0.5f, 0.f);
+			if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_OBB"),
+				TEXT("Com_Collider1"), (CComponent**)&m_pColliderCom, &ColliderDesc)))
+				return E_FAIL;
+		}
 	}
+	else
+	{
+		if (m_Weapon.WeaponType == WEAPON_MONSTER_L || m_Weapon.WeaponType == WEAPON_MONSTER_R)
+		{
+			CCollider::COLLIDERDESC ColliderDesc;
+			ZeroMemory(&ColliderDesc, sizeof ColliderDesc);
+
+			ColliderDesc.vScale = _float3(2.f, 2.f, 2.f);
+			ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vScale.y * 0.5f, 0.f);
+
+			if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_SPHERE"),
+				TEXT("Com_Collider"), (CComponent**)&m_pColliderCom, &ColliderDesc)))
+				return E_FAIL;
+		}
 	
-	if(m_Weapon.WeaponType == WEAPON_MONSTER_BODY)
-	{
-		CCollider::COLLIDERDESC ColliderDesc;
-		ZeroMemory(&ColliderDesc, sizeof ColliderDesc);
+		if(m_Weapon.WeaponType == WEAPON_MONSTER_BODY)
+		{
+			CCollider::COLLIDERDESC ColliderDesc;
+			ZeroMemory(&ColliderDesc, sizeof ColliderDesc);
 
-		ColliderDesc.vScale = _float3(5.f, 2.f, 5.f);
-		ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vScale.y * 0.5f, 0.f);
-		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_OBB"),
-			TEXT("Com_Collider1"), (CComponent**)&m_pColliderCom, &ColliderDesc)))
-			return E_FAIL;
+			ColliderDesc.vScale = _float3(5.f, 2.f, 5.f);
+			ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vScale.y * 0.5f, 0.f);
+			if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_OBB"),
+				TEXT("Com_Collider1"), (CComponent**)&m_pColliderCom, &ColliderDesc)))
+				return E_FAIL;
 
+		}
 	}
+
 
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModel"),
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
