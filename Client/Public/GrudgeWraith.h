@@ -35,8 +35,7 @@ public:
 	void Animation(WRAITHSTATE eType);
 
 	void Use_Skill(_double TimeDelta);
-
-	void Combat_Wait(_double TimeDelta);
+	void Use_Skill_Next(_double TimeDelta);
 
 	void Attack_Go(_double TimeDelta);
 
@@ -73,7 +72,10 @@ private:
 	_bool m_bAttack = false;
 	_bool m_bWlak = false;
 
-	_float m_SkillDelay = 250.f;
+	_float m_SkillDelay = 200.f;
+
+	_bool m_Skill1Pair = false;
+	_bool m_SkillNext = false;
 
 public:
 	static CGrudgeWraith* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

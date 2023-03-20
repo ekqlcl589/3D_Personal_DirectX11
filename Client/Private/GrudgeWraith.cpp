@@ -182,7 +182,14 @@ void CGrudgeWraith::Animation_State(_double TimeDelta)
 		}
 	}
 
-	Skill04(TimeDelta);
+	if (!m_bAttack && m_SkillDelay >= 0)
+		--m_SkillDelay;
+	else if (false == m_bWlak && !m_bAttack && m_SkillDelay < 0)
+		Use_Skill(TimeDelta);
+
+	Use_Skill_Next(TimeDelta);
+
+	Run(TimeDelta);
 }
 
 void CGrudgeWraith::Animation(WRAITHSTATE eType)
@@ -299,11 +306,99 @@ void CGrudgeWraith::Animation(WRAITHSTATE eType)
 
 void CGrudgeWraith::Use_Skill(_double TimeDelta)
 {
+	int RandSkill = 0;
+
+	RandSkill = rand() % 3;
+
+	switch (RandSkill)
+	{
+	case 0:
+		Skill01(TimeDelta);
+		break;
+	case 1:
+		Skill02(TimeDelta);
+		break;
+	case 2:
+		Skill03(TimeDelta);
+		break;
+	default:
+		break;
+	}
+	m_SkillDelay = 200.f;
 }
 
-void CGrudgeWraith::Combat_Wait(_double TimeDelta)
+void CGrudgeWraith::Use_Skill_Next(_double TimeDelta)
 {
+	if (m_Skill1Pair)
+	{
+		int RandSkill = 0; // use_skill을 통해 부르게 되면 한번 더 스위치 문으로 다음 모션을 부르는 건 안 될 듯
+
+		RandSkill = rand() % 2;
+
+		switch (RandSkill)
+		{
+		case 0:
+			Skill01_1();
+			break;
+
+		case 1:
+			Skill01_2();
+			break;
+
+		default:
+			break;
+		}
+
+	}
+
+	if (m_tInfo.PrevAnim == G_Skill01_2&& m_AnimTimeAcc >= (m_AnimDuration / 2) + 37.0)
+	{
+		m_bAttack = false;
+		m_tInfo.CurrAnim = G_Wait;
+	}
+
+	if (m_tInfo.PrevAnim == G_Skill01_3 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 41.0)
+	{
+		m_bAttack = false;
+		m_tInfo.CurrAnim = G_Wait;
+	}
+
+
+	if (m_tInfo.PrevAnim == G_Skill02_1 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 19.5)
+	{
+		m_tInfo.CurrAnim = G_Skill02_2;
+	}
+
+	if (m_tInfo.PrevAnim == G_Skill02_2 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 14.5)
+	{
+		m_tInfo.CurrAnim = G_Skill02_3;
+	}
+
+	if (m_tInfo.PrevAnim == G_Skill02_3 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 33.0)
+	{
+		m_tInfo.CurrAnim = G_Wait;
+		m_bAttack = false;
+		m_SkillNext = false;
+	}
+
+	if (m_tInfo.PrevAnim == G_Skill03_1 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 27.5)
+	{
+		m_tInfo.CurrAnim = G_Skill03_2;
+	}
+
+	if (m_tInfo.PrevAnim == G_Skill03_2 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 13.5)
+	{
+		m_tInfo.CurrAnim = G_Skill03_3;
+	}
+
+	if (m_tInfo.PrevAnim == G_Skill03_3 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 29.5)
+	{
+		m_tInfo.CurrAnim = G_Wait;
+		m_bAttack = false;
+		m_SkillNext = false;
+	}
 }
+
 
 void CGrudgeWraith::Attack_Go(_double TimeDelta)
 {
@@ -335,45 +430,41 @@ void CGrudgeWraith::Attack_Go(_double TimeDelta)
 
 void CGrudgeWraith::Run(_double TimeDelta)
 {
+	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	if (false == m_bAttack)
+	{
+		if (m_pTransformCom->Compute_Distance(m_vTargetPos) <= 30.f)
+		{
+			m_bWlak = true;
+			m_tInfo.CurrAnim = G_Walk;
+			m_pTransformCom->Chase_Tatget(m_vTargetPos, 5.f, TimeDelta);
+		}
+		if (m_pTransformCom->Compute_Distance(m_vTargetPos) <= 5.f)
+		{
+			m_bWlak = false;
+			m_tInfo.CurrAnim = G_Walk;
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+		}
+	}
+	//else
+	//{
+	//	if (m_pTransformCom->Compute_Distance(m_vTargetPos) <= 20.f)
+	//	{
+	//		m_pTransformCom->Chase_Tatget(m_vTargetPos, 5.f, TimeDelta);
+	//		Skill04(TimeDelta);
+	//	}
+	//}
+
 }
 
 void CGrudgeWraith::Skill01(_double TimeDelta)
 {
-	if (m_tInfo.PrevAnim == G_Wait && true == m_pModelCom->Get_AnimFinished())
-	{
-		m_tInfo.CurrAnim = G_Skill01_1;
-		m_bAttack = true;
-	}
+	m_tInfo.CurrAnim = G_Skill01_1;
+	m_bAttack = true;
+	m_SkillNext = false;
+	m_Skill1Pair = true;
 
-	int RandSkill = 0;
-
-	RandSkill = rand() % 2;
-
-	switch (RandSkill)
-	{
-	case 0:
-		Skill01_1();
-		break;
-
-	case 1:
-		Skill01_2();
-		break;
-
-	default:
-		break;
-	}
-
-	if (m_tInfo.PrevAnim == G_Skill01_2&& m_AnimTimeAcc >= (m_AnimDuration / 2) + 37.0)
-	{
-		m_bAttack = false;
-		m_tInfo.CurrAnim = G_Wait;
-	} 
-
-	if(m_tInfo.PrevAnim == G_Skill01_3 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 41.0)
-	{
-		m_bAttack = false;
-		m_tInfo.CurrAnim = G_Wait;
-	} 
 
 }
 
@@ -397,54 +488,16 @@ void CGrudgeWraith::Skill01_2()
 
 void CGrudgeWraith::Skill02(_double TimeDelta)
 {
-	if (m_tInfo.PrevAnim == G_Wait && true == m_pModelCom->Get_AnimFinished())
-	{
-		m_tInfo.CurrAnim = G_Skill02_1;
-		m_bAttack = true;
-	}
-
-	if (m_tInfo.PrevAnim == G_Skill02_1 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 19.5)
-	{
-		m_tInfo.CurrAnim = G_Skill02_2;
-	}
-
-	if (m_tInfo.PrevAnim == G_Skill02_2 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 14.5)
-	{
-		m_tInfo.CurrAnim = G_Skill02_3;
-	}
-
-	if (m_tInfo.PrevAnim == G_Skill02_3 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 33.0)
-	{
-		m_tInfo.CurrAnim = G_Wait;
-		m_bAttack = false;
-	}
-
+	m_tInfo.CurrAnim = G_Skill02_1;
+	m_bAttack = true;
+	m_SkillNext = true;
 }
 
 void CGrudgeWraith::Skill03(_double TimeDelta)
 {
-	if (m_tInfo.PrevAnim == G_Wait && true == m_pModelCom->Get_AnimFinished())
-	{
-		m_tInfo.CurrAnim = G_Skill03_1;
-		m_bAttack = true;
-	}
-
-	if (m_tInfo.PrevAnim == G_Skill03_1 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 37.5)
-	{
-		m_tInfo.CurrAnim = G_Skill03_2;
-	}
-
-	if (m_tInfo.PrevAnim == G_Skill03_2 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 13.5)
-	{
-		m_tInfo.CurrAnim = G_Skill03_3;
-	}
-
-	if (m_tInfo.PrevAnim == G_Skill03_3 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 29.5)
-	{
-		m_tInfo.CurrAnim = G_Wait;
-		m_bAttack = false;
-	}
-
+	m_tInfo.CurrAnim = G_Skill03_1;
+	m_bAttack = true;
+	m_SkillNext = true;
 }
 
 void CGrudgeWraith::Skill04(_double TimeDelta)
@@ -455,12 +508,12 @@ void CGrudgeWraith::Skill04(_double TimeDelta)
 		m_bAttack = true;
 	}
 
-	if (m_tInfo.PrevAnim == G_Skill04_1 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 12.5)
+	if (m_tInfo.PrevAnim == G_Skill04_1 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 12)
 	{
 		m_tInfo.CurrAnim = G_Skill04_2;
 	}
 
-	if (m_tInfo.PrevAnim == G_Skill04_2 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 8)
+	if (m_tInfo.PrevAnim == G_Skill04_2 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 8.5)
 	{
 		m_tInfo.CurrAnim = G_Skill04_3;
 	}

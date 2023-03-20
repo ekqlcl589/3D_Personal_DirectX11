@@ -160,12 +160,6 @@ void CTargetCamera::Test(_double TimeDelta)
 
 	m_vLook = XMVector3TransformNormal(m_vLook, RotateMat);
 
-	cout << fTarget.x <<  "," << fTarget.y << "," << fTarget.z << "," << endl;
-	//m_Transform->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fTarget));
-
-	//if (MouseX = m_pInstance->Get_DIMouseMove(DIMM_Y))
-	//	fTarget.y = MouseX * TimeDelta;
-
 	m_Transform->LookAt(XMLoadFloat3(&fTarget));
 
 	RELEASE_INSTANCE(CGameInstance);
