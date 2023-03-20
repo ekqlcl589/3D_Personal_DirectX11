@@ -11,14 +11,13 @@ class CCollider;
 END
 
 BEGIN(Client)
-
-class CGrudgeWraith final :
+class CCursedWraith final :
 	public CMonster
 {
 private:
-	CGrudgeWraith(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CGrudgeWraith(const CGrudgeWraith& rhs);
-	virtual ~CGrudgeWraith() = default;
+	CCursedWraith(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CCursedWraith(const CCursedWraith& rhs);
+	virtual ~CCursedWraith() = default;
 
 public:
 	virtual	HRESULT Initialize_Prototype() override;
@@ -30,28 +29,11 @@ public:
 
 public:
 	void Animation_State(_double TimeDelta);
-	void Animation(WRAITHSTATE eType);
-
-	void Use_Skill(_double TimeDelta);
-	void Use_Skill_Next(_double TimeDelta);
-
-	void Attack_Go(_double TimeDelta);
-
-private:
-	void Run(_double TimeDelta);
-
-	void Skill01(_double TimeDelta);
-	void Skill01_1();
-	void Skill01_2();
-
-	void Skill02(_double TimeDelta);
-	void Skill03(_double TimeDelta);
-	void Skill04(_double TimeDelta);
-	void Skill05(_double TimeDelta);
-	void Skill07(_double TimeDelta);
+	void Animation(CURSEDWRAITHSTATE eType);
+	void Avoid(_double TimeDelta);
 
 public:
-	WRAITHINFO Get_Info() { return m_tInfo; }
+	CURSEDWRAITHINFO Get_Info() { return m_tInfo; }
 	void Set_Info(_uint iDamage) { m_tInfo._Hp -= iDamage; }
 
 	_bool Get_Attack() { return m_bAttack; }
@@ -62,7 +44,7 @@ private:
 	HRESULT Add_Coll();
 
 private:
-	WRAITHINFO m_tInfo;
+	CURSEDWRAITHINFO m_tInfo;
 	_double m_AnimDuration = 0.0;
 	_double m_AnimTimeAcc = 0.0;
 
@@ -71,13 +53,8 @@ private:
 	_bool m_bAttack = false;
 	_bool m_bWlak = false;
 
-	_float m_SkillDelay = 200.f;
-
-	_bool m_Skill1Pair = false;
-	_bool m_SkillNext = false;
-
 public:
-	static CGrudgeWraith* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CCursedWraith* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;
 	virtual void Free()override;
 };

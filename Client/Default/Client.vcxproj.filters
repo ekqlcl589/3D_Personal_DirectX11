@@ -148,8 +148,14 @@
     <Filter Include="02.GameObject\06. Monster\99.MonsterWeapon">
       <UniqueIdentifier>{36aada05-29d6-4923-b255-0696013e0813}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\06. Monster\03_GrudgeWraith">
+    <Filter Include="02.GameObject\06. Monster\03_Wraith">
+      <UniqueIdentifier>{2aa828df-7cf2-491f-89e9-f88e92ee976e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06. Monster\03_Wraith\01_GrudgeWraith">
       <UniqueIdentifier>{5a2e250f-0088-4fb0-b848-07c8022726e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06. Monster\03_Wraith\00_CursedWraith">
+      <UniqueIdentifier>{aacc7d41-9163-4bf1-810b-25853c96f9f9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -280,7 +286,10 @@
       <Filter>02.GameObject\06. Monster\02_GianticCreature</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\GrudgeWraith.h">
-      <Filter>02.GameObject\06. Monster\03_GrudgeWraith</Filter>
+      <Filter>02.GameObject\06. Monster\03_Wraith\01_GrudgeWraith</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CursedWraith.h">
+      <Filter>02.GameObject\06. Monster\03_Wraith\00_CursedWraith</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -399,7 +408,10 @@
       <Filter>02.GameObject\06. Monster\02_GianticCreature</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\GrudgeWraith.cpp">
-      <Filter>02.GameObject\06. Monster\03_GrudgeWraith</Filter>
+      <Filter>02.GameObject\06. Monster\03_Wraith\01_GrudgeWraith</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CursedWraith.cpp">
+      <Filter>02.GameObject\06. Monster\03_Wraith\00_CursedWraith</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

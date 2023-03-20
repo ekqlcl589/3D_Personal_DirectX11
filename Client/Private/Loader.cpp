@@ -23,6 +23,7 @@
 
 #include "Ancient_StonGolem.h"
 #include "GianticCreature.h"
+#include "CursedWraith.h"
 #include "GrudgeWraith.h"
 
 #include "MonsterWeapon.h"
@@ -278,6 +279,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Grudge_Wraith/GrudgeWraith.fbx", CModel::MODEL_ANIM, LocalMatrix66))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Boss3"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Grudge_Wraith/CursedWraith.fbx", CModel::MODEL_ANIM, LocalMatrix66))))
+		return E_FAIL;
+
 #pragma endregion Monster
 
 
@@ -419,6 +424,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster2"),
 		CGrudgeWraith::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster3"),
+		CCursedWraith::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster_Weapon"),

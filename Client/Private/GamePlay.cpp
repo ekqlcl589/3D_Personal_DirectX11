@@ -189,6 +189,9 @@ HRESULT CGamePlay::Ready_Layer_Monster(const _tchar * pLayerTag)
 	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster2"), pLayerTag)))
 		return E_FAIL;
 
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster3"), pLayerTag)))
+		return E_FAIL;
+
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;

@@ -303,6 +303,39 @@ namespace Engine
 		G_END
 	};
 
+	enum CURSEDWRAITHSTATE
+	{
+		CW_Air,
+		CW_Avoid,
+		CW_Run,
+		CW_Start,
+		CW_Wait,
+		CW_Walk,
+		CW_Down_F_F,
+		CW_DIE,
+		CW_RTBLOW_AIR_F,
+		CW_RTBLOW_AIR_FALL_F,
+		CW_RBBLOW_AIR_LENDING,
+		CW_RTBLOW_AIR_R,//->X
+		CW_RTBLOW_DOWN_F,
+		CW_RTCHASE_BIG_F,
+		CW_RTDOWN_AIR_LENDING_F_F,//->중복
+		CW_RTDOWN_F_F,//->중복
+		CW_RTSTAND_BIG_F,//->중복
+		CW_SKILL_01,
+		CW_SKILL_02,
+		CW_SKILL_03,
+		CW_SKILL_04,
+		CW_SKILL_05,
+		CW_SKILL_07,
+		CW_SKILL_09_1,
+		CW_SKILL_09_2,
+		CW_STANDUP_F,
+		CW_STUN_LOOP,
+		 
+		CW_ANIMEND
+	};
+
 	enum COLLISIONSTATE
 	{
 		OBJ_PLAYER,
@@ -408,6 +441,18 @@ namespace Engine
 		WRAITHSTATE PrevAnim;
 
 	}WRAITHINFO;
+
+	typedef struct tagCursedWraithInfo
+	{
+		_float _MaxHp;
+		_float _Hp;
+		_uint _ATK;
+
+		CURSEDWRAITHSTATE CurrAnim;
+		CURSEDWRAITHSTATE PrevAnim;
+
+	}CURSEDWRAITHINFO;
+
 }
 
 
