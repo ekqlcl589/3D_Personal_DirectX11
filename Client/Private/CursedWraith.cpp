@@ -2,6 +2,7 @@
 #include "..\Public\CursedWraith.h"
 #include "GameInstance.h"
 #include "MonsterWeapon.h"
+#include "GrudgeWraith.h"
 
 CCursedWraith::CCursedWraith(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CMonster(pDevice, pContext)
@@ -41,7 +42,8 @@ HRESULT CCursedWraith::Initialize(void * pArg)
 	m_tInfo.CurrAnim = CW_Wait;
 	m_pModelCom->SetUp_Animation(m_tInfo.CurrAnim);
 
-	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(195.0f));
+	//m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(195.0f));
+
 
 	return S_OK;
 }
@@ -49,6 +51,8 @@ HRESULT CCursedWraith::Initialize(void * pArg)
 void CCursedWraith::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
+
+	m_pTransformCom->LookAt(m_vTargetPos);
 
 	Animation_State(TimeDelta);
 
@@ -141,6 +145,23 @@ void CCursedWraith::OnCollision(CGameObject * pObj)
 
 void CCursedWraith::Animation_State(_double TimeDelta)
 {
+	if (m_tInfo._Hp <= 1.f)
+	{
+		m_tInfo._Hp = 1.f;
+		m_tInfo.CurrAnim = CW_DIE;
+
+		if (m_tInfo.CurrAnim == CW_DIE && true == m_pModelCom->Get_AnimFinished())
+		{
+			m_tInfo._Hp = 0.f;
+			Set_Dead();
+		}
+	}
+
+	//Avoid(TimeDelta);
+
+	if (!m_Test)
+		Summons();
+
 }
 
 void CCursedWraith::Animation(CURSEDWRAITHSTATE eType)
@@ -150,58 +171,78 @@ void CCursedWraith::Animation(CURSEDWRAITHSTATE eType)
 		switch (eType)
 		{
 		case Engine::CW_Air:
+			m_iAnimIndex = 0;
 			break;
 		case Engine::CW_Avoid:
+			m_iAnimIndex = 1;
 			break;
 		case Engine::CW_Run:
+			m_iAnimIndex = 2;
 			break;
 		case Engine::CW_Start:
+			m_iAnimIndex = 3;
 			break;
 		case Engine::CW_Wait:
+			m_iAnimIndex = 4;
 			break;
 		case Engine::CW_Walk:
+			m_iAnimIndex = 5;
 			break;
 		case Engine::CW_Down_F_F:
 			break;
 		case Engine::CW_DIE:
+			m_iAnimIndex = 7;
 			break;
 		case Engine::CW_RTBLOW_AIR_F:
+			m_iAnimIndex = 8;
 			break;
 		case Engine::CW_RTBLOW_AIR_FALL_F:
+			m_iAnimIndex = 9;
 			break;
 		case Engine::CW_RBBLOW_AIR_LENDING:
+			m_iAnimIndex = 10;
 			break;
 		case Engine::CW_RTBLOW_AIR_R:
 			break;
 		case Engine::CW_RTBLOW_DOWN_F:
+			m_iAnimIndex = 12;
 			break;
 		case Engine::CW_RTCHASE_BIG_F:
+			m_iAnimIndex = 13;
 			break;
 		case Engine::CW_RTDOWN_AIR_LENDING_F_F:
-			break;
 		case Engine::CW_RTDOWN_F_F:
-			break;
 		case Engine::CW_RTSTAND_BIG_F:
 			break;
 		case Engine::CW_SKILL_01:
+			m_iAnimIndex = 17;
 			break;
 		case Engine::CW_SKILL_02:
+			m_iAnimIndex = 18;
 			break;
 		case Engine::CW_SKILL_03:
+			m_iAnimIndex = 19;
 			break;
 		case Engine::CW_SKILL_04:
+			m_iAnimIndex = 20;
 			break;
 		case Engine::CW_SKILL_05:
+			m_iAnimIndex = 21;
 			break;
 		case Engine::CW_SKILL_07:
+			m_iAnimIndex = 22;
 			break;
 		case Engine::CW_SKILL_09_1:
+			m_iAnimIndex = 23;
 			break;
 		case Engine::CW_SKILL_09_2:
+			m_iAnimIndex = 24;
 			break;
 		case Engine::CW_STANDUP_F:
+			m_iAnimIndex = 25;
 			break;
 		case Engine::CW_STUN_LOOP:
+			m_iAnimIndex = 26;
 			break;
 		case Engine::CW_ANIMEND:
 			break;
@@ -215,6 +256,39 @@ void CCursedWraith::Animation(CURSEDWRAITHSTATE eType)
 
 void CCursedWraith::Avoid(_double TimeDelta)
 {
+	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	if (!m_bAttack)
+	{
+		m_tInfo.CurrAnim = CW_Avoid;
+		m_pTransformCom->Go_Back(0.5 * TimeDelta);
+
+		if (m_tInfo.PrevAnim == CW_Avoid && m_AnimTimeAcc >= (m_AnimDuration / 2) + 22.0)
+			vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	}
+}
+
+void CCursedWraith::Summons()
+{
+
+	if (m_tInfo.PrevAnim == CW_Wait && true == m_pModelCom->Get_AnimFinished())
+	{
+		m_tInfo.CurrAnim = CW_SKILL_03;
+	}
+
+	if (m_tInfo.PrevAnim == CW_SKILL_03 && m_AnimTimeAcc >= 145.0)
+	{
+		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+		CGameObject* pMonster = nullptr;
+
+		pMonster = pInstance->Clone_GameObject_Add_Layer(TEXT("Prototype_GameObject_Monster2"));
+
+		RELEASE_INSTANCE(CGameInstance);
+
+		m_tInfo.CurrAnim = CW_Wait;
+		m_Test = true;
+	}
 }
 
 HRESULT CCursedWraith::Add_Components()
@@ -285,6 +359,22 @@ HRESULT CCursedWraith::SetUp_ShaderResources()
 
 HRESULT CCursedWraith::Add_Coll()
 {
+	CGameInstance* pInstnace = GET_INSTANCE(CGameInstance);
+
+	CBone* pBone = m_pModelCom->Get_BonePtr("Bip001");
+
+	if (nullptr == pBone)
+		return E_FAIL;
+
+	CMonsterWeapon::WEAPONDESC WeaponDesc = { pBone, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CMonsterWeapon::WEAPON_MONSTER_BODY, CMonsterWeapon::OWNER_WRAITH2 };
+	Safe_AddRef(pBone);
+
+	CGameObject* pSpine = pInstnace->Clone_GameObject(TEXT("Prototype_GameObject_Monster_Weapon"), &WeaponDesc);
+
+	m_vecWeapon[WEAPON_MONSTERBODY].push_back(pSpine);
+
+	RELEASE_INSTANCE(CGameInstance);
+
 	return S_OK;
 }
 

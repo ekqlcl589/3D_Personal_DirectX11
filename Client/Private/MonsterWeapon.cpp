@@ -5,6 +5,7 @@
 #include "Ancient_StonGolem.h"
 #include "GianticCreature.h"
 #include "GrudgeWraith.h"
+#include "CursedWraith.h"
 
 CMonsterWeapon::CMonsterWeapon(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -185,8 +186,14 @@ void CMonsterWeapon::OnCollision(CGameObject * pObj)
 				_uint Hp = static_cast<CGrudgeWraith*>(pOwner)->Get_Info()._Hp;
 				static_cast<CGrudgeWraith*>(pOwner)->Set_Info(Damage);
 				cout << "Ä®ÇÑÅ× ¸ÂÀ½" << Hp << endl;
-
 			}
+			else if (m_Weapon.Owner == OWNER_WRAITH2)
+			{
+				_uint Hp = static_cast<CCursedWraith*>(pOwner)->Get_Info()._Hp;
+				static_cast<CCursedWraith*>(pOwner)->Set_Info(Damage);
+				cout << "Ä®ÇÑÅ× ¸ÂÀ½" << Hp << endl;
+			}
+
 
 			RELEASE_INSTANCE(CGameInstance)
 		}
@@ -247,12 +254,24 @@ HRESULT CMonsterWeapon::Add_Components()
 			CCollider::COLLIDERDESC ColliderDesc;
 			ZeroMemory(&ColliderDesc, sizeof ColliderDesc);
 
-			ColliderDesc.vScale = _float3(1.5f, 1.5f, 2.5f);
+			ColliderDesc.vScale = _float3(1.f, 2.f, 1.f);
 			ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vScale.y * 0.5f, 0.f);
 			if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_OBB"),
 				TEXT("Com_Collider1"), (CComponent**)&m_pColliderCom, &ColliderDesc)))
 				return E_FAIL;
 		}
+	}
+	else if (m_Weapon.Owner == OWNER_WRAITH2)
+	{
+		CCollider::COLLIDERDESC ColliderDesc;
+		ZeroMemory(&ColliderDesc, sizeof ColliderDesc);
+
+		ColliderDesc.vScale = _float3(2.f, 1.f, 2.f);
+		ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vScale.y * 0.5f, 0.f);
+		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_OBB"),
+			TEXT("Com_Collider"), (CComponent**)&m_pColliderCom, &ColliderDesc)))
+			return E_FAIL;
+
 	}
 	else
 	{

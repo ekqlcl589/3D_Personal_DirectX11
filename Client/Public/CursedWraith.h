@@ -32,6 +32,8 @@ public:
 	void Animation(CURSEDWRAITHSTATE eType);
 	void Avoid(_double TimeDelta);
 
+	void Summons();
+
 public:
 	CURSEDWRAITHINFO Get_Info() { return m_tInfo; }
 	void Set_Info(_uint iDamage) { m_tInfo._Hp -= iDamage; }
@@ -52,6 +54,8 @@ private:
 
 	_bool m_bAttack = false;
 	_bool m_bWlak = false;
+
+	_bool m_Test = false;
 
 public:
 	static CCursedWraith* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
