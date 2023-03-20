@@ -37,7 +37,7 @@ HRESULT CCursedWraith::Initialize(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPosition));
 
 	m_tInfo._MaxHp = 1000.f;
-	m_tInfo._Hp = 1000.f;
+	m_tInfo._Hp = 30.f;
 
 	m_tInfo.CurrAnim = CW_Wait;
 	m_pModelCom->SetUp_Animation(m_tInfo.CurrAnim);
@@ -50,93 +50,115 @@ HRESULT CCursedWraith::Initialize(void * pArg)
 
 void CCursedWraith::Tick(_double TimeDelta)
 {
-	__super::Tick(TimeDelta);
-
-	m_pTransformCom->LookAt(m_vTargetPos);
-
-	Animation_State(TimeDelta);
-
-	//Attack_Go(TimeDelta); // 애니메이션이 진행 되면서 앞으로 가야 하니까 중간이 맞다?
-
-	Animation(m_tInfo.CurrAnim);
-
-	for (_uint i = 0; i < WEAPON_END; i++)
+	if (m_bDead)
 	{
-		for (auto& pWeapon : m_vecWeapon[i])
-		{
-			if (nullptr != pWeapon)
-				pWeapon->Tick(TimeDelta);
-		}
+		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+		if (FAILED(pInstance->Dleate_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"))))
+			return;
+
+		RELEASE_INSTANCE(CGameInstance);
 	}
-
-	if (nullptr != m_pColliderCom)
-		m_pColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
-}
-
-void CCursedWraith::LateTick(_double TimeDelta)
-{
-	__super::LateTick(TimeDelta);
-
-	m_pModelCom->Play_Animation(TimeDelta);
-	m_AnimDuration = m_pModelCom->Get_AnimDuration();
-	m_AnimTimeAcc = m_pModelCom->Get_AnimTimeAcc();
-
-	if (nullptr != m_pRendererCom)
+	else
 	{
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
+		__super::Tick(TimeDelta);
+
+		m_pTransformCom->LookAt(m_vTargetPos);
+
+		Animation_State(TimeDelta);
+
+		//Attack_Go(TimeDelta); // 애니메이션이 진행 되면서 앞으로 가야 하니까 중간이 맞다?
+
+		Animation(m_tInfo.CurrAnim);
 
 		for (_uint i = 0; i < WEAPON_END; i++)
 		{
 			for (auto& pWeapon : m_vecWeapon[i])
 			{
 				if (nullptr != pWeapon)
-					m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, pWeapon);
+					pWeapon->Tick(TimeDelta);
 			}
 		}
 
+		if (nullptr != m_pColliderCom)
+			m_pColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
+
 	}
 
-	for (_uint i = 0; i < WEAPON_END; i++)
+}
+
+void CCursedWraith::LateTick(_double TimeDelta)
+{
+	if (!m_bDead)
 	{
-		for (auto& pWeapon : m_vecWeapon[i])
+		__super::LateTick(TimeDelta);
+
+		m_pModelCom->Play_Animation(TimeDelta);
+		m_AnimDuration = m_pModelCom->Get_AnimDuration();
+		m_AnimTimeAcc = m_pModelCom->Get_AnimTimeAcc();
+
+		if (nullptr != m_pRendererCom)
 		{
-			if (nullptr != pWeapon)
-				pWeapon->LateTick(TimeDelta);
+			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
+
+			for (_uint i = 0; i < WEAPON_END; i++)
+			{
+				for (auto& pWeapon : m_vecWeapon[i])
+				{
+					if (nullptr != pWeapon)
+						m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, pWeapon);
+				}
+			}
+
 		}
+
+		for (_uint i = 0; i < WEAPON_END; i++)
+		{
+			for (auto& pWeapon : m_vecWeapon[i])
+			{
+				if (nullptr != pWeapon)
+					pWeapon->LateTick(TimeDelta);
+			}
+		}
+
 	}
 }
 
 HRESULT CCursedWraith::Render()
 {
-	if (FAILED(__super::Render()))
-		return E_FAIL;
-
-	if (FAILED(SetUp_ShaderResources()))
-		return E_FAIL;
-
-	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
-
-	for (_uint i = 0; i < iNumMeshes; i++)
+	if (!m_bDead)
 	{
-		m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
-		/*m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);
-		m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);*/
+		if (FAILED(__super::Render()))
+			return E_FAIL;
 
-		m_pModelCom->SetUp_BoneMatrices(m_pShaderCom, "g_BoneMatrix", i);
+		if (FAILED(SetUp_ShaderResources()))
+			return E_FAIL;
 
-		m_pShaderCom->Begin(0);
+		_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
 
-		m_pModelCom->Render(i);
+		for (_uint i = 0; i < iNumMeshes; i++)
+		{
+			m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
+			/*m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);
+			m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);*/
+
+			m_pModelCom->SetUp_BoneMatrices(m_pShaderCom, "g_BoneMatrix", i);
+
+			m_pShaderCom->Begin(0);
+
+			m_pModelCom->Render(i);
+		}
+
+	#ifdef _DEBUG
+
+		if (nullptr != m_pColliderCom)
+			m_pColliderCom->Render();
+
+	#endif
+
+		return S_OK;
+
 	}
-
-#ifdef _DEBUG
-
-	if (nullptr != m_pColliderCom)
-		m_pColliderCom->Render();
-
-#endif
-
-	return S_OK;
 }
 
 void CCursedWraith::OnCollision(CGameObject * pObj)
@@ -150,10 +172,11 @@ void CCursedWraith::Animation_State(_double TimeDelta)
 		m_tInfo._Hp = 1.f;
 		m_tInfo.CurrAnim = CW_DIE;
 
-		if (m_tInfo.CurrAnim == CW_DIE && true == m_pModelCom->Get_AnimFinished())
+		if (m_tInfo.PrevAnim == CW_DIE && true == m_pModelCom->Get_AnimFinished())
 		{
 			m_tInfo._Hp = 0.f;
 			Set_Dead();
+			//DeleteObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster3"));
 		}
 	}
 

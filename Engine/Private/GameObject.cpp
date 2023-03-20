@@ -33,22 +33,26 @@ HRESULT CGameObject::Initialize(void * pArg)
 
 void CGameObject::Tick(_double TimeDelta)
 {
-	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
-	//							맞음     ,  떄림
-	//pGameInstance->OnCollision(OBJ_PLAYER, OBJ_MONSTER_BODY); // 플레이어와 보스 몸통 충돌 
-	pGameInstance->OnCollision(OBJ_PLAYER, OBJ_MONSTER_WEAPONL); // 플레이어와 보스 왼 팔 충돌 
-	pGameInstance->OnCollision(OBJ_PLAYER, OBJ_MONSTER_WEAPONR); // 플레이어와 보스 오른 팔 충돌 
-
-	pGameInstance->OnCollision(OBJ_MONSTER_BODY, OBJ_WEAPON_KARMA14); // 플레이어와 보스 몸통 충돌 
-
-	Safe_Release(pGameInstance);
+	//if (!m_bDead)
+	//{
+	//	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	//	Safe_AddRef(pGameInstance);
+	//
+	//	//							맞음     ,  떄림
+	//	//pGameInstance->OnCollision(OBJ_PLAYER, OBJ_MONSTER_BODY); // 플레이어와 보스 몸통 충돌 
+	//	pGameInstance->OnCollision(OBJ_PLAYER, OBJ_MONSTER_WEAPONL); // 플레이어와 보스 왼 팔 충돌 
+	//	pGameInstance->OnCollision(OBJ_PLAYER, OBJ_MONSTER_WEAPONR); // 플레이어와 보스 오른 팔 충돌 
+	//
+	//	pGameInstance->OnCollision(OBJ_MONSTER_BODY, OBJ_WEAPON_KARMA14); // 플레이어와 보스 몸통 충돌 
+	//
+	//	Safe_Release(pGameInstance);
+	//
+	//}
 
 }
 
 void CGameObject::LateTick(_double TimeDelta)
 {
-
 }
 
 HRESULT CGameObject::Render()
@@ -56,13 +60,17 @@ HRESULT CGameObject::Render()
 	return S_OK;
 }
 
-void CGameObject::KnockBack(_uint iDamage, _double TimeDelta)
+void CGameObject::DeleteObject(_uint iIndex, const _tchar* pLayerTag)
 {
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-
+	pInstance->Dleate_GameObject(iIndex, pLayerTag);
 
 	RELEASE_INSTANCE(CGameInstance);
+}
+
+void CGameObject::KnockBack(_uint iDamage, _double TimeDelta)
+{
 }
 
 void CGameObject::Hit(_uint iDamage)

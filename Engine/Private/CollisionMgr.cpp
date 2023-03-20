@@ -147,14 +147,15 @@ void CCollisionMgr::Check_Collision(COLLISIONSTATE eType, COLLISIONSTATE eType2)
 	{
 		for (auto& Src : m_mapObj[eType])
 		{
+			if (Dest.second->Get_Dead())
+				Src.second->Erase_Collied(Dest.second);
+			if (Src.second->Get_Dead())
+				Dest.second->Erase_Collied(Src.second);
+			if (Dest.second->Get_Dead() || Src.second->Get_Dead())
+				continue;
+
 			if (Is_Colli_Dist(Dest.second->Get_ObjType(), Src.second->Get_ObjType()))
 			{
-				if (Dest.second->Get_Dead())
-					Src.second->Erase_Collied(Dest.second);
-				if (Src.second->Get_Dead())
-					Dest.second->Erase_Collied(Src.second);
-				if (Dest.second->Get_Dead() || Src.second->Get_Dead())
-					continue;
 
 				if (!Dest.second->Check_Collied(Src.second)) // 충돌리스트 추가 
 				{

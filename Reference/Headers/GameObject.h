@@ -22,6 +22,7 @@ public:
 
 	virtual void OnCollision(CGameObject* pObj) {}
 
+	void DeleteObject(_uint iIndex, const _tchar* pLayerTag);
 	void KnockBack(_uint iDamage, _double TimeDelta);
 	void Hit(_uint iDamage);
 

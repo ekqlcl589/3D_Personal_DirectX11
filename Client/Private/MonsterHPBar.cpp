@@ -90,11 +90,11 @@ void CMonsterHPBar::LateTick(_double TimeDelta)
 		HP = static_cast<CGianticCreature*>(pMonster)->Get_Info()._Hp;
 	} 
 
-	if (m_eOwner == OWNER_WRAITH)
-	{
-		MaxHP = static_cast<CGrudgeWraith*>(pMonster)->Get_Info()._MaxHp;
-		HP = static_cast<CGrudgeWraith*>(pMonster)->Get_Info()._Hp;
-	}
+	//if (m_eOwner == OWNER_WRAITH && true == pMonster->Get_Dead())
+	//{
+	//	MaxHP = static_cast<CGrudgeWraith*>(pMonster)->Get_Info()._MaxHp;
+	//	HP = static_cast<CGrudgeWraith*>(pMonster)->Get_Info()._Hp;
+	//}
 
 	if (HP > MaxHP)
 		HP = MaxHP;

@@ -71,7 +71,11 @@ void CMonsterWeapon::Tick(_double TimeDelta)
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
 	CGameObject* pOwner = nullptr;
+
 	pOwner = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
+
+	if (true == pOwner->Get_Dead())
+		return;
 
 	if (m_Weapon.Owner == OWNER_GOLEM)
 		Dead = static_cast<CAncient_StonGolem*>(pOwner)->Get_Dead();
@@ -83,8 +87,6 @@ void CMonsterWeapon::Tick(_double TimeDelta)
 
 	if (Dead)
 		m_bDead = true;
-
-	return;
 }
 
 void CMonsterWeapon::LateTick(_double TimeDelta)

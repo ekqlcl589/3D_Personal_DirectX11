@@ -53,11 +53,11 @@ HRESULT CObject_Manager::Add_GameObject(_uint iLevelIndex, const _tchar * pProto
 
 HRESULT CObject_Manager::Dleate_GameObject(_uint iLevelIndex, const _tchar * pLayerTag)
 {
-	auto iter = find_if(m_pLayers[iLevelIndex].begin(), m_pLayers[iLevelIndex].end(), CTag_Finder(pLayerTag));
+	CGameObject* pObj = Find_GameObject(iLevelIndex, pLayerTag);
 
-	Safe_Release(iter->second);
+	CLayer* pLayer = Find_Layer(iLevelIndex, pLayerTag);
 
-	m_pLayers[iLevelIndex].erase(iter);
+	pLayer->Delete_GameObject(pObj);
 	
 	return S_OK;
 }

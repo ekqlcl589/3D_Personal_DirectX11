@@ -17,21 +17,51 @@ HRESULT CLayer::Add_GameObject(CGameObject * pGameObject)
 	return S_OK;
 }
 
+HRESULT CLayer::Delete_GameObject(CGameObject * pGameObject)
+{
+	if (nullptr == pGameObject)
+		return E_FAIL;
+
+	for (auto iter = m_GameObject.begin(); iter != m_GameObject.end();)
+	{
+		if (pGameObject->Get_Dead())
+		{
+			Safe_Release(*iter);
+			return S_OK;
+
+		}
+		else
+			iter++;
+	}
+
+	return S_OK;
+}
+
 void CLayer::Tick(_double TimeDelta)
 {
-	for (auto& pGameObject : m_GameObject)
+	for (auto iter = m_GameObject.begin(); iter != m_GameObject.end();)
 	{
-		if (nullptr != pGameObject)
-			pGameObject->Tick(TimeDelta);
+		if (nullptr != *iter)
+		{
+			(*iter)->Tick(TimeDelta);
+			iter++;
+		}
+		else
+		{
+			iter = m_GameObject.erase(iter);
+		}
 	}
 }
 
 void CLayer::LateTick(_double TimeDelta)
 {
-	for (auto& pGameObject : m_GameObject)
+	for (auto iter = m_GameObject.begin(); iter != m_GameObject.end();)
 	{
-		if (nullptr != pGameObject)
-			pGameObject->LateTick(TimeDelta);
+		if (nullptr != *iter)
+		{
+			(*iter)->LateTick(TimeDelta);
+			iter++;
+		}
 	}
 }
 

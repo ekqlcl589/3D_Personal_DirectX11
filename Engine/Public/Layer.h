@@ -12,6 +12,7 @@ public:
 
 public:
 	HRESULT Add_GameObject(CGameObject* pGameObject);
+	HRESULT Delete_GameObject(CGameObject* pGameObject);
 	void Tick(_double TimeDelta);
 	void LateTick(_double TimeDelta);
 
@@ -25,6 +26,7 @@ private:
 	list<class CGameObject*> m_GameObject;
 	typedef list<class CGameObject*> GAMEOBJECT;
 
+	_bool a = false;
 public:
 	static CLayer* Create();
 	virtual void Free()override;
