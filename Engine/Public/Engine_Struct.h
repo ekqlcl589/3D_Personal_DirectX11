@@ -24,6 +24,17 @@ namespace Engine
 		unsigned long		_0, _1, _2;
 	}FACEINDICES32;
 
+	typedef struct tagVertex_Position_Color
+	{
+		XMFLOAT3		vPosition;
+	}VTXPOS;
+
+	typedef struct ENGINE_DLL tagVertex_Position_Color_Declaration
+	{
+		const static unsigned int						iNumElements = 1;
+		static D3D11_INPUT_ELEMENT_DESC					Elements[1];
+	}VTXPOS_DECLARATION;
+
 	typedef struct tagVertex_Position_TexCoord
 	{
 		XMFLOAT3		vPosition;
@@ -61,6 +72,32 @@ namespace Engine
 		const static unsigned int iNumElements = 3;
 		static D3D11_INPUT_ELEMENT_DESC Element[3];
 	}VTXNORTEX_DELARATION;
+
+	typedef struct tagVertex_Point
+	{
+		XMFLOAT3		vPosition;
+		XMFLOAT2		vPSize;
+	}VTXPOINT;
+
+	typedef struct tagVertex_Matrix
+	{
+		XMFLOAT4		vRight;
+		XMFLOAT4		vUp;
+		XMFLOAT4		vLook;
+		XMFLOAT4		vPosition;
+	}VTXMATRIX;
+
+	typedef struct ENGINE_DLL tagVertex_Instance_Declaration
+	{
+		const static unsigned int						iNumElements = 6;
+		static D3D11_INPUT_ELEMENT_DESC					Elements[6];
+	}VTXINSTANCE_DECLARATION;
+
+	typedef struct ENGINE_DLL tagVertex_Point_Instance_Declaration
+	{
+		const static unsigned int						iNumElements = 6;
+		static D3D11_INPUT_ELEMENT_DESC					Elements[6];
+	}VTXPOINTINSTANCE_DECLARATION;
 
 	typedef struct tagLightDesc
 	{

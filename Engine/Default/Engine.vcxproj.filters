@@ -124,6 +124,39 @@
     <Filter Include="01.Utillity\07. Fonts\Manager">
       <UniqueIdentifier>{59259fc3-63bc-4230-be9d-76d08ed229c5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utillity\03. Component\06. Navigation">
+      <UniqueIdentifier>{284c869f-ec17-456e-b75b-3926590e6a1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utillity\03. Component\06. Navigation\Cell">
+      <UniqueIdentifier>{4d7499e0-9ec5-4890-9869-0778074a3742}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utillity\03. Component\06. Navigation\Cell\ShaderFiles">
+      <UniqueIdentifier>{0201a07f-024f-488e-997d-d1c4e46bf0ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utillity\03. Component\01. VIBuffer\03. Instance">
+      <UniqueIdentifier>{8fb3825c-29f3-466a-bc90-914facc3107d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utillity\03. Component\01. VIBuffer\04. Cell">
+      <UniqueIdentifier>{6eb20eb4-7a28-46b9-995c-243290daf8f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utillity\03. Component\01. VIBuffer\03. Instance\Rect">
+      <UniqueIdentifier>{beba4ded-7371-4b12-82c7-3ec035b0f0a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utillity\03. Component\01. VIBuffer\03. Instance\Point">
+      <UniqueIdentifier>{0b2adedc-f294-44fc-b349-81246d996d50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utillity\03. Component\01. VIBuffer\02.Terrain\QuadTree">
+      <UniqueIdentifier>{6d19a16f-57ff-46bc-8320-47a9e9d1c9a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utillity\08. Frustum">
+      <UniqueIdentifier>{63233203-f2fa-48e7-8034-c0e245122ef5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utillity\09.RenderTarget">
+      <UniqueIdentifier>{733abc34-6da7-4bb3-941f-01af9339a2fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utillity\09.RenderTarget\Mgr">
+      <UniqueIdentifier>{efa4c7c9-77f3-4331-b81d-681fbf977020}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -258,6 +291,33 @@
     <ClInclude Include="..\Public\Font_Mgr.h">
       <Filter>01.Utillity\07. Fonts\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Cell.h">
+      <Filter>01.Utillity\03. Component\06. Navigation\Cell</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Navigation.h">
+      <Filter>01.Utillity\03. Component\06. Navigation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_Point_Instance.h">
+      <Filter>01.Utillity\03. Component\01. VIBuffer\03. Instance\Point</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_Rect_Instance.h">
+      <Filter>01.Utillity\03. Component\01. VIBuffer\03. Instance\Rect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_Cell.h">
+      <Filter>01.Utillity\03. Component\01. VIBuffer\04. Cell</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\QuadTree.h">
+      <Filter>01.Utillity\03. Component\01. VIBuffer\02.Terrain\QuadTree</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Frustum.h">
+      <Filter>01.Utillity\08. Frustum</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Target_Manager.h">
+      <Filter>01.Utillity\09.RenderTarget\Mgr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RenderTarget.h">
+      <Filter>01.Utillity\09.RenderTarget</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\GameInstance.cpp">
@@ -377,5 +437,40 @@
     <ClCompile Include="..\Private\Font_Mgr.cpp">
       <Filter>01.Utillity\07. Fonts\Manager</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Cell.cpp">
+      <Filter>01.Utillity\03. Component\06. Navigation\Cell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Navigation.cpp">
+      <Filter>01.Utillity\03. Component\06. Navigation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_Point_Instance.cpp">
+      <Filter>01.Utillity\03. Component\01. VIBuffer\03. Instance\Point</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_Rect_Instance.cpp">
+      <Filter>01.Utillity\03. Component\01. VIBuffer\03. Instance\Rect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_Cell.cpp">
+      <Filter>01.Utillity\03. Component\01. VIBuffer\04. Cell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\QuadTree.cpp">
+      <Filter>01.Utillity\03. Component\01. VIBuffer\02.Terrain\QuadTree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Frustum.cpp">
+      <Filter>01.Utillity\08. Frustum</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Target_Manager.cpp">
+      <Filter>01.Utillity\09.RenderTarget\Mgr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RenderTarget.cpp">
+      <Filter>01.Utillity\09.RenderTarget</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Cell.hlsl">
+      <Filter>01.Utillity\03. Component\06. Navigation\Cell\ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Deferred.hlsl">
+      <Filter>01.Utillity\03. Component\00.Renderer</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

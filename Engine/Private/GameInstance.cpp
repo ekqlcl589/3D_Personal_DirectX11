@@ -7,6 +7,8 @@
 #include "Light_Mgr.h"
 #include "CollisionMgr.h"
 #include "Font_Mgr.h"
+#include "Frustum.h"
+#include "Target_Manager.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -21,6 +23,8 @@ CGameInstance::CGameInstance()
 	, m_pLight_Mgr(CLight_Mgr::GetInstance())
 	, m_pFont_Mgr(CFont_Mgr::GetInstance())
 	, m_pCollision_Mgr(CCollisionMgr::GetInstance())
+	, m_pFrustum{ CFrustum::GetInstance() }
+	, m_pTarget_Manager{ CTarget_Manager::GetInstance() }
 {
 	Safe_AddRef(m_pGraphic_Device);
 	Safe_AddRef(m_pLevel_Manager);
@@ -32,6 +36,8 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pLight_Mgr);
 	Safe_AddRef(m_pCollision_Mgr);
 	Safe_AddRef(m_pFont_Mgr);
+	Safe_AddRef(m_pTarget_Manager);
+	Safe_AddRef(m_pFrustum);
 }
 
 HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, const GRAPHIC_DESC & GraphicDesc, _uint iNumLevels, ID3D11Device ** ppDeviceOut, ID3D11DeviceContext ** ppContextOut)
@@ -332,6 +338,14 @@ void CGameInstance::Render_Font(const _tchar * pFontTag, const _tchar * pText, c
 	 m_pFont_Mgr->Render_Font(pFontTag, pText, vPosition, vColor, vScale, fRadian, vOrigin);
 }
 
+_bool CGameInstance::isIn_WorldSpace(_fvector vPoint, _float fRadius)
+{
+	if (nullptr == m_pFrustum)
+		return false;
+
+	return m_pFrustum->isIn_WorldSpace(vPoint, fRadius);
+}
+
 
 void CGameInstance::Release_Engine()
 {
@@ -345,12 +359,16 @@ void CGameInstance::Release_Engine()
 	CLight_Mgr::GetInstance()->DestroyInstance();
 	CCollisionMgr::GetInstance()->DestroyInstance();
 	CFont_Mgr::GetInstance()->DestroyInstance();
+	CFrustum::GetInstance()->DestroyInstance();
+	CTarget_Manager::GetInstance()->DestroyInstance();
 
 	CGraphic_Device::GetInstance()->DestroyInstance();
 }
 
 void CGameInstance::Free()
 {
+	Safe_Release(m_pTarget_Manager);
+	Safe_Release(m_pFrustum);
 	Safe_Release(m_pComponent_Manager);
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pObject_Manager);

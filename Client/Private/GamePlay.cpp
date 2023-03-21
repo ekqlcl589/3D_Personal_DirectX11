@@ -32,8 +32,8 @@ HRESULT CGamePlay::Initialize()
 	//LoadMonster(L"../Data/Monster.dat");
 
 
-	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
-		return E_FAIL;
+	//if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
+	//	return E_FAIL;
 
 	if (FAILED(Ready_UI(TEXT("Layer_UI"))))
 		return E_FAIL;
@@ -156,8 +156,8 @@ HRESULT CGamePlay::Ready_UI(const _tchar * pLayerTag)
 	
 	CMonsterHPBar::OWNER Owner;
 	Owner = CMonsterHPBar::OWNER_CREATURE;
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_HPBar"), pLayerTag), &Owner))
-		return E_FAIL;
+	//if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_HPBar"), pLayerTag), &Owner))
+	//	return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
 

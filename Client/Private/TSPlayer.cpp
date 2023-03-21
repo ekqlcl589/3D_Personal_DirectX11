@@ -56,7 +56,7 @@ HRESULT CTSPlayer::Initialize(void * pArg)
 
 	if (FAILED(Add_Parts()))
 		return E_FAIL;
-
+	
 	if (FAILED(Add_Weapon()))
 		return	E_FAIL;
 
@@ -1369,9 +1369,12 @@ HRESULT CTSPlayer::Add_Parts()
 		return E_FAIL;
 
 	CHair::HAIRDESC HairDesc1 = { pHairBontPtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CHair::HAIR_BACK };
+	
 	//CHair::HAIRDESC HairDesc2 = { pHairBontPtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CHair::HAIR_FRONT };
 	//CHair::HAIRDESC HairDesc3 = { pHairBontPtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CHair::HAIR_SIDE };
 	//CHair::HAIRDESC HairDesc4 = { pHairBontPtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CHair::HAIR_TAIL };
+	
+	Safe_AddRef(pHairBontPtr);
 
 	CGameObject* pHair = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Hair"), &HairDesc1);
 
@@ -1383,8 +1386,9 @@ HRESULT CTSPlayer::Add_Parts()
 
 	if (nullptr == pHair)// || nullptr == pHair_F || nullptr == pHair_S || nullptr == pHair_T)
 		return E_FAIL;
-
+	// ¿©±â
 	m_vecParts[PART_HAIR_B].push_back(pHair);
+	
 	//m_vecParts[PART_HAIR_F].push_back(pHair_F);
 	//m_vecParts[PART_HAIR_S].push_back(pHair_S);
 	//m_vecParts[PART_HAIR_T].push_back(pHair_T);
@@ -1449,22 +1453,6 @@ HRESULT CTSPlayer::SetUp_ShaderResources()
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Set_Matrix("g_ProjMatrix", &pInstance->Get_Transformfloat4x4(CPipeLine::TS_PROJ))))
-		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Set_RawValue("g_vCamPosition", &pInstance->Get_CamPos(), sizeof(_float4))))
-		return E_FAIL;
-
-	const LIGHT_DESC* pLightDesc = pInstance->Get_Light(0);
-	if (nullptr == pLightDesc)
-		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Set_RawValue("g_vLightDir", &pLightDesc->vDirection, sizeof(_float4))))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Set_RawValue("g_vLightDiffuse", &pLightDesc->vDiffuse, sizeof(_float4))))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Set_RawValue("g_vLightSpecular", &pLightDesc->vSpecular, sizeof(_float4))))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Set_RawValue("g_vLightAmbient", &pLightDesc->vAmbient, sizeof(_float4))))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);

@@ -78,7 +78,7 @@ void CMonsterHPBar::LateTick(_double TimeDelta)
 	CGameObject* pMonster = nullptr;
 	
 	if (nullptr == p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster")))
-		return RELEASE_INSTANCE(CGameInstance);
+		return RELEASE_INSTANCE(CGameInstance); 
 
 	pMonster = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
 	// 몬스터가 죽었으면 Find 하지 말라고 해야 함

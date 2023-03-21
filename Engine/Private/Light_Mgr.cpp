@@ -28,6 +28,16 @@ HRESULT CLight_Mgr::Add_Lights(ID3D11Device * pDevice, ID3D11DeviceContext * pCo
 	return S_OK;
 }
 
+HRESULT CLight_Mgr::Render(CShader * pShader, CVIBuffer_Rect * pVIBuffer)
+{
+	for (auto& pLight : m_Lights)
+	{
+		pLight->Render(pShader, pVIBuffer);
+	}
+
+	return S_OK;
+}
+
 void CLight_Mgr::Free()
 {
 	for (auto& pLight : m_Lights)
