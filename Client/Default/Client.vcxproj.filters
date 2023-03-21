@@ -157,6 +157,9 @@
     <Filter Include="02.GameObject\06. Monster\03_Wraith\00_CursedWraith">
       <UniqueIdentifier>{aacc7d41-9163-4bf1-810b-25853c96f9f9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\06. Monster\99.MonsterWeapon\BlackBall">
+      <UniqueIdentifier>{3f37be33-4d5e-47a0-9e18-998ba754b199}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -291,6 +294,9 @@
     <ClInclude Include="..\Public\CursedWraith.h">
       <Filter>02.GameObject\06. Monster\03_Wraith\00_CursedWraith</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\BlackBall.h">
+      <Filter>02.GameObject\06. Monster\99.MonsterWeapon\BlackBall</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -413,6 +419,9 @@
     <ClCompile Include="..\Private\CursedWraith.cpp">
       <Filter>02.GameObject\06. Monster\03_Wraith\00_CursedWraith</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\BlackBall.cpp">
+      <Filter>02.GameObject\06. Monster\99.MonsterWeapon\BlackBall</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -444,6 +453,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTexHp.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTexWave.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

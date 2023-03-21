@@ -193,7 +193,6 @@ void CTSPlayer::LateTick(_double TimeDelta)
 					m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, pPart);
 			}
 		}
-
 	}
 
 
@@ -285,6 +284,10 @@ void CTSPlayer::OnCollision(CGameObject * pObj)
 	//else
 	//	m_NoStraight = false;
 
+		break;
+
+	case Engine::OBJ_MONSTER_BALL:
+		Hit(10);
 		break;
 
 	case Engine::OBJ_END:

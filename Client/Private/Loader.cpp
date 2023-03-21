@@ -27,6 +27,7 @@
 #include "GrudgeWraith.h"
 
 #include "MonsterWeapon.h"
+#include "BlackBall.h"
 #include "MonsterHPBar.h"
 
 #include "TestTile.h"
@@ -265,6 +266,8 @@ HRESULT CLoader::Loading_ForGamePlay()
 	_matrix		LocalMatrix66 = XMMatrixIdentity();
 	LocalMatrix66 = XMMatrixScaling(0.01f, 0.01f, 0.01f) *XMMatrixRotationY(XMConvertToRadians(270.0f));
 
+	_matrix Local = XMMatrixIdentity();
+
 #pragma region Monster
 	/* For.Prototype_Component_Model_TestMonster */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Boss0"),
@@ -281,6 +284,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Boss3"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Grudge_Wraith/CursedWraith.fbx", CModel::MODEL_ANIM, LocalMatrix66))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Sphere"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Test.fbx", CModel::MODEL_NONANIM, LocalMatrix66))))
 		return E_FAIL;
 
 #pragma endregion Monster
@@ -358,6 +365,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Cube_Shader"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxCubeTex.hlsl"), VTXCUBE_DELARATION::Element, VTXCUBE_DELARATION::iNumElements))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxWave"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxTexWave.hlsl"), VTXNONANIMMODEL_DELARATION::Element, VTXNONANIMMODEL_DELARATION::iNumElements))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Transform"),
@@ -503,6 +514,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CEffect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_Ball"),
+		CBlackBall::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
 	m_isFinished = true;

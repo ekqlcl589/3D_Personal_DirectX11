@@ -8,6 +8,7 @@
 #include "Ancient_StonGolem.h"
 #include "GianticCreature.h"
 #include "GrudgeWraith.h"
+#include "CursedWraith.h"
 
 CMonsterHPBar::CMonsterHPBar(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CUI(pDevice, pContext)
@@ -41,7 +42,7 @@ HRESULT CMonsterHPBar::Initialize(void * pArg)
 	if (nullptr != pArg)
 		memcpy(&m_eOwner, pArg, sizeof OWNER);
 
-	m_eOwner = OWNER_WRAITH;
+	m_eOwner = OWNER_WRAITH2;
 
 	m_fSizeX = g_iWinSizeX;
 	m_fSizeY = g_iWinSizeY;
@@ -63,7 +64,74 @@ HRESULT CMonsterHPBar::Initialize(void * pArg)
 
 void CMonsterHPBar::Tick(_double TimeDelta)
 {
-	__super::Tick(TimeDelta);
+	if (Dead)
+	{
+		CGameInstance* p = GET_INSTANCE(CGameInstance);
+		if (FAILED(p->Dleate_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster_UI"))))
+			return;
+
+		RELEASE_INSTANCE(CGameInstance);
+
+	}
+	else
+	{
+		__super::Tick(TimeDelta);
+
+		_float VertexHpY = 0.f;
+		_float TexHpY = 0.f;
+
+		CGameInstance* p = GET_INSTANCE(CGameInstance);
+		CGameObject* pMonster = nullptr;
+
+		if (nullptr == p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster")))
+		{
+			Set_Dead();
+			return RELEASE_INSTANCE(CGameInstance);
+		}
+
+		pMonster = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
+		// 몬스터가 죽었으면 Find 하지 말라고 해야 함
+		if (m_eOwner == OWNER_GOLEM)
+		{
+			MaxHP = static_cast<CAncient_StonGolem*>(pMonster)->Get_Info()._MaxHp;
+			HP = static_cast<CAncient_StonGolem*>(pMonster)->Get_Info()._Hp;
+			Dead = static_cast<CAncient_StonGolem*>(pMonster)->Get_Dead();
+		}
+		else if (m_eOwner == OWNER_CREATURE)
+		{
+			MaxHP = static_cast<CGianticCreature*>(pMonster)->Get_Info()._MaxHp;
+			HP = static_cast<CGianticCreature*>(pMonster)->Get_Info()._Hp;
+			Dead = static_cast<CGianticCreature*>(pMonster)->Get_Dead();
+		}
+
+		else if (m_eOwner == OWNER_WRAITH)
+		{
+			MaxHP = static_cast<CGrudgeWraith*>(pMonster)->Get_Info()._MaxHp;
+			HP = static_cast<CGrudgeWraith*>(pMonster)->Get_Info()._Hp;
+			Dead = static_cast<CGrudgeWraith*>(pMonster)->Get_Dead();
+		}
+		else if (m_eOwner == OWNER_WRAITH2)
+		{
+			MaxHP = static_cast<CCursedWraith*>(pMonster)->Get_Info()._MaxHp;
+			HP = static_cast<CCursedWraith*>(pMonster)->Get_Info()._Hp;
+			Dead = static_cast<CCursedWraith*>(pMonster)->Get_Dead();
+		}
+
+
+		if (HP > MaxHP)
+			HP = MaxHP;
+
+		if (HP <= 0)
+		{
+			HP = 0;
+		}
+
+		RELEASE_INSTANCE(CGameInstance);
+
+		if (Dead)
+			Set_Dead();
+
+	}
 
 }
 
@@ -71,46 +139,6 @@ void CMonsterHPBar::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
 
-	_float VertexHpY = 0.f;
-	_float TexHpY = 0.f;
-	
-	CGameInstance* p = GET_INSTANCE(CGameInstance);
-	CGameObject* pMonster = nullptr;
-	
-	if (nullptr == p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster")))
-		return RELEASE_INSTANCE(CGameInstance); 
-
-	pMonster = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
-	// 몬스터가 죽었으면 Find 하지 말라고 해야 함
-	if (m_eOwner == OWNER_GOLEM)
-	{
-		MaxHP = static_cast<CAncient_StonGolem*>(pMonster)->Get_Info()._MaxHp;
-		HP = static_cast<CAncient_StonGolem*>(pMonster)->Get_Info()._Hp;
-	}
-	else if (m_eOwner == OWNER_CREATURE)
-	{
-		MaxHP = static_cast<CGianticCreature*>(pMonster)->Get_Info()._MaxHp;
-		HP = static_cast<CGianticCreature*>(pMonster)->Get_Info()._Hp;
-	}
-
-	//if (m_eOwner == OWNER_WRAITH && true == pMonster->Get_Dead())
-	//{
-	//	MaxHP = static_cast<CGrudgeWraith*>(pMonster)->Get_Info()._MaxHp;
-	//	HP = static_cast<CGrudgeWraith*>(pMonster)->Get_Info()._Hp;
-	//}
-
-	if (HP > MaxHP)
-		HP = MaxHP;
-
-	if (HP <= 0)
-		HP = 0;
-
-	TexHpY = 0.5f - abs(HP / MaxHP);
-	VertexHpY = (-TexHpY);
-
-	
-
-	RELEASE_INSTANCE(CGameInstance);
 }
 
 HRESULT CMonsterHPBar::Render()

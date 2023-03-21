@@ -12,7 +12,7 @@ BEGIN(Client)
 class CMonsterHPBar final : public CUI
 {
 public:
-	enum OWNER {OWNER_GOLEM, OWNER_CREATURE, OWNER_WRAITH, OWNER_END};
+	enum OWNER {OWNER_GOLEM, OWNER_CREATURE, OWNER_WRAITH, OWNER_WRAITH2, OWNER_END};
 
 private:
 	CMonsterHPBar(ID3D11Device * pDevice, ID3D11DeviceContext * pContext);
@@ -37,6 +37,9 @@ private:
 
 	_float MaxHP = 0.f;
 	_float HP = 0.f;
+
+	_bool Dead = false;
+
 public:
 	static CMonsterHPBar* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext);
 	virtual CGameObject * Clone(void * pArg) override;

@@ -32,6 +32,8 @@ public:
 	void Animation(CURSEDWRAITHSTATE eType);
 	void Avoid(_double TimeDelta);
 
+	void Skill01(_double TimeDelta);
+
 	void Summons();
 
 public:

@@ -37,7 +37,7 @@ HRESULT CCursedWraith::Initialize(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPosition));
 
 	m_tInfo._MaxHp = 1000.f;
-	m_tInfo._Hp = 30.f;
+	m_tInfo._Hp = 15.f;
 
 	m_tInfo.CurrAnim = CW_Wait;
 	m_pModelCom->SetUp_Animation(m_tInfo.CurrAnim);
@@ -182,9 +182,11 @@ void CCursedWraith::Animation_State(_double TimeDelta)
 
 	//Avoid(TimeDelta);
 
-	if (!m_Test)
-		Summons();
+	//if (!m_Test)
+	//	Summons();
 
+	if(!m_Test)// && m_tInfo._Hp >= 1.0f)
+		Skill01(TimeDelta);
 }
 
 void CCursedWraith::Animation(CURSEDWRAITHSTATE eType)
@@ -288,6 +290,30 @@ void CCursedWraith::Avoid(_double TimeDelta)
 
 		if (m_tInfo.PrevAnim == CW_Avoid && m_AnimTimeAcc >= (m_AnimDuration / 2) + 22.0)
 			vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	}
+}
+
+void CCursedWraith::Skill01(_double TimeDelta)
+{
+	if (m_tInfo.PrevAnim == CW_Wait && true == m_pModelCom->Get_AnimFinished())
+	{
+		m_tInfo.CurrAnim = CW_SKILL_01;
+	}
+
+	if (m_tInfo.PrevAnim == CW_SKILL_01 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 9.0)
+	{
+		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+		CGameObject* pBall = nullptr;
+
+		_float3 Pos = { 1.f, 1.f, 2.f };
+		pBall = pInstance->Clone_GameObject_Add_Layer(TEXT("Prototype_GameObject_Effect_Ball"), &Pos);
+
+		RELEASE_INSTANCE(CGameInstance); // 이거 한 번만 불려서 삭제가 안 됨 나중에 제대로 고치셈 
+
+		m_tInfo.CurrAnim = CW_Wait;
+		m_tInfo._Hp = 5.f;
+		m_Test = true;
 	}
 }
 

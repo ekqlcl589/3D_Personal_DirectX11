@@ -65,6 +65,9 @@ private:
 
 	_float4x4 m_matWorld;
 
+	_float m_fAngleX = 0.f;
+	_float m_fAngleY = 0.f;
+
 private:
 	_float m_fDistanceValue = 5.f;
 

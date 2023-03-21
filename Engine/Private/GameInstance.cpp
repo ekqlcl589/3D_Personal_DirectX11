@@ -87,6 +87,8 @@ HRESULT CGameInstance::Tick_Engine(_double TimeDelta)
 	m_pCollision_Mgr->Check_Collision(OBJ_PLAYER, OBJ_MONSTER_WEAPONL);
 	m_pCollision_Mgr->Check_Collision(OBJ_PLAYER, OBJ_MONSTER_WEAPONR);
 
+	m_pCollision_Mgr->Check_Collision(OBJ_PLAYER, OBJ_MONSTER_BALL);
+
 	m_pObject_Manager->LateTick(TimeDelta); 
 
 	return S_OK;

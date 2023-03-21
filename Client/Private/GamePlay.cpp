@@ -32,10 +32,13 @@ HRESULT CGamePlay::Initialize()
 	//LoadMonster(L"../Data/Monster.dat");
 
 
-	//if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
-	//	return E_FAIL;
+	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
+		return E_FAIL;
 
 	if (FAILED(Ready_UI(TEXT("Layer_UI"))))
+		return E_FAIL;
+
+	if (FAILED(Ready_MonsterUI(TEXT("Layer_Monster_UI"))))
 		return E_FAIL;
 
 	//LoadData(L"../Data/Cube/Cube.dat");
@@ -154,10 +157,21 @@ HRESULT CGamePlay::Ready_UI(const _tchar * pLayerTag)
 	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Player_Skill_IconRage"), pLayerTag)))
 		return E_FAIL;
 	
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CGamePlay::Ready_MonsterUI(const _tchar * pLayerTag)
+{
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
 	CMonsterHPBar::OWNER Owner;
-	Owner = CMonsterHPBar::OWNER_CREATURE;
-	//if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_HPBar"), pLayerTag), &Owner))
-	//	return E_FAIL;
+	Owner = CMonsterHPBar::OWNER_WRAITH2;
+
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_HPBar"), pLayerTag), &Owner))
+		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
 

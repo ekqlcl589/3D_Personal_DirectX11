@@ -32,9 +32,9 @@ HRESULT CTargetCamera::Initialize(void * pArg)
 
 void CTargetCamera::Tick(_double TimeDelta)
 {
-	//Test(TimeDelta);
+	Test(TimeDelta);
 
-	Target_Renewal(TimeDelta);
+	//Target_Renewal(TimeDelta);
 
 	Key_Input(TimeDelta);
 	//if (m_pInstance->Get_DIKeyState(DIK_TAB))
@@ -140,8 +140,11 @@ void CTargetCamera::Test(_double TimeDelta)
 
 	XMLoadFloat3(&m_fDistance) = (vLook * -1);
 	fTarget.y += 3.f;
+
+	vTargetPos = (vTargetPos - m_vLook) * m_fDis;
 	//fTarget.z = (vTargetPos - m_vLook) * m_fDis;
-	XMStoreFloat(&fTarget.z, (vTargetPos - m_vLook) * m_fDis);
+	//XMStoreFloat(&fTarget.z, (vTargetPos - m_vLook) * m_fDis);
+	// fTarget z가 아니라 fTarget 자체를 
 
 	m_CameraDesc.vEye = fTarget;
 	//m_CameraDesc.vAt = vTargetPos - XMLoadFloat3(&Look);
@@ -154,13 +157,21 @@ void CTargetCamera::Test(_double TimeDelta)
 
 	_matrix RotateMat = XMMatrixIdentity();
 
+	// 앵글x,y
+	// convert to tadian
+	// rotatemat을 누적 시켜줘야 함
 	
-	if (MouseX = m_pInstance->Get_DIMouseMove(DIMM_Y))
-		RotateMat = XMMatrixRotationY(MouseX * TimeDelta);
+	if (m_fAngleX = m_pInstance->Get_DIMouseMove(DIMM_X))
+	{
+		RotateMat = XMMatrixRotationY(XMConvertToRadians(m_fAngleX));
+
+		if (m_fAngleX >= 360.f)
+			m_fAngleX = 360.f;
+	}
 
 	m_vLook = XMVector3TransformNormal(m_vLook, RotateMat);
 
-	m_Transform->LookAt(XMLoadFloat3(&fTarget));
+	m_Transform->LookAt(m_vLook);
 
 	RELEASE_INSTANCE(CGameInstance);
 }

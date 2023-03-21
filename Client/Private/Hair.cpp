@@ -150,6 +150,7 @@ HRESULT CHair::SetUp_ShaderResources()
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
+
 	return S_OK;
 }
 

@@ -165,6 +165,7 @@
   <ItemGroup>
     <ClInclude Include="..\Public\Ancient_StonGolem.h" />
     <ClInclude Include="..\Public\BackGround.h" />
+    <ClInclude Include="..\Public\BlackBall.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\Cube.h" />
     <ClInclude Include="..\Public\CursedWraith.h" />
@@ -210,6 +211,7 @@
   <ItemGroup>
     <ClCompile Include="..\Private\Ancient_StonGolem.cpp" />
     <ClCompile Include="..\Private\BackGround.cpp" />
+    <ClCompile Include="..\Private\BlackBall.cpp" />
     <ClCompile Include="..\Private\Cube.cpp" />
     <ClCompile Include="..\Private\CursedWraith.cpp" />
     <ClCompile Include="..\Private\DynamicCamera.cpp" />
@@ -268,6 +270,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTerrain.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTexHp.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTexWave.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

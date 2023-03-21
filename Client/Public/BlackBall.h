@@ -14,30 +14,14 @@ class CCollider;
 END
 
 BEGIN(Client)
-class CMonsterWeapon :
+
+class CBlackBall final :
 	public CGameObject
 {
-public:
-	enum COLLIDER { COLLIDER_AABB, COLLIDER_OBB, COLLIDER_SPHERE, COLLIDER_END };
-
-public:
-	enum WEAPONTYPE { WEAPON_MONSTER_L, WEAPON_MONSTER_R, WEAPON_MONSTER_BODY, WEAPON_END };
-	enum OWNER {OWNER_GOLEM, OWNER_CREATURE, OWNER_WRAITH, OWNER_WRAITH2, OWNER_END};
-
-	typedef struct tagWeaponDesc
-	{
-		CBone* pBonePtr;
-		_float4x4 matParentLocal;
-		CTransform* pParentTransform;
-		WEAPONTYPE WeaponType;
-		OWNER Owner;
-
-	}WEAPONDESC;
-
-protected:
-	CMonsterWeapon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CMonsterWeapon(const CMonsterWeapon& rhs);
-	virtual ~CMonsterWeapon() = default;
+private:
+	CBlackBall(ID3D11Device * pDevice, ID3D11DeviceContext * pContext);
+	CBlackBall(const CBlackBall& rhs);
+	virtual ~CBlackBall() = default;
 
 public:
 	virtual	HRESULT Initialize_Prototype();
@@ -61,23 +45,13 @@ public:
 	_bool m_bStart = { false };
 
 private:
-	_float HitTime = 0.f;
-	_bool m_bColl = false;
-
-	_bool m_bTakeHit = false;
-
-private:
 	_bool Dead = false;
 	_float Damage = 0.f;
-public:
-	WEAPONDESC m_Weapon;
-	_float4x4 m_WorldMatrix;
 
 public:
-	static CMonsterWeapon* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CBlackBall* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr);
 	virtual void Free()override;
-
 };
 
 END
