@@ -55,13 +55,15 @@ void CLayer::Tick(_double TimeDelta)
 
 void CLayer::LateTick(_double TimeDelta)
 {
-	for (auto iter = m_GameObject.begin(); iter != m_GameObject.end();)
+	for (auto iter = m_GameObject.begin(); iter != m_GameObject.end();) //¸ó½ºÅÍ Á×À¸¸é ÀÌÅÍ ³Î µÇ¼­ ¸ØÃã 
 	{
 		if (nullptr != *iter)
 		{
 			(*iter)->LateTick(TimeDelta);
 			iter++;
 		}
+		else
+			return;
 	}
 }
 

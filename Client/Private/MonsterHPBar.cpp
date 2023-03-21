@@ -77,8 +77,11 @@ void CMonsterHPBar::LateTick(_double TimeDelta)
 	CGameInstance* p = GET_INSTANCE(CGameInstance);
 	CGameObject* pMonster = nullptr;
 	
+	if (nullptr == p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster")))
+		return RELEASE_INSTANCE(CGameInstance);
+
 	pMonster = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
-	
+	// 몬스터가 죽었으면 Find 하지 말라고 해야 함
 	if (m_eOwner == OWNER_GOLEM)
 	{
 		MaxHP = static_cast<CAncient_StonGolem*>(pMonster)->Get_Info()._MaxHp;
@@ -88,7 +91,7 @@ void CMonsterHPBar::LateTick(_double TimeDelta)
 	{
 		MaxHP = static_cast<CGianticCreature*>(pMonster)->Get_Info()._MaxHp;
 		HP = static_cast<CGianticCreature*>(pMonster)->Get_Info()._Hp;
-	} 
+	}
 
 	//if (m_eOwner == OWNER_WRAITH && true == pMonster->Get_Dead())
 	//{
@@ -98,12 +101,14 @@ void CMonsterHPBar::LateTick(_double TimeDelta)
 
 	if (HP > MaxHP)
 		HP = MaxHP;
-	
+
 	if (HP <= 0)
 		HP = 0;
-	
+
 	TexHpY = 0.5f - abs(HP / MaxHP);
 	VertexHpY = (-TexHpY);
+
+	
 
 	RELEASE_INSTANCE(CGameInstance);
 }
