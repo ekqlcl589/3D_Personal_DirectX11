@@ -11,6 +11,8 @@ class CCollider;
 END
 
 BEGIN(Client)
+class CBlackBall;
+
 class CCursedWraith final :
 	public CMonster
 {
@@ -33,8 +35,15 @@ public:
 	void Avoid(_double TimeDelta);
 
 	void Skill01(_double TimeDelta);
+	void Skill02(_double TimeDelta);
+	void Skill03(_double TimeDelta);
 
 	void Summons();
+
+	void Use_Skill(_double TimeDelta);
+	void Use_Skill_Next(_double TimeDelta);
+
+	void BallCreate(_uint iCount);
 
 public:
 	CURSEDWRAITHINFO Get_Info() { return m_tInfo; }
@@ -48,6 +57,10 @@ private:
 	HRESULT Add_Coll();
 
 private:
+	_vector m_vPosition;
+	_vector m_vLook;
+
+private:
 	CURSEDWRAITHINFO m_tInfo;
 	_double m_AnimDuration = 0.0;
 	_double m_AnimTimeAcc = 0.0;
@@ -58,6 +71,11 @@ private:
 	_bool m_bWlak = false;
 
 	_bool m_Test = false;
+	_float m_fAngle = 0.f;
+
+	_float m_SkillDelay = 100.f;
+	_bool m_SkillNext = false;
+	_bool m_BallCreate = false;
 
 public:
 	static CCursedWraith* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

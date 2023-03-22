@@ -4,6 +4,7 @@
 #include "GameInstance.h"
 #include "KeyMgr.h"
 #include "Player.h"
+#include "Crocs.h"
 #include "Hair.h"
 #include "PlayerTop.h"
 #include "TwoHandedSword.h"
@@ -1412,6 +1413,26 @@ HRESULT CTSPlayer::Add_Parts()
 //
 //	m_vecParts[PART_TOP].push_back(pTop);
 ////	m_vecParts[PART_PANTS].push_back(pPants);
+
+	CBone* CrocsBontPtrR = m_pModelCom->Get_BonePtr("Foot_R");
+	CBone* CrocsBontPtrL = m_pModelCom->Get_BonePtr("Foot_L");
+	if (nullptr == CrocsBontPtrL || nullptr == CrocsBontPtrR)
+		return E_FAIL;
+
+	CCrocs::CROCSDESC CrocsDesc1 = { CrocsBontPtrL, m_pModelCom->Get_LocalMatrix(), m_pTransformCom };
+	Safe_AddRef(CrocsBontPtrL);
+
+	CCrocs::CROCSDESC CrocsDesc2 = { CrocsBontPtrR, m_pModelCom->Get_LocalMatrix(), m_pTransformCom };
+	Safe_AddRef(CrocsBontPtrR);
+
+	CGameObject* pCrocsL = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Crocs"), &CrocsDesc1);
+	CGameObject* pCrocsR = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Crocs"), &CrocsDesc2);
+
+	if (nullptr == pCrocsL || nullptr == pCrocsR)
+		return E_FAIL;
+	
+	m_vecParts[PART_CROCS].push_back(pCrocsL);
+	m_vecParts[PART_CROCSR].push_back(pCrocsR);
 
 	RELEASE_INSTANCE(CGameInstance);
 

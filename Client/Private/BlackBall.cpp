@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\BlackBall.h"
 #include "GameInstance.h"
+#include "BallPoolMgr.h"
 
 CBlackBall::CBlackBall(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -28,11 +29,12 @@ HRESULT CBlackBall::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	//m_Weapon.WeaponType = WEAPON_MONSTER_R;
+	memcpy(&m_vPosition, pArg, sizeof(_vector));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vPosition);
 
-	_float3 fPosition = { 1.f, 1.f, 1.f }; // 임시 위치값
-	memcpy(&fPosition, pArg, sizeof _float3);
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPosition));
+
+	//Dead = false;
+	//m_LifeTime = 10.f;
 
 	m_eCollisionState = OBJ_MONSTER_BALL;
 	m_iObjID = 9;
@@ -54,6 +56,7 @@ void CBlackBall::Tick(_double TimeDelta)
 	{
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
+		Free();
 		if (FAILED(pInstance->Dleate_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Ball"))))
 			return ;
 		RELEASE_INSTANCE(CGameInstance);
@@ -61,14 +64,24 @@ void CBlackBall::Tick(_double TimeDelta)
 	}
 	else
 	{
+		//CBallPoolMgr::GetInstance()->Collect_Object(this);
+
+		m_LifeTime -= TimeDelta * 1.f;
+
+		if (m_LifeTime <= 0.0)
+		{
+			m_LifeTime = 0.0;
+			Dead = true;
+			return;
+		}
+
 		__super::Tick(TimeDelta);
 
 		if (nullptr != m_pColliderCom)
 			m_pColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
 
+		m_pTransformCom->Go_Straight(TimeDelta * 1.f);
 	}
-
-	//m_pTransformCom->Go_Straight(1.0 * TimeDelta);
 }
 
 void CBlackBall::LateTick(_double TimeDelta)

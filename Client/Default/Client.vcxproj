@@ -165,8 +165,10 @@
   <ItemGroup>
     <ClInclude Include="..\Public\Ancient_StonGolem.h" />
     <ClInclude Include="..\Public\BackGround.h" />
+    <ClInclude Include="..\Public\BallPoolMgr.h" />
     <ClInclude Include="..\Public\BlackBall.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
+    <ClInclude Include="..\Public\Crocs.h" />
     <ClInclude Include="..\Public\Cube.h" />
     <ClInclude Include="..\Public\CursedWraith.h" />
     <ClInclude Include="..\Public\DynamicCamera.h" />
@@ -211,7 +213,9 @@
   <ItemGroup>
     <ClCompile Include="..\Private\Ancient_StonGolem.cpp" />
     <ClCompile Include="..\Private\BackGround.cpp" />
+    <ClCompile Include="..\Private\BallPoolMgr.cpp" />
     <ClCompile Include="..\Private\BlackBall.cpp" />
+    <ClCompile Include="..\Private\Crocs.cpp" />
     <ClCompile Include="..\Private\Cube.cpp" />
     <ClCompile Include="..\Private\CursedWraith.cpp" />
     <ClCompile Include="..\Private\DynamicCamera.cpp" />
@@ -264,6 +268,7 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Cell.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimModel.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCubeTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxModel.hlsl" />

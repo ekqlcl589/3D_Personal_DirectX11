@@ -32,9 +32,9 @@ HRESULT CTargetCamera::Initialize(void * pArg)
 
 void CTargetCamera::Tick(_double TimeDelta)
 {
-	Test(TimeDelta);
+	//Test(TimeDelta);
 
-	//Target_Renewal(TimeDelta);
+	Target_Renewal(TimeDelta);
 
 	Key_Input(TimeDelta);
 	//if (m_pInstance->Get_DIKeyState(DIK_TAB))

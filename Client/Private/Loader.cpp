@@ -12,6 +12,7 @@
 #include "Cube.h"
 
 #include "Hair.h"
+#include "Crocs.h"
 #include "Player.h"
 #include "TSPlayer.h"
 #include "PlayerTop.h"
@@ -267,7 +268,7 @@ HRESULT CLoader::Loading_ForGamePlay()
 	LocalMatrix66 = XMMatrixScaling(0.01f, 0.01f, 0.01f) *XMMatrixRotationY(XMConvertToRadians(270.0f));
 
 	_matrix Local = XMMatrixIdentity();
-
+	Local = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 #pragma region Monster
 	/* For.Prototype_Component_Model_TestMonster */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Boss0"),
@@ -287,7 +288,7 @@ HRESULT CLoader::Loading_ForGamePlay()
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Sphere"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Test.fbx", CModel::MODEL_NONANIM, LocalMatrix66))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Test.fbx", CModel::MODEL_NONANIM, Local))))
 		return E_FAIL;
 
 #pragma endregion Monster
@@ -300,6 +301,8 @@ HRESULT CLoader::Loading_ForGamePlay()
 	_matrix		LocalMatrix5 = XMMatrixIdentity();
 	LocalMatrix5 = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixTranslation(0.f, -1.f, 0.f) * XMMatrixRotationZ(XMConvertToRadians(270.0f));
 
+	_matrix Locals = XMMatrixIdentity();
+	Locals = XMMatrixScaling(0.25f, 0.25f, 0.25f);
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Hair_Back"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Head/Hair/Hair3.fbx", CModel::MODEL_NONANIM, LocalMatrix))))
 		return E_FAIL;
@@ -314,6 +317,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Hair_Tail"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Head/Hair/h_t.fbx", CModel::MODEL_NONANIM, LocalMatrix5))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Crocs"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Parts/Crocs/Crocs_item.fbx", CModel::MODEL_NONANIM, Locals))))
 		return E_FAIL;
 
 #pragma endregion HairModel
@@ -449,6 +456,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Hair"),
 		CHair::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Crocs"),
+		CCrocs::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_HPBar"),

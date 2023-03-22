@@ -4,6 +4,7 @@
 #include "Light_Mgr.h"
 #include "VIBuffer_Rect.h"
 #include "Shader.h"
+#include "PipeLine.h"
 
 CRenderer::CRenderer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	:CComponent(pDevice, pContext)
@@ -35,9 +36,17 @@ HRESULT CRenderer::Initialize_Prototype()
 		DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.0f))))
 		return E_FAIL;
 
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Depth"), ViewportDesc.Width, ViewportDesc.Height,
+		DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.0f))))
+		return E_FAIL;
+
 	/* For.Target_Shade */
 	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Shade"), ViewportDesc.Width, ViewportDesc.Height,
 		DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 1.0f))))
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Specular"), ViewportDesc.Width, ViewportDesc.Height,
+		DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
 	/* »ý¼º ·»´õÅ¸°ÙµéÀ» ¿ëµµ¿¡ µû¶ó ¹­´Â´Ù. */
@@ -46,9 +55,13 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_Deferred"), TEXT("Target_Normal"))))
 		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_Deferred"), TEXT("Target_Depth"))))
+		return E_FAIL;
 
 	/* For.MRT_LightAcc */
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_LightAcc"), TEXT("Target_Shade"))))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_LightAcc"), TEXT("Target_Specular"))))
 		return E_FAIL;
 
 	m_pVIBuffer = CVIBuffer_Rect::Create(m_pDevice, m_pContext);
@@ -72,7 +85,11 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Normal"), 100.0f, 300.f, 200.f, 200.f)))
 		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Shade"), 100.f, 500.f, 200.f, 200.f)))
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Depth"), 100.0f, 500.f, 200.f, 200.f)))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Shade"), 300.f, 100.f, 200.f, 200.f)))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Specular"), 300.f, 300.f, 200.f, 200.f)))
 		return E_FAIL;
 #endif
 
@@ -152,36 +169,6 @@ HRESULT CRenderer::Render_DebugGroup()
 	return S_OK;
 }
 
-CRenderer * CRenderer::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
-{
-	CRenderer * pInstance = new CRenderer(pDevice, pContext);
-
-	if (FAILED(pInstance->Initialize_Prototype()))
-	{
-		MSG_BOX("Renderer Create Fail");
-		Safe_Release(pInstance);
-	}
-	return pInstance;
-}
-
-CComponent * CRenderer::Clone(void * pArg)
-{
-	AddRef();
-
-	return this;
-}
-
-void CRenderer::Free()
-{
-	__super::Free();
-
-	Safe_Release(m_pLight_Manager);
-	Safe_Release(m_pShader);
-	Safe_Release(m_pVIBuffer);
-	Safe_Release(m_pTarget_Manager);
-
-}
-
 void CRenderer::Render_Priority()
 {
 	for (auto& pGameObject : m_RenderObject[RENDER_PRIORITY])
@@ -229,7 +216,21 @@ void CRenderer::Render_Lights()
 	if (FAILED(m_pShader->Set_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return;
 
+	CPipeLine* pPipeLine = GET_INSTANCE(CPipeLine);
+
+	if (FAILED(m_pShader->Set_Matrix("g_ViewMatrixInv", &pPipeLine->Get_Transformfloat4x4Inverse(CPipeLine::TS_VIEW))))
+		return;
+	if (FAILED(m_pShader->Set_Matrix("g_ProjMatrixInv", &pPipeLine->Get_Transformfloat4x4Inverse(CPipeLine::TS_VIEW))))
+		return;
+	if (FAILED(m_pShader->Set_RawValue("g_vCamPosition", &pPipeLine->Get_CamPos(), sizeof(_float4))))
+		return;
+
+	RELEASE_INSTANCE(CPipeLine);
+	
 	if (FAILED(m_pTarget_Manager->Set_ShaderResourceView(m_pShader, TEXT("Target_Normal"), "g_NormalTexture")))
+		return;
+
+	if (FAILED(m_pTarget_Manager->Set_ShaderResourceView(m_pShader, TEXT("Target_Depth"), "g_DepthTextrue")))
 		return;
 
 	m_pLight_Manager->Render(m_pShader, m_pVIBuffer);
@@ -253,6 +254,8 @@ void CRenderer::Render_Blend()
 	if (FAILED(m_pTarget_Manager->Set_ShaderResourceView(m_pShader, TEXT("Target_Shade"), "g_ShadeTexture")))
 		return;
 
+	if (FAILED(m_pTarget_Manager->Set_ShaderResourceView(m_pShader, TEXT("Target_Specular"), "g_SpecularTexture")))
+		return;
 
 	m_pShader->Begin(3);
 	m_pVIBuffer->Render();
@@ -292,4 +295,34 @@ void CRenderer::Render_UI()
 		Safe_Release(pGameObject);
 	}
 	m_RenderObject[RENDER_UI].clear();
+}
+
+CRenderer * CRenderer::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+{
+	CRenderer * pInstance = new CRenderer(pDevice, pContext);
+
+	if (FAILED(pInstance->Initialize_Prototype()))
+	{
+		MSG_BOX("Renderer Create Fail");
+		Safe_Release(pInstance);
+	}
+	return pInstance;
+}
+
+CComponent * CRenderer::Clone(void * pArg)
+{
+	AddRef();
+
+	return this;
+}
+
+void CRenderer::Free()
+{
+	__super::Free();
+
+	Safe_Release(m_pLight_Manager);
+	Safe_Release(m_pShader);
+	Safe_Release(m_pVIBuffer);
+	Safe_Release(m_pTarget_Manager);
+
 }

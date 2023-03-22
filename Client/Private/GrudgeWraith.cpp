@@ -306,7 +306,7 @@ void CGrudgeWraith::Animation(WRAITHSTATE eType)
 
 void CGrudgeWraith::Use_Skill(_double TimeDelta)
 {
-	int RandSkill = 0;
+	_uint RandSkill = 0;
 
 	RandSkill = rand() % 3;
 

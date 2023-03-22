@@ -137,7 +137,7 @@ CGameObject * CObject_Manager::Clone_GameObject_Add_Layer(const _tchar * pProtot
 	if (nullptr == pGameObject)
 		return nullptr;
 
-	CLayer* pLayer = nullptr;
+	CLayer* pLayer = Find_Layer(3, pPrototypeTag);
 
 	if (nullptr == pLayer)
 	{

@@ -45,8 +45,12 @@ public:
 	_bool m_bStart = { false };
 
 private:
+	_vector m_vPosition;
+	_vector m_vLook;
+
 	_bool Dead = false;
 	_float Damage = 0.f;
+	_double m_LifeTime = 5.f;
 
 public:
 	static CBlackBall* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

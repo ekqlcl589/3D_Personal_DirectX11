@@ -3,7 +3,7 @@
 #include "GameInstance.h"
 #include "MonsterWeapon.h"
 #include "GrudgeWraith.h"
-
+#include "BallPoolMgr.h"
 CCursedWraith::CCursedWraith(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CMonster(pDevice, pContext)
 {
@@ -64,6 +64,9 @@ void CCursedWraith::Tick(_double TimeDelta)
 		__super::Tick(TimeDelta);
 
 		m_pTransformCom->LookAt(m_vTargetPos);
+
+		m_vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		m_vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 
 		Animation_State(TimeDelta);
 
@@ -183,10 +186,24 @@ void CCursedWraith::Animation_State(_double TimeDelta)
 	//Avoid(TimeDelta);
 
 	//if (!m_Test)
-	//	Summons();
+	//Summons();
 
-	if(!m_Test)// && m_tInfo._Hp >= 1.0f)
-		Skill01(TimeDelta);
+	//if (!m_bAttack && m_SkillDelay >= 0)
+	//	--m_SkillDelay;
+	//else if (false == m_bWlak && !m_bAttack && m_SkillDelay < 0)
+	//	Use_Skill(TimeDelta);
+	//
+	//Use_Skill_Next(TimeDelta);
+
+	Skill01(TimeDelta);
+
+	//if (m_tInfo._Hp <= 500.f)
+	//{
+	//	m_Test = false;
+	//	Summons();
+	//}
+	//BallCreate(7);
+
 }
 
 void CCursedWraith::Animation(CURSEDWRAITHSTATE eType)
@@ -300,21 +317,50 @@ void CCursedWraith::Skill01(_double TimeDelta)
 		m_tInfo.CurrAnim = CW_SKILL_01;
 	}
 
-	if (m_tInfo.PrevAnim == CW_SKILL_01 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 9.0)
+	if (m_tInfo.PrevAnim == CW_SKILL_01 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 9.0 && m_AnimTimeAcc <= (m_AnimDuration / 2) + 10.0)
 	{
-		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+		for (_uint i = 0; i < 7; i++)
+		{
+			_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			_matrix matRotate = XMMatrixIdentity();
+			_float Angle = XMConvertToRadians(45.f);
 
-		CGameObject* pBall = nullptr;
+			matRotate = XMMatrixRotationY(Angle + i * Angle);
 
-		_float3 Pos = { 1.f, 1.f, 2.f };
-		pBall = pInstance->Clone_GameObject_Add_Layer(TEXT("Prototype_GameObject_Effect_Ball"), &Pos);
+			vPosition = XMVector3TransformCoord(vPosition, matRotate);
+			CGameInstance* Pinstance = GET_INSTANCE(CGameInstance);
 
-		RELEASE_INSTANCE(CGameInstance); // 이거 한 번만 불려서 삭제가 안 됨 나중에 제대로 고치셈 
+			CGameObject* pBall = nullptr;
 
-		m_tInfo.CurrAnim = CW_Wait;
-		m_tInfo._Hp = 5.f;
-		m_Test = true;
+			pBall = Pinstance->Clone_GameObject_Add_Layer(TEXT("Prototype_GameObject_Effect_Ball"), &vPosition);
+
+			RELEASE_INSTANCE(CGameInstance);
+		}
+
 	}
+
+	if (m_tInfo.PrevAnim == CW_SKILL_01 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 59.0)
+	{
+		m_tInfo.CurrAnim = CW_Wait;
+		m_Test = true;
+
+	}
+}
+
+void CCursedWraith::Skill02(_double TimeDelta)
+{
+	m_tInfo.CurrAnim = CW_SKILL_02;
+	m_bAttack = true;
+	m_SkillNext = true;
+	m_BallCreate = true;
+
+}
+
+void CCursedWraith::Skill03(_double TimeDelta)
+{
+	m_tInfo.CurrAnim = CW_SKILL_02;
+	m_bAttack = true;
+	m_SkillNext = true;
 }
 
 void CCursedWraith::Summons()
@@ -337,6 +383,67 @@ void CCursedWraith::Summons()
 
 		m_tInfo.CurrAnim = CW_Wait;
 		m_Test = true;
+	}
+}
+
+void CCursedWraith::Use_Skill(_double TimeDelta)
+{
+	_uint RandSkill = 0;
+
+	RandSkill = rand() % 2;
+
+	switch (RandSkill)
+	{
+	case 0:
+		Skill01(TimeDelta);
+		break;
+
+	case 1:
+		Skill02(TimeDelta);
+		break;
+
+	//case 2:
+	//	Skill03(TimeDelta);
+	//	break;
+
+	default:
+		break;
+	}
+	m_SkillDelay = 100.f;
+}
+
+void CCursedWraith::Use_Skill_Next(_double TimeDelta)
+{
+	if (m_tInfo.PrevAnim == CW_SKILL_02 && m_AnimTimeAcc >= m_AnimDuration / 2)
+	{
+		m_BallCreate = false;
+		//BallCreate(7);
+	}
+
+	if (m_tInfo.PrevAnim == CW_SKILL_02 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 67.0)
+	{
+		m_tInfo.CurrAnim = CW_Wait;
+		m_bAttack = false;
+		m_SkillNext = false;
+	}
+}
+
+void CCursedWraith::BallCreate(_uint iCount)
+{
+	if ( true == m_BallCreate)
+	{
+
+		for (_uint i = 0; i < iCount; i++)
+		{
+			CGameInstance* Pinstance = GET_INSTANCE(CGameInstance);
+
+			CGameObject* pBall = nullptr;
+
+			pBall = Pinstance->Clone_GameObject_Add_Layer(TEXT("Prototype_GameObject_Effect_Ball"));
+
+			RELEASE_INSTANCE(CGameInstance);
+
+		}
 	}
 }
 
@@ -363,7 +470,6 @@ HRESULT CCursedWraith::Add_Components()
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxAnimModel"),
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
-
 
 	return S_OK;
 }
