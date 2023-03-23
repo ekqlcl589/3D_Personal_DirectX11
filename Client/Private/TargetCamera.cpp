@@ -302,6 +302,10 @@ void CTargetCamera::Set_CameraPos(_float x, _float z)
 	m_CameraDesc.vEye.z = z - 9.f;
 }
 
+void CTargetCamera::Camera_Shake(_fvector vLook, _double TimeDelta)
+{
+}
+
 void CTargetCamera::Mouse_Check(_double TimeDelta)
 {
 }

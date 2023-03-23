@@ -28,6 +28,7 @@ public:
 	virtual void LateTick(_double TimeDelta) override;
 	virtual HRESULT Render() override;
 	virtual void OnCollision(CGameObject* pObj)override;
+	virtual void EnterCollision(CGameObject* pObj) override;
 
 public:
 	void Animation_State(_double TimeDelta);
@@ -45,9 +46,12 @@ public:
 
 	void BallCreate(_uint iCount);
 
+	void Hit(_double TimeDelta);
+
 public:
 	CURSEDWRAITHINFO Get_Info() { return m_tInfo; }
 	void Set_Info(_uint iDamage) { m_tInfo._Hp -= iDamage; }
+	void Set_Hit(_bool Hit) { m_tInfo._Hit = Hit; }
 
 	_bool Get_Attack() { return m_bAttack; }
 
@@ -70,13 +74,18 @@ private:
 	_bool m_bAttack = false;
 	_bool m_bWlak = false;
 
-	_bool m_Test = false;
+	_bool m_bSummons = false;
 	_float m_fAngle = 0.f;
 
-	_float m_SkillDelay = 100.f;
+	_float m_SkillDelay = 70.f;
 	_bool m_SkillNext = false;
 	_bool m_BallCreate = false;
 
+	_bool m_Skill1 = false;
+	_bool m_Skill2 = false;
+	_bool m_Skill3 = false;
+
+	_bool m_bAvoid = false;
 public:
 	static CCursedWraith* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

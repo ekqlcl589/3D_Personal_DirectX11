@@ -27,6 +27,7 @@ public:
 	virtual void LateTick(_double TimeDelta) override;
 	virtual HRESULT Render() override;
 	virtual void OnCollision(CGameObject* pObj)override;
+	virtual void EnterCollision(CGameObject* pObj) override;
 
 public:
 	void Animation_State(_double TimeDelta);
@@ -39,6 +40,7 @@ public:
 
 private:
 	void Run(_double TimeDelta);
+	void Hit(const _int & _Damage);
 
 	void Skill01(_double TimeDelta);
 	void Skill01_1();
@@ -71,10 +73,16 @@ private:
 	_bool m_bAttack = false;
 	_bool m_bWlak = false;
 
-	_float m_SkillDelay = 200.f;
+	_float m_SkillDelay = 50.f;
 
 	_bool m_Skill1Pair = false;
 	_bool m_SkillNext = false;
+
+	_bool m_bSkill5 = false;
+	_bool m_bHit = false;
+	_bool m_bGod = false;
+
+	_uint Damage = 0;
 
 public:
 	static CGrudgeWraith* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

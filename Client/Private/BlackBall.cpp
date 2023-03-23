@@ -59,7 +59,7 @@ HRESULT CBlackBall::Initialize(void * pArg)
 		m_vLook = XMVector3Normalize(m_BallDesc.vLook);
 
 		XMStoreFloat3(&m_fPos, m_vPosition);
-		m_fPos.y = 10.f;
+		m_fPos.y = 20.f;
 
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_fPos));
 		m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_vLook * -1);
@@ -67,8 +67,25 @@ HRESULT CBlackBall::Initialize(void * pArg)
 	}
 
 
-	//Dead = false;
-	//m_LifeTime = 10.f;
+	if (m_BallDesc.eType == TYPE_DDEBASI)
+	{
+		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Sphere2"),
+			TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+			return E_FAIL;
+
+		m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.0f));
+
+	}
+	else
+	{
+		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Sphere"),
+			TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+			return E_FAIL;
+	}
+
+	m_bDead = false;
+	Dead = false;
+	m_LifeTime = 10.f;
 
 	m_eCollisionState = OBJ_MONSTER_BALL;
 	m_iObjID = 9;
@@ -85,15 +102,14 @@ HRESULT CBlackBall::Initialize(void * pArg)
 
 void CBlackBall::Tick(_double TimeDelta)
 {
-	if (Dead)
+	if (m_bDead)
 	{
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-		Free();
 		if (FAILED(pInstance->Dleate_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Ball"))))
-			return ;
-		RELEASE_INSTANCE(CGameInstance);
+			return;
 
+		RELEASE_INSTANCE(CGameInstance);
 	}
 	else
 	{
@@ -103,10 +119,11 @@ void CBlackBall::Tick(_double TimeDelta)
 		{
 			m_LifeTime = 0.0;
 			Dead = true;
-			return;
+			//return;
 		}
 
 		__super::Tick(TimeDelta);
+		Add_Collied(this);
 
 		if (nullptr != m_pColliderCom)
 			m_pColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
@@ -115,11 +132,11 @@ void CBlackBall::Tick(_double TimeDelta)
 		{	
 
 			XMStoreFloat3(&m_fPos, m_vPosition);
-			m_fPos.y -= 3.f * TimeDelta;
-			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_fPos));
+			m_pTransformCom->Go_Straight(TimeDelta * 3.f);
 
 		}
-		//m_pTransformCom->Go_Straight(TimeDelta * 1.f);
+		else
+			m_pTransformCom->Go_Straight(TimeDelta * 1.5f);
 	}
 }
 
@@ -175,6 +192,8 @@ void CBlackBall::OnCollision(CGameObject * pObj)
 	{
 	case Engine::OBJ_PLAYER:
 		Dead = true;
+		//Set_Dead();
+		// 카메라 쉐이크 true;
 		break;
 	case Engine::OBJ_WEAPON_SS:
 		break;
@@ -214,20 +233,6 @@ HRESULT CBlackBall::Add_Components()
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Transform"),
 		TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))
 		return E_FAIL;
-
-	if (m_BallDesc.eType == TYPE_DDEBASI)
-	{
-		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Sphere2"),
-			TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
-			return E_FAIL;
-
-	}
-	else
-	{
-		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Sphere"),
-			TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
-			return E_FAIL;
-	}
 
 	CCollider::COLLIDERDESC ColliderDesc;
 	ZeroMemory(&ColliderDesc, sizeof ColliderDesc);

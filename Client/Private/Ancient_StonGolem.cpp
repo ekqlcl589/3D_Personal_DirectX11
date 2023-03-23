@@ -196,6 +196,10 @@ void CAncient_StonGolem::OnCollision(CGameObject * pObj)
 
 }
 
+void CAncient_StonGolem::EnterCollision(CGameObject * pObj)
+{
+}
+
 
 HRESULT CAncient_StonGolem::Add_Coll()
 {

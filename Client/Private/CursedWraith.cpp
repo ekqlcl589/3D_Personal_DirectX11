@@ -38,8 +38,9 @@ HRESULT CCursedWraith::Initialize(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPosition));
 
 	m_tInfo._MaxHp = 1000.f;
-	m_tInfo._Hp = 15.f;
+	m_tInfo._Hp = 1000.f;
 
+	m_tInfo._Hit = false;
 	m_tInfo.CurrAnim = CW_Wait;
 	m_pModelCom->SetUp_Animation(m_tInfo.CurrAnim);
 
@@ -96,6 +97,8 @@ void CCursedWraith::LateTick(_double TimeDelta)
 	if (!m_bDead)
 	{
 		__super::LateTick(TimeDelta);
+
+		Hit(TimeDelta);
 
 		m_pModelCom->Play_Animation(TimeDelta);
 		m_AnimDuration = m_pModelCom->Get_AnimDuration();
@@ -169,6 +172,10 @@ void CCursedWraith::OnCollision(CGameObject * pObj)
 {
 }
 
+void CCursedWraith::EnterCollision(CGameObject * pObj)
+{
+}
+
 void CCursedWraith::Animation_State(_double TimeDelta)
 {
 	if (m_tInfo._Hp <= 1.f)
@@ -180,7 +187,6 @@ void CCursedWraith::Animation_State(_double TimeDelta)
 		{
 			m_tInfo._Hp = 0.f;
 			Set_Dead();
-			//DeleteObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster3"));
 		}
 	}
 
@@ -189,21 +195,22 @@ void CCursedWraith::Animation_State(_double TimeDelta)
 	//if (!m_Test)
 	//Summons();
 
-	//if (!m_bAttack && m_SkillDelay >= 0)
-	//	--m_SkillDelay;
-	//else if (false == m_bWlak && !m_bAttack && m_SkillDelay < 0)
-	//	Use_Skill(TimeDelta);
-	//
-	//Use_Skill_Next(TimeDelta);
+	if (!m_bAttack && m_SkillDelay >= 0)
+		--m_SkillDelay;
+	else if (false == m_bWlak && false == m_tInfo._Hit && !m_bAttack && m_SkillDelay < 0)
+		Use_Skill(TimeDelta);
+	
 
+	Skill01(TimeDelta);
+	Skill02(TimeDelta);
 	Skill03(TimeDelta);
 
-	//if (m_tInfo._Hp <= 500.f)
-	//{
-	//	m_Test = false;
-	//	Summons();
-	//}
-	//BallCreate(7);
+	if (m_tInfo._Hp <= 800.f)
+	{
+		Summons();
+	}
+
+	//Avoid(TimeDelta); // 스킬을 쓰고 나면 무조건 한 번은 뒤로 도망 
 
 }
 
@@ -255,7 +262,9 @@ void CCursedWraith::Animation(CURSEDWRAITHSTATE eType)
 			break;
 		case Engine::CW_RTDOWN_AIR_LENDING_F_F:
 		case Engine::CW_RTDOWN_F_F:
+			break;
 		case Engine::CW_RTSTAND_BIG_F:
+			m_iAnimIndex = 16;
 			break;
 		case Engine::CW_SKILL_01:
 			m_iAnimIndex = 17;
@@ -301,19 +310,22 @@ void CCursedWraith::Avoid(_double TimeDelta)
 {
 	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
-	if (!m_bAttack)
+	if (m_bAvoid)
 	{
 		m_tInfo.CurrAnim = CW_Avoid;
 		m_pTransformCom->Go_Back(0.5 * TimeDelta);
 
 		if (m_tInfo.PrevAnim == CW_Avoid && m_AnimTimeAcc >= (m_AnimDuration / 2) + 22.0)
+		{
 			vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			m_bAvoid = false;
+		}
 	}
 }
 
 void CCursedWraith::Skill01(_double TimeDelta)
 {
-	if (m_tInfo.PrevAnim == CW_Wait && true == m_pModelCom->Get_AnimFinished())
+	if (m_Skill1 && m_tInfo.PrevAnim == CW_Wait && true == m_pModelCom->Get_AnimFinished())
 	{
 		m_bAttack = true;
 		m_tInfo.CurrAnim = CW_SKILL_01;
@@ -355,15 +367,16 @@ void CCursedWraith::Skill01(_double TimeDelta)
 	if (m_tInfo.PrevAnim == CW_SKILL_01 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 59.0)
 	{
 		m_tInfo.CurrAnim = CW_Wait;
-		m_Test = true;
 		m_bAttack = false;
+		m_Skill1 = true;
+		m_bAvoid = true;
 
 	}
 }
 
 void CCursedWraith::Skill02(_double TimeDelta)
 {
-	if (m_tInfo.PrevAnim == CW_Wait && true == m_pModelCom->Get_AnimFinished())
+	if (m_Skill2 && m_tInfo.PrevAnim == CW_Wait && true == m_pModelCom->Get_AnimFinished())
 	{
 		m_tInfo.CurrAnim = CW_SKILL_02;
 		m_bAttack = true;
@@ -377,14 +390,14 @@ void CCursedWraith::Skill02(_double TimeDelta)
 			ZeroMemory(&BallDesc, sizeof(CBlackBall::BALLDESC));
 
 			_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-			
+			_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 			_float3 fPos;
 			
 			XMStoreFloat3(&fPos, vPosition);
 
 			fPos.x = 1.f + i;
-
-			BallDesc.vLook = XMLoadFloat3(&fPos);
+			BallDesc.vPosition = XMLoadFloat3(&fPos);
+			BallDesc.vLook = XMLoadFloat3(&fPos); //vLook;
 			BallDesc.eType = CBlackBall::TYPE_3;
 
 			CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
@@ -402,13 +415,15 @@ void CCursedWraith::Skill02(_double TimeDelta)
 		m_tInfo.CurrAnim = CW_Wait;
 		m_bAttack = false;
 		m_SkillNext = false;
+		m_Skill2 = false;
+		m_bAvoid = true;
 	}
 
 }
 
 void CCursedWraith::Skill03(_double TimeDelta)
 {
-	if (m_tInfo.PrevAnim == CW_Wait && true == m_pModelCom->Get_AnimFinished())
+	if (m_Skill3 && m_tInfo.PrevAnim == CW_Wait && true == m_pModelCom->Get_AnimFinished())
 	{
 		m_tInfo.CurrAnim = CW_SKILL_03;
 	}
@@ -431,19 +446,20 @@ void CCursedWraith::Skill03(_double TimeDelta)
 		RELEASE_INSTANCE(CGameInstance);
 
 		m_tInfo.CurrAnim = CW_Wait;
-		m_Test = true;
+		m_Skill3 = false;
+		m_bAvoid = true;
 	}
 }
 
 void CCursedWraith::Summons()
 {
 
-	if (m_tInfo.PrevAnim == CW_Wait && true == m_pModelCom->Get_AnimFinished())
+	if (!m_bSummons && m_tInfo.PrevAnim == CW_Wait && true == m_pModelCom->Get_AnimFinished())
 	{
-		m_tInfo.CurrAnim = CW_SKILL_03;
+		m_tInfo.CurrAnim = CW_SKILL_04;
 	}
 
-	if (m_tInfo.PrevAnim == CW_SKILL_03 && m_AnimTimeAcc >= 145.0)
+	if (m_tInfo.PrevAnim == CW_SKILL_04 && m_AnimTimeAcc >= 145.0)
 	{
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
@@ -454,7 +470,9 @@ void CCursedWraith::Summons()
 		RELEASE_INSTANCE(CGameInstance);
 
 		m_tInfo.CurrAnim = CW_Wait;
-		m_Test = true;
+		m_bSummons = true;
+		m_bAvoid = true;
+
 	}
 }
 
@@ -462,26 +480,26 @@ void CCursedWraith::Use_Skill(_double TimeDelta)
 {
 	_uint RandSkill = 0;
 
-	RandSkill = rand() % 2;
+	RandSkill = rand() % 3;
 
 	switch (RandSkill)
 	{
 	case 0:
-		Skill01(TimeDelta);
+		m_Skill3 = true;
 		break;
 
 	case 1:
-		Skill02(TimeDelta);
+		m_Skill2 = true;
 		break;
 
-	//case 2:
-	//	Skill03(TimeDelta);
-	//	break;
+	case 2:
+		m_Skill1 = true;
+		break;
 
 	default:
 		break;
 	}
-	m_SkillDelay = 100.f;
+	m_SkillDelay = 70.f;
 }
 
 void CCursedWraith::Use_Skill_Next(_double TimeDelta)
@@ -517,6 +535,19 @@ void CCursedWraith::BallCreate(_uint iCount)
 
 		}
 	}
+}
+
+void CCursedWraith::Hit(_double TimeDelta)
+{
+	if (m_tInfo._Hit)
+	{
+		m_pTransformCom->Go_Back(TimeDelta * 0.09);
+		m_tInfo.CurrAnim = CW_RTSTAND_BIG_F;
+		m_tInfo._Hit = false;
+	}
+
+	if (m_tInfo.PrevAnim == CW_RTSTAND_BIG_F && true == m_pModelCom->Get_AnimFinished())
+		m_tInfo.CurrAnim = CW_Wait;
 }
 
 HRESULT CCursedWraith::Add_Components()

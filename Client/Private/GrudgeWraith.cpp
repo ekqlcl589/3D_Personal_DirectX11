@@ -2,7 +2,7 @@
 #include "..\Public\GrudgeWraith.h"
 #include "GameInstance.h"
 #include "MonsterWeapon.h"
-
+#include "TSPlayer.h"
 CGrudgeWraith::CGrudgeWraith(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CMonster(pDevice, pContext)
 {
@@ -35,108 +35,269 @@ HRESULT CGrudgeWraith::Initialize(void * pArg)
 	_float3 fPosition = { 5.f, 0.f, 5.f }; // 임시 위치값
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPosition));
 
-	m_tInfo._MaxHp = 1000.f;
-	m_tInfo._Hp = 1000.f;
+	m_tInfo._MaxHp = 300.f;
+	m_tInfo._Hp = 300.f;
 
 	m_tInfo.CurrAnim = G_Wait;
 	m_pModelCom->SetUp_Animation(m_tInfo.CurrAnim);
 
 	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(195.0f));
 
+	m_eCollisionState = OBJ_BOSS2;
+	m_iObjID = 5;
+
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+	pInstance->Add_Collider(m_eCollisionState, Set_ObjID(m_iObjID), this);
+
+	RELEASE_INSTANCE(CGameInstance);
+
 	return S_OK;
 }
 
 void CGrudgeWraith::Tick(_double TimeDelta)
 {
-	__super::Tick(TimeDelta);
-
-	Animation_State(TimeDelta);
-
-	Attack_Go(TimeDelta); // 애니메이션이 진행 되면서 앞으로 가야 하니까 중간이 맞다?
-
-	Animation(m_tInfo.CurrAnim);
-
-	for (_uint i = 0; i < WEAPON_END; i++)
+	if (m_bDead)
 	{
-		for (auto& pWeapon : m_vecWeapon[i])
-		{
-			if (nullptr != pWeapon)
-				pWeapon->Tick(TimeDelta);
-		}
+		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+		if (FAILED(pInstance->Dleate_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster2"))))
+			return;
+
+		RELEASE_INSTANCE(CGameInstance);
+
 	}
-
-	if (nullptr != m_pColliderCom)
-		m_pColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
-}
-
-void CGrudgeWraith::LateTick(_double TimeDelta)
-{
-	__super::LateTick(TimeDelta);
-
-	m_pModelCom->Play_Animation(TimeDelta);
-	m_AnimDuration = m_pModelCom->Get_AnimDuration();
-	m_AnimTimeAcc = m_pModelCom->Get_AnimTimeAcc();
-
-	if (nullptr != m_pRendererCom)
+	else
 	{
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
+		__super::Tick(TimeDelta);
+
+		Animation_State(TimeDelta);
+
+		Attack_Go(TimeDelta); // 애니메이션이 진행 되면서 앞으로 가야 하니까 중간이 맞다?
+
+		Animation(m_tInfo.CurrAnim);
 
 		for (_uint i = 0; i < WEAPON_END; i++)
 		{
 			for (auto& pWeapon : m_vecWeapon[i])
 			{
 				if (nullptr != pWeapon)
-					m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, pWeapon);
+					pWeapon->Tick(TimeDelta);
 			}
 		}
 
-	}
+		if (nullptr != m_pColliderCom)
+			m_pColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
 
-	for (_uint i = 0; i < WEAPON_END; i++)
+	}
+}
+
+void CGrudgeWraith::LateTick(_double TimeDelta)
+{
+	if (!m_bDead)
 	{
-		for (auto& pWeapon : m_vecWeapon[i])
+		__super::LateTick(TimeDelta);
+
+		m_pModelCom->Play_Animation(TimeDelta);
+		m_AnimDuration = m_pModelCom->Get_AnimDuration();
+		m_AnimTimeAcc = m_pModelCom->Get_AnimTimeAcc();
+
+		if (nullptr != m_pRendererCom)
 		{
-			if (nullptr != pWeapon)
-				pWeapon->LateTick(TimeDelta);
+			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
+
+			for (_uint i = 0; i < WEAPON_END; i++)
+			{
+				for (auto& pWeapon : m_vecWeapon[i])
+				{
+					if (nullptr != pWeapon)
+						m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, pWeapon);
+				}
+			}
+
 		}
+
+		for (_uint i = 0; i < WEAPON_END; i++)
+		{
+			for (auto& pWeapon : m_vecWeapon[i])
+			{
+				if (nullptr != pWeapon)
+					pWeapon->LateTick(TimeDelta);
+			}
+		}
+
 	}
 }
 
 HRESULT CGrudgeWraith::Render()
 {
-	if (FAILED(__super::Render()))
-		return E_FAIL;
-
-	if (FAILED(SetUp_ShaderResources()))
-		return E_FAIL;
-
-	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
-
-	for (_uint i = 0; i < iNumMeshes; i++)
+	if (!m_bDead)
 	{
-		m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
-		/*m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);
-		m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);*/
+		if (FAILED(__super::Render()))
+			return E_FAIL;
 
-		m_pModelCom->SetUp_BoneMatrices(m_pShaderCom, "g_BoneMatrix", i);
+		if (FAILED(SetUp_ShaderResources()))
+			return E_FAIL;
 
-		m_pShaderCom->Begin(0);
+		_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
 
-		m_pModelCom->Render(i);
+		for (_uint i = 0; i < iNumMeshes; i++)
+		{
+			m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
+			/*m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);
+			m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);*/
+
+			m_pModelCom->SetUp_BoneMatrices(m_pShaderCom, "g_BoneMatrix", i);
+
+			m_pShaderCom->Begin(0);
+
+			m_pModelCom->Render(i);
+		}
+
+	#ifdef _DEBUG
+
+		if (nullptr != m_pColliderCom)
+			m_pColliderCom->Render();
+
+	#endif
+
+		return S_OK;
+
 	}
-
-#ifdef _DEBUG
-
-	if (nullptr != m_pColliderCom)
-		m_pColliderCom->Render();
-
-#endif
-
-	return S_OK;
 }
 
 void CGrudgeWraith::OnCollision(CGameObject * pObj)
 {
+	COLLISIONSTATE eType = pObj->Get_ObjType();
+
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	CGameObject* pPlayer = nullptr;
+	pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+	m_bHit = static_cast<CTSPlayer*>(pPlayer)->Get_Attack();
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	switch (eType)
+	{
+	case Engine::OBJ_PLAYER:
+		break;
+	case Engine::OBJ_WEAPON_SS:
+		break;
+	case Engine::OBJ_WEAPON_SS1:
+		break;
+	case Engine::OBJ_BOSS1:
+		break;
+	case Engine::OBJ_WEAPON_KARMA14:
+	{
+		if (true == m_bHit && false == m_bGod)
+		{
+			//CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+			//CGameObject* pTarget = nullptr;
+			//pTarget = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+			//
+			//_bool m_PlayerRSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rSkill;
+			//_bool m_PlayerFSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().fSkill;
+			//_bool m_PlayerRageSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rageSkill;
+			//
+			//if (true == m_PlayerRSkill)
+			//	Damage = 30.f;
+			//else if (true == m_PlayerFSkill)
+			//	Damage = 45.f;
+			//else if (true == m_PlayerRageSkill)
+			//	Damage = 100.f;
+			//else
+			//	Damage = 5.f;
+			//
+			//Hit(Damage);
+			//cout << "칼한테 맞음" << m_tInfo._Hp << endl;
+			//
+			//RELEASE_INSTANCE(CGameInstance)
+
+			break;
+		}
+	}
+	case Engine::OBJ_BOSS2:
+		break;
+	case Engine::OBJ_MONSTER_WEAPONL:
+		break;
+	case Engine::OBJ_MONSTER_WEAPONR:
+		break;
+	case Engine::OBJ_MONSTER_BODY:
+		break;
+	case Engine::OBJ_MONSTER_BALL:
+		break;
+	case Engine::OBJ_END:
+		break;
+	default:
+		break;
+	}
+}
+
+void CGrudgeWraith::EnterCollision(CGameObject * pObj)
+{
+	COLLISIONSTATE eType = pObj->Get_ObjType();
+
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	CGameObject* pPlayer = nullptr;
+	pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+	m_bHit = static_cast<CTSPlayer*>(pPlayer)->Get_Attack();
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	switch (eType)
+	{
+	case Engine::OBJ_PLAYER:
+		break;
+	case Engine::OBJ_WEAPON_SS:
+		break;
+	case Engine::OBJ_WEAPON_SS1:
+		break;
+	case Engine::OBJ_BOSS1:
+		break;
+	case Engine::OBJ_WEAPON_KARMA14:
+	{
+		if (true == m_bHit && false == m_bGod)
+		{
+			CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+			CGameObject* pTarget = nullptr;
+			pTarget = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+
+			_bool m_PlayerRSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rSkill;
+			_bool m_PlayerFSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().fSkill;
+			_bool m_PlayerRageSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rageSkill;
+
+			if (true == m_PlayerRSkill)
+				Damage = 30.f;
+			else if (true == m_PlayerFSkill)
+				Damage = 45.f;
+			else if (true == m_PlayerRageSkill)
+				Damage = 100.f;
+			else
+				Damage = 5.f;
+
+			Hit(Damage);
+			cout << "칼한테 맞음" << m_tInfo._Hp << endl;
+
+			RELEASE_INSTANCE(CGameInstance)
+
+				break;
+		}
+	}
+	case Engine::OBJ_BOSS2:
+		break;
+	case Engine::OBJ_MONSTER_WEAPONL:
+		break;
+	case Engine::OBJ_MONSTER_WEAPONR:
+		break;
+	case Engine::OBJ_MONSTER_BODY:
+		break;
+	case Engine::OBJ_MONSTER_BALL:
+		break;
+	case Engine::OBJ_END:
+		break;
+	default:
+		break;
+	}
 }
 
 HRESULT CGrudgeWraith::Add_Coll()
@@ -189,7 +350,18 @@ void CGrudgeWraith::Animation_State(_double TimeDelta)
 
 	Use_Skill_Next(TimeDelta);
 
+	if (m_tInfo._Hp <= 100.f)
+		m_bSkill5 = true;
+	
+	Skill05(TimeDelta);
+
 	Run(TimeDelta);
+
+	if (m_tInfo.PrevAnim == G_RTStand_Big_F && m_AnimTimeAcc >= 28.0)
+	{
+		m_tInfo.CurrAnim = G_Wait;
+		m_bAttack = false;
+	}
 }
 
 void CGrudgeWraith::Animation(WRAITHSTATE eType)
@@ -324,7 +496,7 @@ void CGrudgeWraith::Use_Skill(_double TimeDelta)
 	default:
 		break;
 	}
-	m_SkillDelay = 200.f;
+	m_SkillDelay = 50.f;
 }
 
 void CGrudgeWraith::Use_Skill_Next(_double TimeDelta)
@@ -458,6 +630,13 @@ void CGrudgeWraith::Run(_double TimeDelta)
 
 }
 
+void CGrudgeWraith::Hit(const _int & _Damage)
+{
+	m_tInfo._Hp -= _Damage;
+	//m_tInfo.CurrAnim = G_RTStand_Big_F;
+	m_bAttack = false;
+}
+
 void CGrudgeWraith::Skill01(_double TimeDelta)
 {
 	m_tInfo.CurrAnim = G_Skill01_1;
@@ -528,16 +707,18 @@ void CGrudgeWraith::Skill04(_double TimeDelta)
 
 void CGrudgeWraith::Skill05(_double TimeDelta)
 {
-	if (m_tInfo.PrevAnim == G_Wait && true == m_pModelCom->Get_AnimFinished())
+	if (m_bSkill5 && true == m_pModelCom->Get_AnimFinished()) // 그냥 현재 애니메이션이 종료되면?
 	{
 		m_tInfo.CurrAnim = G_Skill05_1;
 		m_bAttack = true;
+		m_bGod = true;
 	}
 
 	if (m_tInfo.PrevAnim == G_Skill05_1 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 46.5)
 	{
 		m_tInfo.CurrAnim = G_Wait;
 		m_bAttack = false;
+		m_bGod = false;
 	}
 }
 
@@ -575,6 +756,15 @@ HRESULT CGrudgeWraith::Add_Components()
 
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Boss2"),
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+		return E_FAIL;
+
+	CCollider::COLLIDERDESC ColliderDesc;
+	ZeroMemory(&ColliderDesc, sizeof ColliderDesc);
+
+	ColliderDesc.vScale = _float3(1.f, 2.f, 1.f);
+	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vScale.y * 0.5f, 0.f);
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_OBB"),
+		TEXT("Com_Collider1"), (CComponent**)&m_pColliderCom, &ColliderDesc)))
 		return E_FAIL;
 
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxAnimModel"),

@@ -154,6 +154,96 @@ void CMonsterWeapon::OnCollision(CGameObject * pObj)
 		break;
 	case Engine::OBJ_WEAPON_KARMA14:
 	{
+		//if (true == m_bTakeHit)
+		//{
+		//	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+		//	CGameObject* pOwner = nullptr;
+		//	CGameObject* pTarget = nullptr;
+		//
+		//	pOwner = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
+		//	pTarget = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+		//
+		//	m_PlayerRSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rSkill;
+		//	m_PlayerFSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().fSkill;
+		//	m_PlayerRageSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rageSkill;
+		//
+		//	if (true == m_PlayerRSkill)
+		//		Damage = 30.f;
+		//	else if (true == m_PlayerFSkill)
+		//		Damage = 45.f;
+		//	else if (true == m_PlayerRageSkill)
+		//		Damage = 100.f;
+		//	else
+		//		Damage = 5.f;
+		//
+		//	if (m_Weapon.Owner == OWNER_GOLEM)
+		//	{
+		//		_uint Hp = static_cast<CAncient_StonGolem*>(pOwner)->Get_Info()._Hp;
+		//		static_cast<CAncient_StonGolem*>(pOwner)->Set_Info(Damage);
+		//		cout << "Ä®ÇÑÅ× ¸ÂÀ½" << Hp << endl;
+		//
+		//	}
+		//	else if (m_Weapon.Owner == OWNER_CREATURE)
+		//	{
+		//		_uint Hp = static_cast<CGianticCreature*>(pOwner)->Get_Info()._Hp;
+		//		static_cast<CGianticCreature*>(pOwner)->Set_Info(Damage);
+		//		cout << "Ä®ÇÑÅ× ¸ÂÀ½" << Hp << endl;
+		//	}
+		//	else if (m_Weapon.Owner == OWNER_WRAITH)
+		//	{
+		//		_uint Hp = static_cast<CGrudgeWraith*>(pOwner)->Get_Info()._Hp;
+		//		static_cast<CGrudgeWraith*>(pOwner)->Set_Info(Damage);
+		//		cout << "Ä®ÇÑÅ× ¸ÂÀ½" << Hp << endl;
+		//	}
+		//	else if (m_Weapon.Owner == OWNER_WRAITH2)
+		//	{
+		//		_uint Hp = static_cast<CCursedWraith*>(pOwner)->Get_Info()._Hp;
+		//		static_cast<CCursedWraith*>(pOwner)->Set_Info(Damage);
+		//		static_cast<CCursedWraith*>(pOwner)->Set_Hit(true);
+		//		cout << "Ä®ÇÑÅ× ¸ÂÀ½" << Hp << endl;
+		//	}
+		//
+		//	RELEASE_INSTANCE(CGameInstance)
+		//}
+		break;
+	}
+	case Engine::OBJ_BOSS2:
+		break;
+	case Engine::OBJ_MONSTER_WEAPONL:
+		break;
+	case Engine::OBJ_MONSTER_WEAPONR:
+		break;
+	case Engine::OBJ_MONSTER_BODY:
+		break;
+	case Engine::OBJ_END:
+		break;
+	default:
+		break;
+	}
+}
+
+void CMonsterWeapon::EnterCollision(CGameObject * pObj)
+{
+	COLLISIONSTATE eType = pObj->Get_ObjType();
+
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	CGameObject* pPlayer = nullptr;
+	pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+	m_bTakeHit = static_cast<CTSPlayer*>(pPlayer)->Get_Attack();
+	RELEASE_INSTANCE(CGameInstance);
+
+	switch (eType)
+	{
+	case Engine::OBJ_PLAYER:
+		break;
+	case Engine::OBJ_WEAPON_SS:
+		break;
+	case Engine::OBJ_WEAPON_SS1:
+		break;
+	case Engine::OBJ_BOSS1:
+		break;
+	case Engine::OBJ_WEAPON_KARMA14:
+	{
 		if (true == m_bTakeHit)
 		{
 			CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
@@ -163,12 +253,18 @@ void CMonsterWeapon::OnCollision(CGameObject * pObj)
 			pOwner = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
 			pTarget = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
 
-			_bool bDownAttack = static_cast<CTSPlayer*>(pTarget)->Get_DownAttack();
+			m_PlayerRSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rSkill;
+			m_PlayerFSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().fSkill;
+			m_PlayerRageSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rageSkill;
 
-			if (true == bDownAttack)
+			if (true == m_PlayerRSkill)
 				Damage = 30.f;
+			else if (true == m_PlayerFSkill)
+				Damage = 45.f;
+			else if (true == m_PlayerRageSkill)
+				Damage = 100.f;
 			else
-				Damage = 15.f;
+				Damage = 5.f;
 
 			if (m_Weapon.Owner == OWNER_GOLEM)
 			{
@@ -193,9 +289,9 @@ void CMonsterWeapon::OnCollision(CGameObject * pObj)
 			{
 				_uint Hp = static_cast<CCursedWraith*>(pOwner)->Get_Info()._Hp;
 				static_cast<CCursedWraith*>(pOwner)->Set_Info(Damage);
+				static_cast<CCursedWraith*>(pOwner)->Set_Hit(true);
 				cout << "Ä®ÇÑÅ× ¸ÂÀ½" << Hp << endl;
 			}
-
 
 			RELEASE_INSTANCE(CGameInstance)
 		}

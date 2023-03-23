@@ -21,6 +21,7 @@ public:
 	virtual HRESULT Render();
 
 	virtual void OnCollision(CGameObject* pObj) {}
+	virtual void EnterCollision(CGameObject* pObj) {}
 
 	void DeleteObject(_uint iIndex, const _tchar* pLayerTag);
 	void KnockBack(_uint iDamage, _double TimeDelta);

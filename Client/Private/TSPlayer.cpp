@@ -9,6 +9,7 @@
 #include "PlayerTop.h"
 #include "TwoHandedSword.h"
 #include "Ancient_StonGolem.h"
+#include "GrudgeWraith.h"
 
 CTSPlayer::CTSPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -236,8 +237,12 @@ void CTSPlayer::OnCollision(CGameObject * pObj)
 {
 	COLLISIONSTATE eType = pObj->Get_ObjType();
 
-	//pColl = &m_Hit;
-	//pColl = &m_Hit;
+	//CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	//CGameObject* pMonster = nullptr;
+	//pMonster = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster2"));
+	//m_Hit = static_cast<CGrudgeWraith*>(pMonster)->Get_Attack();
+	//RELEASE_INSTANCE(CGameInstance);
+
 	switch (eType)
 	{
 	case Engine::OBJ_PLAYER:
@@ -253,22 +258,28 @@ void CTSPlayer::OnCollision(CGameObject * pObj)
 	case Engine::OBJ_BOSS2:
 		break;
 	case Engine::OBJ_MONSTER_WEAPONL:
-
-		Hit(10); // 몬스터 공격력 가져와서 대입  
-		m_Hit = true;
-		cout << "왼 팔 히트" << endl;
-		cout << m_tInfo._Hp << endl;
+	{
+		//Hit(10); // 몬스터 공격력 가져와서 대입  
+		//m_Hit = true;
+		//cout << "왼 팔 히트" << endl;
+		//cout << m_tInfo._Hp << endl;
 
 		break;
+	}
 
 	case Engine::OBJ_MONSTER_WEAPONR:
 	{
-		Hit(10); // 몬스터 공격력 가져와서 대입 
-		m_Hit = true;
-		cout << "오른 팔 히트" << endl;
-		cout << m_tInfo._Hp << endl;
+		//if (m_Hit)
+		//{
+			//Hit(10); // 몬스터 공격력 가져와서 대입 
+			//m_Hit = true;
+			//cout << "오른 팔 히트" << endl;
+			//cout << m_tInfo._Hp << endl;
 
-		break;
+			break;
+
+		//}
+
 	}
 	case Engine::OBJ_MONSTER_BODY:
 		//m_tInfo.CurrAnim = TS_STURN_LOOP;
@@ -288,7 +299,8 @@ void CTSPlayer::OnCollision(CGameObject * pObj)
 		break;
 
 	case Engine::OBJ_MONSTER_BALL:
-		Hit(10);
+		//Hit(10);
+		//m_Hit = true;
 		break;
 
 	case Engine::OBJ_END:
@@ -297,6 +309,86 @@ void CTSPlayer::OnCollision(CGameObject * pObj)
 		break;
 	}
 
+}
+
+void CTSPlayer::EnterCollision(CGameObject * pObj)
+{
+	COLLISIONSTATE eType = pObj->Get_ObjType();
+
+	//CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	//CGameObject* pMonster = nullptr;
+	//pMonster = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster2"));
+	//m_Hit = static_cast<CGrudgeWraith*>(pMonster)->Get_Attack();
+	//RELEASE_INSTANCE(CGameInstance);
+
+	switch (eType)
+	{
+	case Engine::OBJ_PLAYER:
+		break;
+	case Engine::OBJ_WEAPON_SS:
+		break;
+	case Engine::OBJ_WEAPON_SS1:
+		break;
+	case Engine::OBJ_BOSS1:
+		break;
+	case Engine::OBJ_WEAPON_KARMA14:
+		break;
+	case Engine::OBJ_BOSS2:
+		break;
+	case Engine::OBJ_MONSTER_WEAPONL:
+	{
+		Hit(10); // 몬스터 공격력 가져와서 대입  
+		m_Hit = true;
+		cout << "왼 팔 히트" << endl;
+		cout << m_tInfo._Hp << endl;
+
+		break;
+	}
+
+	case Engine::OBJ_MONSTER_WEAPONR:
+	{
+		//if (m_Hit)
+		//{
+		Hit(10); // 몬스터 공격력 가져와서 대입 
+		m_Hit = true;
+		cout << "오른 팔 히트" << endl;
+		cout << m_tInfo._Hp << endl;
+
+		break;
+
+		//}
+
+	}
+	case Engine::OBJ_MONSTER_BODY:
+		m_tInfo.CurrAnim = TS_STURN_LOOP;
+
+		if (!m_Hit)
+		{
+			Damage(10); // 몬스터 공격력 가져와서 대입 
+			m_Hit = true;
+			m_NoStraight = true;
+			cout << "몸통 히트" << endl;
+
+			//pColl = false;
+		}
+		else
+		{
+			m_NoStraight = false;
+		}
+
+		break;
+
+	case Engine::OBJ_MONSTER_BALL:
+		Hit(3);
+		m_Hit = true;
+		cout << " 히트" << endl;
+		break;
+
+	case Engine::OBJ_END:
+		break;
+	default:
+		break;
+	}
 }
 
 void CTSPlayer::Key_Input(_double TimeDelta)
@@ -326,7 +418,7 @@ void CTSPlayer::Key_Input(_double TimeDelta)
 	{
 		m_bTest = false;
 		m_Dir = BACK;
-
+		//m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_pTransformCom->Get_State(CTransform::STATE_LOOK) * -1);
 		m_pTransformCom->Go_Back(TimeDelta);
 		m_tInfo.CurrAnim = TS_RUN_END;
 
@@ -486,99 +578,6 @@ void CTSPlayer::Key_Input(_double TimeDelta)
 	R_Skill(TimeDelta);
 	F_Skill(TimeDelta);
 	Rage_Skill(TimeDelta);
-}
-
-void CTSPlayer::Animation_State(PLAYERANIMSTATE eType, _double TimeDelta)
-{
-	if (m_tInfo.CurrAnimState != m_tInfo.prevAnimState )
-	{
-		switch (m_tInfo.CurrAnimState)
-		{
-		case ANIM_IDEL:
-			m_iAnimIndex = 19;
-			break;
-
-		case ANIM_RUN:
-			m_iAnimIndex = 9;
-			break;
-
-		case ANIM_RUN_L:
-			m_iAnimIndex = 6;
-			break;
-
-		case ANIM_RUN_R:
-			m_iAnimIndex = 9;
-			break;
-
-		case ANIM_RUN_END:
-			m_iAnimIndex = 12;
-			break;
-
-		case ANIM_ATTACK:
-			m_iAnimIndex = 26;
-			break;
-
-		case ANIM_ATTACK_COMBO1:
-			m_iAnimIndex = 59;
-			break;
-
-		case ANIM_ATTACK_COMBO2:
-			m_iAnimIndex = 60;
-			break;
-
-		case ANIM_ATTACK_COMBO3:
-			m_iAnimIndex = 61;
-			break;
-
-		case ANIM_COMBAT_WAIT:
-		{
-			m_iAnimIndex = 5;
-			break;
-		}
-
-		case ANIM_JUMP:
-			m_iAnimIndex = 4;
-			break;
-		case ANIM_JUMP_ING:
-			break;
-		case ANIM_JUMP_LENDING:
-			m_iAnimIndex = 2;
-			break;
-		case ANIM_JUMP_ATTACK1:
-			m_iAnimIndex = 22;
-			break;
-		case ANIM_JUMP_ATTACK2:
-			m_iAnimIndex = 23;
-			break;
-		case ANIM_JUMP_ATTACK3:
-			m_iAnimIndex = 24;
-			break;
-
-		case ANIM_STUN:
-			m_iAnimIndex = 16;
-			break;
-
-		case ANIM_SKILL_E:
-			m_iAnimIndex = 38;
-			break;
-
-		case ANIM_SKILL_F:
-			m_iAnimIndex = 42;
-			break;
-
-		case ANIM_SKILL_R:
-			m_iAnimIndex = 43;
-			break;
-
-		case ANIM_END:
-		default:
-			break;
-		}
-		m_pModelCom->SetUp_Animation(m_iAnimIndex);
-
-		m_tInfo.prevAnimState = m_tInfo.CurrAnimState;
-	}
-
 }
 
 void CTSPlayer::Animation(TSPLAYERANIM eType, _double TimeDelta)
@@ -802,7 +801,7 @@ void CTSPlayer::Damage(const _int & _Damage)
 
 void CTSPlayer::Attack()
 {
-	m_tInfo.CurrAnimState = ANIM_ATTACK;
+	m_tInfo.CurrAnim = TS_BASIC_COMBO01;
 	m_bAnimCheck = true;
 
 }
@@ -929,7 +928,7 @@ void CTSPlayer::Attack_Go(_double TimeDelta)
 		{
 			m_pTransformCom->Go_Straight(TimeDelta * 0.13);
 
-			if (m_pModelCom->Get_AnimTimeAcc() >= 21.0)
+			if (m_pModelCom->Get_AnimTimeAcc() >= 19.0)
 			{
 				if (!m_NoStraight)
 					vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
@@ -1262,13 +1261,14 @@ void CTSPlayer::R_Skill(_double TimeDelta)
 	{
 		m_tInfo.CurrAnim = TS_SKILL_ROCKBREAK;
 		m_AttackCheck = true;
-
+		m_tInfo.rSkill = true;
 		if (m_tInfo.PrevAnim == TS_SKILL_ROCKBREAK && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 15.0)
 		{
 			m_tInfo.CurrAnim = TS_COMBAT_WAIT;
 			m_RsKill = false;
 			m_AttackCheck = false;
 			m_tInfo.m_RSkill = 0.f;
+			m_tInfo.rSkill = false;
 
 		}
 	}
@@ -1280,6 +1280,7 @@ void CTSPlayer::F_Skill(_double TimeDelta)
 	{
 		m_tInfo.CurrAnim = TS_RAGESKILL_ARMAGEDDONBLADE;
 		m_AttackCheck = true;
+		m_tInfo.fSkill = true;
 
 		if (m_tInfo.PrevAnim == TS_RAGESKILL_ARMAGEDDONBLADE && true == m_pModelCom->Get_AnimFinished())
 		{
@@ -1287,6 +1288,7 @@ void CTSPlayer::F_Skill(_double TimeDelta)
 			m_FsKill = false;
 			m_AttackCheck = false;
 			m_tInfo.m_FSkill = 0.f;
+			m_tInfo.fSkill = false;
 
 		}
 	}
@@ -1298,6 +1300,7 @@ void CTSPlayer::Rage_Skill(_double TimeDelta)
 	{
 		m_tInfo.CurrAnim = TS_RAGESKILL_DOUBLESLASH;
 		m_AttackCheck = true;
+		m_tInfo.rageSkill = true;
 
 		if (m_tInfo.PrevAnim == TS_RAGESKILL_DOUBLESLASH && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 30.0)
 		{
@@ -1305,6 +1308,7 @@ void CTSPlayer::Rage_Skill(_double TimeDelta)
 			m_RagesKill = false;
 			m_AttackCheck = false;
 			m_tInfo.m_RageSkill = 0.f;
+			m_tInfo.rageSkill = false;
 
 		}
 	}

@@ -36,7 +36,7 @@ public:
 
 public:
 	void Set_CameraPos(_float x, _float z);
-	void Camera_Shake(); // 범위 지정 STATE_LOOK
+	void Camera_Shake(_fvector vLook, _double TimeDelta); // 범위 지정 STATE_LOOK
 
 private:
 	void Mouse_Check(_double TimeDelta);

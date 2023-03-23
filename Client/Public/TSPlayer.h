@@ -37,11 +37,11 @@ public:
 	virtual HRESULT Render() override;
 
 	virtual void OnCollision(CGameObject* pObj)override;
+	virtual void EnterCollision(CGameObject* pObj) override;
 
 public:
 	void Key_Input(_double TimeDelta);
 
-	void Animation_State(PLAYERANIMSTATE eType, _double TimeDelta);
 	void Animation(TSPLAYERANIM eType, _double TimeDelta);
 
 public:

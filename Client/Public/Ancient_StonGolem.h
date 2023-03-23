@@ -19,6 +19,7 @@ public:
 	virtual HRESULT Render() override;
 
 	virtual void OnCollision(CGameObject* pObj)override;
+	virtual void EnterCollision(CGameObject* pObj) override;
 
 public:
 	HRESULT Add_Coll();

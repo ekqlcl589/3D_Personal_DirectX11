@@ -437,8 +437,9 @@ namespace Engine
 		_uint _ATK;
 		_uint _DEF;
 
-		PLAYERANIMSTATE CurrAnimState;
-		PLAYERANIMSTATE prevAnimState;
+		_bool rSkill;
+		_bool fSkill;
+		_bool rageSkill;
 
 		TSPLAYERANIM CurrAnim;
 		TSPLAYERANIM PrevAnim;
@@ -485,6 +486,7 @@ namespace Engine
 		_float _MaxHp;
 		_float _Hp;
 		_uint _ATK;
+		_bool _Hit;
 
 		CURSEDWRAITHSTATE CurrAnim;
 		CURSEDWRAITHSTATE PrevAnim;

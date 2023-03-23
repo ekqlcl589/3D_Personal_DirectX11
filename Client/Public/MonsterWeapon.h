@@ -47,6 +47,7 @@ public:
 	virtual HRESULT Render();
 
 	virtual void OnCollision(CGameObject* pObj)override;
+	virtual void EnterCollision(CGameObject* pObj) override;
 
 private:
 	HRESULT Add_Components();
@@ -65,6 +66,9 @@ private:
 	_bool m_bColl = false;
 
 	_bool m_bTakeHit = false;
+	_bool m_PlayerRSkill = false;
+	_bool m_PlayerFSkill = false;
+	_bool m_PlayerRageSkill = false;
 
 private:
 	_bool Dead = false;
