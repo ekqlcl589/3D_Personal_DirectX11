@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\BlackBall.h"
 #include "GameInstance.h"
-#include "BallPoolMgr.h"
 
 CBlackBall::CBlackBall(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -29,8 +28,43 @@ HRESULT CBlackBall::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	memcpy(&m_vPosition, pArg, sizeof(_vector));
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vPosition);
+	ZeroMemory(&m_BallDesc, sizeof BALLDESC);
+
+	memcpy(&m_BallDesc, pArg, sizeof(BALLDESC));
+
+	if (m_BallDesc.eType == TYPE_8)
+	{
+		m_vPosition = m_BallDesc.vLook;
+		XMStoreFloat3(&m_fPos, m_vPosition);
+		m_fPos.y = 1.5f;
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_fPos));
+		m_pTransformCom->Set_State(CTransform::STATE_LOOK, XMVector3Normalize(m_BallDesc.vLook));
+
+	}
+	else if (m_BallDesc.eType == TYPE_3)
+	{
+		m_vPosition = m_BallDesc.vLook;
+		m_vLook = XMVector3Normalize(m_BallDesc.vLook);
+
+		XMStoreFloat3(&m_fPos, m_vPosition);
+		m_fPos.y = 1.5f;
+
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_fPos));
+		m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_vLook * -1 );
+
+	}
+	else if (m_BallDesc.eType == TYPE_DDEBASI)
+	{
+		m_vPosition = m_BallDesc.vLook;
+		m_vLook = XMVector3Normalize(m_BallDesc.vLook);
+
+		XMStoreFloat3(&m_fPos, m_vPosition);
+		m_fPos.y = 10.f;
+
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_fPos));
+		m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_vLook * -1);
+
+	}
 
 
 	//Dead = false;
@@ -47,7 +81,6 @@ HRESULT CBlackBall::Initialize(void * pArg)
 
 	return S_OK;
 
-	// 애는 WEAPON_MONSTER_L 이나 R로 만들어서 그냥 이 객체 한테 처맞으면 플레이어가 HIT 하는 거로 
 }
 
 void CBlackBall::Tick(_double TimeDelta)
@@ -64,8 +97,6 @@ void CBlackBall::Tick(_double TimeDelta)
 	}
 	else
 	{
-		//CBallPoolMgr::GetInstance()->Collect_Object(this);
-
 		m_LifeTime -= TimeDelta * 1.f;
 
 		if (m_LifeTime <= 0.0)
@@ -80,7 +111,15 @@ void CBlackBall::Tick(_double TimeDelta)
 		if (nullptr != m_pColliderCom)
 			m_pColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
 
-		m_pTransformCom->Go_Straight(TimeDelta * 1.f);
+		if (m_BallDesc.eType == TYPE_DDEBASI)
+		{	
+
+			XMStoreFloat3(&m_fPos, m_vPosition);
+			m_fPos.y -= 3.f * TimeDelta;
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_fPos));
+
+		}
+		//m_pTransformCom->Go_Straight(TimeDelta * 1.f);
 	}
 }
 
@@ -176,14 +215,24 @@ HRESULT CBlackBall::Add_Components()
 		TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Sphere"),
-		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
-		return E_FAIL;
+	if (m_BallDesc.eType == TYPE_DDEBASI)
+	{
+		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Sphere2"),
+			TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+			return E_FAIL;
+
+	}
+	else
+	{
+		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Sphere"),
+			TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+			return E_FAIL;
+	}
 
 	CCollider::COLLIDERDESC ColliderDesc;
 	ZeroMemory(&ColliderDesc, sizeof ColliderDesc);
 
-	ColliderDesc.vScale = _float3(2.f, 2.f, 2.f);
+	ColliderDesc.vScale = _float3(2.5f, 2.5f, 2.5f);
 	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vScale.y * 0.5f, 0.f);
 
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_SPHERE"),

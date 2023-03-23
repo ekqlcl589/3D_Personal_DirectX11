@@ -3,7 +3,8 @@
 #include "GameInstance.h"
 #include "MonsterWeapon.h"
 #include "GrudgeWraith.h"
-#include "BallPoolMgr.h"
+#include "BlackBall.h"
+
 CCursedWraith::CCursedWraith(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CMonster(pDevice, pContext)
 {
@@ -195,7 +196,7 @@ void CCursedWraith::Animation_State(_double TimeDelta)
 	//
 	//Use_Skill_Next(TimeDelta);
 
-	Skill01(TimeDelta);
+	Skill03(TimeDelta);
 
 	//if (m_tInfo._Hp <= 500.f)
 	//{
@@ -314,14 +315,21 @@ void CCursedWraith::Skill01(_double TimeDelta)
 {
 	if (m_tInfo.PrevAnim == CW_Wait && true == m_pModelCom->Get_AnimFinished())
 	{
+		m_bAttack = true;
 		m_tInfo.CurrAnim = CW_SKILL_01;
 	}
 
 	if (m_tInfo.PrevAnim == CW_SKILL_01 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 9.0 && m_AnimTimeAcc <= (m_AnimDuration / 2) + 10.0)
 	{
-		for (_uint i = 0; i < 7; i++)
+		for (_uint i = 0; i < 8; i++)
 		{
+			CBlackBall::BALLDESC BallDesc;
+			ZeroMemory(&BallDesc, sizeof(CBlackBall::BALLDESC));
+
 			_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			_float3 fPos;
+			XMStoreFloat3(&fPos, vPosition);
+
 			_matrix matRotate = XMMatrixIdentity();
 			_float Angle = XMConvertToRadians(45.f);
 
@@ -332,7 +340,12 @@ void CCursedWraith::Skill01(_double TimeDelta)
 
 			CGameObject* pBall = nullptr;
 
-			pBall = Pinstance->Clone_GameObject_Add_Layer(TEXT("Prototype_GameObject_Effect_Ball"), &vPosition);
+			BallDesc.vPosition = vPosition; 
+			BallDesc.fOriginPos = fPos;
+			BallDesc.vLook = XMLoadFloat3(&fPos) - vPosition;
+			BallDesc.eType = CBlackBall::TYPE_8;
+
+			pBall = Pinstance->Clone_GameObject_Add_Layer(TEXT("Prototype_GameObject_Effect_Ball"), &BallDesc);
 
 			RELEASE_INSTANCE(CGameInstance);
 		}
@@ -343,24 +356,83 @@ void CCursedWraith::Skill01(_double TimeDelta)
 	{
 		m_tInfo.CurrAnim = CW_Wait;
 		m_Test = true;
+		m_bAttack = false;
 
 	}
 }
 
 void CCursedWraith::Skill02(_double TimeDelta)
 {
-	m_tInfo.CurrAnim = CW_SKILL_02;
-	m_bAttack = true;
-	m_SkillNext = true;
-	m_BallCreate = true;
+	if (m_tInfo.PrevAnim == CW_Wait && true == m_pModelCom->Get_AnimFinished())
+	{
+		m_tInfo.CurrAnim = CW_SKILL_02;
+		m_bAttack = true;
+	}
+
+	if (m_tInfo.PrevAnim == CW_SKILL_02 && m_AnimTimeAcc >= m_AnimDuration / 2 && m_AnimTimeAcc <= (m_AnimDuration / 2) + 1.0)
+	{
+		for (_uint i = 0; i < 3; i++)
+		{
+			CBlackBall::BALLDESC BallDesc;
+			ZeroMemory(&BallDesc, sizeof(CBlackBall::BALLDESC));
+
+			_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			
+			_float3 fPos;
+			
+			XMStoreFloat3(&fPos, vPosition);
+
+			fPos.x = 1.f + i;
+
+			BallDesc.vLook = XMLoadFloat3(&fPos);
+			BallDesc.eType = CBlackBall::TYPE_3;
+
+			CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+			CGameObject* pBall = nullptr;
+
+			pBall = pInstance->Clone_GameObject_Add_Layer(TEXT("Prototype_GameObject_Effect_Ball"), &BallDesc);
+
+			RELEASE_INSTANCE(CGameInstance);
+		}
+	}
+
+	if (m_tInfo.PrevAnim == CW_SKILL_02 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 67.0)
+	{
+		m_tInfo.CurrAnim = CW_Wait;
+		m_bAttack = false;
+		m_SkillNext = false;
+	}
 
 }
 
 void CCursedWraith::Skill03(_double TimeDelta)
 {
-	m_tInfo.CurrAnim = CW_SKILL_02;
-	m_bAttack = true;
-	m_SkillNext = true;
+	if (m_tInfo.PrevAnim == CW_Wait && true == m_pModelCom->Get_AnimFinished())
+	{
+		m_tInfo.CurrAnim = CW_SKILL_03;
+	}
+
+	if (m_tInfo.PrevAnim == CW_SKILL_03 && m_AnimTimeAcc >= 145.0)
+	{
+		CBlackBall::BALLDESC BallDesc;
+		ZeroMemory(&BallDesc, sizeof(CBlackBall::BALLDESC));
+		//_vector vPosition = m_vTargetPos;
+
+		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+		CGameObject* pMonster = nullptr;
+
+		BallDesc.vPosition = m_vTargetPos;
+		BallDesc.vLook = m_vTargetPos;
+		BallDesc.eType = CBlackBall::TYPE_DDEBASI;
+		pMonster = pInstance->Clone_GameObject_Add_Layer(TEXT("Prototype_GameObject_Effect_Ball"), &BallDesc);
+
+		RELEASE_INSTANCE(CGameInstance);
+
+		m_tInfo.CurrAnim = CW_Wait;
+		m_Test = true;
+	}
 }
 
 void CCursedWraith::Summons()

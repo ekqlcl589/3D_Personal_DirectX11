@@ -18,6 +18,16 @@ BEGIN(Client)
 class CBlackBall final :
 	public CGameObject
 {
+public:
+	enum TYPE { TYPE_8, TYPE_3, TYPE_DDEBASI, TYPE_END };
+
+	typedef struct tagBallDesc
+	{
+		_vector vPosition; // 생성될 위치의 몬스터 위치 
+		_vector vLook; // 날아갈 방향
+		_float3 fOriginPos; // 생성 위치
+		TYPE eType;
+	}BALLDESC;
 private:
 	CBlackBall(ID3D11Device * pDevice, ID3D11DeviceContext * pContext);
 	CBlackBall(const CBlackBall& rhs);
@@ -47,10 +57,14 @@ public:
 private:
 	_vector m_vPosition;
 	_vector m_vLook;
+	_float3 m_fPos;
 
 	_bool Dead = false;
 	_float Damage = 0.f;
-	_double m_LifeTime = 5.f;
+	_double m_LifeTime = 1000.f;
+
+private:
+	BALLDESC m_BallDesc;
 
 public:
 	static CBlackBall* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -165,7 +165,6 @@
   <ItemGroup>
     <ClInclude Include="..\Public\Ancient_StonGolem.h" />
     <ClInclude Include="..\Public\BackGround.h" />
-    <ClInclude Include="..\Public\BallPoolMgr.h" />
     <ClInclude Include="..\Public\BlackBall.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\Crocs.h" />
@@ -213,7 +212,6 @@
   <ItemGroup>
     <ClCompile Include="..\Private\Ancient_StonGolem.cpp" />
     <ClCompile Include="..\Private\BackGround.cpp" />
-    <ClCompile Include="..\Private\BallPoolMgr.cpp" />
     <ClCompile Include="..\Private\BlackBall.cpp" />
     <ClCompile Include="..\Private\Crocs.cpp" />
     <ClCompile Include="..\Private\Cube.cpp" />

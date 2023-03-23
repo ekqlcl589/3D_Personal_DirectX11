@@ -163,9 +163,6 @@
     <Filter Include="02.GameObject\05. Player\Crocs">
       <UniqueIdentifier>{c0c602b5-cc62-4899-bc1b-c8d3fefb5ae9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\06. Monster\99.MonsterWeapon\BlackBall\BallMgr">
-      <UniqueIdentifier>{54752f6f-f1c8-4850-a2a2-b6a690212e21}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -306,9 +303,6 @@
     <ClInclude Include="..\Public\Crocs.h">
       <Filter>02.GameObject\05. Player\Crocs</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\BallPoolMgr.h">
-      <Filter>02.GameObject\06. Monster\99.MonsterWeapon\BlackBall\BallMgr</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -436,9 +430,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\Crocs.cpp">
       <Filter>02.GameObject\05. Player\Crocs</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\BallPoolMgr.cpp">
-      <Filter>02.GameObject\06. Monster\99.MonsterWeapon\BlackBall\BallMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

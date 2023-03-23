@@ -291,6 +291,13 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Test.fbx", CModel::MODEL_NONANIM, Local))))
 		return E_FAIL;
 
+	_matrix Local2 = XMMatrixIdentity();
+	Local2 = XMMatrixScaling(0.1f, 0.1f, 0.1f);
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Sphere2"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/FireBall.fbx", CModel::MODEL_NONANIM, Local2))))
+		return E_FAIL;
+
 #pragma endregion Monster
 
 
