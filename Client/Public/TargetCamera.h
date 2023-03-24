@@ -28,6 +28,8 @@ public:
 
 	void Test(_double TimeDelta);
 
+	void Sibal(_double TimeDelta);
+
 	void Key_Input(_double TimeDelta);
 
 public:
@@ -36,8 +38,9 @@ public:
 
 public:
 	void Set_CameraPos(_float x, _float z);
-	void Camera_Shake(_fvector vLook, _double TimeDelta); // 범위 지정 STATE_LOOK
+	void Camera_Shake(_double TimeDelta); // 범위 지정 STATE_LOOK
 
+	void Add_Shaking(const SHAKE_DIRECTION& In_eState, const _float& In_fPower, const _float& In_fTime);
 private:
 	void Mouse_Check(_double TimeDelta);
 	void Mouse_Fix();
@@ -52,6 +55,18 @@ public:
 		m_AdjustY = _AdjustY;
 	}
 
+	XMMATRIX Go_Straight(FXMMATRIX Mat, float fScaler);
+
+private:
+	SHAKE_DIRECTION	m_eCurrentShakeDir = SHAKE_DIRECTION::DIRECTION_END;
+	_float m_fLoopShakeTime = 0.05f;
+	_float m_fCurrentShakeTime = 0.f;
+	_float m_fMaxShakeTime = 0.f;
+	_float m_fShakePower = 0.f;
+	_float m_bReverseShake = false;
+	_float m_fShakeRatio = 0.f;
+
+	_float3	m_vShakePosition;
 private:
 	CGameInstance* m_pInstance = nullptr;
 	_float m_fRation = 0;
@@ -59,14 +74,18 @@ private:
 	_bool m_bFix = false;
 
 	_float3 m_fDistance = { 0.f, 0.f, 0.f };
-	_float m_fDis = 6.f;
+	_float m_fDis = 4.f;
 
+	_float m_fd = 0.f;
 	_vector m_vLook = { 1.0f, 0.f, 0.f };
 
 	_float4x4 m_matWorld;
 
 	_float m_fAngleX = 0.f;
 	_float m_fAngleY = 0.f;
+
+	_float3	m_vTargetPosition;
+	_float4	m_vTargetQuaternion;
 
 private:
 	_float m_fDistanceValue = 5.f;

@@ -634,7 +634,7 @@ void CGrudgeWraith::Hit(const _int & _Damage)
 {
 	m_tInfo._Hp -= _Damage;
 	//m_tInfo.CurrAnim = G_RTStand_Big_F;
-	m_bAttack = false;
+	//m_bAttack = false;
 }
 
 void CGrudgeWraith::Skill01(_double TimeDelta)

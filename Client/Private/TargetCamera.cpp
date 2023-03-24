@@ -36,7 +36,12 @@ void CTargetCamera::Tick(_double TimeDelta)
 
 	Target_Renewal(TimeDelta);
 
+	//Sibal(TimeDelta);
+
 	Key_Input(TimeDelta);
+
+	Camera_Shake(TimeDelta);
+	//Camera_Shake()
 	//if (m_pInstance->Get_DIKeyState(DIK_TAB))
 	//{
 	//	if (m_bCheck)
@@ -79,40 +84,42 @@ void CTargetCamera::Target_Renewal(_double TimeDelta)
 {
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-	_vector vUp = m_Transform->Get_State(CTransform::STATE_UP);
-	_vector vPos = m_Transform->Get_State(CTransform::STATE_POSITION);
-
 	CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
 
+	CTransform* pCamT = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_CameraTransform")));
+	
 	_vector vPosition = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
 
-	_vector vLook = pPlayerTransform->Get_State(CTransform::STATE_LOOK);
+	_vector vLook = pCamT->Get_State(CTransform::STATE_LOOK);
 
 	_float3 fTarget;
 
 	XMStoreFloat3(&fTarget, vPosition);
 	
 	fTarget.y += m_fDis;
-	fTarget.z -= 6.f;
+	//fTarget.z -= 10.f;
+	m_CameraDesc.vEye = fTarget;
+	m_vLook = XMVector3Normalize(vLook);
+	
+	m_Transform->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_CameraDesc.vEye) - m_vLook * 15);
+	//m_CameraDesc.vAt = vTargetPos - XMLoadFloat3(&Look);
+	XMStoreFloat3(&m_CameraDesc.vAt, XMLoadFloat3(&m_CameraDesc.vEye) + m_vLook);
+	//m_CameraDesc.vAt = m_CameraDesc.vEye + m_vLook;
 
-
-	_long MouseX = 0;
+   	_long MouseX = 0;
 	_long MouseY = 0;
 
-	_vector vDir = XMVector3Normalize(m_Transform->Get_State(CTransform::STATE_LOOK));
+	if (MouseX = m_pInstance->Get_DIMouseMove(DIMM_X))
+	{
+		pCamT->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * MouseX * 0.05f);
+	}
 
-
-	_vector vRight = XMVector3Cross(vDir * -1.f, vUp);
-
-	m_Transform->Set_State(CTransform::STATE_RIGHT, vRight);
-	m_Transform->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fTarget));
-	//m_Transform->LookAt(vPosition);
-	//m_Transform->LookAt(XMLoadFloat3(&fTarget));
-
-	//if (MouseX = m_pInstance->Get_DIMouseMove(DIMM_X))
-	//{
-	//	m_Transform->Turn(vRight, TimeDelta * MouseX * 0.05f);
-	//}
+	if (MouseY = m_pInstance->Get_DIMouseMove(DIMM_Y))
+	{
+		pCamT->Turn(XMVectorSet(1.f, 0.f, 0.f, 0.f), TimeDelta * MouseY * 0.01f);
+	}
+	
+	m_Transform->LookAt(XMLoadFloat3(&m_CameraDesc.vAt));
 
 	RELEASE_INSTANCE(CGameInstance);
 }
@@ -121,7 +128,7 @@ void CTargetCamera::Test(_double TimeDelta)
 {
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-	CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
+	CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_CameraTransform")));
 
 	_vector vPosition = m_Transform->Get_State(CTransform::STATE_POSITION);
 
@@ -141,17 +148,22 @@ void CTargetCamera::Test(_double TimeDelta)
 	XMLoadFloat3(&m_fDistance) = (vLook * -1);
 	fTarget.y += 3.f;
 
-	vTargetPos = (vTargetPos - m_vLook) * m_fDis;
+	//vTargetPos = (vTargetPos - m_vLook) * m_fDis;
 	//fTarget.z = (vTargetPos - m_vLook) * m_fDis;
 	//XMStoreFloat(&fTarget.z, (vTargetPos - m_vLook) * m_fDis);
 	// fTarget z가 아니라 fTarget 자체를 
 
-	m_CameraDesc.vEye = fTarget;
-	//m_CameraDesc.vAt = vTargetPos - XMLoadFloat3(&Look);
-	XMStoreFloat3(&m_CameraDesc.vAt, XMLoadFloat3(&m_CameraDesc.vEye) + m_vLook);
-	//m_CameraDesc.vAt = m_CameraDesc.vEye + m_vLook;
+
+	//	m_CameraDesc.vEye = fTarget;
+	//	//m_CameraDesc.vAt = vTargetPos - XMLoadFloat3(&Look);
+	//	XMStoreFloat3(&m_CameraDesc.vAt, XMLoadFloat3(&m_CameraDesc.vEye) + m_vLook);
+	//	//m_CameraDesc.vAt = m_CameraDesc.vEye + m_vLook;
+
+	// 카메라 eye 건드리는거 주석
 
 	//그러고 멤버 룩을 회전 시켜야 함
+
+	m_Transform->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fTarget));
 
 	_long MouseX = 0;
 
@@ -163,17 +175,52 @@ void CTargetCamera::Test(_double TimeDelta)
 	
 	if (m_fAngleX = m_pInstance->Get_DIMouseMove(DIMM_X))
 	{
-		RotateMat = XMMatrixRotationY(XMConvertToRadians(m_fAngleX));
-
-		if (m_fAngleX >= 360.f)
-			m_fAngleX = 360.f;
+		pPlayerTransform->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * m_fAngleX * 0.1f);
+		//RotateMat = XMMatrixRotationY(XMConvertToRadians(m_fAngleX));
+		//
+		//if (m_fAngleX >= 360.f)
+		//	m_fAngleX = 360.f;
 	}
 
-	m_vLook = XMVector3TransformNormal(m_vLook, RotateMat);
-
-	m_Transform->LookAt(m_vLook);
+	//m_vLook = XMVector3TransformNormal(m_vLook, RotateMat);
+	//
+	//m_Transform->LookAt(vTargetPos);
 
 	RELEASE_INSTANCE(CGameInstance);
+}
+
+void CTargetCamera::Sibal(_double TimeDelta)
+{
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+	CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
+	_vector PlayerPosition = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
+	PlayerPosition.m128_f32[1] += 2.f;
+
+	_long		MouseMove = 0;
+
+	if (MouseMove = m_pInstance->Get_DIMouseMove(DIMM_X))
+	{
+		m_fAngleX += (_float)MouseMove * 0.001f;
+
+	}
+
+	if (MouseMove = m_pInstance->Get_DIMouseMove(DIMM_Y))
+	{
+		m_fAngleY += (_float)MouseMove * 0.001f;
+	}
+
+	_vector TargetQuaternion = XMQuaternionRotationRollPitchYaw(m_fAngleX, m_fAngleY, 0.f);
+	_matrix RotationMatrix = XMMatrixRotationQuaternion(TargetQuaternion);
+	m_fd = min(4.8f, max(3.6f, m_fd * 0.4f));
+	RotationMatrix = Go_Straight(RotationMatrix, -m_fd);
+
+
+	RotationMatrix.r[3] += PlayerPosition;
+	RotationMatrix.r[3].m128_f32[3] = 1.f;
+
+	XMStoreFloat4(&m_vTargetQuaternion, TargetQuaternion);
+	XMStoreFloat3(&m_vTargetPosition, RotationMatrix.r[3]);
 }
 
 void CTargetCamera::Key_Input(_double TimeDelta)
@@ -302,8 +349,38 @@ void CTargetCamera::Set_CameraPos(_float x, _float z)
 	m_CameraDesc.vEye.z = z - 9.f;
 }
 
-void CTargetCamera::Camera_Shake(_fvector vLook, _double TimeDelta)
+void CTargetCamera::Camera_Shake(_double TimeDelta)
 {
+	if (m_fMaxShakeTime < 0.f)
+	{
+		m_eCurrentShakeDir = SHAKE_DIRECTION::DIRECTION_END;
+		return;
+	}
+
+	m_fShakeRatio = m_fCurrentShakeTime / m_fLoopShakeTime;
+	m_fShakeRatio = min(1.f, max(0.f, m_fShakeRatio));
+
+	if (m_bReverseShake)
+		m_fCurrentShakeTime -= TimeDelta;
+	else
+		m_fCurrentShakeTime += TimeDelta;
+
+	if (m_fCurrentShakeTime >= m_fLoopShakeTime)
+		m_bReverseShake = true;
+	else if (m_fCurrentShakeTime <= 0.f)
+		m_bReverseShake = false;
+
+
+	m_fMaxShakeTime -= TimeDelta;
+}
+
+void CTargetCamera::Add_Shaking(const SHAKE_DIRECTION& In_eState, const _float& In_fPower, const _float& In_fTime)
+{
+	m_eCurrentShakeDir = In_eState;
+	m_fShakePower = In_fPower;
+	m_fMaxShakeTime = In_fTime;
+	m_fCurrentShakeTime = m_fLoopShakeTime * 0.5f;
+	m_bReverseShake = false;
 }
 
 void CTargetCamera::Mouse_Check(_double TimeDelta)
@@ -316,6 +393,20 @@ void CTargetCamera::Mouse_Fix()
 
 	ClientToScreen(g_hWnd, &pt);
 	SetCursorPos(pt.x, pt.y);
+}
+
+XMMATRIX CTargetCamera::Go_Straight(FXMMATRIX Mat, float fScaler)
+{
+	XMMATRIX ResultMat = Mat;
+
+	_vector		vPosition = ResultMat.r[3];
+	_vector		vLook = ResultMat.r[2];
+
+	vPosition += XMVector3Normalize(vLook) * fScaler;
+
+	ResultMat.r[3] = vPosition;
+
+	return ResultMat;
 }
 
 CTargetCamera * CTargetCamera::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)

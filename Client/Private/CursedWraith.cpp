@@ -4,6 +4,7 @@
 #include "MonsterWeapon.h"
 #include "GrudgeWraith.h"
 #include "BlackBall.h"
+#include "TSPlayer.h"
 
 CCursedWraith::CCursedWraith(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CMonster(pDevice, pContext)
@@ -34,7 +35,7 @@ HRESULT CCursedWraith::Initialize(void * pArg)
 	if (FAILED(Add_Coll()))
 		return	E_FAIL;
 
-	_float3 fPosition = { 5.f, 0.f, 5.f }; // 임시 위치값
+	_float3 fPosition = { 0.f, 0.f, 5.f }; // 임시 위치값
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPosition));
 
 	m_tInfo._MaxHp = 1000.f;
@@ -170,10 +171,136 @@ HRESULT CCursedWraith::Render()
 
 void CCursedWraith::OnCollision(CGameObject * pObj)
 {
+	COLLISIONSTATE eType = pObj->Get_ObjType();
+
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	CGameObject* pPlayer = nullptr;
+	pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+	m_bHit = static_cast<CTSPlayer*>(pPlayer)->Get_Attack();
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	switch (eType)
+	{
+	case Engine::OBJ_PLAYER:
+		break;
+	case Engine::OBJ_WEAPON_SS:
+		break;
+	case Engine::OBJ_WEAPON_SS1:
+		break;
+	case Engine::OBJ_BOSS1:
+		break;
+	case Engine::OBJ_WEAPON_KARMA14:
+	{
+		if (true == m_bHit)
+		{
+			//CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+			//CGameObject* pTarget = nullptr;
+			//pTarget = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+			//
+			//_bool m_PlayerRSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rSkill;
+			//_bool m_PlayerFSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().fSkill;
+			//_bool m_PlayerRageSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rageSkill;
+			//
+			//if (true == m_PlayerRSkill)
+			//	Damage = 30.f;
+			//else if (true == m_PlayerFSkill)
+			//	Damage = 45.f;
+			//else if (true == m_PlayerRageSkill)
+			//	Damage = 100.f;
+			//else
+			//	Damage = 5.f;
+			//
+			//Hit(Damage);
+			//cout << "칼한테 맞음" << m_tInfo._Hp << endl;
+			//
+			//RELEASE_INSTANCE(CGameInstance)
+
+			break;
+		}
+	}
+	case Engine::OBJ_BOSS2:
+		break;
+	case Engine::OBJ_MONSTER_WEAPONL:
+		break;
+	case Engine::OBJ_MONSTER_WEAPONR:
+		break;
+	case Engine::OBJ_MONSTER_BODY:
+		break;
+	case Engine::OBJ_MONSTER_BALL:
+		break;
+	case Engine::OBJ_END:
+		break;
+	default:
+		break;
+	}
 }
 
 void CCursedWraith::EnterCollision(CGameObject * pObj)
 {
+	COLLISIONSTATE eType = pObj->Get_ObjType();
+
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	CGameObject* pPlayer = nullptr;
+	pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+	m_bHit = static_cast<CTSPlayer*>(pPlayer)->Get_Attack();
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	switch (eType)
+	{
+	case Engine::OBJ_PLAYER:
+		break;
+	case Engine::OBJ_WEAPON_SS:
+		break;
+	case Engine::OBJ_WEAPON_SS1:
+		break;
+	case Engine::OBJ_BOSS1:
+		break;
+	case Engine::OBJ_WEAPON_KARMA14:
+	{
+		if (true == m_bHit)
+		{
+			CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+			CGameObject* pTarget = nullptr;
+			pTarget = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+
+			_bool m_PlayerRSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rSkill;
+			_bool m_PlayerFSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().fSkill;
+			_bool m_PlayerRageSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rageSkill;
+
+			if (true == m_PlayerRSkill)
+				Damage = 30.f;
+			else if (true == m_PlayerFSkill)
+				Damage = 45.f;
+			else if (true == m_PlayerRageSkill)
+				Damage = 100.f;
+			else
+				Damage = 5.f;
+
+			Hit(Damage);
+			cout << "칼한테 맞음" << m_tInfo._Hp << endl;
+
+			RELEASE_INSTANCE(CGameInstance)
+
+				break;
+		}
+	}
+	case Engine::OBJ_BOSS2:
+		break;
+	case Engine::OBJ_MONSTER_WEAPONL:
+		break;
+	case Engine::OBJ_MONSTER_WEAPONR:
+		break;
+	case Engine::OBJ_MONSTER_BODY:
+		break;
+	case Engine::OBJ_MONSTER_BALL:
+		break;
+	case Engine::OBJ_END:
+		break;
+	default:
+		break;
+	}
 }
 
 void CCursedWraith::Animation_State(_double TimeDelta)
@@ -210,7 +337,7 @@ void CCursedWraith::Animation_State(_double TimeDelta)
 		Summons();
 	}
 
-	//Avoid(TimeDelta); // 스킬을 쓰고 나면 무조건 한 번은 뒤로 도망 
+	Avoid(TimeDelta); // 스킬을 쓰고 나면 무조건 한 번은 뒤로 도망 
 
 }
 
@@ -313,11 +440,12 @@ void CCursedWraith::Avoid(_double TimeDelta)
 	if (m_bAvoid)
 	{
 		m_tInfo.CurrAnim = CW_Avoid;
-		m_pTransformCom->Go_Back(0.5 * TimeDelta);
+		m_pTransformCom->Go_Back(0.7 * TimeDelta);
 
-		if (m_tInfo.PrevAnim == CW_Avoid && m_AnimTimeAcc >= (m_AnimDuration / 2) + 22.0)
+		if (m_tInfo.PrevAnim == CW_Avoid && m_AnimTimeAcc >= (m_AnimDuration / 2) + 5.0)
 		{
 			vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			m_tInfo.CurrAnim = CW_Wait;
 			m_bAvoid = false;
 		}
 	}
@@ -352,7 +480,7 @@ void CCursedWraith::Skill01(_double TimeDelta)
 
 			CGameObject* pBall = nullptr;
 
-			BallDesc.vPosition = vPosition; 
+			BallDesc.vPosition = vPosition;
 			BallDesc.fOriginPos = fPos;
 			BallDesc.vLook = XMLoadFloat3(&fPos) - vPosition;
 			BallDesc.eType = CBlackBall::TYPE_8;
@@ -395,7 +523,7 @@ void CCursedWraith::Skill02(_double TimeDelta)
 			
 			XMStoreFloat3(&fPos, vPosition);
 
-			fPos.x = 1.f + i;
+			fPos.x = 1 + i;
 			BallDesc.vPosition = XMLoadFloat3(&fPos);
 			BallDesc.vLook = XMLoadFloat3(&fPos); //vLook;
 			BallDesc.eType = CBlackBall::TYPE_3;
@@ -485,21 +613,21 @@ void CCursedWraith::Use_Skill(_double TimeDelta)
 	switch (RandSkill)
 	{
 	case 0:
-		m_Skill3 = true;
-		break;
-
-	case 1:
 		m_Skill2 = true;
 		break;
 
-	case 2:
+	case 1:
 		m_Skill1 = true;
+		break;
+
+	case 2:
+		m_Skill3 = true;
 		break;
 
 	default:
 		break;
 	}
-	m_SkillDelay = 70.f;
+	m_SkillDelay = 50.f;
 }
 
 void CCursedWraith::Use_Skill_Next(_double TimeDelta)
@@ -541,8 +669,10 @@ void CCursedWraith::Hit(_double TimeDelta)
 {
 	if (m_tInfo._Hit)
 	{
-		m_pTransformCom->Go_Back(TimeDelta * 0.09);
-		m_tInfo.CurrAnim = CW_RTSTAND_BIG_F;
+		//m_tInfo._Hp -= _Damage;
+
+		m_pTransformCom->Go_Back(TimeDelta * 1.0);
+		//m_tInfo.CurrAnim = CW_RTSTAND_BIG_F;
 		m_tInfo._Hit = false;
 	}
 

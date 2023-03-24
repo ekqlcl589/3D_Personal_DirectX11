@@ -493,6 +493,14 @@ namespace Engine
 
 	}CURSEDWRAITHINFO;
 
+	enum class SHAKE_DIRECTION
+	{
+		RIGHT,
+		UP,
+		LOOK,
+		DIRECTION_END
+	};
+
 }
 
 

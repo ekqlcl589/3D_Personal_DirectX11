@@ -389,6 +389,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CTransform::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Transform1"),
+		CTransform::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Calculator"),
 		CCalculator::Create(m_pDevice, m_pContext))))
 		return E_FAIL;

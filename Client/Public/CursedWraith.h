@@ -77,7 +77,7 @@ private:
 	_bool m_bSummons = false;
 	_float m_fAngle = 0.f;
 
-	_float m_SkillDelay = 70.f;
+	_float m_SkillDelay = 50.f;
 	_bool m_SkillNext = false;
 	_bool m_BallCreate = false;
 
@@ -86,6 +86,10 @@ private:
 	_bool m_Skill3 = false;
 
 	_bool m_bAvoid = false;
+
+	_bool m_bHit = false;
+
+	_float Damage = 0;
 public:
 	static CCursedWraith* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

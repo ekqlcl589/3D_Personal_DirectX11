@@ -12,7 +12,6 @@ class CCollider;
 END
 
 BEGIN(Client)
-class CTargetCamera;
 
 class CTSPlayer final : public CGameObject
 {
@@ -88,6 +87,10 @@ private:
 	CRenderer* m_pRendererCom = { nullptr };
 	CTransform*	m_pTransformCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
+
+private:
+	CTransform* m_CameraTransfrom = { nullptr };
+	CGameObject* m_pCamera = nullptr;
 
 private:
 	vector<CGameObject*> m_vecParts[PART_END];

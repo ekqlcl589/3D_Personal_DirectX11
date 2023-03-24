@@ -264,7 +264,7 @@ void CMonsterWeapon::EnterCollision(CGameObject * pObj)
 			else if (true == m_PlayerRageSkill)
 				Damage = 100.f;
 			else
-				Damage = 5.f;
+				Damage = 10.f;
 
 			if (m_Weapon.Owner == OWNER_GOLEM)
 			{

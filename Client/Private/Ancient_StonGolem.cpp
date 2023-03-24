@@ -424,7 +424,7 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 
 	}
 
-	if(m_eType._Hp <= 250.f)
+	if(m_eType._Hp <= 50.f)
 		Set_Skill05(TimeDelta); // 체력이 25% 이하로 떨어지면 몸을 웅크리면서 체력 회복 패턴 사용 
 	else
 	{

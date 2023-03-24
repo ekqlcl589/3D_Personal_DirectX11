@@ -10,6 +10,7 @@
 #include "TwoHandedSword.h"
 #include "Ancient_StonGolem.h"
 #include "GrudgeWraith.h"
+#include "TargetCamera.h"
 
 CTSPlayer::CTSPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -229,7 +230,6 @@ HRESULT CTSPlayer::Render()
 		m_pColliderCom->Render();
 
 #endif
-
 	return S_OK;
 }
 
@@ -428,6 +428,7 @@ void CTSPlayer::Key_Input(_double TimeDelta)
 		m_bTest = false;
 
 		m_tInfo.CurrAnim = TS_WAIT;
+		
 
 	}
 
@@ -821,6 +822,11 @@ void CTSPlayer::Attack_Combo(_double TimeDelta)
 	{
 		m_ComboCheck = true;
 		m_tInfo.CurrAnim = TS_BASIC_COMBO02;
+		CGameInstance* p = GET_INSTANCE(CGameInstance);
+		CGameObject* pMonster = nullptr;
+		pMonster = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
+		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 5.0f, 6.0f);
+		RELEASE_INSTANCE(CGameInstance);
 
 	}
 
@@ -1150,7 +1156,7 @@ void CTSPlayer::CombatWait()
 
 	}
 
-	if (m_tInfo.PrevAnim == TS_DASHCOMBO && true == m_pModelCom->Get_AnimFinished())
+	if (m_tInfo.PrevAnim == TS_DASHCOMBO && true == m_AnimTimeAcc >= (m_AnimDuration / 2) + 30.0)
 	{
 		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
 		m_bDeah = false;
@@ -1331,6 +1337,10 @@ HRESULT CTSPlayer::Add_Components()
 
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Transform"),
 		TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Transform"),
+		TEXT("Com_CameraTransform"), (CComponent**)&m_CameraTransfrom, &TransformDesc)))
 		return E_FAIL;
 
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Player_Body"),
@@ -1536,6 +1546,7 @@ void CTSPlayer::Free()
 	Safe_Release(m_pColliderCom);
 
 	Safe_Release(m_pTransformCom);
+	Safe_Release(m_CameraTransfrom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pRendererCom);
