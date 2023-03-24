@@ -118,5 +118,9 @@ void CCell::Free()
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);
 
+#ifdef _DEBUG
+
 	Safe_Release(m_pVIBuffer);
+#endif // _DEBUG
+
 }

@@ -468,19 +468,19 @@ void CCursedWraith::Skill01(_double TimeDelta)
 
 			_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 			_float3 fPos;
-			XMStoreFloat3(&fPos, vPosition);
+			XMStoreFloat3(&fPos, m_vPosition);
 
 			_matrix matRotate = XMMatrixIdentity();
 			_float Angle = XMConvertToRadians(45.f);
 
 			matRotate = XMMatrixRotationY(Angle + i * Angle);
 
-			vPosition = XMVector3TransformCoord(vPosition, matRotate);
+			vPosition = XMVector3TransformNormal(vPosition, matRotate);
 			CGameInstance* Pinstance = GET_INSTANCE(CGameInstance);
 
 			CGameObject* pBall = nullptr;
 
-			BallDesc.vPosition = vPosition;
+			BallDesc.vPosition = m_vPosition;
 			BallDesc.fOriginPos = fPos;
 			BallDesc.vLook = XMLoadFloat3(&fPos) - vPosition;
 			BallDesc.eType = CBlackBall::TYPE_8;
@@ -517,15 +517,15 @@ void CCursedWraith::Skill02(_double TimeDelta)
 			CBlackBall::BALLDESC BallDesc;
 			ZeroMemory(&BallDesc, sizeof(CBlackBall::BALLDESC));
 
-			_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 			_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 			_float3 fPos;
 			
-			XMStoreFloat3(&fPos, vPosition);
+			XMStoreFloat3(&fPos, m_vPosition); // 현재 자신의 포지션
 
-			fPos.x = 1 + i;
-			BallDesc.vPosition = XMLoadFloat3(&fPos);
-			BallDesc.vLook = XMLoadFloat3(&fPos); //vLook;
+			fPos.x = 4 + i * 4; // 에 w값에 좌우 크기 대입
+			BallDesc.vPosition = XMLoadFloat3(&fPos); // 볼의 위치
+			BallDesc.fOriginPos = fPos; 
+			BallDesc.vLook = m_vTargetPos - XMLoadFloat3(&fPos); //방향벡터
 			BallDesc.eType = CBlackBall::TYPE_3;
 
 			CGameInstance* pInstance = GET_INSTANCE(CGameInstance);

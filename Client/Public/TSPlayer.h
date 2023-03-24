@@ -161,7 +161,6 @@ private:
 	_bool m_FsKill = false;
 	_bool m_RagesKill = false;
 
-
 public:
 	static CTSPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

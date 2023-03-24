@@ -168,135 +168,143 @@ HRESULT CGrudgeWraith::Render()
 
 void CGrudgeWraith::OnCollision(CGameObject * pObj)
 {
-	COLLISIONSTATE eType = pObj->Get_ObjType();
-
-	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-	CGameObject* pPlayer = nullptr;
-	pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
-	m_bHit = static_cast<CTSPlayer*>(pPlayer)->Get_Attack();
-
-	RELEASE_INSTANCE(CGameInstance);
-
-	switch (eType)
+	if (!m_bDead)
 	{
-	case Engine::OBJ_PLAYER:
-		break;
-	case Engine::OBJ_WEAPON_SS:
-		break;
-	case Engine::OBJ_WEAPON_SS1:
-		break;
-	case Engine::OBJ_BOSS1:
-		break;
-	case Engine::OBJ_WEAPON_KARMA14:
-	{
-		if (true == m_bHit && false == m_bGod)
+
+		COLLISIONSTATE eType = pObj->Get_ObjType();
+
+		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+		CGameObject* pPlayer = nullptr;
+		pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+		m_bHit = static_cast<CTSPlayer*>(pPlayer)->Get_Attack();
+
+		RELEASE_INSTANCE(CGameInstance);
+
+		switch (eType)
 		{
-			//CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-			//CGameObject* pTarget = nullptr;
-			//pTarget = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
-			//
-			//_bool m_PlayerRSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rSkill;
-			//_bool m_PlayerFSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().fSkill;
-			//_bool m_PlayerRageSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rageSkill;
-			//
-			//if (true == m_PlayerRSkill)
-			//	Damage = 30.f;
-			//else if (true == m_PlayerFSkill)
-			//	Damage = 45.f;
-			//else if (true == m_PlayerRageSkill)
-			//	Damage = 100.f;
-			//else
-			//	Damage = 5.f;
-			//
-			//Hit(Damage);
-			//cout << "Ä®ÇÑÅ× ¸ÂÀ½" << m_tInfo._Hp << endl;
-			//
-			//RELEASE_INSTANCE(CGameInstance)
+		case Engine::OBJ_PLAYER:
+			break;
+		case Engine::OBJ_WEAPON_SS:
+			break;
+		case Engine::OBJ_WEAPON_SS1:
+			break;
+		case Engine::OBJ_BOSS1:
+			break;
+		case Engine::OBJ_WEAPON_KARMA14:
+		{
+			if (true == m_bHit && false == m_bGod)
+			{
+				//CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+				//CGameObject* pTarget = nullptr;
+				//pTarget = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+				//
+				//_bool m_PlayerRSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rSkill;
+				//_bool m_PlayerFSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().fSkill;
+				//_bool m_PlayerRageSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rageSkill;
+				//
+				//if (true == m_PlayerRSkill)
+				//	Damage = 30.f;
+				//else if (true == m_PlayerFSkill)
+				//	Damage = 45.f;
+				//else if (true == m_PlayerRageSkill)
+				//	Damage = 100.f;
+				//else
+				//	Damage = 5.f;
+				//
+				//Hit(Damage);
+				//cout << "Ä®ÇÑÅ× ¸ÂÀ½" << m_tInfo._Hp << endl;
+				//
+				//RELEASE_INSTANCE(CGameInstance)
 
+				break;
+			}
+		}
+		case Engine::OBJ_BOSS2:
+			break;
+		case Engine::OBJ_MONSTER_WEAPONL:
+			break;
+		case Engine::OBJ_MONSTER_WEAPONR:
+			break;
+		case Engine::OBJ_MONSTER_BODY:
+			break;
+		case Engine::OBJ_MONSTER_BALL:
+			break;
+		case Engine::OBJ_END:
+			break;
+		default:
 			break;
 		}
-	}
-	case Engine::OBJ_BOSS2:
-		break;
-	case Engine::OBJ_MONSTER_WEAPONL:
-		break;
-	case Engine::OBJ_MONSTER_WEAPONR:
-		break;
-	case Engine::OBJ_MONSTER_BODY:
-		break;
-	case Engine::OBJ_MONSTER_BALL:
-		break;
-	case Engine::OBJ_END:
-		break;
-	default:
-		break;
 	}
 }
 
 void CGrudgeWraith::EnterCollision(CGameObject * pObj)
 {
-	COLLISIONSTATE eType = pObj->Get_ObjType();
-
-	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-	CGameObject* pPlayer = nullptr;
-	pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
-	m_bHit = static_cast<CTSPlayer*>(pPlayer)->Get_Attack();
-
-	RELEASE_INSTANCE(CGameInstance);
-
-	switch (eType)
+	if (!m_bDead)
 	{
-	case Engine::OBJ_PLAYER:
-		break;
-	case Engine::OBJ_WEAPON_SS:
-		break;
-	case Engine::OBJ_WEAPON_SS1:
-		break;
-	case Engine::OBJ_BOSS1:
-		break;
-	case Engine::OBJ_WEAPON_KARMA14:
-	{
-		if (true == m_bHit && false == m_bGod)
+
+		COLLISIONSTATE eType = pObj->Get_ObjType();
+
+		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+		CGameObject* pPlayer = nullptr;
+		pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+		m_bHit = static_cast<CTSPlayer*>(pPlayer)->Get_Attack();
+
+		RELEASE_INSTANCE(CGameInstance);
+
+		switch (eType)
 		{
-			CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-			CGameObject* pTarget = nullptr;
-			pTarget = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+		case Engine::OBJ_PLAYER:
+			break;
+		case Engine::OBJ_WEAPON_SS:
+			break;
+		case Engine::OBJ_WEAPON_SS1:
+			break;
+		case Engine::OBJ_BOSS1:
+			break;
+		case Engine::OBJ_WEAPON_KARMA14:
+		{
+			if (true == m_bHit && false == m_bGod)
+			{
+				CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+				CGameObject* pTarget = nullptr;
+				pTarget = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
 
-			_bool m_PlayerRSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rSkill;
-			_bool m_PlayerFSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().fSkill;
-			_bool m_PlayerRageSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rageSkill;
+				_bool m_PlayerRSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rSkill;
+				_bool m_PlayerFSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().fSkill;
+				_bool m_PlayerRageSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rageSkill;
 
-			if (true == m_PlayerRSkill)
-				Damage = 30.f;
-			else if (true == m_PlayerFSkill)
-				Damage = 45.f;
-			else if (true == m_PlayerRageSkill)
-				Damage = 100.f;
-			else
-				Damage = 5.f;
+				if (true == m_PlayerRSkill)
+					Damage = 30.f;
+				else if (true == m_PlayerFSkill)
+					Damage = 45.f;
+				else if (true == m_PlayerRageSkill)
+					Damage = 100.f;
+				else
+					Damage = 5.f;
 
-			Hit(Damage);
-			cout << "Ä®ÇÑÅ× ¸ÂÀ½" << m_tInfo._Hp << endl;
+				Hit(Damage);
+				cout << "Ä®ÇÑÅ× ¸ÂÀ½" << m_tInfo._Hp << endl;
 
-			RELEASE_INSTANCE(CGameInstance)
+				RELEASE_INSTANCE(CGameInstance)
 
-				break;
+					break;
+			}
 		}
-	}
-	case Engine::OBJ_BOSS2:
-		break;
-	case Engine::OBJ_MONSTER_WEAPONL:
-		break;
-	case Engine::OBJ_MONSTER_WEAPONR:
-		break;
-	case Engine::OBJ_MONSTER_BODY:
-		break;
-	case Engine::OBJ_MONSTER_BALL:
-		break;
-	case Engine::OBJ_END:
-		break;
-	default:
-		break;
+		case Engine::OBJ_BOSS2:
+			break;
+		case Engine::OBJ_MONSTER_WEAPONL:
+			break;
+		case Engine::OBJ_MONSTER_WEAPONR:
+			break;
+		case Engine::OBJ_MONSTER_BODY:
+			break;
+		case Engine::OBJ_MONSTER_BALL:
+			break;
+		case Engine::OBJ_END:
+			break;
+		default:
+			break;
+		}
 	}
 }
 
@@ -305,24 +313,24 @@ HRESULT CGrudgeWraith::Add_Coll()
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
 	CBone* pBoneR = m_pModelCom->Get_BonePtr("Bip001-R-Finger01");
-	CBone* pBoneSpine = m_pModelCom->Get_BonePtr("Bip001-Spine");
+	//CBone* pBoneSpine = m_pModelCom->Get_BonePtr("Bip001-Spine");
 
-	if (nullptr == pBoneR || nullptr == pBoneSpine)
+	if (nullptr == pBoneR)// || nullptr == pBoneSpine)
 		return E_FAIL;
 
 	CMonsterWeapon::WEAPONDESC WeaponDesc1 = { pBoneR, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CMonsterWeapon::WEAPON_MONSTER_R, CMonsterWeapon::OWNER_WRAITH };
-	CMonsterWeapon::WEAPONDESC WeaponDesc2 = { pBoneSpine, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CMonsterWeapon::WEAPON_MONSTER_BODY, CMonsterWeapon::OWNER_WRAITH };
+	//CMonsterWeapon::WEAPONDESC WeaponDesc2 = { pBoneSpine, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CMonsterWeapon::WEAPON_MONSTER_BODY, CMonsterWeapon::OWNER_WRAITH };
 	Safe_AddRef(pBoneR);
-	Safe_AddRef(pBoneSpine);
+	//Safe_AddRef(pBoneSpine);
 
 	CGameObject* pWeaponR = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Monster_Weapon"), &WeaponDesc1);
-	CGameObject* pWeaponSpine = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Monster_Weapon"), &WeaponDesc2);
+	//CGameObject* pWeaponSpine = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Monster_Weapon"), &WeaponDesc2);
 
-	if (nullptr == pWeaponR || nullptr == pWeaponSpine)
+	if (nullptr == pWeaponR)// || nullptr == pWeaponSpine)
 		return E_FAIL;
 
 	m_vecWeapon[WEAPON_MONSTERR].push_back(pWeaponR);
-	m_vecWeapon[WEAPON_MONSTERBODY].push_back(pWeaponSpine);
+	//m_vecWeapon[WEAPON_MONSTERBODY].push_back(pWeaponSpine);
 
 	RELEASE_INSTANCE(CGameInstance);
 

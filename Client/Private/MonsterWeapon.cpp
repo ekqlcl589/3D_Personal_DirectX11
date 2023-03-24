@@ -40,7 +40,7 @@ HRESULT CMonsterWeapon::Initialize(void * pArg)
 	else if (m_Weapon.WeaponType == WEAPON_MONSTER_R)
 		m_eCollisionState = OBJ_MONSTER_WEAPONR;
 	else if (m_Weapon.WeaponType == WEAPON_MONSTER_BODY)
-		m_eCollisionState = OBJ_MONSTER_BODY; // 아 이거 몬스터 여러마리로 바뀌면 좀 골치 아파 지겠는데..?
+		m_eCollisionState = OBJ_MONSTER_BODY; 
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
@@ -64,251 +64,284 @@ HRESULT CMonsterWeapon::Initialize(void * pArg)
 
 void CMonsterWeapon::Tick(_double TimeDelta)
 {
+	if (!m_bDead)
+	{
+		if (nullptr != m_pColliderCom)
+			m_pColliderCom->Update(XMLoadFloat4x4(&m_WorldMatrix));
 
-	if (nullptr != m_pColliderCom)
-		m_pColliderCom->Update(XMLoadFloat4x4(&m_WorldMatrix));
+		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+		CGameObject* pOwner = nullptr;
 
-	CGameObject* pOwner = nullptr;
+		if (nullptr == pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster")))
+		{
+			RELEASE_INSTANCE(CGameInstance);
+			return ;
+		}
 
-	if (nullptr == pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster")))
-		return RELEASE_INSTANCE(CGameInstance);
+		pOwner = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
 
-	pOwner = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
+		if (m_Weapon.Owner == OWNER_GOLEM)
+			Dead = static_cast<CAncient_StonGolem*>(pOwner)->Get_Dead();
 
-	if (m_Weapon.Owner == OWNER_GOLEM)
-		Dead = static_cast<CAncient_StonGolem*>(pOwner)->Get_Dead();
+		else if (m_Weapon.Owner == OWNER_CREATURE)
+			Dead = static_cast<CGianticCreature*>(pOwner)->Get_Dead();
 
-	else if (m_Weapon.Owner == OWNER_CREATURE)
-		Dead = static_cast<CGianticCreature*>(pOwner)->Get_Dead();
+		else if (m_Weapon.Owner == OWNER_WRAITH)
+			Dead = static_cast<CGianticCreature*>(pOwner)->Get_Dead();
 
-	RELEASE_INSTANCE(CGameInstance);
+		else if (m_Weapon.Owner == OWNER_WRAITH2)
+			Dead = static_cast<CGianticCreature*>(pOwner)->Get_Dead();
 
-	if (Dead)
-		m_bDead = true;
+		RELEASE_INSTANCE(CGameInstance);
+
+		if (Dead)
+			m_bDead = true;
+
+	}
 }
 
 void CMonsterWeapon::LateTick(_double TimeDelta)
 {
-	__super::LateTick(TimeDelta);
+	if (!m_bDead)
+	{
+		__super::LateTick(TimeDelta);
 
-	_matrix		ParentMatrix = XMLoadFloat4x4(&m_Weapon.pBonePtr->Get_CombinedTransformMatrix()) *
-		XMLoadFloat4x4(&m_Weapon.matParentLocal);
+		_matrix		ParentMatrix = XMLoadFloat4x4(&m_Weapon.pBonePtr->Get_CombinedTransformMatrix()) *
+			XMLoadFloat4x4(&m_Weapon.matParentLocal);
 
-	ParentMatrix.r[0] = XMVector3Normalize(ParentMatrix.r[0]);
-	ParentMatrix.r[1] = XMVector3Normalize(ParentMatrix.r[1]);
-	ParentMatrix.r[2] = XMVector3Normalize(ParentMatrix.r[2]);
+		ParentMatrix.r[0] = XMVector3Normalize(ParentMatrix.r[0]);
+		ParentMatrix.r[1] = XMVector3Normalize(ParentMatrix.r[1]);
+		ParentMatrix.r[2] = XMVector3Normalize(ParentMatrix.r[2]);
 
-	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * ParentMatrix * m_Weapon.pParentTransform->Get_WorldMatrix());
+		XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * ParentMatrix * m_Weapon.pParentTransform->Get_WorldMatrix());
+	}
 }
 
 HRESULT CMonsterWeapon::Render()
 {
-	if (FAILED(__super::Render()))
-		return E_FAIL;
-	
-	if (FAILED(SetUp_ShaderResources()))
-		return E_FAIL;
-	
-	_uint		iNumMeshes = m_pModelCom->Get_NumMeshes();
-	
-	for (_uint i = 0; i < iNumMeshes; i++)
+	if (!m_bDead)
 	{
-		m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
-	
-		m_pShaderCom->Begin(0);
-	
-		//m_pModelCom->Render(i);
-	}
+
+		if (FAILED(__super::Render()))
+			return E_FAIL;
+
+		if (FAILED(SetUp_ShaderResources()))
+			return E_FAIL;
+
+		_uint		iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+		for (_uint i = 0; i < iNumMeshes; i++)
+		{
+			m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
+
+			m_pShaderCom->Begin(0);
+
+			//m_pModelCom->Render(i);
+		}
 
 #ifdef _DEBUG
 
-	if (nullptr != m_pColliderCom)
-		m_pColliderCom->Render();
+		if (nullptr != m_pColliderCom)
+			m_pColliderCom->Render();
 
 #endif
 
-	return S_OK;
+		return S_OK;
+	}
 }
 
 void CMonsterWeapon::OnCollision(CGameObject * pObj)
 {
-	COLLISIONSTATE eType = pObj->Get_ObjType();
-
-	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-	CGameObject* pPlayer = nullptr;
-	pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
-	m_bTakeHit = static_cast<CTSPlayer*>(pPlayer)->Get_Attack();
-	RELEASE_INSTANCE(CGameInstance);
-
-	switch (eType)
+	if (!m_bDead)
 	{
-	case Engine::OBJ_PLAYER:
-		break;
-	case Engine::OBJ_WEAPON_SS:
-		break;
-	case Engine::OBJ_WEAPON_SS1:
-		break;
-	case Engine::OBJ_BOSS1:
-		break;
-	case Engine::OBJ_WEAPON_KARMA14:
-	{
-		//if (true == m_bTakeHit)
-		//{
-		//	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-		//	CGameObject* pOwner = nullptr;
-		//	CGameObject* pTarget = nullptr;
-		//
-		//	pOwner = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
-		//	pTarget = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
-		//
-		//	m_PlayerRSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rSkill;
-		//	m_PlayerFSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().fSkill;
-		//	m_PlayerRageSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rageSkill;
-		//
-		//	if (true == m_PlayerRSkill)
-		//		Damage = 30.f;
-		//	else if (true == m_PlayerFSkill)
-		//		Damage = 45.f;
-		//	else if (true == m_PlayerRageSkill)
-		//		Damage = 100.f;
-		//	else
-		//		Damage = 5.f;
-		//
-		//	if (m_Weapon.Owner == OWNER_GOLEM)
-		//	{
-		//		_uint Hp = static_cast<CAncient_StonGolem*>(pOwner)->Get_Info()._Hp;
-		//		static_cast<CAncient_StonGolem*>(pOwner)->Set_Info(Damage);
-		//		cout << "칼한테 맞음" << Hp << endl;
-		//
-		//	}
-		//	else if (m_Weapon.Owner == OWNER_CREATURE)
-		//	{
-		//		_uint Hp = static_cast<CGianticCreature*>(pOwner)->Get_Info()._Hp;
-		//		static_cast<CGianticCreature*>(pOwner)->Set_Info(Damage);
-		//		cout << "칼한테 맞음" << Hp << endl;
-		//	}
-		//	else if (m_Weapon.Owner == OWNER_WRAITH)
-		//	{
-		//		_uint Hp = static_cast<CGrudgeWraith*>(pOwner)->Get_Info()._Hp;
-		//		static_cast<CGrudgeWraith*>(pOwner)->Set_Info(Damage);
-		//		cout << "칼한테 맞음" << Hp << endl;
-		//	}
-		//	else if (m_Weapon.Owner == OWNER_WRAITH2)
-		//	{
-		//		_uint Hp = static_cast<CCursedWraith*>(pOwner)->Get_Info()._Hp;
-		//		static_cast<CCursedWraith*>(pOwner)->Set_Info(Damage);
-		//		static_cast<CCursedWraith*>(pOwner)->Set_Hit(true);
-		//		cout << "칼한테 맞음" << Hp << endl;
-		//	}
-		//
-		//	RELEASE_INSTANCE(CGameInstance)
-		//}
-		break;
-	}
-	case Engine::OBJ_BOSS2:
-		break;
-	case Engine::OBJ_MONSTER_WEAPONL:
-		break;
-	case Engine::OBJ_MONSTER_WEAPONR:
-		break;
-	case Engine::OBJ_MONSTER_BODY:
-		break;
-	case Engine::OBJ_END:
-		break;
-	default:
-		break;
+
+		COLLISIONSTATE eType = pObj->Get_ObjType();
+
+		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+		CGameObject* pPlayer = nullptr;
+		pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+		m_bTakeHit = static_cast<CTSPlayer*>(pPlayer)->Get_Attack();
+		RELEASE_INSTANCE(CGameInstance);
+
+		switch (eType)
+		{
+		case Engine::OBJ_PLAYER:
+			break;
+		case Engine::OBJ_WEAPON_SS:
+			break;
+		case Engine::OBJ_WEAPON_SS1:
+			break;
+		case Engine::OBJ_BOSS1:
+			break;
+		case Engine::OBJ_WEAPON_KARMA14:
+		{
+			//if (true == m_bTakeHit)
+			//{
+			//	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+			//	CGameObject* pOwner = nullptr;
+			//	CGameObject* pTarget = nullptr;
+			//
+			//	pOwner = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
+			//	pTarget = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+			//
+			//	m_PlayerRSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rSkill;
+			//	m_PlayerFSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().fSkill;
+			//	m_PlayerRageSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rageSkill;
+			//
+			//	if (true == m_PlayerRSkill)
+			//		Damage = 30.f;
+			//	else if (true == m_PlayerFSkill)
+			//		Damage = 45.f;
+			//	else if (true == m_PlayerRageSkill)
+			//		Damage = 100.f;
+			//	else
+			//		Damage = 5.f;
+			//
+			//	if (m_Weapon.Owner == OWNER_GOLEM)
+			//	{
+			//		_uint Hp = static_cast<CAncient_StonGolem*>(pOwner)->Get_Info()._Hp;
+			//		static_cast<CAncient_StonGolem*>(pOwner)->Set_Info(Damage);
+			//		cout << "칼한테 맞음" << Hp << endl;
+			//
+			//	}
+			//	else if (m_Weapon.Owner == OWNER_CREATURE)
+			//	{
+			//		_uint Hp = static_cast<CGianticCreature*>(pOwner)->Get_Info()._Hp;
+			//		static_cast<CGianticCreature*>(pOwner)->Set_Info(Damage);
+			//		cout << "칼한테 맞음" << Hp << endl;
+			//	}
+			//	else if (m_Weapon.Owner == OWNER_WRAITH)
+			//	{
+			//		_uint Hp = static_cast<CGrudgeWraith*>(pOwner)->Get_Info()._Hp;
+			//		static_cast<CGrudgeWraith*>(pOwner)->Set_Info(Damage);
+			//		cout << "칼한테 맞음" << Hp << endl;
+			//	}
+			//	else if (m_Weapon.Owner == OWNER_WRAITH2)
+			//	{
+			//		_uint Hp = static_cast<CCursedWraith*>(pOwner)->Get_Info()._Hp;
+			//		static_cast<CCursedWraith*>(pOwner)->Set_Info(Damage);
+			//		static_cast<CCursedWraith*>(pOwner)->Set_Hit(true);
+			//		cout << "칼한테 맞음" << Hp << endl;
+			//	}
+			//
+			//	RELEASE_INSTANCE(CGameInstance)
+			//}
+			break;
+		}
+		case Engine::OBJ_BOSS2:
+			break;
+		case Engine::OBJ_MONSTER_WEAPONL:
+			break;
+		case Engine::OBJ_MONSTER_WEAPONR:
+			break;
+		case Engine::OBJ_MONSTER_BODY:
+			break;
+		case Engine::OBJ_END:
+			break;
+		default:
+			break;
+		}
 	}
 }
 
 void CMonsterWeapon::EnterCollision(CGameObject * pObj)
 {
-	COLLISIONSTATE eType = pObj->Get_ObjType();
-
-	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-	CGameObject* pPlayer = nullptr;
-	pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
-	m_bTakeHit = static_cast<CTSPlayer*>(pPlayer)->Get_Attack();
-	RELEASE_INSTANCE(CGameInstance);
-
-	switch (eType)
+	if (!m_bDead)
 	{
-	case Engine::OBJ_PLAYER:
-		break;
-	case Engine::OBJ_WEAPON_SS:
-		break;
-	case Engine::OBJ_WEAPON_SS1:
-		break;
-	case Engine::OBJ_BOSS1:
-		break;
-	case Engine::OBJ_WEAPON_KARMA14:
-	{
-		if (true == m_bTakeHit)
+
+		COLLISIONSTATE eType = pObj->Get_ObjType();
+
+		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+		CGameObject* pPlayer = nullptr;
+		pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+		m_bTakeHit = static_cast<CTSPlayer*>(pPlayer)->Get_Attack();
+		RELEASE_INSTANCE(CGameInstance);
+
+		switch (eType)
 		{
-			CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-			CGameObject* pOwner = nullptr;
-			CGameObject* pTarget = nullptr;
-
-			pOwner = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
-			pTarget = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
-
-			m_PlayerRSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rSkill;
-			m_PlayerFSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().fSkill;
-			m_PlayerRageSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rageSkill;
-
-			if (true == m_PlayerRSkill)
-				Damage = 30.f;
-			else if (true == m_PlayerFSkill)
-				Damage = 45.f;
-			else if (true == m_PlayerRageSkill)
-				Damage = 100.f;
-			else
-				Damage = 10.f;
-
-			if (m_Weapon.Owner == OWNER_GOLEM)
+		case Engine::OBJ_PLAYER:
+			break;
+		case Engine::OBJ_WEAPON_SS:
+			break;
+		case Engine::OBJ_WEAPON_SS1:
+			break;
+		case Engine::OBJ_BOSS1:
+			break;
+		case Engine::OBJ_WEAPON_KARMA14:
+		{
+			if (true == m_bTakeHit)
 			{
-				_uint Hp = static_cast<CAncient_StonGolem*>(pOwner)->Get_Info()._Hp;
-				static_cast<CAncient_StonGolem*>(pOwner)->Set_Info(Damage);
-				cout << "칼한테 맞음" << Hp << endl;
+				CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+				CGameObject* pOwner = nullptr;
+				CGameObject* pTarget = nullptr;
 
-			}
-			else if (m_Weapon.Owner == OWNER_CREATURE)
-			{
-				_uint Hp = static_cast<CGianticCreature*>(pOwner)->Get_Info()._Hp;
-				static_cast<CGianticCreature*>(pOwner)->Set_Info(Damage);
-				cout << "칼한테 맞음" << Hp << endl;
-			}
-			else if (m_Weapon.Owner == OWNER_WRAITH)
-			{
-				_uint Hp = static_cast<CGrudgeWraith*>(pOwner)->Get_Info()._Hp;
-				static_cast<CGrudgeWraith*>(pOwner)->Set_Info(Damage);
-				cout << "칼한테 맞음" << Hp << endl;
-			}
-			else if (m_Weapon.Owner == OWNER_WRAITH2)
-			{
-				_uint Hp = static_cast<CCursedWraith*>(pOwner)->Get_Info()._Hp;
-				static_cast<CCursedWraith*>(pOwner)->Set_Info(Damage);
-				static_cast<CCursedWraith*>(pOwner)->Set_Hit(true);
-				cout << "칼한테 맞음" << Hp << endl;
-			}
+				if (nullptr == pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster")))
+				{
+					Set_Dead();
+					return;
+				}
 
-			RELEASE_INSTANCE(CGameInstance)
+				pOwner = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
+				pTarget = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+
+				m_PlayerRSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rSkill;
+				m_PlayerFSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().fSkill;
+				m_PlayerRageSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rageSkill;
+
+				if (true == m_PlayerRSkill)
+					Damage = 30.f;
+				else if (true == m_PlayerFSkill)
+					Damage = 45.f;
+				else if (true == m_PlayerRageSkill)
+					Damage = 100.f;
+				else
+					Damage = 10.f;
+
+				if (m_Weapon.Owner == OWNER_GOLEM)
+				{
+					_uint Hp = static_cast<CAncient_StonGolem*>(pOwner)->Get_Info()._Hp;
+					static_cast<CAncient_StonGolem*>(pOwner)->Set_Info(Damage);
+					cout << "칼한테 맞음" << Hp << endl;
+
+				}
+				else if (m_Weapon.Owner == OWNER_CREATURE)
+				{
+					_uint Hp = static_cast<CGianticCreature*>(pOwner)->Get_Info()._Hp;
+					static_cast<CGianticCreature*>(pOwner)->Set_Info(Damage);
+					cout << "칼한테 맞음" << Hp << endl;
+				}
+				else if (m_Weapon.Owner == OWNER_WRAITH)
+				{
+					_uint Hp = static_cast<CGrudgeWraith*>(pOwner)->Get_Info()._Hp;
+					static_cast<CGrudgeWraith*>(pOwner)->Set_Info(Damage);
+					cout << "칼한테 맞음" << Hp << endl;
+				}
+				else if (m_Weapon.Owner == OWNER_WRAITH2)
+				{
+					_uint Hp = static_cast<CCursedWraith*>(pOwner)->Get_Info()._Hp;
+					static_cast<CCursedWraith*>(pOwner)->Set_Info(Damage);
+					static_cast<CCursedWraith*>(pOwner)->Set_Hit(true);
+					cout << "칼한테 맞음" << Hp << endl;
+				}
+
+				RELEASE_INSTANCE(CGameInstance)
+			}
+			break;
 		}
-		break;
-	}
-	case Engine::OBJ_BOSS2:
-		break;
-	case Engine::OBJ_MONSTER_WEAPONL:
-		break;
-	case Engine::OBJ_MONSTER_WEAPONR:
-		break;
-	case Engine::OBJ_MONSTER_BODY:
-		break;
-	case Engine::OBJ_END:
-		break;
-	default:
-		break;
+		case Engine::OBJ_BOSS2:
+			break;
+		case Engine::OBJ_MONSTER_WEAPONL:
+			break;
+		case Engine::OBJ_MONSTER_WEAPONR:
+			break;
+		case Engine::OBJ_MONSTER_BODY:
+			break;
+		case Engine::OBJ_END:
+			break;
+		default:
+			break;
+		}
 	}
 }
 

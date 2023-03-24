@@ -34,7 +34,8 @@ HRESULT CBlackBall::Initialize(void * pArg)
 
 	if (m_BallDesc.eType == TYPE_8)
 	{
-		m_vPosition = m_BallDesc.vLook;
+		m_vPosition = m_BallDesc.vPosition;
+		m_vLook = m_BallDesc.vLook;
 		XMStoreFloat3(&m_fPos, m_vPosition);
 		m_fPos.y = 1.5f;
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_fPos));
@@ -43,14 +44,14 @@ HRESULT CBlackBall::Initialize(void * pArg)
 	}
 	else if (m_BallDesc.eType == TYPE_3)
 	{
-		m_vPosition = m_BallDesc.vLook;
-		m_vLook = XMVector3Normalize(m_BallDesc.vLook);
+		m_vPosition = m_BallDesc.vPosition; // 생성되야 할 위치 
+		m_vLook = m_BallDesc.vLook;
 
-		XMStoreFloat3(&m_fPos, m_vPosition);
+		XMStoreFloat3(&m_fPos, m_vPosition); // 이 그냥 생성되면 땅을 기니까 y에 1.5 +
 		m_fPos.y = 1.5f;
 
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_fPos));
-		m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_vLook * -1 );
+		m_pTransformCom->Set_State(CTransform::STATE_LOOK, XMVector3Normalize(m_vLook));
 
 	}
 	else if (m_BallDesc.eType == TYPE_DDEBASI)

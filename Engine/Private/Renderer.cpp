@@ -146,6 +146,7 @@ void CRenderer::Draw_Renderer()
 
 }
 
+#ifdef _DEBUG
 HRESULT CRenderer::Add_DebugGroup(CComponent * pComponent)
 {
 	m_DebugRenderObjects.push_back(pComponent);
@@ -168,6 +169,7 @@ HRESULT CRenderer::Render_DebugGroup()
 
 	return S_OK;
 }
+#endif
 
 void CRenderer::Render_Priority()
 {

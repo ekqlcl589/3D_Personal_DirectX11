@@ -79,12 +79,9 @@ void CTargetCamera::Target_Renewal(_double TimeDelta)
 	m_CameraDesc.vEye = fTarget;
 	m_vLook = XMVector3Normalize(vLook);
 	
-	m_Transform->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_CameraDesc.vEye) - m_vLook * 12);
+	m_Transform->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_CameraDesc.vEye) - m_vLook * 9);
 
 	XMStoreFloat3(&m_CameraDesc.vAt, XMLoadFloat3(&m_CameraDesc.vEye) + m_vLook);
-
-	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_J))
-		Add_Shaking(SHAKE_DIRECTION::UP, 0.5F, 0.6F);
 
    	_long MouseX = 0;
 	_long MouseY = 0;

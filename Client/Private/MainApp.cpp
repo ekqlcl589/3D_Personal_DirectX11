@@ -77,6 +77,9 @@ HRESULT CMainApp::Render()
 	//이 사이에 그릴것들을 넣어야 함
 	m_pRenderer->Draw_Renderer();
 
+#ifdef _DEBUG
+
+
 	++m_iNumRender;
 
 	if (m_TimeAcc >= 1.0)
@@ -86,6 +89,7 @@ HRESULT CMainApp::Render()
 		m_iNumRender = 0;
 	}
 	m_pGameInstance->Render_Font(TEXT("Font_Bazzi"), m_szFPS, _float2(0.f, 0.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+#endif // _DEBUG
 
 	m_pGameInstance->Present();
 
