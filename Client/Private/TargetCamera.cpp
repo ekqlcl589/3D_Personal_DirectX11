@@ -32,45 +32,23 @@ HRESULT CTargetCamera::Initialize(void * pArg)
 
 void CTargetCamera::Tick(_double TimeDelta)
 {
-	//Test(TimeDelta);
 
 	Target_Renewal(TimeDelta);
-
-	//Sibal(TimeDelta);
 
 	Key_Input(TimeDelta);
 
 	Camera_Shake(TimeDelta);
-	//Camera_Shake()
-	//if (m_pInstance->Get_DIKeyState(DIK_TAB))
-	//{
-	//	if (m_bCheck)
-	//		return;
-	//
-	//	m_bCheck = true;
-	//
-	//	if (m_bFix)
-	//		m_bFix = false;
-	//	else
-	//		m_bFix = true;
-	//}
-	//else
-	//	m_bCheck = false;
-	//
-	//if (false == m_bFix)
-	//	return;
-
-	//if (false == m_bFix)
-	//{
-	//  Mouse_Fix();
-	//  Mouse_Check(TimeDelta);
-	//}
 
 	__super::Tick(TimeDelta);
 }
 
 void CTargetCamera::LateTick(_double TimeDelta)
 {
+	if (false == m_bFix)
+	{
+		Mouse_Check(TimeDelta);
+		Mouse_Fix();
+	}
 
 	__super::LateTick(TimeDelta);
 }
@@ -97,14 +75,16 @@ void CTargetCamera::Target_Renewal(_double TimeDelta)
 	XMStoreFloat3(&fTarget, vPosition);
 	
 	fTarget.y += m_fDis;
-	//fTarget.z -= 10.f;
+
 	m_CameraDesc.vEye = fTarget;
 	m_vLook = XMVector3Normalize(vLook);
 	
-	m_Transform->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_CameraDesc.vEye) - m_vLook * 15);
-	//m_CameraDesc.vAt = vTargetPos - XMLoadFloat3(&Look);
+	m_Transform->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_CameraDesc.vEye) - m_vLook * 12);
+
 	XMStoreFloat3(&m_CameraDesc.vAt, XMLoadFloat3(&m_CameraDesc.vEye) + m_vLook);
-	//m_CameraDesc.vAt = m_CameraDesc.vEye + m_vLook;
+
+	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_J))
+		Add_Shaking(SHAKE_DIRECTION::UP, 0.5F, 0.6F);
 
    	_long MouseX = 0;
 	_long MouseY = 0;
@@ -116,7 +96,7 @@ void CTargetCamera::Target_Renewal(_double TimeDelta)
 
 	if (MouseY = m_pInstance->Get_DIMouseMove(DIMM_Y))
 	{
-		pCamT->Turn(XMVectorSet(1.f, 0.f, 0.f, 0.f), TimeDelta * MouseY * 0.01f);
+		pCamT->Turn(XMVectorSet(1.f, 0.f, 0.f, 0.f), TimeDelta * MouseY * 0.02f);
 	}
 	
 	m_Transform->LookAt(XMLoadFloat3(&m_CameraDesc.vAt));
@@ -147,21 +127,6 @@ void CTargetCamera::Test(_double TimeDelta)
 
 	XMLoadFloat3(&m_fDistance) = (vLook * -1);
 	fTarget.y += 3.f;
-
-	//vTargetPos = (vTargetPos - m_vLook) * m_fDis;
-	//fTarget.z = (vTargetPos - m_vLook) * m_fDis;
-	//XMStoreFloat(&fTarget.z, (vTargetPos - m_vLook) * m_fDis);
-	// fTarget z가 아니라 fTarget 자체를 
-
-
-	//	m_CameraDesc.vEye = fTarget;
-	//	//m_CameraDesc.vAt = vTargetPos - XMLoadFloat3(&Look);
-	//	XMStoreFloat3(&m_CameraDesc.vAt, XMLoadFloat3(&m_CameraDesc.vEye) + m_vLook);
-	//	//m_CameraDesc.vAt = m_CameraDesc.vEye + m_vLook;
-
-	// 카메라 eye 건드리는거 주석
-
-	//그러고 멤버 룩을 회전 시켜야 함
 
 	m_Transform->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fTarget));
 
@@ -230,6 +195,25 @@ void CTargetCamera::Key_Input(_double TimeDelta)
 
 	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_M))
 		m_fDis -= 1.f * TimeDelta;
+
+	if (m_pInstance->Get_DIKeyState(DIK_TAB))
+	{
+		if (m_bCheck)
+			return;
+
+		m_bCheck = true;
+
+		if (m_bFix)
+			m_bFix = false;
+		else
+			m_bFix = true;
+	}
+	else
+		m_bCheck = false;
+
+	if (false == m_bFix)
+		return;
+
 }
 
 void CTargetCamera::View_TarGet(_double TimeDelta)

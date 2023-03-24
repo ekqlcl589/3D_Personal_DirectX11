@@ -613,7 +613,7 @@ void CCursedWraith::Use_Skill(_double TimeDelta)
 	switch (RandSkill)
 	{
 	case 0:
-		m_Skill2 = true;
+		m_Skill3 = true;
 		break;
 
 	case 1:
@@ -621,7 +621,7 @@ void CCursedWraith::Use_Skill(_double TimeDelta)
 		break;
 
 	case 2:
-		m_Skill3 = true;
+		m_Skill2 = true;
 		break;
 
 	default:
