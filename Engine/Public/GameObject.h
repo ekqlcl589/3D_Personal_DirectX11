@@ -42,7 +42,7 @@ public: // 새로 만든 vecColl
 	_bool Get_isColl() { return m_isColl; }
 	void Set_isCollied(bool _Collied) { m_isColl = _Collied; }
 	void Add_Collied(CGameObject* _obj) { m_vecColl.insert(_obj); }
-	int Get_CollideSize() { return m_vecColl.size(); }
+
 	bool Check_Collied(CGameObject* _obj) { return m_vecColl.find(_obj) != m_vecColl.end(); }
 	bool Erase_Collied(CGameObject* _obj) { return m_vecColl.erase(_obj) ? true : false; }
 

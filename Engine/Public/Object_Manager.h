@@ -24,6 +24,8 @@ public:
 
 	void Clear(_uint iLevelIndex);
 
+	_bool ObjDead = false;
+
 public:
 	class CGameObject* Find_GameObject(_uint iLevelIndex, const _tchar* pLayerTag, void* pArg = nullptr);
 

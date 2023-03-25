@@ -88,10 +88,10 @@ void CMonsterWeapon::Tick(_double TimeDelta)
 			Dead = static_cast<CGianticCreature*>(pOwner)->Get_Dead();
 
 		else if (m_Weapon.Owner == OWNER_WRAITH)
-			Dead = static_cast<CGianticCreature*>(pOwner)->Get_Dead();
+			Dead = static_cast<CGrudgeWraith*>(pOwner)->Get_Dead();
 
-		else if (m_Weapon.Owner == OWNER_WRAITH2)
-			Dead = static_cast<CGianticCreature*>(pOwner)->Get_Dead();
+		//else if (m_Weapon.Owner == OWNER_WRAITH2)
+		//	Dead = static_cast<CCursedWraith*>(pOwner)->Get_Dead(); 얘는 monsterweapon 쓰는 애 없음
 
 		RELEASE_INSTANCE(CGameInstance);
 

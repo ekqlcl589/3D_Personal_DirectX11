@@ -82,16 +82,21 @@ HRESULT CGameInstance::Tick_Engine(_double TimeDelta)
 	// 
 	//m_pCollision_Mgr->OnCollisionEnter(OBJ_MONSTER_BODY, OBJ_WEAPON_KARMA14);
 
-	m_pCollision_Mgr->Check_Collision(OBJ_MONSTER_BODY, OBJ_WEAPON_KARMA14);
+	if (!m_pObject_Manager->ObjDead)
+	{
+		m_pCollision_Mgr->Check_Collision(OBJ_MONSTER_BODY, OBJ_WEAPON_KARMA14);
 
-	m_pCollision_Mgr->Check_Collision(OBJ_PLAYER, OBJ_MONSTER_WEAPONL);
-	m_pCollision_Mgr->Check_Collision(OBJ_PLAYER, OBJ_MONSTER_WEAPONR);
+		m_pCollision_Mgr->Check_Collision(OBJ_PLAYER, OBJ_MONSTER_WEAPONL);
+		m_pCollision_Mgr->Check_Collision(OBJ_PLAYER, OBJ_MONSTER_WEAPONR);
+	}
 
-	m_pCollision_Mgr->Check_Collision(OBJ_PLAYER, OBJ_MONSTER_BALL); // 플레이어, 공 충돌
+		m_pCollision_Mgr->Check_Collision(OBJ_PLAYER, OBJ_MONSTER_BALL); // 플레이어, 공 충돌
 
-	m_pCollision_Mgr->Check_Collision(OBJ_BOSS1, OBJ_WEAPON_KARMA14); // 칼, Grudge 충돌
-	m_pCollision_Mgr->Check_Collision(OBJ_BOSS2, OBJ_WEAPON_KARMA14); //칼, Cursed 충돌 인데 왜 터지냐 시발
+		m_pCollision_Mgr->Check_Collision(OBJ_BOSS1, OBJ_WEAPON_KARMA14); // 칼, Grudge 충돌
+		m_pCollision_Mgr->Check_Collision(OBJ_BOSS2, OBJ_WEAPON_KARMA14); //칼, Cursed 충돌 인데 왜 터지냐 시발
 
+
+	
 	m_pObject_Manager->LateTick(TimeDelta); 
 
 	return S_OK;

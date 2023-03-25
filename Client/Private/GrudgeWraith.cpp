@@ -66,6 +66,7 @@ void CGrudgeWraith::Tick(_double TimeDelta)
 
 		RELEASE_INSTANCE(CGameInstance);
 
+		return;
 	}
 	else
 	{

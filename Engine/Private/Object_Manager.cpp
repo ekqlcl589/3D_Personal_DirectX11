@@ -56,9 +56,11 @@ HRESULT CObject_Manager::Dleate_GameObject(_uint iLevelIndex, const _tchar * pLa
 	CGameObject* pObj = Find_GameObject(iLevelIndex, pLayerTag);
 
 	CLayer* pLayer = Find_Layer(iLevelIndex, pLayerTag);
-
+	
 	pLayer->Delete_GameObject(pObj);
 	
+	ObjDead = pObj->Get_Dead();
+
 	return S_OK;
 }
 

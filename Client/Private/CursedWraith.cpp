@@ -32,8 +32,8 @@ HRESULT CCursedWraith::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	if (FAILED(Add_Coll()))
-		return	E_FAIL;
+	//if (FAILED(Add_Coll()))
+	//	return	E_FAIL;
 
 	_float3 fPosition = { 0.f, 0.f, 5.f }; // 임시 위치값
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPosition));
@@ -46,6 +46,15 @@ HRESULT CCursedWraith::Initialize(void * pArg)
 	m_pModelCom->SetUp_Animation(m_tInfo.CurrAnim);
 
 	//m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(195.0f));
+
+	m_eCollisionState = OBJ_BOSS1;
+	m_iObjID = 3;
+
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+	pInstance->Add_Collider(m_eCollisionState, Set_ObjID(m_iObjID), this);
+
+	RELEASE_INSTANCE(CGameInstance);
 
 
 	return S_OK;
@@ -69,7 +78,7 @@ void CCursedWraith::Tick(_double TimeDelta)
 		m_pTransformCom->LookAt(m_vTargetPos);
 
 		m_vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-		m_vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+		//m_vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 
 		Animation_State(TimeDelta);
 
@@ -167,6 +176,7 @@ HRESULT CCursedWraith::Render()
 		return S_OK;
 
 	}
+	return S_OK;
 }
 
 void CCursedWraith::OnCollision(CGameObject * pObj)
@@ -259,16 +269,14 @@ void CCursedWraith::EnterCollision(CGameObject * pObj)
 		break;
 	case Engine::OBJ_WEAPON_KARMA14:
 	{
-		if (true == m_bHit)
-		{
 			CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 			CGameObject* pTarget = nullptr;
 			pTarget = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
-
+		
 			_bool m_PlayerRSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rSkill;
 			_bool m_PlayerFSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().fSkill;
 			_bool m_PlayerRageSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rageSkill;
-
+		
 			if (true == m_PlayerRSkill)
 				Damage = 30.f;
 			else if (true == m_PlayerFSkill)
@@ -277,14 +285,17 @@ void CCursedWraith::EnterCollision(CGameObject * pObj)
 				Damage = 100.f;
 			else
 				Damage = 5.f;
+		
+			m_tInfo._Hp -= Damage;
 
-			Hit(Damage);
+			m_tInfo._Hit = true;
+			//Hit(Damage);
 			cout << "칼한테 맞음" << m_tInfo._Hp << endl;
-
+		
 			RELEASE_INSTANCE(CGameInstance)
-
+		
 				break;
-		}
+		
 	}
 	case Engine::OBJ_BOSS2:
 		break;
@@ -322,11 +333,12 @@ void CCursedWraith::Animation_State(_double TimeDelta)
 	//if (!m_Test)
 	//Summons();
 
-	if (!m_bAttack && m_SkillDelay >= 0)
-		--m_SkillDelay;
-	else if (false == m_bWlak && false == m_tInfo._Hit && !m_bAttack && m_SkillDelay < 0)
-		Use_Skill(TimeDelta);
-	
+	//if (!m_bAttack && m_SkillDelay >= 0)
+	//	--m_SkillDelay;
+	//else if (false == m_bWlak && false == m_tInfo._Hit && !m_bAttack && m_SkillDelay < 0)
+	//	Use_Skill(TimeDelta);
+	//m_Skill1 = true;
+	m_Skill3 = true;
 
 	Skill01(TimeDelta);
 	Skill02(TimeDelta);
@@ -440,7 +452,7 @@ void CCursedWraith::Avoid(_double TimeDelta)
 	if (m_bAvoid)
 	{
 		m_tInfo.CurrAnim = CW_Avoid;
-		m_pTransformCom->Go_Back(0.7 * TimeDelta);
+		m_pTransformCom->Go_Back(0.9 * TimeDelta);
 
 		if (m_tInfo.PrevAnim == CW_Avoid && m_AnimTimeAcc >= (m_AnimDuration / 2) + 5.0)
 		{
@@ -455,8 +467,8 @@ void CCursedWraith::Skill01(_double TimeDelta)
 {
 	if (m_Skill1 && m_tInfo.PrevAnim == CW_Wait && true == m_pModelCom->Get_AnimFinished())
 	{
-		m_bAttack = true;
 		m_tInfo.CurrAnim = CW_SKILL_01;
+		m_bAttack = true;
 	}
 
 	if (m_tInfo.PrevAnim == CW_SKILL_01 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 9.0 && m_AnimTimeAcc <= (m_AnimDuration / 2) + 10.0)
@@ -465,24 +477,26 @@ void CCursedWraith::Skill01(_double TimeDelta)
 		{
 			CBlackBall::BALLDESC BallDesc;
 			ZeroMemory(&BallDesc, sizeof(CBlackBall::BALLDESC));
+			//m_vPosition == 몬스터 포지션
+			// vPosition == 공 위치 
+			_vector vPosition = m_vPosition; // 공의 위치는 몬스터의 위치
 
-			_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 			_float3 fPos;
-			XMStoreFloat3(&fPos, m_vPosition);
+			XMStoreFloat3(&fPos, vPosition);
 
 			_matrix matRotate = XMMatrixIdentity();
 			_float Angle = XMConvertToRadians(45.f);
 
 			matRotate = XMMatrixRotationY(Angle + i * Angle);
 
-			vPosition = XMVector3TransformNormal(vPosition, matRotate);
+			vPosition = XMVector3TransformNormal(m_vPosition, matRotate); // 공의 위치는 몬스터 위치에 회전 매트릭스를 적용시킨 값
 			CGameInstance* Pinstance = GET_INSTANCE(CGameInstance);
 
 			CGameObject* pBall = nullptr;
 
-			BallDesc.vPosition = m_vPosition;
+			BallDesc.vPosition = XMLoadFloat3(&fPos);// vPosition; // 생성시킬 위치는 회전이 적용된 vPosition;
 			BallDesc.fOriginPos = fPos;
-			BallDesc.vLook = XMLoadFloat3(&fPos) - vPosition;
+			BallDesc.vLook = XMLoadFloat3(&fPos) - vPosition;// vPosition; // 방향은 몬스터 위치 - 내(공) 위치 
 			BallDesc.eType = CBlackBall::TYPE_8;
 
 			pBall = Pinstance->Clone_GameObject_Add_Layer(TEXT("Prototype_GameObject_Effect_Ball"), &BallDesc);
@@ -517,15 +531,18 @@ void CCursedWraith::Skill02(_double TimeDelta)
 			CBlackBall::BALLDESC BallDesc;
 			ZeroMemory(&BallDesc, sizeof(CBlackBall::BALLDESC));
 
+			_vector vPosition = m_vPosition; // 공의 위치는 몬스터의 위치
 			_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 			_float3 fPos;
 			
 			XMStoreFloat3(&fPos, m_vPosition); // 현재 자신의 포지션
 
-			fPos.x = 4 + i * 4; // 에 w값에 좌우 크기 대입
-			BallDesc.vPosition = XMLoadFloat3(&fPos); // 볼의 위치
-			BallDesc.fOriginPos = fPos; 
-			BallDesc.vLook = m_vTargetPos - XMLoadFloat3(&fPos); //방향벡터
+			fPos.x = -3.f + i * 3.f; // 에 w값에 좌우 크기 대입
+			//fPos.y = 1.5f;
+
+			BallDesc.vPosition = XMLoadFloat3(&fPos); // 볼 들의 위치 
+			XMStoreFloat3(&BallDesc.fOriginPos, m_vPosition); // 볼의 생성 위치 
+			BallDesc.vLook = m_vTargetPos - XMLoadFloat3(&fPos); //방향 
 			BallDesc.eType = CBlackBall::TYPE_3;
 
 			CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
@@ -562,13 +579,12 @@ void CCursedWraith::Skill03(_double TimeDelta)
 		ZeroMemory(&BallDesc, sizeof(CBlackBall::BALLDESC));
 		//_vector vPosition = m_vTargetPos;
 
-		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-
-		CGameObject* pMonster = nullptr;
-
-		BallDesc.vPosition = m_vTargetPos;
-		BallDesc.vLook = m_vTargetPos;
+		BallDesc.vPosition = m_vTargetPos; // 생성 위치는 몬스터 의 
+		BallDesc.vLook = m_vTargetPos;// -m_vPosition; // 방향은 타겟 - 위치 로 
 		BallDesc.eType = CBlackBall::TYPE_DDEBASI;
+		
+		CGameObject* pMonster = nullptr;
+		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 		pMonster = pInstance->Clone_GameObject_Add_Layer(TEXT("Prototype_GameObject_Effect_Ball"), &BallDesc);
 
 		RELEASE_INSTANCE(CGameInstance);
@@ -617,11 +633,11 @@ void CCursedWraith::Use_Skill(_double TimeDelta)
 		break;
 
 	case 1:
-		m_Skill1 = true;
+		m_Skill2 = true;
 		break;
 
 	case 2:
-		m_Skill2 = true;
+		m_Skill1 = true;
 		break;
 
 	default:
@@ -669,7 +685,6 @@ void CCursedWraith::Hit(_double TimeDelta)
 {
 	if (m_tInfo._Hit)
 	{
-		//m_tInfo._Hp -= _Damage;
 
 		m_pTransformCom->Go_Back(TimeDelta * 1.0);
 		//m_tInfo.CurrAnim = CW_RTSTAND_BIG_F;
@@ -702,6 +717,15 @@ HRESULT CCursedWraith::Add_Components()
 
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxAnimModel"),
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
+		return E_FAIL;
+
+	CCollider::COLLIDERDESC ColliderDesc;
+	ZeroMemory(&ColliderDesc, sizeof ColliderDesc);
+
+	ColliderDesc.vScale = _float3(1.f, 2.f, 1.f);
+	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vScale.y * 0.5f, 0.f);
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_OBB"),
+		TEXT("Com_Collider"), (CComponent**)&m_pColliderCom, &ColliderDesc)))
 		return E_FAIL;
 
 	return S_OK;
