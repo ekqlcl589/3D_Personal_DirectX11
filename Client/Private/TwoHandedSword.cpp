@@ -33,18 +33,25 @@ HRESULT CTwoHandedSword::Initialize(void * pArg)
 	if (nullptr != pArg)
 		memcpy(&m_Weapon, pArg, sizeof m_Weapon);
 
+	if (m_Weapon.WeaponType != WEAPON_WAIT)
+	{
+		m_eCollisionState = m_Weapon.eColl;
 
-	m_eCollisionState = m_Weapon.eColl;
+		m_iObjID = 4;
 
-	m_iObjID = 4;
+		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+		pInstance->Add_Collider(m_eCollisionState, Set_ObjID(m_iObjID), this);
 
-	pInstance->Add_Collider(m_eCollisionState, Set_ObjID(m_iObjID), this);
+		RELEASE_INSTANCE(CGameInstance);
 
-	RELEASE_INSTANCE(CGameInstance);
+		m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(270.0f));
+	}
+	else
+	{
+		m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(125.0f));
 
-	m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(270.0f));
+	}
 
 
 	return S_OK;

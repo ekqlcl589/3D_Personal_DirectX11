@@ -41,6 +41,13 @@ HRESULT CGamePlay::Initialize()
 	if (FAILED(Ready_MonsterUI(TEXT("Layer_Monster_UI"))))
 		return E_FAIL;
 
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Arma"), TEXT("Effect"))))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(CGameInstance);
+
 	//LoadData(L"../Data/Cube/Cube.dat");
 
 	return S_OK;

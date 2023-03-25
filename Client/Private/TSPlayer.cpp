@@ -78,6 +78,8 @@ HRESULT CTSPlayer::Initialize(void * pArg)
 
 void CTSPlayer::Tick(_double TimeDelta)
 {
+	WeaponBoneUpdate();
+
 	if (m_tInfo._Hp <= 0.f)
 	{
 		m_tInfo._Hp = 0.f;
@@ -1320,6 +1322,10 @@ void CTSPlayer::Rage_Skill(_double TimeDelta)
 	}
 }
 
+void CTSPlayer::WeaponBoneUpdate()
+{
+}
+
 HRESULT CTSPlayer::Add_Components()
 {
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"),
@@ -1458,19 +1464,24 @@ HRESULT CTSPlayer::Add_Weapon()
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
 	CBone* pBonePtr = m_pModelCom->Get_BonePtr("Weapon_Hand_R"); // ÀüÅõ°¡ ¾Æ´Ò ¶§ ºÙÀÌ´Â »À == Weapon_Spine_R
-
+	CBone* pBonePtrWait = m_pModelCom->Get_BonePtr("Weapon_Spine_R");
 	if (nullptr == pBonePtr)
 		return E_FAIL;
 
-	CTwoHandedSword::WEAPONDESC WeaponDesc = { pBonePtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CTwoHandedSword::WEAPON_TS, OBJ_WEAPON_KARMA14};
+	CTwoHandedSword::WEAPONDESC WeaponDesc = { pBonePtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CTwoHandedSword::WEAPON_TS, OBJ_WEAPON_KARMA14 };
 	Safe_AddRef(pBonePtr);
 
-	CGameObject* pWeapon = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Weapon_TS"), &WeaponDesc);
+	CTwoHandedSword::WEAPONDESC WeaponDesc2 = { pBonePtrWait, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CTwoHandedSword::WEAPON_WAIT, OBJ_WEAPON_KARMA14 };
+	Safe_AddRef(pBonePtrWait);
 
-	if (nullptr == pWeapon)
+	CGameObject* pWeapon = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Weapon_TS"), &WeaponDesc);
+	CGameObject* pWeapon2 = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Weapon_TS"), &WeaponDesc2);
+
+	if (nullptr == pWeapon || nullptr == pWeapon2)
 		return E_FAIL;
 
 	m_vecWeapon[WEAPON_KARMA14].push_back(pWeapon);
+	m_vecWeapon[WEAPON_KARMA14].push_back(pWeapon2);
 
 	RELEASE_INSTANCE(CGameInstance);
 
