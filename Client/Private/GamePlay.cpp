@@ -168,9 +168,9 @@ HRESULT CGamePlay::Ready_MonsterUI(const _tchar * pLayerTag)
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
 	CMonsterHPBar::OWNER Owner;
-	Owner = CMonsterHPBar::OWNER_WRAITH2;
+	Owner = CMonsterHPBar::OWNER_GOLEM;
 
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_HPBar"), pLayerTag), &Owner))
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_HPBar"), pLayerTag, &Owner)))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -194,14 +194,14 @@ HRESULT CGamePlay::Ready_Layer_Monster(const _tchar * pLayerTag)
 {
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-	//if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster"), pLayerTag)))
-	//	return E_FAIL;
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster"), pLayerTag)))
+		return E_FAIL;
 
 	//if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster1"), pLayerTag)))
 	//	return E_FAIL;
 
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster3"), pLayerTag)))
-		return E_FAIL;
+	//if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster3"), pLayerTag)))
+	//	return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
 

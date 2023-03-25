@@ -42,7 +42,7 @@ HRESULT CMonsterHPBar::Initialize(void * pArg)
 	if (nullptr != pArg)
 		memcpy(&m_eOwner, pArg, sizeof OWNER);
 
-	m_eOwner = OWNER_WRAITH2;
+	//m_eOwner = OWNER_WRAITH2;
 
 	m_fSizeX = g_iWinSizeX;
 	m_fSizeY = g_iWinSizeY;

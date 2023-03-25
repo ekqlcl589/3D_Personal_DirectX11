@@ -35,17 +35,6 @@ HRESULT CAncient_StonGolem::Initialize(void * pArg)
 	if (FAILED(Add_Coll())) 
 		return	E_FAIL;
 
-
-	m_eCollisionState = OBJ_BOSS1;
-
-	m_iObjID = 3;
-
-	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-
-	pInstance->Add_Collider(m_eCollisionState, Set_ObjID(m_iObjID), this);
-
-	RELEASE_INSTANCE(CGameInstance);
-
 	_float3 fPosition = { 10.f, 0.f, 20.f };
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPosition));
