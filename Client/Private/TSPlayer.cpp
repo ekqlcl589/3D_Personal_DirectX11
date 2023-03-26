@@ -8,6 +8,7 @@
 #include "Hair.h"
 #include "PlayerTop.h"
 #include "TwoHandedSword.h"
+#include "TwoHandedSwordWait.h"
 #include "Ancient_StonGolem.h"
 #include "GrudgeWraith.h"
 #include "TargetCamera.h"
@@ -130,7 +131,9 @@ void CTSPlayer::Tick(_double TimeDelta)
 		for (auto& pWeapon : m_vecWeapon[i])
 		{
 			if (nullptr != pWeapon)
+			{
 				pWeapon->Tick(TimeDelta);
+			}
 		}
 	}
 
@@ -183,10 +186,25 @@ void CTSPlayer::LateTick(_double TimeDelta)
 
 		for (_uint i = 0; i < WEAPON_END; i++)
 		{
-			for (auto& pWeapon : m_vecWeapon[i])
+			if (m_AttackCheck)
 			{
-				if (nullptr != pWeapon)
-					m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, pWeapon);
+				for (auto& pWeapon : m_vecWeapon[WEAPON_KARMA14])
+				{
+				
+					if (nullptr != pWeapon)
+						m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, pWeapon);
+				}
+			
+			}
+			else // 공격중, 대기상태 일 때 에 따라 달려 있는 무기들 렌더그룹에 넣어줌
+			{
+				for (auto& pWeapon : m_vecWeapon[WEAPON_WAIT])
+				{
+
+					if (nullptr != pWeapon)
+						m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, pWeapon);
+				}
+
 			}
 		}
 
@@ -1471,17 +1489,17 @@ HRESULT CTSPlayer::Add_Weapon()
 	CTwoHandedSword::WEAPONDESC WeaponDesc = { pBonePtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CTwoHandedSword::WEAPON_TS, OBJ_WEAPON_KARMA14 };
 	Safe_AddRef(pBonePtr);
 
-	CTwoHandedSword::WEAPONDESC WeaponDesc2 = { pBonePtrWait, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CTwoHandedSword::WEAPON_WAIT, OBJ_WEAPON_KARMA14 };
+	CTwoHandedSwordWait::WEAPONDESC WeaponDesc2 = { pBonePtrWait, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CTwoHandedSwordWait::WEAPON_WAIT, OBJ_END };
 	Safe_AddRef(pBonePtrWait);
 
 	CGameObject* pWeapon = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Weapon_TS"), &WeaponDesc);
-	CGameObject* pWeapon2 = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Weapon_TS"), &WeaponDesc2);
+	CGameObject* pWeapon2 = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Weapon_TS_Wait"), &WeaponDesc2);
 
 	if (nullptr == pWeapon || nullptr == pWeapon2)
 		return E_FAIL;
 
 	m_vecWeapon[WEAPON_KARMA14].push_back(pWeapon);
-	m_vecWeapon[WEAPON_KARMA14].push_back(pWeapon2);
+	m_vecWeapon[WEAPON_WAIT].push_back(pWeapon2);
 
 	RELEASE_INSTANCE(CGameInstance);
 

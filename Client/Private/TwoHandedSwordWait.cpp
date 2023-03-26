@@ -1,18 +1,18 @@
 #include "stdafx.h"
-#include "..\Public\TwoHandedSword.h"
+#include "..\Public\TwoHandedSwordWait.h"
 #include "GameInstance.h"
 
-CTwoHandedSword::CTwoHandedSword(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CTwoHandedSwordWait::CTwoHandedSwordWait(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CWeapon(pDevice, pContext)
 {
 }
 
-CTwoHandedSword::CTwoHandedSword(const CTwoHandedSword & rhs)
+CTwoHandedSwordWait::CTwoHandedSwordWait(const CTwoHandedSwordWait & rhs)
 	: CWeapon(rhs)
 {
 }
 
-HRESULT CTwoHandedSword::Initialize_Prototype()
+HRESULT CTwoHandedSwordWait::Initialize_Prototype()
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
@@ -20,7 +20,7 @@ HRESULT CTwoHandedSword::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CTwoHandedSword::Initialize(void * pArg)
+HRESULT CTwoHandedSwordWait::Initialize(void * pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -33,28 +33,20 @@ HRESULT CTwoHandedSword::Initialize(void * pArg)
 	if (nullptr != pArg)
 		memcpy(&m_Weapon, pArg, sizeof m_Weapon);
 
-		m_eCollisionState = m_Weapon.eColl;
+	m_pTransformCom->Set_Scale(m_fScale);
 
-		m_iObjID = 4;
-
-		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-
-		pInstance->Add_Collider(m_eCollisionState, Set_ObjID(m_iObjID), this);
-
-		RELEASE_INSTANCE(CGameInstance);
-
-		m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(270.0f));
-
-		return S_OK;
+	m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.0f));
+	// 얘는 콜리전 없음 
+	return S_OK;
 }
 
-void CTwoHandedSword::Tick(_double TimeDelta)
+void CTwoHandedSwordWait::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 
 }
 
-void CTwoHandedSword::LateTick(_double TimeDelta)
+void CTwoHandedSwordWait::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
 
@@ -68,7 +60,7 @@ void CTwoHandedSword::LateTick(_double TimeDelta)
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * ParentMatrix * m_Weapon.pParentTransform->Get_WorldMatrix());
 }
 
-HRESULT CTwoHandedSword::Render()
+HRESULT CTwoHandedSwordWait::Render()
 {
 	if (FAILED(__super::Render()))
 		return E_FAIL;
@@ -91,7 +83,7 @@ HRESULT CTwoHandedSword::Render()
 	return S_OK;
 }
 
-void CTwoHandedSword::OnCollision(CGameObject * pObj)
+void CTwoHandedSwordWait::OnCollision(CGameObject * pObj)
 {
 
 	COLLISIONSTATE eType = pObj->Get_ObjType();
@@ -123,7 +115,7 @@ void CTwoHandedSword::OnCollision(CGameObject * pObj)
 	}
 }
 
-HRESULT CTwoHandedSword::Add_Components()
+HRESULT CTwoHandedSwordWait::Add_Components()
 {
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"),
 		TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom)))
@@ -140,19 +132,10 @@ HRESULT CTwoHandedSword::Add_Components()
 		return E_FAIL;
 
 	/* For.Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Weapon_TS"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Weapon_TSWait"),
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
-	CCollider::COLLIDERDESC ColliderDesc;
-	ZeroMemory(&ColliderDesc, sizeof ColliderDesc);
-
-	ColliderDesc.vScale = _float3(0.5f, 2.5f, 0.5f);
-	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vScale.y * 0.5f, 0.f);
-
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_OBB"),
-		TEXT("Com_Collider_TS"), (CComponent**)&m_pColliderCom, &ColliderDesc)))
-		return E_FAIL;
 
 	/* For.Com_Shader */
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModel"),
@@ -162,7 +145,7 @@ HRESULT CTwoHandedSword::Add_Components()
 	return S_OK;
 }
 
-HRESULT CTwoHandedSword::SetUp_ShaderResources()
+HRESULT CTwoHandedSwordWait::SetUp_ShaderResources()
 {
 	if (nullptr == m_pShaderCom)
 		return E_FAIL;
@@ -183,33 +166,33 @@ HRESULT CTwoHandedSword::SetUp_ShaderResources()
 	return S_OK;
 }
 
-CWeapon * CTwoHandedSword::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CWeapon * CTwoHandedSwordWait::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {
-	CTwoHandedSword* pInstance = new CTwoHandedSword(pDevice, pContext);
+	CTwoHandedSwordWait* pInstance = new CTwoHandedSwordWait(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Created : CTwoHandedSword");
+		MSG_BOX("Failed to Created : CTwoHandedSwordWait");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject * CTwoHandedSword::Clone(void * pArg)
+CGameObject * CTwoHandedSwordWait::Clone(void * pArg)
 {
-	CTwoHandedSword* pInstance = new CTwoHandedSword(*this);
+	CTwoHandedSwordWait* pInstance = new CTwoHandedSwordWait(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CTwoHandedSword");
+		MSG_BOX("Failed to Cloned : CTwoHandedSwordWait");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CTwoHandedSword::Free()
+void CTwoHandedSwordWait::Free()
 {
 	__super::Free();
 

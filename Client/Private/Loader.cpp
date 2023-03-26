@@ -20,7 +20,7 @@
 #include "SwordShield.h"
 #include "TwoHandedSword.h"
 #include "Player_Rage_Arma.h"
-
+#include "TwoHandedSwordWait.h"
 
 
 #include "Ancient_StonGolem.h"
@@ -263,6 +263,12 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Weapon/TS/TS.fbx", CModel::MODEL_NONANIM, LocalMatrix6))))
 		return E_FAIL;
 
+	_matrix		LocalMatrix654 = XMMatrixIdentity();
+	LocalMatrix654 = XMMatrixScaling(0.01f, 0.01f, 0.01f)* XMMatrixRotationZ(XMConvertToRadians(-30.0f));
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Weapon_TSWait"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Weapon/TS/TSWait.fbx", CModel::MODEL_NONANIM, LocalMatrix654))))
+		return E_FAIL;
+
 #pragma endregion Weapon
 
 	_matrix		LocalMatrix66 = XMMatrixIdentity();
@@ -446,6 +452,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon_TS"),
 		CTwoHandedSword::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon_TS_Wait"),
+		CTwoHandedSwordWait::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 #pragma region Monster

@@ -166,6 +166,9 @@
     <Filter Include="02.GameObject\10. Effrect\Player">
       <UniqueIdentifier>{d68177bf-7117-4006-b20d-4aebfb4c3f37}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\05. Player\Weapon\TS\Wait">
+      <UniqueIdentifier>{8e237592-f8e6-422a-ae4c-6724171b91cd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -309,6 +312,9 @@
     <ClInclude Include="..\Public\Player_Rage_Arma.h">
       <Filter>02.GameObject\10. Effrect\Player</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\TwoHandedSwordWait.h">
+      <Filter>02.GameObject\05. Player\Weapon\TS\Wait</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -439,6 +445,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Player_Rage_Arma.cpp">
       <Filter>02.GameObject\10. Effrect\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TwoHandedSwordWait.cpp">
+      <Filter>02.GameObject\05. Player\Weapon\TS\Wait</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

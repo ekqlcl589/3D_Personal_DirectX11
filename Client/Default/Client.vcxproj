@@ -204,6 +204,7 @@
     <ClInclude Include="..\Public\TestTile.h" />
     <ClInclude Include="..\Public\TSPlayer.h" />
     <ClInclude Include="..\Public\TwoHandedSword.h" />
+    <ClInclude Include="..\Public\TwoHandedSwordWait.h" />
     <ClInclude Include="..\Public\Weapon.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Resource.h" />
@@ -251,6 +252,7 @@
     <ClCompile Include="..\Private\TestTile.cpp" />
     <ClCompile Include="..\Private\TSPlayer.cpp" />
     <ClCompile Include="..\Private\TwoHandedSword.cpp" />
+    <ClCompile Include="..\Private\TwoHandedSwordWait.cpp" />
     <ClCompile Include="..\Private\Weapon.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">
