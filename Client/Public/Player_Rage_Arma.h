@@ -29,6 +29,9 @@ public:
 
 	_bool FadeInOut();
 
+public:
+	void Set_Transform();
+
 private:
 	HRESULT Add_Components();
 	HRESULT SetUp_ShaderResources();
@@ -45,6 +48,9 @@ protected:
 	_int m_fFadeSpeed = 2;
 	_bool m_bFadeIn = true;
 	_bool m_bDead = false;
+
+private:
+	_float4x4 m_WorldMatrix;
 
 public:
 	static CPlayer_Rage_Arma* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

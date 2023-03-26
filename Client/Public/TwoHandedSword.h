@@ -20,9 +20,15 @@ public:
 
 	virtual void OnCollision(CGameObject* pObj)override;
 
+public:
+	_float4x4 Get_WeaponMatrix() { return m_WorldMatrix; }
+
 private:
 	HRESULT Add_Components();
 	HRESULT SetUp_ShaderResources();
+
+private:
+	CTransform* m_EffectTransfrom = { nullptr };
 
 public:
 	static CWeapon* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

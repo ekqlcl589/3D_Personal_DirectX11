@@ -120,6 +120,8 @@ private:
 
 	_float m_fGravity = 5.f;
 
+	_bool m_bAttackState = false; // weapon 상태 업데이트 용
+
 private:
 	_bool m_WeaponChange = false;
 	_bool m_AttackCheck = false;

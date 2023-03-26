@@ -139,6 +139,10 @@ HRESULT CTwoHandedSword::Add_Components()
 		TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Transform"),
+		TEXT("Com_Effect_Transform"), (CComponent**)&m_EffectTransfrom, &TransformDesc)))
+		return E_FAIL;
+
 	/* For.Com_Model */
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Weapon_TS"),
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
@@ -217,4 +221,6 @@ void CTwoHandedSword::Free()
 		Safe_Release(m_Weapon.pBonePtr);
 
 	Safe_Release(m_pColliderCom);
+
+	Safe_Release(m_EffectTransfrom);
 }

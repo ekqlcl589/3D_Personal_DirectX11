@@ -186,7 +186,7 @@ void CTSPlayer::LateTick(_double TimeDelta)
 
 		for (_uint i = 0; i < WEAPON_END; i++)
 		{
-			if (m_AttackCheck)
+			if (m_bAttackState)
 			{
 				for (auto& pWeapon : m_vecWeapon[WEAPON_KARMA14])
 				{
@@ -831,7 +831,7 @@ void CTSPlayer::Attack_Combo(_double TimeDelta)
 {
 	if (false == m_bJump)
 	{
-
+		m_bAttackState = true;
 		m_bTest = true;
 		m_AttackCheck = true;
 		m_ComboCheck2 = true;
@@ -867,6 +867,7 @@ void CTSPlayer::Attack_Combo(_double TimeDelta)
 
 	if (false == m_AttackCheck && m_tInfo.PrevAnim == TS_COMBAT_WAIT && true == m_pModelCom->Get_AnimFinished())
 	{
+		m_bAttackState = false;
 		m_dLerpTime = 0.f;
 
 		m_bTest = false;
@@ -879,8 +880,11 @@ void CTSPlayer::Attack_Special(_double TimeDelta)
 {
 	if (true == m_AttackCheck)
 	{
+		m_bAttackState = true;
 		if (m_tInfo.CurrAnim == TS_BASIC_COMBO02 && true != m_pModelCom->Get_AnimFinished())
 		{
+			m_bAttackState = true;
+
 			m_tInfo.CurrAnim = TS_SPECIALCOMBO_CRASH_READY;
 		}
 	}
@@ -899,8 +903,11 @@ void CTSPlayer::Attack_Special2(_double TimeDelta)
 {
 	if (true == m_AttackCheck)
 	{
+		m_bAttackState = true;
 		if (m_tInfo.CurrAnim == TS_BASIC_COMBO01 && true != m_pModelCom->Get_AnimFinished())
 		{
+			m_bAttackState = true;
+
 			m_tInfo.CurrAnim = TS_BASIC_COMBO03_START;
 			m_tInfo.CurrAnim = TS_BASIC_COMBO02_LOOP; //
 
@@ -1064,6 +1071,7 @@ void CTSPlayer::Jump(_double TimeDelta)
 
 void CTSPlayer::Jump_Attack(_double TimeDelta)
 {
+	m_bAttackState = true;
 	m_JumpAttack = true;
 	m_bLendiongCheck = true;
 	
@@ -1075,8 +1083,8 @@ void CTSPlayer::Jump_Attack(_double TimeDelta)
 
 	if (true == m_bJump)
 	{
+		m_AttackCheck = true;
 		m_tInfo.CurrAnim = TS_AIR_COMBO01;
-
 	}
 
 	if (m_tInfo.PrevAnim == TS_AIR_COMBO01 && true != m_pModelCom->Get_AnimFinished())
@@ -1088,7 +1096,7 @@ void CTSPlayer::Jump_Attack(_double TimeDelta)
 		m_pModelCom->Set_AnimTick(30.0);
 	}
 
-	if (m_tInfo.PrevAnim == TS_AIR_COMBO04 && true == m_pModelCom->Get_LerpAnimFinished())
+	if (m_tInfo.PrevAnim == TS_AIR_COMBO04 && true != m_pModelCom->Get_AnimFinished())
 	{
 		m_tInfo.CurrAnim = TS_AIR_COMBO04_LENDING;
 		m_JumpAttack = false;
@@ -1099,8 +1107,9 @@ void CTSPlayer::Jump_Attack(_double TimeDelta)
 
 	}
 
-	if (false == m_JumpAttack && m_tInfo.PrevAnim == TS_AIR_COMBO04_LENDING && true == m_pModelCom->Get_AnimFinished())
+	if (false == m_JumpAttack && m_tInfo.PrevAnim == TS_AIR_COMBO04_LENDING && m_AnimTimeAcc >= (m_AnimDuration / 2) + 52.0)
 	{
+		m_AttackCheck = false;
 		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
 	}
 
@@ -1137,6 +1146,7 @@ void CTSPlayer::Dash(_double TimeDelta)
 
 void CTSPlayer::DashAttack(_double TimeDelta)
 {
+	m_bAttackState = true;
 	m_tInfo.CurrAnim = TS_DASHCOMBO;
 
 }
@@ -1193,12 +1203,11 @@ void CTSPlayer::CombatWait()
 		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
 	}
 
-	if (false == m_Eskill && m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_END && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 25.0)
+	if (false == m_Eskill && m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_END && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 35.0)
 	{
 		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
 		m_tInfo.m_ESkill = 0.f;
-		
-
+		m_AttackCheck = false;
 	}
 
 	//if (m_tInfo.PrevAnim == TS_STURN_LOOP && true == m_pModelCom->Get_AnimFinished())
@@ -1206,8 +1215,9 @@ void CTSPlayer::CombatWait()
 
 	if (false == m_AttackCheck && m_tInfo.PrevAnim == TS_COMBAT_WAIT && true == m_pModelCom->Get_AnimFinished())
 	{
+		m_AttackCheck = false;
 		m_tInfo.CurrAnim = TS_WAIT;
-	
+		m_bAttackState = false;
 	}
 }
 
@@ -1269,6 +1279,7 @@ void CTSPlayer::E_Skill(_double TimeDelta)
 	{
 		m_tInfo.CurrAnim = TS_SKILL_OUTRAGE_START;
 		m_AttackCheck = true;
+		m_bAttackState = true;
 
 		if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_START && true == m_pModelCom->Get_AnimFinished())
 		{
@@ -1285,6 +1296,7 @@ void CTSPlayer::R_Skill(_double TimeDelta)
 {
 	if (m_RsKill && m_tInfo.m_RSkill >= 15.f)
 	{
+		m_bAttackState = true;
 		m_tInfo.CurrAnim = TS_SKILL_ROCKBREAK;
 		m_AttackCheck = true;
 		m_tInfo.rSkill = true;
@@ -1304,6 +1316,7 @@ void CTSPlayer::F_Skill(_double TimeDelta)
 {
 	if (m_FsKill && m_tInfo.m_FSkill >= 20.f)
 	{
+		m_bAttackState = true;
 		m_tInfo.CurrAnim = TS_RAGESKILL_ARMAGEDDONBLADE;
 		m_AttackCheck = true;
 		m_tInfo.fSkill = true;
@@ -1324,6 +1337,7 @@ void CTSPlayer::Rage_Skill(_double TimeDelta)
 {
 	if (m_RagesKill && m_tInfo.m_RageSkill >= 25.f)
 	{
+		m_bAttackState = true;
 		m_tInfo.CurrAnim = TS_RAGESKILL_DOUBLESLASH;
 		m_AttackCheck = true;
 		m_tInfo.rageSkill = true;
@@ -1492,7 +1506,7 @@ HRESULT CTSPlayer::Add_Weapon()
 	CTwoHandedSwordWait::WEAPONDESC WeaponDesc2 = { pBonePtrWait, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CTwoHandedSwordWait::WEAPON_WAIT, OBJ_END };
 	Safe_AddRef(pBonePtrWait);
 
-	CGameObject* pWeapon = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Weapon_TS"), &WeaponDesc);
+	CGameObject* pWeapon = pInstance->Clone_GameObject_Add_Layer(TEXT("Prototype_GameObject_Weapon_TS"), &WeaponDesc);
 	CGameObject* pWeapon2 = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Weapon_TS_Wait"), &WeaponDesc2);
 
 	if (nullptr == pWeapon || nullptr == pWeapon2)

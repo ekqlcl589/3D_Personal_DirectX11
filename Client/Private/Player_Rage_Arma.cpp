@@ -2,6 +2,7 @@
 #include "..\Public\Player_Rage_Arma.h"
 #include "GameInstance.h"
 #include "TSPlayer.h"
+#include "TwoHandedSword.h"
 //
 CPlayer_Rage_Arma::CPlayer_Rage_Arma(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -46,7 +47,9 @@ void CPlayer_Rage_Arma::Tick(_double TimeDelta)
 	pOwner = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
 	m_bActive = static_cast<CTSPlayer*>(pOwner)->Get_Info().fSkill;
 
+
 	RELEASE_INSTANCE(CGameInstance);
+
 
 	FadeInOut();
 
@@ -57,6 +60,8 @@ void CPlayer_Rage_Arma::Tick(_double TimeDelta)
 void CPlayer_Rage_Arma::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
+
+	Set_Transform();
 
 	//m_pModelCom->Play_Animation(TimeDelta);
 
@@ -125,6 +130,34 @@ _bool CPlayer_Rage_Arma::FadeInOut()
 	//셰이더로 던져야 하는데 흠;
 }
 
+void CPlayer_Rage_Arma::Set_Transform()
+{
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+	CTransform* pWeaponTrasnfrom = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Weapon_TS"), TEXT("Com_Transform")));
+
+	CGameObject* pWeapon = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Weapon_TS"));
+
+	RELEASE_INSTANCE(CGameInstance);
+
+
+	_vector vPosition = pWeaponTrasnfrom->Get_State(CTransform::STATE_POSITION);
+	_vector vLook = XMVector3Normalize(pWeaponTrasnfrom->Get_State(CTransform::STATE_LOOK));
+	_vector vRight = XMVector3Normalize(pWeaponTrasnfrom->Get_State(CTransform::STATE_RIGHT));
+	_vector vUp = XMVector3Normalize(pWeaponTrasnfrom->Get_State(CTransform::STATE_UP));
+
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+	//m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
+	//m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
+	//m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
+
+	_matrix WeaponMatrix = pWeaponTrasnfrom->Get_WorldMatrix();
+
+	_float4x4 Weapon = static_cast<CTwoHandedSword*>(pWeapon)->Get_WeaponMatrix();
+
+	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(&Weapon));
+}
+
 HRESULT CPlayer_Rage_Arma::Add_Components()
 {
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"),
@@ -168,7 +201,10 @@ HRESULT CPlayer_Rage_Arma::SetUp_ShaderResources()
 	if (nullptr == m_pShaderCom)
 		return E_FAIL;
 
-	if (FAILED(m_pTransformCom->SetUp_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
+	//if (FAILED(m_pTransformCom->SetUp_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
+	//	return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Set_Matrix("g_WorldMatrix", &m_WorldMatrix)))
 		return E_FAIL;
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);

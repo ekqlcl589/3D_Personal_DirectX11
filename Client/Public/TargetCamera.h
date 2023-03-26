@@ -74,7 +74,7 @@ private:
 	_bool m_bFix = false;
 
 	_float3 m_fDistance = { 0.f, 0.f, 0.f };
-	_float m_fDis = 4.f;
+	_float m_fDis = 2.f;
 
 	_float m_fd = 0.f;
 	_vector m_vLook = { 1.0f, 0.f, 0.f };
