@@ -98,6 +98,7 @@ private:
 	vector<CGameObject*> m_vecParts[PART_END];
 	vector<CGameObject*> m_vecWeapon[WEAPON_END];
 	DIR m_Dir;
+	_bool m_Front;
 
 private:
 	HRESULT Add_Components();

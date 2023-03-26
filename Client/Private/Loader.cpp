@@ -20,6 +20,7 @@
 #include "SwordShield.h"
 #include "TwoHandedSword.h"
 #include "Player_Rage_Arma.h"
+#include "Player_Basic_Combo.h"
 #include "TwoHandedSwordWait.h"
 
 
@@ -298,9 +299,13 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Test.fbx", CModel::MODEL_NONANIM, Local))))
 		return E_FAIL;
 
-	// test player effect
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Arma"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/RageArma.fbx", CModel::MODEL_NONANIM, Local))))
+		return E_FAIL;
+
+	// test player effect
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Basic"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/BasicCombo.fbx", CModel::MODEL_ANIM, Local))))
 		return E_FAIL;
 
 	_matrix Local2 = XMMatrixIdentity();
@@ -560,6 +565,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CPlayer_Rage_Arma::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_Basic"),
+		CPlayer_Basic_Combo::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
 	m_isFinished = true;

@@ -169,6 +169,12 @@
     <Filter Include="02.GameObject\05. Player\Weapon\TS\Wait">
       <UniqueIdentifier>{8e237592-f8e6-422a-ae4c-6724171b91cd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\10. Effrect\Player\Skill">
+      <UniqueIdentifier>{d34b5a55-d0c6-4182-8011-48b84c6fd3ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\10. Effrect\Player\Basic">
+      <UniqueIdentifier>{cf43ca6f-1c87-4832-9de4-126089e2a229}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -309,11 +315,14 @@
     <ClInclude Include="..\Public\Crocs.h">
       <Filter>02.GameObject\05. Player\Crocs</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Player_Rage_Arma.h">
-      <Filter>02.GameObject\10. Effrect\Player</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\TwoHandedSwordWait.h">
       <Filter>02.GameObject\05. Player\Weapon\TS\Wait</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Player_Rage_Arma.h">
+      <Filter>02.GameObject\10. Effrect\Player\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Player_Basic_Combo.h">
+      <Filter>02.GameObject\10. Effrect\Player\Basic</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -443,11 +452,14 @@
     <ClCompile Include="..\Private\Crocs.cpp">
       <Filter>02.GameObject\05. Player\Crocs</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Player_Rage_Arma.cpp">
-      <Filter>02.GameObject\10. Effrect\Player</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\TwoHandedSwordWait.cpp">
       <Filter>02.GameObject\05. Player\Weapon\TS\Wait</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Player_Rage_Arma.cpp">
+      <Filter>02.GameObject\10. Effrect\Player\Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Player_Basic_Combo.cpp">
+      <Filter>02.GameObject\10. Effrect\Player\Basic</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

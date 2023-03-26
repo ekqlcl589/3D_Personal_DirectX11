@@ -74,11 +74,26 @@ HRESULT CTSPlayer::Initialize(void * pArg)
 
 	RELEASE_INSTANCE(CGameInstance);
 
+	m_Front = m_Dir == FRONT ? true : false;
+
 	return S_OK;
 }
 
 void CTSPlayer::Tick(_double TimeDelta)
 {
+
+	//if (!m_Front)
+	//{
+	//	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, m_pTransformCom->Get_State(CTransform::STATE_RIGHT) * -1);
+	//	m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_pTransformCom->Get_State(CTransform::STATE_LOOK) * -1);
+	//
+	//}
+	//else
+	//{
+	//	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, m_pTransformCom->Get_State(CTransform::STATE_RIGHT));
+	//	m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+	//
+	//}
 	WeaponBoneUpdate();
 
 	if (m_tInfo._Hp <= 0.f)
@@ -423,32 +438,40 @@ void CTSPlayer::Key_Input(_double TimeDelta)
 		m_Dir = FRONT;
 
 		//if(!m_NoStraight)
-			m_pTransformCom->Go_Straight(TimeDelta);
+		m_pTransformCom->Go_Straight(TimeDelta);
 		m_tInfo.CurrAnim = TS_RUN_END; // 이게 그냥 RUN인데 enum값을 안 넣어서 이걸로 씀 ㅋㅋ
 
 	}
 	else if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_W))
 	{
 		m_bTest = false;
+		m_Dir = FRONT;
 
 		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
 	}
 
+	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_C))
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_RIGHT, m_pTransformCom->Get_State(CTransform::STATE_RIGHT) * -1);
+		m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_pTransformCom->Get_State(CTransform::STATE_LOOK) * -1);
+
+	}
 	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_S))
 	{
 		m_bTest = false;
 		m_Dir = BACK;
-		//m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_pTransformCom->Get_State(CTransform::STATE_LOOK) * -1);
-		m_pTransformCom->Go_Back(TimeDelta);
+		//if(m_Dir == BACK)
+			m_pTransformCom->Go_Straight(TimeDelta);
+
 		m_tInfo.CurrAnim = TS_RUN_END;
 
 	}
 	else if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_S))
 	{
+		m_Dir = BACK;
 		m_bTest = false;
+		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
 
-		m_tInfo.CurrAnim = TS_WAIT;
-		
 
 	}
 
@@ -459,21 +482,19 @@ void CTSPlayer::Key_Input(_double TimeDelta)
 		m_bDeah = true;
 	}
 
-	//if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_Z))
-	//{
-	//	m_tInfo.CurrAnim = TS_FRONT_EVASION;
-	//	m_Evasion = true;
-	//}
-
 	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_A))
 	{
 		m_bTest = false;
 
 		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * -1.f);
-		//m_tInfo.CurrAnimState = ANIM_RUN_L;
+		m_tInfo.CurrAnim = TS_RUN_L;
 	}
-	//else if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_LEFT))
-	//	m_tInfo.CurrAnimState = ANIM_RUN_END;
+	else if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_A))
+	{
+		m_Dir = FRONT;
+
+		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
+	}
 
 
 	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_D))
@@ -481,10 +502,14 @@ void CTSPlayer::Key_Input(_double TimeDelta)
 		m_bTest = false;
 
 		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta);
-		//m_tInfo.CurrAnimState = ANIM_RUN_R;
+		m_tInfo.CurrAnim = TS_RUN_R;
 	}
-	//if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_RIGHT))
-	//	m_tInfo.CurrAnimState = ANIM_RUN_END;
+	if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_D))
+	{
+		m_Dir = FRONT;
+
+		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
+	}
 
 	//Attack_Combo(TimeDelta);
 
@@ -631,9 +656,10 @@ void CTSPlayer::Animation(TSPLAYERANIM eType, _double TimeDelta)
 		case Engine::TS_RESPWAN:
 			break;
 		case Engine::TS_RUN_L:
-			m_iAnimIndex = 6;
+			m_iAnimIndex = 10;
 			break;
 		case Engine::TS_RUN_R:
+			m_iAnimIndex = 11;
 			break;
 		case Engine::TS_RUN_END:
 			m_iAnimIndex = 9;
