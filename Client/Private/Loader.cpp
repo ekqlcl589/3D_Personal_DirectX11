@@ -217,6 +217,12 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/MouseCursor/GUI_MouseCursor_Default.png")))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Normal_Texture */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Normal_Texture"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Models/Boss/Ancient_Stone_Golem_NM.png")))))
+		return E_FAIL;
+
+
 	lstrcpy(m_szLoadingText, TEXT("정점버퍼를 로딩중입니다."));
 	/* For.Prototype_Component_VIBuffer_Terrain */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Terrain"),
@@ -280,7 +286,7 @@ HRESULT CLoader::Loading_ForGamePlay()
 #pragma region Monster
 	/* For.Prototype_Component_Model_TestMonster */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Boss0"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Ston_Golem.fbx", CModel::MODEL_ANIM, LocalMatrix66))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Golem.fbx", CModel::MODEL_ANIM, LocalMatrix66))))
 		return E_FAIL;
 
 	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Boss1"),

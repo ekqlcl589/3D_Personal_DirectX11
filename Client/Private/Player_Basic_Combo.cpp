@@ -53,6 +53,9 @@ void CPlayer_Basic_Combo::Tick(_double TimeDelta)
 
 		if (nullptr != m_pColliderCom)
 			m_pColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
+
+		if (m_pModelCom->Get_AnimTimeAcc() / (m_pModelCom->Get_AnimDuration() / 2) + 14.9)
+			m_AnimStart = false;
 	}
 }
 
@@ -64,7 +67,8 @@ void CPlayer_Basic_Combo::LateTick(_double TimeDelta)
 
 		Set_Transform();
 
-		m_pModelCom->Play_Animation(TimeDelta);
+		if(m_AnimStart)
+			m_pModelCom->Play_Animation(TimeDelta);
 
 		if (nullptr != m_pRendererCom)
 		{
@@ -95,7 +99,7 @@ HRESULT CPlayer_Basic_Combo::Render()
 
 			m_pModelCom->SetUp_BoneMatrices(m_pShaderCom, "g_BoneMatrix", i);
 
-			m_pShaderCom->Begin(1);
+			m_pShaderCom->Begin(0);
 
 			m_pModelCom->Render(i);
 		}

@@ -143,8 +143,8 @@ HRESULT CAncient_StonGolem::Render()
 	for (_uint i = 0; i < iNumMeshes; i++)
 	{
 		m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
-		/*m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);
-		m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);*/
+		m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
+		/*m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);*/
 
 		m_pModelCom->SetUp_BoneMatrices(m_pShaderCom, "g_BoneMatrix", i);
 
@@ -709,7 +709,6 @@ HRESULT CAncient_StonGolem::Add_Components()
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
-
 	return S_OK;
 }
 
@@ -722,7 +721,7 @@ HRESULT CAncient_StonGolem::SetUp_ShaderResources()
 		return E_FAIL;
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-
+	
 	if (FAILED(m_pShaderCom->Set_Matrix("g_ViewMatrix", &pInstance->Get_Transformfloat4x4(CPipeLine::TS_VIEW))))
 		return E_FAIL;
 
@@ -730,6 +729,7 @@ HRESULT CAncient_StonGolem::SetUp_ShaderResources()
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
+
 	return S_OK;
 }
 

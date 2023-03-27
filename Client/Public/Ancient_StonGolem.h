@@ -2,6 +2,12 @@
 #include "Monster.h"
 #include "Client_Defines.h"
 
+BEGIN(Engine)
+
+class CTexture;
+
+END
+
 BEGIN(Client)
 
 class CAncient_StonGolem final : public CMonster
@@ -83,6 +89,9 @@ private:
 
 	_double m_CoolTime = 0.0;
 	_float m_SkillDelay = 50.f;
+
+private:
+	CTexture* m_pTextureCom = { nullptr };
 
 public:
 	static CAncient_StonGolem* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
