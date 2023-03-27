@@ -1,8 +1,9 @@
 #include "stdafx.h"
 #include "..\Public\GrudgeWraith.h"
 #include "GameInstance.h"
-#include "MonsterWeapon.h"
+#include "MonsterSickle.h"
 #include "TSPlayer.h"
+
 CGrudgeWraith::CGrudgeWraith(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CMonster(pDevice, pContext)
 {
@@ -319,12 +320,12 @@ HRESULT CGrudgeWraith::Add_Coll()
 	if (nullptr == pBoneR)// || nullptr == pBoneSpine)
 		return E_FAIL;
 
-	CMonsterWeapon::WEAPONDESC WeaponDesc1 = { pBoneR, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CMonsterWeapon::WEAPON_MONSTER_R, CMonsterWeapon::OWNER_WRAITH };
+	CMonsterSickle::WEAPONDESC WeaponDesc1 = { pBoneR, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CMonsterSickle::WEAPON_MONSTER_SICKLE };
 	//CMonsterWeapon::WEAPONDESC WeaponDesc2 = { pBoneSpine, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CMonsterWeapon::WEAPON_MONSTER_BODY, CMonsterWeapon::OWNER_WRAITH };
 	Safe_AddRef(pBoneR);
 	//Safe_AddRef(pBoneSpine);
 
-	CGameObject* pWeaponR = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Monster_Weapon"), &WeaponDesc1);
+	CGameObject* pWeaponR = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Monster_Weapon2"), &WeaponDesc1);
 	//CGameObject* pWeaponSpine = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Monster_Weapon"), &WeaponDesc2);
 
 	if (nullptr == pWeaponR)// || nullptr == pWeaponSpine)

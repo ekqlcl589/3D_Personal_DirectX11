@@ -39,7 +39,7 @@ HRESULT CCursedWraith::Initialize(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPosition));
 
 	m_tInfo._MaxHp = 1000.f;
-	m_tInfo._Hp = 1000.f;
+	m_tInfo._Hp = 10.f;
 
 	m_tInfo._Hit = false;
 	m_tInfo.CurrAnim = CW_Wait;

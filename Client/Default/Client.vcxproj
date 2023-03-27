@@ -173,6 +173,7 @@
     <ClInclude Include="..\Public\DynamicCamera.h" />
     <ClInclude Include="..\Public\Effect.h" />
     <ClInclude Include="..\Public\GamePlay.h" />
+    <ClInclude Include="..\Public\GamePlay2.h" />
     <ClInclude Include="..\Public\GianticCreature.h" />
     <ClInclude Include="..\Public\GrudgeWraith.h" />
     <ClInclude Include="..\Public\Hair.h" />
@@ -183,6 +184,7 @@
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\Public\Monster.h" />
     <ClInclude Include="..\Public\MonsterHPBar.h" />
+    <ClInclude Include="..\Public\MonsterSickle.h" />
     <ClInclude Include="..\Public\MonsterWeapon.h" />
     <ClInclude Include="..\Public\Mouse.h" />
     <ClInclude Include="..\Public\Player.h" />
@@ -222,6 +224,7 @@
     <ClCompile Include="..\Private\DynamicCamera.cpp" />
     <ClCompile Include="..\Private\Effect.cpp" />
     <ClCompile Include="..\Private\GamePlay.cpp" />
+    <ClCompile Include="..\Private\GamePlay2.cpp" />
     <ClCompile Include="..\Private\GianticCreature.cpp" />
     <ClCompile Include="..\Private\GrudgeWraith.cpp" />
     <ClCompile Include="..\Private\Hair.cpp" />
@@ -232,6 +235,7 @@
     <ClCompile Include="..\Private\MainApp.cpp" />
     <ClCompile Include="..\Private\Monster.cpp" />
     <ClCompile Include="..\Private\MonsterHPBar.cpp" />
+    <ClCompile Include="..\Private\MonsterSickle.cpp" />
     <ClCompile Include="..\Private\MonsterWeapon.cpp" />
     <ClCompile Include="..\Private\Mouse.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />

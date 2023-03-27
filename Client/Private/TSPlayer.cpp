@@ -338,6 +338,9 @@ void CTSPlayer::OnCollision(CGameObject * pObj)
 		//m_Hit = true;
 		break;
 
+	case Engine::OBJ_MONSTER_SICKLE:
+		break;
+
 	case Engine::OBJ_END:
 		break;
 	default:
@@ -419,6 +422,11 @@ void CTSPlayer::EnterCollision(CGameObject * pObj)
 		cout << " 히트" << endl;
 		break;
 
+	case Engine::OBJ_MONSTER_SICKLE:
+		Hit(10);
+		m_Hit = true;
+		cout << "낫 한테 처맞음 시발련아 " << endl;
+		break;
 	case Engine::OBJ_END:
 		break;
 	default:

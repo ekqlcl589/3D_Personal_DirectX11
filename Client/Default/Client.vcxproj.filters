@@ -175,6 +175,18 @@
     <Filter Include="02.GameObject\10. Effrect\Player\Basic">
       <UniqueIdentifier>{cf43ca6f-1c87-4832-9de4-126089e2a229}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Levels\01.GamePlay\Round1">
+      <UniqueIdentifier>{3d50a19f-fe1d-4222-bc73-31585889ddad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\01.GamePlay\Round0">
+      <UniqueIdentifier>{5d7000c2-e5df-4c2d-aa93-764181db99f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\01.GamePlay\Round2">
+      <UniqueIdentifier>{5b395918-53db-440c-b160-946b6955c6a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\06. Monster\99.MonsterWeapon\Sickle">
+      <UniqueIdentifier>{385482eb-b048-41d2-aaaa-8cd92a56dd1f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -200,9 +212,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\Logo.h">
       <Filter>01.Levels\00.Logo</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\GamePlay.h">
-      <Filter>01.Levels\01.GamePlay</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Loader.h">
       <Filter>01.Levels\90.Loading\Loader</Filter>
@@ -324,6 +333,15 @@
     <ClInclude Include="..\Public\Player_Basic_Combo.h">
       <Filter>02.GameObject\10. Effrect\Player\Basic</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\GamePlay.h">
+      <Filter>01.Levels\01.GamePlay\Round0</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\GamePlay2.h">
+      <Filter>01.Levels\01.GamePlay\Round1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MonsterSickle.h">
+      <Filter>02.GameObject\06. Monster\99.MonsterWeapon\Sickle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -337,9 +355,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\Logo.cpp">
       <Filter>01.Levels\00.Logo</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\GamePlay.cpp">
-      <Filter>01.Levels\01.GamePlay</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Loader.cpp">
       <Filter>01.Levels\90.Loading\Loader</Filter>
@@ -460,6 +475,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\Player_Basic_Combo.cpp">
       <Filter>02.GameObject\10. Effrect\Player\Basic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\GamePlay.cpp">
+      <Filter>01.Levels\01.GamePlay\Round0</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\GamePlay2.cpp">
+      <Filter>01.Levels\01.GamePlay\Round1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MonsterSickle.cpp">
+      <Filter>02.GameObject\06. Monster\99.MonsterWeapon\Sickle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -29,6 +29,7 @@
 #include "CursedWraith.h"
 #include "GrudgeWraith.h"
 
+#include "MonsterSickle.h"
 #include "MonsterWeapon.h"
 #include "BlackBall.h"
 #include "MonsterHPBar.h"
@@ -70,6 +71,10 @@ unsigned int APIENTRY ThreadEntry(void* pArg) //전역함수는 지역함수의 변수를 받�
 
 	case LEVEL_GAMEPLAY:
 		pLoader->Loading_ForGamePlay();
+		break;
+
+	case LEVEL_GAMEPLAY2:
+		pLoader->Loading_ForGamePlay2();
 		break;
 
 	default:
@@ -478,16 +483,12 @@ HRESULT CLoader::Loading_ForGamePlay()
 	//	CGianticCreature::Create(m_pDevice, m_pContext))))
 	//	return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster2"),
-		CGrudgeWraith::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster3"),
-		CCursedWraith::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster_Weapon"),
 		CMonsterWeapon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+		if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster_Weapon1"),
+		CMonsterSickle::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 #pragma endregion Monster
@@ -575,6 +576,402 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CPlayer_Basic_Combo::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	
+	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
+
+	m_isFinished = true;
+
+	Safe_Release(pGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_ForGamePlay2()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	//Snow
+	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩중입니다."));
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Texture_HPBar"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/GUI_Common_gauge_Fill_01_White_ver2.png")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Texture_MPBar"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/GUI_Common_gauge_Fill_01_Blue_ver2.png")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Texture_RageSkill"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/GUI_Slot_Big_RageSkill_ver2.png")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Texture_Skill"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/GUI_Slot_Skill_ver2.png")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Texture_Round"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/GUI_Round_BG_ver2.png")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Texture_MonsterHPBar"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/GUI_Common_gauge_Fill_01_Red_ver2.png")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Texture_ESkill"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/SkillIcon/Icon_NormalSkill_TS_OutRage.png")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Texture_RSkill"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/SkillIcon/Icon_NormalSkill_TS_RockBreak.png")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Texture_FSkill"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/SkillIcon/Icon_RageSkill_TS_ArmageddonBlade.png")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Texture_Rage_Skill"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/SkillIcon/Icon_RageSkill_TS_DoubleSlash.png")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Sky */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Texture_Sky"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/SkyBox/TrainigRoom.dds"), 4))))
+		return E_FAIL;
+
+	lstrcpy(m_szLoadingText, TEXT("정점버퍼를 로딩중입니다."));
+	/* For.Prototype_Component_VIBuffer_Terrain */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_VIBuffer_Terrain"),
+		CVIBuffer_Terrain::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/Height.bmp")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_VIBuffer_Cube"),
+		CVIBuffer_Cube::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	lstrcpy(m_szLoadingText, TEXT("모델를 로딩중입니다."));
+
+	_matrix		LocalMatrix = XMMatrixIdentity();
+	LocalMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) *XMMatrixRotationZ(XMConvertToRadians(270.0f));
+
+	/* For.Prototype_Component_Model_Player */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Model_Player"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Head/Head.fbx", CModel::MODEL_NONANIM, LocalMatrix))))
+		return E_FAIL;
+
+	_matrix		LocalMatrix2 = XMMatrixIdentity();
+	LocalMatrix2 = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(270.0f));
+
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Player_Body"),
+	//	CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Body/Player.fbx", CModel::MODEL_ANIM, LocalMatrix2))))
+	//	return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Model_Player_Body"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Body/TSPlayer.fbx", CModel::MODEL_ANIM, LocalMatrix2))))
+		return E_FAIL;
+
+	_matrix		LocalMatrix6 = XMMatrixIdentity();
+	LocalMatrix6 = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+
+#pragma region Weapon
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Model_Weapon_SS1"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Weapon/SS/Sword_NonAnim.fbx", CModel::MODEL_NONANIM, LocalMatrix6))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Model_Weapon_Shield"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Weapon/SS/Shield.fbx", CModel::MODEL_NONANIM, LocalMatrix6))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Model_Weapon_TS"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Weapon/TS/TS.fbx", CModel::MODEL_NONANIM, LocalMatrix6))))
+		return E_FAIL;
+
+	_matrix		LocalMatrix654 = XMMatrixIdentity();
+	LocalMatrix654 = XMMatrixScaling(0.01f, 0.01f, 0.01f)* XMMatrixRotationZ(XMConvertToRadians(-30.0f));
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Model_Weapon_TSWait"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Weapon/TS/TSWait.fbx", CModel::MODEL_NONANIM, LocalMatrix654))))
+		return E_FAIL;
+
+#pragma endregion Weapon
+
+	_matrix		LocalMatrix66 = XMMatrixIdentity();
+	LocalMatrix66 = XMMatrixScaling(0.01f, 0.01f, 0.01f) *XMMatrixRotationY(XMConvertToRadians(270.0f));
+
+	_matrix Local = XMMatrixIdentity();
+	Local = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+#pragma region Monster
+
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Boss1"),
+	//	CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/GianticCreature/GianticCreature.fbx", CModel::MODEL_ANIM, LocalMatrix66))))
+	//	return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Model_Boss2"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Grudge_Wraith/GrudgeWraith.fbx", CModel::MODEL_ANIM, LocalMatrix66))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Model_Boss3"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Grudge_Wraith/CursedWraith.fbx", CModel::MODEL_ANIM, LocalMatrix66))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Model_Sphere"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Test.fbx", CModel::MODEL_NONANIM, Local))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Model_Arma"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/RageArma.fbx", CModel::MODEL_NONANIM, Local))))
+		return E_FAIL;
+
+	// test player effect
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Model_Basic"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/BasicCombo.fbx", CModel::MODEL_ANIM, Local))))
+		return E_FAIL;
+
+	_matrix Local2 = XMMatrixIdentity();
+	Local2 = XMMatrixScaling(0.025f, 0.025f, 0.025f);
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Model_Sphere2"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/FireBall.fbx", CModel::MODEL_NONANIM, Local2))))
+		return E_FAIL;
+
+#pragma endregion Monster
+
+
+#pragma region HairModel
+	_matrix		LocalMatrix3 = XMMatrixIdentity();
+	LocalMatrix3 = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(270.0f));
+
+	_matrix		LocalMatrix5 = XMMatrixIdentity();
+	LocalMatrix5 = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixTranslation(0.f, -1.f, 0.f) * XMMatrixRotationZ(XMConvertToRadians(270.0f));
+
+	_matrix Locals = XMMatrixIdentity();
+	Locals = XMMatrixScaling(0.25f, 0.25f, 0.25f);
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Model_Hair_Back"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Head/Hair/Hair3.fbx", CModel::MODEL_NONANIM, LocalMatrix))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Model_Hair_Front"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Head/Hair/h_f.fbx", CModel::MODEL_NONANIM, LocalMatrix5))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Model_Hair_Side"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Head/Hair/h_s.fbx", CModel::MODEL_NONANIM, LocalMatrix5))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Model_Hair_Tail"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Head/Hair/h_t.fbx", CModel::MODEL_NONANIM, LocalMatrix5))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Model_Crocs"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Parts/Crocs/Crocs_item.fbx", CModel::MODEL_NONANIM, Locals))))
+		return E_FAIL;
+
+#pragma endregion HairModel
+
+#pragma region 애니메이션 옷 파츠
+
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Player_Top"),
+	//	CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Parts/Top/JEBAL.fbx", CModel::MODEL_ANIM, LocalMatrix5))))
+	//	return E_FAIL;
+
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Player_Pants"),
+	//	CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Parts/Pants/PlayerPants.fbx", CModel::MODEL_NONANIM, LocalMatrix))))
+	//	return E_FAIL;
+
+#pragma endregion 애니메이션 옷 파츠
+
+	_matrix		LocalMatrix55 = XMMatrixIdentity();
+	LocalMatrix55 = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Model_Tile"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/StaticMesh/TrainingRoom/TraningRoom.fbx", CModel::MODEL_NONANIM, LocalMatrix55))))
+		return E_FAIL;
+
+#pragma region Effect
+
+	_matrix		LocalMatrix555 = XMMatrixIdentity();
+	LocalMatrix555 = XMMatrixScaling(0.1f, 0.1f, 0.1f);
+
+#pragma endregion Effect
+
+	lstrcpy(m_szLoadingText, TEXT("셰이더를 로딩중입니다."));
+	/* For.Prototype_Component_Terrain_Shader */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Terrain_Shader"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/shader_VtxTerrain.hlsl"), VTXNORTEX_DELARATION::Element, VTXNORTEX_DELARATION::iNumElements))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Shader_VtxModel */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Shader_VtxModel"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/shader_VtxModel.hlsl"), VTXNONANIMMODEL_DELARATION::Element, VTXNONANIMMODEL_DELARATION::iNumElements))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Shader_VtxAnimModel"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxAnimModel.hlsl"), VTXANIMMODEL_DELARATION::Element, VTXANIMMODEL_DELARATION::iNumElements))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Cube_Shader"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxCubeTex.hlsl"), VTXCUBE_DELARATION::Element, VTXCUBE_DELARATION::iNumElements))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Shader_VtxWave"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxTexWave.hlsl"), VTXNONANIMMODEL_DELARATION::Element, VTXNONANIMMODEL_DELARATION::iNumElements))))
+		return E_FAIL;
+
+	/*if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Transform"),
+		CTransform::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Transform1"),
+		CTransform::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Calculator"),
+		CCalculator::Create(m_pDevice, m_pContext))))
+		return E_FAIL;*/
+
+	lstrcpy(m_szLoadingText, TEXT("충돌체를 로딩중입니다."));
+
+	/* For.Prototype_Component_Collider_AABB */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Collider_AABB"),
+		CCollider::Create(m_pDevice, m_pContext, CCollider::TYPE_AABB))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Collider_OBB */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Collider_OBB"),
+		CCollider::Create(m_pDevice, m_pContext, CCollider::TYPE_OBB))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Collider_SPHERE */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Collider_SPHERE"),
+		CCollider::Create(m_pDevice, m_pContext, CCollider::TYPE_SPHERE))))
+		return E_FAIL;
+
+	lstrcpy(m_szLoadingText, TEXT("객체원형을 로딩중."));
+
+	/* For.Prototype_GameObject_Player */
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon_TS1"),
+		CTwoHandedSword::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon_TS_Wait1"),
+		CTwoHandedSwordWait::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player1"),
+		CPlayer::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	//if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player_Body"),
+	//	CPlayer_Body::Create(m_pDevice, m_pContext))))
+	//	return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player_Body1"),
+		CTSPlayer::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon1"),
+		CSwordShield::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
+#pragma region Monster
+
+	//if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster1"),
+	//	CGianticCreature::Create(m_pDevice, m_pContext))))
+	//	return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster2"),
+		CGrudgeWraith::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster3"),
+		CCursedWraith::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster_Weapon2"),
+		CMonsterSickle::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+#pragma endregion Monster
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Hair1"),
+		CHair::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Crocs1"),
+		CCrocs::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_HPBar1"),
+		CPlayerHPBar::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_MPBar1"),
+		CPlayerMPBar::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	_float3 fE = { 755.f, 150.f, 0.f };
+	_float3 fR = { 700.f, 150.f, 0.f };
+	_float3 fF = { 645.f, 150.f, 0.f };
+	_float3 Rage = { 825.f, 175.f, 0.f };
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Skill_E1"),
+		CPlayerSkill::Create(m_pDevice, m_pContext, fE))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Skill_R1"),
+		CPlayerSkill::Create(m_pDevice, m_pContext, fR))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Skill_F1"),
+		CPlayerSkill::Create(m_pDevice, m_pContext, fF))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_RageSkill1"),
+		CPlayerRageSkill::Create(m_pDevice, m_pContext, Rage))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player_Skill_Icon1"),
+		CSkillIcon::Create(m_pDevice, m_pContext, fE))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player_Skill_IconR1"),
+		CSkillIconR::Create(m_pDevice, m_pContext, fR))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player_Skill_IconF1"),
+		CSkillIconF::Create(m_pDevice, m_pContext, fF))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player_Skill_IconRage1"),
+		CSkillIconRage::Create(m_pDevice, m_pContext, Rage))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster_HPBar1"),
+		CMonsterHPBar::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	// Test Tile
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_TestTile1"),
+		CTestTile::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_SkyBox*/
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_SkyBox1"),
+		CSkyBox::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect1"),
+		CEffect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_Ball1"),
+		CBlackBall::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_Arma1"),
+		CPlayer_Rage_Arma::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_Basic1"),
+		CPlayer_Basic_Combo::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
 	m_isFinished = true;

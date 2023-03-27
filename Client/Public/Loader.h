@@ -33,6 +33,8 @@ public:
 
 	HRESULT Loading_ForLogo();
 	HRESULT Loading_ForGamePlay();
+	HRESULT Loading_ForGamePlay2();
+
 	/*
 	HRESULT Loading_ForBossRoom();
 	HRESULT Loading_ForLoby();

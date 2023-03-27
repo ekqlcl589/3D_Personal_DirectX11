@@ -4,6 +4,7 @@
 #include "Loader.h"
 #include "Logo.h"
 #include "GamePlay.h"
+#include "GamePlay2.h"
 #include "GameInstance.h"
 
 CLoading::CLoading(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -53,6 +54,9 @@ void CLoading::Tick(_double TimeDelta)
 			break;
 		case LEVEL_GAMEPLAY:
 			pLevel = CGamePlay::Create(m_pDevice, m_pContext);
+			break;
+		case LEVEL_GAMEPLAY2:
+			pLevel = CGamePlay2::Create(m_pDevice, m_pContext);
 			break;
 		}
 

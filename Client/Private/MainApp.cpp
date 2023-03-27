@@ -133,6 +133,9 @@ HRESULT CMainApp::Ready_Prototype_Component_ForStatic()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader"), CShader::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_VtxTex.hlsl"), VTXTEX_DELARATION::Element, VTXTEX_DELARATION::iNumElements))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_Rage"), CShader::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_VtxTex_Rage_Test.hlsl"), VTXTEX_DELARATION::Element, VTXTEX_DELARATION::iNumElements))))
+		return E_FAIL;
+	
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_ShaderHP"), CShader::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_VtxTexHp.hlsl"), VTXTEX_DELARATION::Element, VTXTEX_DELARATION::iNumElements))))
 		return E_FAIL;
 

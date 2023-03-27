@@ -40,7 +40,7 @@ HRESULT CAncient_StonGolem::Initialize(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPosition));
 
 	m_eType._MaxHp = 1000.f;
-	m_eType._Hp = 1000.f;
+	m_eType._Hp = 10.f;
 
 	m_f = m_pModelCom->Get_AnimTick();
 
