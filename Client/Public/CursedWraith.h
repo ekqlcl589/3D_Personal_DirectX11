@@ -8,6 +8,7 @@ class CRenderer;
 class CTransform;
 class CModel;
 class CCollider;
+class CTexture;
 END
 
 BEGIN(Client)
@@ -90,6 +91,12 @@ private:
 	_bool m_bHit = false;
 
 	_float Damage = 0;
+
+private:
+	CTexture* m_pTextureCom = { nullptr };
+
+	_float3 m_fTargetPos; // 목표 지점 브러쉬 생성 용 좌표 
+
 public:
 	static CCursedWraith* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

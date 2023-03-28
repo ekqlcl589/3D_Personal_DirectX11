@@ -40,8 +40,8 @@ HRESULT CBlackBall::Initialize(void * pArg)
 		m_fPos.y = 1.5f;
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_fPos)); // 생성시킬 때 y에 1.5 더해줌
 		m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_vLook);
-		m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVectorSet(1.0f, 0.f, 0.f, 0.f));
-		m_pTransformCom->Set_State(CTransform::STATE_UP, XMVectorSet(0.0f, 1.f, 0.f, 0.f));
+		//m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVectorSet(1.0f, 0.f, 0.f, 0.f));
+		//m_pTransformCom->Set_State(CTransform::STATE_UP, XMVectorSet(0.0f, 1.f, 0.f, 0.f));
 
 	}
 	else if (m_BallDesc.eType == TYPE_3)
@@ -55,8 +55,8 @@ HRESULT CBlackBall::Initialize(void * pArg)
 
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_fPos));
 		m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_vLook);
-		m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVectorSet(1.0f, 0.f, 0.f, 0.f));
-		m_pTransformCom->Set_State(CTransform::STATE_UP, XMVectorSet(0.0f, 1.f, 0.f, 0.f));
+		//m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVectorSet(1.0f, 0.f, 0.f, 0.f));
+		//m_pTransformCom->Set_State(CTransform::STATE_UP, XMVectorSet(0.0f, 1.f, 0.f, 0.f));
 
 	}
 	else if (m_BallDesc.eType == TYPE_DDEBASI)
@@ -287,8 +287,8 @@ HRESULT CBlackBall::SetUp_ShaderResources()
 
 	float U = m_fPos.z;
 
-	if (FAILED(m_pShaderCom->Set_RawValue("g_fUVData", &U, sizeof(float))))
-		return E_FAIL;
+	//if (FAILED(m_pShaderCom->Set_RawValue("g_fUVData", &U, sizeof(float))))
+	//	return E_FAIL;
 
 	return S_OK;
 }

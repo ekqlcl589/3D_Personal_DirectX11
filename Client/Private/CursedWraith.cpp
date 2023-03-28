@@ -39,7 +39,7 @@ HRESULT CCursedWraith::Initialize(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPosition));
 
 	m_tInfo._MaxHp = 1000.f;
-	m_tInfo._Hp = 10.f;
+	m_tInfo._Hp = 1000.f;
 
 	m_tInfo._Hit = false;
 	m_tInfo.CurrAnim = CW_Wait;
@@ -333,12 +333,10 @@ void CCursedWraith::Animation_State(_double TimeDelta)
 	//if (!m_Test)
 	//Summons();
 
-	//if (!m_bAttack && m_SkillDelay >= 0)
-	//	--m_SkillDelay;
-	//else if (false == m_bWlak && false == m_tInfo._Hit && !m_bAttack && m_SkillDelay < 0)
-	//	Use_Skill(TimeDelta);
-	//m_Skill1 = true;
-	m_Skill3 = true;
+	if (!m_bAttack && m_SkillDelay >= 0)
+		--m_SkillDelay;
+	else if (false == m_bWlak && false == m_tInfo._Hit && !m_bAttack && m_SkillDelay < 0)
+		Use_Skill(TimeDelta);
 
 	Skill01(TimeDelta);
 	Skill02(TimeDelta);
@@ -583,10 +581,15 @@ void CCursedWraith::Skill03(_double TimeDelta)
 		BallDesc.vLook = m_vTargetPos;// -m_vPosition; // 방향은 타겟 - 위치 로 
 		BallDesc.eType = CBlackBall::TYPE_DDEBASI;
 		
+		XMStoreFloat3(&m_fTargetPos, BallDesc.vPosition);
+
 		CGameObject* pMonster = nullptr;
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 		pMonster = pInstance->Clone_GameObject_Add_Layer(TEXT("Prototype_GameObject_Effect_Ball"), &BallDesc);
 
+		//CGameObject* pTexture = nullptr;
+		//pTexture = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_TargetTexture"), &m_fTargetPos);
+		
 		RELEASE_INSTANCE(CGameInstance);
 
 		m_tInfo.CurrAnim = CW_Wait;

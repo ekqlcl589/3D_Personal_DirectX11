@@ -187,6 +187,9 @@
     <Filter Include="02.GameObject\06. Monster\99.MonsterWeapon\Sickle">
       <UniqueIdentifier>{385482eb-b048-41d2-aaaa-8cd92a56dd1f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\06. Monster\TargetTexture">
+      <UniqueIdentifier>{d70c53ea-412c-4ef3-88ac-26041b070d6c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -342,6 +345,9 @@
     <ClInclude Include="..\Public\MonsterSickle.h">
       <Filter>02.GameObject\06. Monster\99.MonsterWeapon\Sickle</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\TargetTextrue.h">
+      <Filter>02.GameObject\06. Monster\TargetTexture</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -484,6 +490,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\MonsterSickle.cpp">
       <Filter>02.GameObject\06. Monster\99.MonsterWeapon\Sickle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TargetTextrue.cpp">
+      <Filter>02.GameObject\06. Monster\TargetTexture</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

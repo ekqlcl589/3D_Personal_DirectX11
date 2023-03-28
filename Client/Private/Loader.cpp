@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "..\Public\Loader.h"
+#include "TargetTextrue.h"
 #include "GameInstance.h"
 #include "BackGround.h"
 #include "LoadingImg.h"
@@ -388,6 +389,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/GH_Rock01.fbx", CModel::MODEL_ANIM, LocalMatrix555))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Target"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Eltheca_Elscope_Circle_aa.fbx", CModel::MODEL_NONANIM, Local2))))
+		return E_FAIL;
+
 #pragma endregion Effect
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더를 로딩중입니다."));
@@ -447,6 +452,9 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CTerrain::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_TargetTexture"),
+		CTargetTextrue::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	/* For.Prototype_GameObject_Player */
 
@@ -638,6 +646,10 @@ HRESULT CLoader::Loading_ForGamePlay2()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/SkyBox/TrainigRoom.dds"), 4))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Texture_DDebasi"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Eltheca_Elscope_Circle_A.png")))))
+		return E_FAIL;
+
 	lstrcpy(m_szLoadingText, TEXT("정점버퍼를 로딩중입니다."));
 	/* For.Prototype_Component_VIBuffer_Terrain */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_VIBuffer_Terrain"),
@@ -730,6 +742,10 @@ HRESULT CLoader::Loading_ForGamePlay2()
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Model_Sphere2"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/FireBall.fbx", CModel::MODEL_NONANIM, Local2))))
+		return E_FAIL;
+	//
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Model_Target"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Eltheca_Elscope_Circle_aa.fbx", CModel::MODEL_NONANIM, Local2))))
 		return E_FAIL;
 
 #pragma endregion Monster
@@ -847,6 +863,9 @@ HRESULT CLoader::Loading_ForGamePlay2()
 	lstrcpy(m_szLoadingText, TEXT("객체원형을 로딩중."));
 
 	/* For.Prototype_GameObject_Player */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_TargetTexture1"),
+		CTargetTextrue::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon_TS1"),
 		CTwoHandedSword::Create(m_pDevice, m_pContext))))

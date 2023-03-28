@@ -48,9 +48,9 @@ HRESULT CGrudgeWraith::Initialize(void * pArg)
 	m_iObjID = 5;
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-
+	
 	pInstance->Add_Collider(m_eCollisionState, Set_ObjID(m_iObjID), this);
-
+	
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
@@ -315,24 +315,19 @@ HRESULT CGrudgeWraith::Add_Coll()
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
 	CBone* pBoneR = m_pModelCom->Get_BonePtr("Bip001-R-Finger01");
-	//CBone* pBoneSpine = m_pModelCom->Get_BonePtr("Bip001-Spine");
 
 	if (nullptr == pBoneR)// || nullptr == pBoneSpine)
 		return E_FAIL;
 
 	CMonsterSickle::WEAPONDESC WeaponDesc1 = { pBoneR, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CMonsterSickle::WEAPON_MONSTER_SICKLE };
-	//CMonsterWeapon::WEAPONDESC WeaponDesc2 = { pBoneSpine, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CMonsterWeapon::WEAPON_MONSTER_BODY, CMonsterWeapon::OWNER_WRAITH };
 	Safe_AddRef(pBoneR);
-	//Safe_AddRef(pBoneSpine);
 
 	CGameObject* pWeaponR = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Monster_Weapon2"), &WeaponDesc1);
-	//CGameObject* pWeaponSpine = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Monster_Weapon"), &WeaponDesc2);
 
 	if (nullptr == pWeaponR)// || nullptr == pWeaponSpine)
 		return E_FAIL;
 
 	m_vecWeapon[WEAPON_MONSTERR].push_back(pWeaponR);
-	//m_vecWeapon[WEAPON_MONSTERBODY].push_back(pWeaponSpine);
 
 	RELEASE_INSTANCE(CGameInstance);
 

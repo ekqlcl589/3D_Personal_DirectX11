@@ -863,6 +863,7 @@ void CTSPlayer::Attack()
 
 void CTSPlayer::Attack_Combo(_double TimeDelta)
 {
+
 	if (false == m_bJump)
 	{
 		m_bAttackState = true;
@@ -870,23 +871,21 @@ void CTSPlayer::Attack_Combo(_double TimeDelta)
 		m_AttackCheck = true;
 		m_ComboCheck2 = true;
 		m_tInfo.CurrAnim = TS_BASIC_COMBO01;
+
 	}
 
 	if (m_tInfo.PrevAnim == TS_BASIC_COMBO01 && true != m_pModelCom->Get_AnimFinished())
 	{
 		m_ComboCheck = true;
-		m_tInfo.CurrAnim = TS_BASIC_COMBO02;
-		CGameInstance* p = GET_INSTANCE(CGameInstance);
-		CGameObject* pMonster = nullptr;
-		pMonster = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
-		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 5.0f, 6.0f);
-		RELEASE_INSTANCE(CGameInstance);
+		m_tInfo.CurrAnim = TS_BASIC_COMBO02; 
+		//static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.1f, 0.1f);
 
 	}
 
 	else if (m_tInfo.PrevAnim == TS_BASIC_COMBO02 && true != m_pModelCom->Get_AnimFinished())
 	{
 		m_tInfo.CurrAnim = TS_BASIC_COMBO03;
+		//static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.1f, 0.2f);
 		m_bTest = false;
 
 	}
@@ -958,6 +957,10 @@ void CTSPlayer::Attack_Special2(_double TimeDelta)
 
 void CTSPlayer::Attack_Go(_double TimeDelta)
 {
+	CGameInstance* p = GET_INSTANCE(CGameInstance);
+	CGameObject* pMonster = nullptr;
+	pMonster = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
+	
 	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 	_float3 fPos;
@@ -968,10 +971,15 @@ void CTSPlayer::Attack_Go(_double TimeDelta)
 
 		if (m_pModelCom->Get_AnimTimeAcc() >= 7.0)
 		{
-			if(!m_NoStraight)
+
 				vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 		}
 
+	}
+
+	if (m_tInfo.CurrAnim == TS_BASIC_COMBO01 && m_AnimTimeAcc >= (m_AnimDuration / 2) - 11.0 && m_AnimTimeAcc <= (m_AnimDuration / 2) - 10.0)
+	{
+		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.1f, 0.1f);
 	}
 
 	if (true == m_AttackCheck &&  m_tInfo.CurrAnim == TS_BASIC_COMBO02)
@@ -988,6 +996,10 @@ void CTSPlayer::Attack_Go(_double TimeDelta)
 		}
 	}
 
+	if (m_tInfo.CurrAnim == TS_BASIC_COMBO02 && m_AnimTimeAcc >= (m_AnimDuration / 2) - 13.0 && m_AnimTimeAcc <= (m_AnimDuration / 2) - 12.0)
+	{
+		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.1f, 0.1f);
+	}
 
 	if (true == m_AttackCheck &&  m_tInfo.CurrAnim == TS_BASIC_COMBO03)
 	{
@@ -997,10 +1009,20 @@ void CTSPlayer::Attack_Go(_double TimeDelta)
 
 			if (m_pModelCom->Get_AnimTimeAcc() >= 19.0)
 			{
-				if (!m_NoStraight)
-					vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+				m_AttackCheck = false;
+				vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 			}
 		}
+	}
+
+	if (m_tInfo.CurrAnim == TS_BASIC_COMBO03 && m_AnimTimeAcc >= (m_AnimDuration / 2) - 22.0 && m_AnimTimeAcc <= (m_AnimDuration / 2) - 21.0)
+	{
+		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.1f, 0.1f);
+	}
+
+	if (m_tInfo.CurrAnim == TS_BASIC_COMBO03 && m_AnimTimeAcc >= (m_AnimDuration / 2) - 10.0 && m_AnimTimeAcc <= (m_AnimDuration / 2) - 9.0)
+	{
+		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.1f, 0.1f);
 	}
 
 	if (m_tInfo.CurrAnim == TS_BASIC_COMBO02_END)
@@ -1016,6 +1038,8 @@ void CTSPlayer::Attack_Go(_double TimeDelta)
 			}
 		}
 	}
+
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 void CTSPlayer::Jump(_double TimeDelta)

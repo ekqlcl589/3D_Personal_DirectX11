@@ -223,7 +223,7 @@ HRESULT CMonsterSickle::Add_Components()
 	CCollider::COLLIDERDESC ColliderDesc;
 	ZeroMemory(&ColliderDesc, sizeof ColliderDesc);
 
-	ColliderDesc.vScale = _float3(0.f, 3.f, 0.5f);
+	ColliderDesc.vScale = _float3(0.5f, 3.f, 0.5f);
 	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vScale.y * 0.5f, 0.f);
 
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_OBB"),

@@ -203,6 +203,7 @@
     <ClInclude Include="..\Public\SkyBox.h" />
     <ClInclude Include="..\Public\SwordShield.h" />
     <ClInclude Include="..\Public\TargetCamera.h" />
+    <ClInclude Include="..\Public\TargetTextrue.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\TestTile.h" />
     <ClInclude Include="..\Public\TSPlayer.h" />
@@ -254,6 +255,7 @@
     <ClCompile Include="..\Private\SkyBox.cpp" />
     <ClCompile Include="..\Private\SwordShield.cpp" />
     <ClCompile Include="..\Private\TargetCamera.cpp" />
+    <ClCompile Include="..\Private\TargetTextrue.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\Private\TestTile.cpp" />
     <ClCompile Include="..\Private\TSPlayer.cpp" />

@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "..\Public\TargetCamera.h"
 #include "GameInstance.h"
+#include "TSPlayer.h"
 #include "KeyMgr.h"
-
 
 CTargetCamera::CTargetCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CCamera(pDevice, pContext)
@@ -32,12 +32,27 @@ HRESULT CTargetCamera::Initialize(void * pArg)
 
 void CTargetCamera::Tick(_double TimeDelta)
 {
+	m_fFov = m_CameraDesc.vFov;
+
+	cout << "Fov" << m_fFov << endl;
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+	CGameObject* pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+
+	m_Player_F_Skill = static_cast<CTSPlayer*>(pPlayer)->Get_Info().fSkill;
+
+	RELEASE_INSTANCE(CGameInstance);
 
 	Target_Renewal(TimeDelta);
+	//if (false == m_Player_F_Skill)
+	//else
+	//	Player_Skill(TimeDelta);
 
 	Key_Input(TimeDelta);
 
 	Camera_Shake(TimeDelta);
+
+	//Player_Skill(TimeDelta);
 
 	__super::Tick(TimeDelta);
 }
@@ -213,6 +228,17 @@ void CTargetCamera::Key_Input(_double TimeDelta)
 
 }
 
+void CTargetCamera::Player_Skill(_double TimeDelta)
+{
+	if (m_Player_F_Skill)
+	{
+		//m_CameraDesc.vAt.z += 0.005f * TimeDelta;
+		//Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 0.4f);
+	}
+
+
+}
+
 void CTargetCamera::View_TarGet(_double TimeDelta)
 {
 	if (!m_bTalkState)
@@ -342,17 +368,25 @@ void CTargetCamera::Camera_Shake(_double TimeDelta)
 	m_fShakeRatio = min(1.f, max(0.f, m_fShakeRatio));
 
 	if (m_bReverseShake)
+	{
 		m_fCurrentShakeTime -= TimeDelta;
+		m_CameraDesc.vFov -= XMConvertToRadians(0.5f);
+	}
 	else
+	{
 		m_fCurrentShakeTime += TimeDelta;
+		m_CameraDesc.vFov += XMConvertToRadians(0.5f);
+
+	}
 
 	if (m_fCurrentShakeTime >= m_fLoopShakeTime)
 		m_bReverseShake = true;
 	else if (m_fCurrentShakeTime <= 0.f)
 		m_bReverseShake = false;
 
-
 	m_fMaxShakeTime -= TimeDelta;
+
+	//m_CameraDesc.vFov += XMConvertToRadians(0.6f);
 }
 
 void CTargetCamera::Add_Shaking(const SHAKE_DIRECTION& In_eState, const _float& In_fPower, const _float& In_fTime)

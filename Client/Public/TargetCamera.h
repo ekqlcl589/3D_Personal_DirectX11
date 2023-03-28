@@ -31,6 +31,8 @@ public:
 	void Sibal(_double TimeDelta);
 
 	void Key_Input(_double TimeDelta);
+	 
+	void Player_Skill(_double TimeDelta);
 
 public:
 	void SetMaxAt(_float _MaxAt) { m_fMaxAtX = _MaxAt; }
@@ -56,6 +58,11 @@ public:
 	}
 
 	XMMATRIX Go_Straight(FXMMATRIX Mat, float fScaler);
+
+private:
+	_bool m_Player_F_Skill = false;
+
+	_float m_fFov = 0.f;
 
 private:
 	SHAKE_DIRECTION	m_eCurrentShakeDir = SHAKE_DIRECTION::DIRECTION_END;

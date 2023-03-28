@@ -82,7 +82,7 @@ HRESULT CGameInstance::Tick_Engine(_double TimeDelta)
 	// 
 	//m_pCollision_Mgr->OnCollisionEnter(OBJ_MONSTER_BODY, OBJ_WEAPON_KARMA14);
 
-	if (!m_pObject_Manager->ObjDead)
+	if (3 == m_pLevel_Manager->Get_LevelIndex())
 	{
 		m_pCollision_Mgr->Check_Collision(OBJ_MONSTER_BODY, OBJ_WEAPON_KARMA14);
 
@@ -91,7 +91,7 @@ HRESULT CGameInstance::Tick_Engine(_double TimeDelta)
 
 	}
 
-	if (4 == m_pLevel_Manager->Get_LevelIndex())// && !m_pObject_Manager->ObjDead)
+	if (4 == m_pLevel_Manager->Get_LevelIndex())
 	{
 		m_pCollision_Mgr->Check_Collision(OBJ_PLAYER, OBJ_MONSTER_BALL); // 플레이어, 공 충돌
 		m_pCollision_Mgr->Check_Collision(OBJ_PLAYER, OBJ_MONSTER_SICKLE);
@@ -101,9 +101,6 @@ HRESULT CGameInstance::Tick_Engine(_double TimeDelta)
 
 	}
 	
-
-
-
 	m_pObject_Manager->LateTick(TimeDelta); 
 
 	return S_OK;

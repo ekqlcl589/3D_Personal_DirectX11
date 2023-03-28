@@ -88,8 +88,11 @@ private:
 	_bool m_bRun = false;
 
 	_double m_CoolTime = 0.0;
-	_float m_SkillDelay = 50.f;
+	_float m_SkillDelay = 80.f;
 
+	_bool m_Skill1 = false;
+	_bool m_Skill2 = false;
+	_bool m_Skill7 = false;
 
 public:
 	static CAncient_StonGolem* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -321,18 +321,19 @@ void CAncient_StonGolem::Use_Skill(_double TimeDelta)
 	switch (RandSkill)
 	{
 	case 0:
-		Set_Skill01(TimeDelta);
+		m_Skill1 = true;
 		break;
 	case 1:
-		Set_Skill07(TimeDelta);
+		m_Skill2 = true;
 		break;
 	case 2:
-		Set_Skill02(TimeDelta);
+		m_Skill7 = true;
 		break;
+
 	default:
 		break;
 	}
-	m_SkillDelay = 250.f;
+	m_SkillDelay = 80.f;
 }
 
 void CAncient_StonGolem::Combat_Wait(_double TimeDelta)
@@ -399,7 +400,7 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 
 	if (m_PrevAnim == S_SKILL05_2 && true != m_pModelCom->Get_AnimFinished())
 	{
-		m_eType._Hp += TimeDelta * 25.f;
+		m_eType._Hp += TimeDelta * 50.f;
 		cout << m_eType._Hp << endl;
 
 		if (m_eType._Hp >= m_eType._MaxHp)
@@ -413,7 +414,7 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 
 	}
 
-	if(m_eType._Hp <= 50.f)
+	if(m_eType._Hp <= 200.f)
 		Set_Skill05(TimeDelta); // 체력이 25% 이하로 떨어지면 몸을 웅크리면서 체력 회복 패턴 사용 
 	else
 	{
@@ -422,7 +423,10 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 		else if (false == m_bRun && true == m_bSkill4 && !m_bAttack && m_SkillDelay < 0)
 			Use_Skill(TimeDelta);
 	}
-	//Stand();
+
+	Set_Skill01(TimeDelta);
+	Set_Skill02(TimeDelta);
+	Set_Skill07(TimeDelta);
 
 	RT_Down();
 
@@ -479,7 +483,7 @@ void CAncient_StonGolem::Run(_double TimeDelta)
 		{
 			m_bRun = true;
 			m_pTransformCom->Chase_Tatget(m_vTargetPos, 5.f, TimeDelta);
-			m_CurrAnim = S_RUN;
+			m_CurrAnim = S_RUN; // 여기
 		}
 		if (m_pTransformCom->Compute_Distance(m_vTargetPos) <= 5.f)
 		{
@@ -497,14 +501,20 @@ void CAncient_StonGolem::Run(_double TimeDelta)
 
 void CAncient_StonGolem::Set_Skill01(_double TimeDelta)
 {
-	m_bAttack = true;
-	m_CurrAnim = S_SKILL01;
+	if (m_Skill1 && m_PrevAnim == S_WAIT && true == m_pModelCom->Get_AnimFinished())
+	{
+		m_bAttack = true;
+		m_CurrAnim = S_SKILL01;
+	}
 }
 
 void CAncient_StonGolem::Set_Skill02(_double TimeDelta)
 {
-	m_bAttack = true;
-	m_CurrAnim = S_SKILL02;
+	if (m_Skill2 && m_PrevAnim == S_WAIT && true == m_pModelCom->Get_AnimFinished())
+	{
+		m_bAttack = true;
+		m_CurrAnim = S_SKILL02;
+	}
 
 }
 
@@ -571,9 +581,11 @@ void CAncient_StonGolem::Set_Skill05(_double TimeDelta)
 
 void CAncient_StonGolem::Set_Skill07(_double TimeDelta)
 {
-	
-	m_bAttack = true; // 여기서 다시 true를 줘서 거리가 멀어도 한 번 트루가 됐다면 나를 계속 따라오지 못하게 
-	m_CurrAnim = S_SKILL07;
+	if (m_Skill7 && m_PrevAnim == S_WAIT && true == m_pModelCom->Get_AnimFinished())
+	{
+		m_bAttack = true; // 여기서 다시 true를 줘서 거리가 멀어도 한 번 트루가 됐다면 나를 계속 따라오지 못하게 
+		m_CurrAnim = S_SKILL07;
+	}
 
 }
 
