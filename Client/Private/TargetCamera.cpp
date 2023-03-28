@@ -358,7 +358,7 @@ void CTargetCamera::Set_CameraPos(_float x, _float z)
 
 void CTargetCamera::Camera_Shake(_double TimeDelta)
 {
-	if (m_fMaxShakeTime < 0.f)
+	if (m_fMaxShakeTime <= 0.f)
 	{
 		m_eCurrentShakeDir = SHAKE_DIRECTION::DIRECTION_END;
 		return;
@@ -370,12 +370,12 @@ void CTargetCamera::Camera_Shake(_double TimeDelta)
 	if (m_bReverseShake)
 	{
 		m_fCurrentShakeTime -= TimeDelta;
-		m_CameraDesc.vFov -= XMConvertToRadians(0.5f);
+		m_CameraDesc.vFov -= XMConvertToRadians(m_fShakePower); //m_fShakePower
 	}
 	else
 	{
 		m_fCurrentShakeTime += TimeDelta;
-		m_CameraDesc.vFov += XMConvertToRadians(0.5f);
+		m_CameraDesc.vFov += XMConvertToRadians(m_fShakePower);
 
 	}
 
@@ -385,8 +385,6 @@ void CTargetCamera::Camera_Shake(_double TimeDelta)
 		m_bReverseShake = false;
 
 	m_fMaxShakeTime -= TimeDelta;
-
-	//m_CameraDesc.vFov += XMConvertToRadians(0.6f);
 }
 
 void CTargetCamera::Add_Shaking(const SHAKE_DIRECTION& In_eState, const _float& In_fPower, const _float& In_fTime)

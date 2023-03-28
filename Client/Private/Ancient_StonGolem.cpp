@@ -2,6 +2,7 @@
 #include "..\Public\Ancient_StonGolem.h"
 #include "MonsterWeapon.h"
 #include "GameInstance.h"
+#include "TargetCamera.h"
 #include "KeyMgr.h"
 #include "Effect.h"
 #include "Bone.h"
@@ -40,7 +41,7 @@ HRESULT CAncient_StonGolem::Initialize(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPosition));
 
 	m_eType._MaxHp = 1000.f;
-	m_eType._Hp = 10.f;
+	m_eType._Hp = 100.f;
 
 	m_f = m_pModelCom->Get_AnimTick();
 
@@ -360,6 +361,10 @@ void CAncient_StonGolem::Combat_Wait(_double TimeDelta)
 
 _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 {
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	CGameObject* pCamera = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
+	RELEASE_INSTANCE(CGameInstance);
+
 	if (m_eType._Hp <= 1.f)
 	{
 		m_eType._Hp = 1.f;
@@ -392,6 +397,12 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 			if (m_pModelCom->Get_AnimTimeAcc() >= 90.0)
 			{
 				vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION); // 시발 이거 또 이대로 계속 고정 되는 건 아니겠지?
+			}
+
+			if (m_pModelCom->Get_AnimTimeAcc() >= 93.0 && m_pModelCom->Get_AnimTimeAcc() <= 95.0)
+			{
+				static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.7f, 0.4f);
+
 			}
 	
 		}
@@ -439,39 +450,54 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 
 void CAncient_StonGolem::Attack_Go(_double TimeDelta)
 {
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	CGameObject* pCamera = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
+	RELEASE_INSTANCE(CGameInstance);
+
 	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
 	_float3 fPos;
 	XMStoreFloat3(&fPos, vPosition);
 
-	if (true == m_bAttack && m_CurrAnim == S_SKILL01)
+	if (true == m_bAttack && m_PrevAnim == S_SKILL01)
 	{
-		if (m_pModelCom->Get_AnimTimeAcc() >= 60.0)
+		if (m_pModelCom->Get_AnimTimeAcc() >= 60.0 && m_pModelCom->Get_AnimTimeAcc() <= 65.0)
 		{
 			m_pTransformCom->Go_Straight(0.1 * TimeDelta);
+			static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.1f);
 
-			if (m_pModelCom->Get_AnimTimeAcc() >= 87.0)
-				vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		}
+		if (m_pModelCom->Get_AnimTimeAcc() >= 87.0 && m_pModelCom->Get_AnimTimeAcc() <= 100.0)
+		{
+			m_pTransformCom->Go_Straight(0.05 * TimeDelta);
+			static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.1f);
 		}
 	}
 
-	if (true == m_bAttack && m_CurrAnim == S_SKILL07)
+	if (true == m_bAttack && m_PrevAnim == S_SKILL07)
 	{
-		if (m_pModelCom->Get_AnimTimeAcc() >= 42.0)
+		if (m_pModelCom->Get_AnimTimeAcc() >= 35.0 && m_pModelCom->Get_AnimTimeAcc() <= 41.0)
 		{
 			m_pTransformCom->Go_Back(TimeDelta * 0.1);
 		}
 
-		if (m_pModelCom->Get_AnimTimeAcc() >= 79.0)
+		if (m_pModelCom->Get_AnimTimeAcc() >= 80.0 && m_pModelCom->Get_AnimTimeAcc() <= 82.0)
 		{
+			static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.1f);
 			m_pTransformCom->Go_Straight(TimeDelta * 0.1);
 		}
 
-		if (m_pModelCom->Get_AnimTimeAcc() >= 107.0)
+		if (m_pModelCom->Get_AnimTimeAcc() >= 107.0 && m_pModelCom->Get_AnimTimeAcc() <= 109.0)
 		{
+			static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.1f);
 			vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 		}
 	}
+
+	if (m_PrevAnim == S_SKILL09 && m_AnimTimeAcc >= 48.0 && m_AnimTimeAcc <= 49.0)
+		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.1f);
+
+
 }
 
 void CAncient_StonGolem::Run(_double TimeDelta)

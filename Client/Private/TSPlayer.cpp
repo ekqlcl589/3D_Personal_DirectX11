@@ -972,14 +972,14 @@ void CTSPlayer::Attack_Go(_double TimeDelta)
 		if (m_pModelCom->Get_AnimTimeAcc() >= 7.0)
 		{
 
-				vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 		}
 
 	}
 
 	if (m_tInfo.CurrAnim == TS_BASIC_COMBO01 && m_AnimTimeAcc >= (m_AnimDuration / 2) - 11.0 && m_AnimTimeAcc <= (m_AnimDuration / 2) - 10.0)
 	{
-		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.1f, 0.1f);
+		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 0.1f);
 	}
 
 	if (true == m_AttackCheck &&  m_tInfo.CurrAnim == TS_BASIC_COMBO02)
@@ -998,7 +998,7 @@ void CTSPlayer::Attack_Go(_double TimeDelta)
 
 	if (m_tInfo.CurrAnim == TS_BASIC_COMBO02 && m_AnimTimeAcc >= (m_AnimDuration / 2) - 13.0 && m_AnimTimeAcc <= (m_AnimDuration / 2) - 12.0)
 	{
-		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.1f, 0.1f);
+		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 0.1f);
 	}
 
 	if (true == m_AttackCheck &&  m_tInfo.CurrAnim == TS_BASIC_COMBO03)
@@ -1017,12 +1017,12 @@ void CTSPlayer::Attack_Go(_double TimeDelta)
 
 	if (m_tInfo.CurrAnim == TS_BASIC_COMBO03 && m_AnimTimeAcc >= (m_AnimDuration / 2) - 22.0 && m_AnimTimeAcc <= (m_AnimDuration / 2) - 21.0)
 	{
-		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.1f, 0.1f);
+		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 0.1f);
 	}
 
 	if (m_tInfo.CurrAnim == TS_BASIC_COMBO03 && m_AnimTimeAcc >= (m_AnimDuration / 2) - 10.0 && m_AnimTimeAcc <= (m_AnimDuration / 2) - 9.0)
 	{
-		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.1f, 0.1f);
+		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.4f, 0.1f);
 	}
 
 	if (m_tInfo.CurrAnim == TS_BASIC_COMBO02_END)
@@ -1332,21 +1332,26 @@ void CTSPlayer::Evasion(_double TimeDelta)
 
 void CTSPlayer::E_Skill(_double TimeDelta)
 {
-	// 키 인풋으로 시작? ㄴㄴ 이건 항상 돌면서 keyinput에서는 bool만 true로 바꿔주는 식으로 
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	CGameObject* pCamera = nullptr;
+	pCamera = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
+	RELEASE_INSTANCE(CGameInstance);
+
 	if (m_Eskill && m_tInfo.m_ESkill >= 10.f)
 	{
 		m_tInfo.CurrAnim = TS_SKILL_OUTRAGE_START;
 		m_AttackCheck = true;
 		m_bAttackState = true;
 
-		if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_START && true == m_pModelCom->Get_AnimFinished())
-		{
-			m_tInfo.CurrAnim = TS_SKILL_OUTRAGE_END;
-			m_Eskill = false;
-			m_AttackCheck = false;
-
-
-		}
+	}
+	if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_START &&m_AnimTimeAcc >= (m_AnimDuration / 2) && m_AnimTimeAcc <= (m_AnimDuration / 2) + 1.0)
+		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 4.0f);
+	
+	if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_START &&m_AnimTimeAcc >= (m_AnimDuration / 2) + 80.0)
+	{
+		m_tInfo.CurrAnim = TS_SKILL_OUTRAGE_END;
+		m_Eskill = false;
+		m_AttackCheck = false;
 	}
 }
 
@@ -1372,6 +1377,10 @@ void CTSPlayer::R_Skill(_double TimeDelta)
 
 void CTSPlayer::F_Skill(_double TimeDelta)
 {
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	CGameObject* pCamera = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
+	RELEASE_INSTANCE(CGameInstance);
+
 	if (m_FsKill && m_tInfo.m_FSkill >= 20.f)
 	{
 		m_bAttackState = true;
@@ -1379,15 +1388,19 @@ void CTSPlayer::F_Skill(_double TimeDelta)
 		m_AttackCheck = true;
 		m_tInfo.fSkill = true;
 
-		if (m_tInfo.PrevAnim == TS_RAGESKILL_ARMAGEDDONBLADE && true == m_pModelCom->Get_AnimFinished())
-		{
-			m_tInfo.CurrAnim = TS_COMBAT_WAIT;
-			m_FsKill = false;
-			m_AttackCheck = false;
-			m_tInfo.m_FSkill = 0.f;
-			m_tInfo.fSkill = false;
+	}
 
-		}
+	if(m_tInfo.PrevAnim == TS_RAGESKILL_ARMAGEDDONBLADE && m_AnimTimeAcc >= 15.0 && m_AnimTimeAcc <= 16.0)
+		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 1.0f);
+
+	if (m_tInfo.PrevAnim == TS_RAGESKILL_ARMAGEDDONBLADE && true == m_pModelCom->Get_AnimFinished())
+	{
+		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
+		m_FsKill = false;
+		m_AttackCheck = false;
+		m_tInfo.m_FSkill = 0.f;
+		m_tInfo.fSkill = false;
+
 	}
 }
 

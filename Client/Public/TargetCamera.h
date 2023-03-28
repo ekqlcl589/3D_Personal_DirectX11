@@ -74,6 +74,9 @@ private:
 	_float m_fShakeRatio = 0.f;
 
 	_float3	m_vShakePosition;
+
+	//_float m_fShakePower = 0.5f;
+
 private:
 	CGameInstance* m_pInstance = nullptr;
 	_float m_fRation = 0;
