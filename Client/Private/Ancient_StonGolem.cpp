@@ -476,14 +476,28 @@ void CAncient_StonGolem::Attack_Go(_double TimeDelta)
 
 	if (true == m_bAttack && m_PrevAnim == S_SKILL07)
 	{
+		if (m_pModelCom->Get_AnimTimeAcc() >= 10.0 && m_pModelCom->Get_AnimTimeAcc() <= 11.0)
+		{
+			static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 0.1f);
+		}
+
+		if (m_pModelCom->Get_AnimTimeAcc() >= 19.0 && m_pModelCom->Get_AnimTimeAcc() <= 20.0)
+		{
+			static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 0.1f);
+
+		}
 		if (m_pModelCom->Get_AnimTimeAcc() >= 35.0 && m_pModelCom->Get_AnimTimeAcc() <= 41.0)
 		{
 			m_pTransformCom->Go_Back(TimeDelta * 0.1);
 		}
 
-		if (m_pModelCom->Get_AnimTimeAcc() >= 80.0 && m_pModelCom->Get_AnimTimeAcc() <= 82.0)
+		if (m_pModelCom->Get_AnimTimeAcc() >= 68.0 && m_pModelCom->Get_AnimTimeAcc() <= 69.0)
 		{
 			static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.1f);
+		}
+
+		if (m_pModelCom->Get_AnimTimeAcc() >= 80.0 && m_pModelCom->Get_AnimTimeAcc() <= 82.0)
+		{
 			m_pTransformCom->Go_Straight(TimeDelta * 0.1);
 		}
 
@@ -527,20 +541,20 @@ void CAncient_StonGolem::Run(_double TimeDelta)
 
 void CAncient_StonGolem::Set_Skill01(_double TimeDelta)
 {
-	if (m_Skill1 && m_PrevAnim == S_WAIT && true == m_pModelCom->Get_AnimFinished())
-	{
+	//if (m_Skill1 && m_PrevAnim == S_WAIT && true == m_pModelCom->Get_AnimFinished())
+	//{
 		m_bAttack = true;
 		m_CurrAnim = S_SKILL01;
-	}
+	//}
 }
 
 void CAncient_StonGolem::Set_Skill02(_double TimeDelta)
 {
-	if (m_Skill2 && m_PrevAnim == S_WAIT && true == m_pModelCom->Get_AnimFinished())
-	{
+	//if (m_Skill2 && m_PrevAnim == S_WAIT && true == m_pModelCom->Get_AnimFinished())
+	//{
 		m_bAttack = true;
 		m_CurrAnim = S_SKILL02;
-	}
+	//}
 
 }
 
@@ -607,11 +621,11 @@ void CAncient_StonGolem::Set_Skill05(_double TimeDelta)
 
 void CAncient_StonGolem::Set_Skill07(_double TimeDelta)
 {
-	if (m_Skill7 && m_PrevAnim == S_WAIT && true == m_pModelCom->Get_AnimFinished())
-	{
+	//if (m_Skill7 && m_PrevAnim == S_WAIT && true == m_pModelCom->Get_AnimFinished())
+	//{
 		m_bAttack = true; // 여기서 다시 true를 줘서 거리가 멀어도 한 번 트루가 됐다면 나를 계속 따라오지 못하게 
 		m_CurrAnim = S_SKILL07;
-	}
+	//}
 
 }
 

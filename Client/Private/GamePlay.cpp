@@ -65,7 +65,7 @@ void CGamePlay::Tick(_double TimeDelta)
 	SetWindowText(g_hWnd, szWindowText);
 #endif
 
-	if (GetKeyState(VK_SPACE) & 0x8000)
+	if (GetKeyState(VK_ESCAPE) & 0x8000)
 	{
 		CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 		Safe_AddRef(pGameInstance);

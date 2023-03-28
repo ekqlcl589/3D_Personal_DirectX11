@@ -620,7 +620,7 @@ void CGrudgeWraith::Run(_double TimeDelta)
 		if (m_pTransformCom->Compute_Distance(m_vTargetPos) <= 5.f)
 		{
 			m_bWlak = false;
-			m_tInfo.CurrAnim = G_Walk;
+			m_tInfo.CurrAnim = G_Wait;
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 		}
 	}

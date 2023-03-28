@@ -39,14 +39,26 @@ void CTargetCamera::Tick(_double TimeDelta)
 
 	CGameObject* pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
 
+	RELEASE_INSTANCE(CGameInstance);
+	
 	m_Player_F_Skill = static_cast<CTSPlayer*>(pPlayer)->Get_Info().fSkill;
 
-	RELEASE_INSTANCE(CGameInstance);
+	if (m_Player_F_Skill)
+	{
+		m_fmulLook -= TimeDelta * 3.0 ;
+
+		if (m_fmulLook <= 5.5)
+			m_fmulLook = 5.5;
+	}
+	else
+	{
+		m_fmulLook += TimeDelta * 3.0;
+
+		if (m_fmulLook >= 9.0)
+			m_fmulLook = 9.0;
+	}
 
 	Target_Renewal(TimeDelta);
-	//if (false == m_Player_F_Skill)
-	//else
-	//	Player_Skill(TimeDelta);
 
 	Key_Input(TimeDelta);
 
@@ -94,7 +106,7 @@ void CTargetCamera::Target_Renewal(_double TimeDelta)
 	m_CameraDesc.vEye = fTarget;
 	m_vLook = XMVector3Normalize(vLook);
 	
-	m_Transform->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_CameraDesc.vEye) - m_vLook * 9);
+	m_Transform->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_CameraDesc.vEye) - m_vLook * m_fmulLook);
 
 	XMStoreFloat3(&m_CameraDesc.vAt, XMLoadFloat3(&m_CameraDesc.vEye) + m_vLook);
 

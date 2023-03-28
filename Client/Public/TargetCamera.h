@@ -89,6 +89,8 @@ private:
 	_float m_fd = 0.f;
 	_vector m_vLook = { 1.0f, 0.f, 0.f };
 
+	_double m_fmulLook = 9.0;
+
 	_float4x4 m_matWorld;
 
 	_float m_fAngleX = 0.f;
