@@ -78,11 +78,16 @@ private:
 	_bool m_Skill1Pair = false;
 	_bool m_SkillNext = false;
 
-	_bool m_bSkill5 = false;
 	_bool m_bHit = false;
 	_bool m_bGod = false;
 
 	_float Damage = 0.f;
+
+private:
+	_bool m_bSkill1 = false;
+	_bool m_bSkill2 = false;
+	_bool m_bSkill3 = false; // ÀÌ»õ³¢ ÀÌÆåÆ®·Î Á¶Á®¾ß ÇÏ´Â »õ³¢ 
+	_bool m_bSkill5 = false;
 
 public:
 	static CGrudgeWraith* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

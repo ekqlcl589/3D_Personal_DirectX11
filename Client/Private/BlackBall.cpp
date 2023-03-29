@@ -154,7 +154,7 @@ void CBlackBall::Tick(_double TimeDelta)
 			CGameObject* pCamera = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
 			RELEASE_INSTANCE(CGameInstance);
 
-			if(fPosition.y <= 0.5f && fPosition.y >= 0.f)
+			if(fPosition.y <= 1.f && fPosition.y >= 0.f)
 				static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::LOOK, 0.5f, 0.3f);
 		}
 		else

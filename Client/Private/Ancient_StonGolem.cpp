@@ -375,6 +375,13 @@ void CAncient_StonGolem::Combat_Wait(_double TimeDelta)
 		m_bAttack = false;
 	}
 
+	//if (m_PrevAnim == S_SKILL05_3 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 67.0)
+	//{
+	//	m_CurrAnim = S_WAIT;
+	//	m_bAttack = false;
+	//	m_bSkill5 = true;
+	//}
+
 }
 
 _uint CAncient_StonGolem::Set_State(_double TimeDelta)
@@ -441,11 +448,6 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 		if (true == m_bDown)
 			RT_Down();
 
-	}
-
-	if (m_PrevAnim == S_SKILL05_3 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 69.0)
-	{
-		m_CurrAnim = S_WAIT;
 	}
 
 	if(m_eType._Hp <= 250.f && !m_bSkill5)
@@ -641,7 +643,13 @@ void CAncient_StonGolem::Set_Skill05(_double TimeDelta)
 		m_bSkill5 = true;
 		m_CurrAnim = S_WAIT;
 	}
-	
+
+	if (m_CurrAnim == S_SKILL05_3 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 69.0)
+	{
+		m_bSkill5 = true;
+		m_CurrAnim = S_WAIT;
+	}
+
 }
 
 void CAncient_StonGolem::Set_Skill07(_double TimeDelta)

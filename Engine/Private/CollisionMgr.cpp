@@ -19,13 +19,10 @@ HRESULT CCollisionMgr::Tick(_double TimeDelta)
 
 	CGameObject* pObj2 = pInstance->Find_GameObject(3, TEXT("Layer_Monster"));
 
-
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
 }
-
-
 
 HRESULT CCollisionMgr::Add_Collider(COLLISIONSTATE eType, int iNum, CGameObject* pObj)
 {

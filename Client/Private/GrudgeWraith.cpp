@@ -325,12 +325,14 @@ void CGrudgeWraith::Animation_State(_double TimeDelta)
 	else if (false == m_bWlak && !m_bAttack && m_SkillDelay < 0)
 		Use_Skill(TimeDelta);
 
-	Use_Skill_Next(TimeDelta);
-
 	if (m_tInfo._Hp <= 250.f)
-		m_bSkill5 = true;
+		m_bSkill3 = true;
 	
+	Skill01(TimeDelta);
+	Skill02(TimeDelta);
 	Skill05(TimeDelta);
+
+	Use_Skill_Next(TimeDelta);
 
 	Run(TimeDelta);
 
@@ -462,13 +464,16 @@ void CGrudgeWraith::Use_Skill(_double TimeDelta)
 	switch (RandSkill)
 	{
 	case 0:
-		Skill01(TimeDelta);
+		//Skill01(TimeDelta);
+		m_bSkill1 = true;
 		break;
 	case 1:
-		Skill02(TimeDelta);
+		//Skill02(TimeDelta);
+		m_bSkill2 = true;
 		break;
 	case 2:
-		Skill03(TimeDelta);
+		//Skill03(TimeDelta);
+		m_bSkill5 = true;
 		break;
 	default:
 		break;
@@ -508,24 +513,31 @@ void CGrudgeWraith::Use_Skill_Next(_double TimeDelta)
 	if (m_tInfo.PrevAnim == G_Skill01_2&& m_AnimTimeAcc >= (m_AnimDuration / 2) + 37.0)
 	{
 		m_bAttack = false;
+		m_bSkill1 = false;
 		m_tInfo.CurrAnim = G_Wait;
 	}
 
 	if (m_tInfo.PrevAnim == G_Skill01_3 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 41.0)
 	{
 		m_bAttack = false;
+		m_bSkill1 = false;
 		m_tInfo.CurrAnim = G_Wait;
 	}
 
 
-	if (m_tInfo.PrevAnim == G_Skill02_1 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 19.5)
+	if (m_tInfo.PrevAnim == G_Skill02_1 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 19.0)
 	{
 		m_tInfo.CurrAnim = G_Skill02_2;
 	}
 
-	if (m_tInfo.PrevAnim == G_Skill02_2 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 14.5)
+	if (m_tInfo.PrevAnim == G_Skill02_2 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 14.0 )
 	{
 		m_tInfo.CurrAnim = G_Skill02_3;
+	}
+
+	if (m_tInfo.PrevAnim == G_Skill02_3 && m_AnimTimeAcc >= 5.0 && m_AnimTimeAcc <= 6.0)
+	{
+		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.7f, 0.1f);
 	}
 
 	if (m_tInfo.PrevAnim == G_Skill02_3 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 33.0)
@@ -533,6 +545,7 @@ void CGrudgeWraith::Use_Skill_Next(_double TimeDelta)
 		m_tInfo.CurrAnim = G_Wait;
 		m_bAttack = false;
 		m_SkillNext = false;
+		m_bSkill2 = false;
 	}
 
 	if (m_tInfo.PrevAnim == G_Skill03_1 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 27.5)
@@ -545,10 +558,6 @@ void CGrudgeWraith::Use_Skill_Next(_double TimeDelta)
 		m_tInfo.CurrAnim = G_Skill03_3;
 	}
 
-	if (m_tInfo.PrevAnim == G_Skill03_3 && m_AnimTimeAcc >= 5.0 && m_AnimTimeAcc <= 6.0)
-	{
-		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.7f, 0.1f);
-	}
 	if (m_tInfo.PrevAnim == G_Skill03_3 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 29.5)
 	{
 		m_tInfo.CurrAnim = G_Wait;
@@ -625,12 +634,13 @@ void CGrudgeWraith::Hit(const _int & _Damage)
 
 void CGrudgeWraith::Skill01(_double TimeDelta)
 {
-	m_tInfo.CurrAnim = G_Skill01_1;
-	m_bAttack = true;
-	m_SkillNext = false;
-	m_Skill1Pair = true;
-
-
+	if (m_bSkill1)
+	{
+		m_tInfo.CurrAnim = G_Skill01_1;
+		m_bAttack = true;
+		m_SkillNext = false;
+		m_Skill1Pair = true;
+	}
 }
 
 void CGrudgeWraith::Skill01_1()
@@ -653,9 +663,12 @@ void CGrudgeWraith::Skill01_2()
 
 void CGrudgeWraith::Skill02(_double TimeDelta)
 {
-	m_tInfo.CurrAnim = G_Skill02_1;
-	m_bAttack = true;
-	m_SkillNext = true;
+	if (m_bSkill2)
+	{
+		m_tInfo.CurrAnim = G_Skill02_1;
+		m_bAttack = true;
+		m_SkillNext = true;
+	}
 }
 
 void CGrudgeWraith::Skill03(_double TimeDelta)
@@ -711,7 +724,7 @@ void CGrudgeWraith::Skill05(_double TimeDelta)
 
 		CGameObject* pBlade = nullptr;
 
-		pBlade = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Monster_Blade"), &fPosition);
+		pBlade = pInstance->Clone_GameObject_Add_Layer(TEXT("Prototype_GameObject_Monster_Blade"), &fPosition);
 
 		RELEASE_INSTANCE(CGameInstance);
 

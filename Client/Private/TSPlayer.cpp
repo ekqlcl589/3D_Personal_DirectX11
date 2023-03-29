@@ -481,7 +481,8 @@ void CTSPlayer::Key_Input(_double TimeDelta)
 		m_bTest = false;
 
 		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * -1.f);
-		m_tInfo.CurrAnim = TS_RUN_L;
+		if(!m_AttackCheck)
+			m_tInfo.CurrAnim = TS_RUN_L;
 	}
 	else if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_A))
 	{
@@ -496,7 +497,8 @@ void CTSPlayer::Key_Input(_double TimeDelta)
 		m_bTest = false;
 
 		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta);
-		m_tInfo.CurrAnim = TS_RUN_R;
+		if (!m_AttackCheck)
+			m_tInfo.CurrAnim = TS_RUN_R;
 	}
 	if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_D))
 	{
