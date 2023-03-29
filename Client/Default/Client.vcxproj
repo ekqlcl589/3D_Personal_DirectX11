@@ -183,6 +183,7 @@
     <ClInclude Include="..\Public\Logo.h" />
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\Public\Monster.h" />
+    <ClInclude Include="..\Public\MonsterBlade.h" />
     <ClInclude Include="..\Public\MonsterHPBar.h" />
     <ClInclude Include="..\Public\MonsterSickle.h" />
     <ClInclude Include="..\Public\MonsterWeapon.h" />
@@ -235,6 +236,7 @@
     <ClCompile Include="..\Private\Logo.cpp" />
     <ClCompile Include="..\Private\MainApp.cpp" />
     <ClCompile Include="..\Private\Monster.cpp" />
+    <ClCompile Include="..\Private\MonsterBlade.cpp" />
     <ClCompile Include="..\Private\MonsterHPBar.cpp" />
     <ClCompile Include="..\Private\MonsterSickle.cpp" />
     <ClCompile Include="..\Private\MonsterWeapon.cpp" />

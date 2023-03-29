@@ -32,7 +32,7 @@ HRESULT CTargetTextrue::Initialize(void * pArg)
 	//memcpy(&m_fPosition, pArg, sizeof(_float3));
 	//
 	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_fPosition));
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 1.f, 0.f, 0.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 2.f, 0.f, 0.f));
 
 	return S_OK;
 }

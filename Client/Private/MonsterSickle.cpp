@@ -45,6 +45,8 @@ HRESULT CMonsterSickle::Initialize(void * pArg)
 
 	RELEASE_INSTANCE(CGameInstance);
 
+	m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(180.0f));
+
 	return S_OK;
 }
 
@@ -55,14 +57,6 @@ void CMonsterSickle::Tick(_double TimeDelta)
 		if (nullptr != m_pColliderCom)
 			m_pColliderCom->Update(XMLoadFloat4x4(&m_WorldMatrix));
 
-
-	}
-}
-
-void CMonsterSickle::LateTick(_double TimeDelta)
-{
-	if (!m_bDead)
-	{
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
 		CGameObject* pOwner = nullptr;
@@ -74,14 +68,19 @@ void CMonsterSickle::LateTick(_double TimeDelta)
 		}
 
 		pOwner = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
+		RELEASE_INSTANCE(CGameInstance);
 
 		Dead = static_cast<CGrudgeWraith*>(pOwner)->Get_Dead();
 
-		RELEASE_INSTANCE(CGameInstance);
-
 		if (Dead)
-			m_bDead = true;
+			Set_Dead();
+	}
+}
 
+void CMonsterSickle::LateTick(_double TimeDelta)
+{
+	if (!m_bDead)
+	{
 		__super::LateTick(TimeDelta);
 
 		_matrix		ParentMatrix = XMLoadFloat4x4(&m_Weapon.pBonePtr->Get_CombinedTransformMatrix()) *

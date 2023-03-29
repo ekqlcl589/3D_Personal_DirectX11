@@ -29,6 +29,7 @@
 #include "GianticCreature.h"
 #include "CursedWraith.h"
 #include "GrudgeWraith.h"
+#include "MonsterBlade.h"
 
 #include "MonsterSickle.h"
 #include "MonsterWeapon.h"
@@ -383,14 +384,18 @@ HRESULT CLoader::Loading_ForGamePlay()
 #pragma region Effect
 
 	_matrix		LocalMatrix555 = XMMatrixIdentity();
-	LocalMatrix555 = XMMatrixScaling(0.1f, 0.1f, 0.1f);
+	LocalMatrix555 = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Effect"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/GH_Rock01.fbx", CModel::MODEL_ANIM, LocalMatrix555))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Target"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Eltheca_Elscope_Circle_aa.fbx", CModel::MODEL_NONANIM, Local2))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Eltheca_Elscope_Circle_aa.fbx", CModel::MODEL_NONANIM, LocalMatrix555))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Monster_Blade"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/WraithTest.fbx", CModel::MODEL_NONANIM, LocalMatrix555))))
 		return E_FAIL;
 
 #pragma endregion Effect
@@ -495,8 +500,12 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CMonsterWeapon::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-		if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster_Weapon1"),
-		CMonsterSickle::Create(m_pDevice, m_pContext))))
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster_Weapon1"),
+	CMonsterSickle::Create(m_pDevice, m_pContext))))
+	return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster_Blade"),
+		CMonsterBlade::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 #pragma endregion Monster

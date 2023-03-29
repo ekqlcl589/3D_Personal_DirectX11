@@ -90,9 +90,6 @@ void CMonsterWeapon::Tick(_double TimeDelta)
 		else if (m_Weapon.Owner == OWNER_WRAITH)
 			Dead = static_cast<CGrudgeWraith*>(pOwner)->Get_Dead();
 
-		//else if (m_Weapon.Owner == OWNER_WRAITH2)
-		//	Dead = static_cast<CCursedWraith*>(pOwner)->Get_Dead(); 얘는 monsterweapon 쓰는 애 없음
-
 		RELEASE_INSTANCE(CGameInstance);
 
 		if (Dead)
@@ -309,19 +306,6 @@ void CMonsterWeapon::EnterCollision(CGameObject * pObj)
 				{
 					_uint Hp = static_cast<CGianticCreature*>(pOwner)->Get_Info()._Hp;
 					static_cast<CGianticCreature*>(pOwner)->Set_Info(Damage);
-					cout << "칼한테 맞음" << Hp << endl;
-				}
-				else if (m_Weapon.Owner == OWNER_WRAITH)
-				{
-					_uint Hp = static_cast<CGrudgeWraith*>(pOwner)->Get_Info()._Hp;
-					static_cast<CGrudgeWraith*>(pOwner)->Set_Info(Damage);
-					cout << "칼한테 맞음" << Hp << endl;
-				}
-				else if (m_Weapon.Owner == OWNER_WRAITH2)
-				{
-					_uint Hp = static_cast<CCursedWraith*>(pOwner)->Get_Info()._Hp;
-					static_cast<CCursedWraith*>(pOwner)->Set_Info(Damage);
-					static_cast<CCursedWraith*>(pOwner)->Set_Hit(true);
 					cout << "칼한테 맞음" << Hp << endl;
 				}
 

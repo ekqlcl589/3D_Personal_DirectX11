@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\BlackBall.h"
 #include "GameInstance.h"
+#include "TargetCamera.h"
 
 CBlackBall::CBlackBall(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -126,6 +127,10 @@ void CBlackBall::Tick(_double TimeDelta)
 	}
 	else
 	{
+		_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		_float3 fPosition;
+		XMStoreFloat3(&fPosition, vPosition);
+
 		m_LifeTime -= TimeDelta * 1.f;
 
 		if (m_LifeTime <= 0.0)
@@ -136,7 +141,6 @@ void CBlackBall::Tick(_double TimeDelta)
 		}
 
 		__super::Tick(TimeDelta);
-		//Add_Collied(this);
 
 		if (nullptr != m_pColliderCom)
 			m_pColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
@@ -146,6 +150,12 @@ void CBlackBall::Tick(_double TimeDelta)
 
 			m_pTransformCom->Go_Straight(TimeDelta * 3.f);
 
+			CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+			CGameObject* pCamera = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
+			RELEASE_INSTANCE(CGameInstance);
+
+			if(fPosition.y <= 0.5f && fPosition.y >= 0.f)
+				static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::LOOK, 0.5f, 0.3f);
 		}
 		else
 			m_pTransformCom->Go_Straight(TimeDelta * 1.5f);
@@ -204,9 +214,6 @@ void CBlackBall::OnCollision(CGameObject * pObj)
 	switch (eType)
 	{
 	case Engine::OBJ_PLAYER:
-		Dead = true;
-		//Set_Dead();
-		// 카메라 쉐이크 true;
 		break;
 	case Engine::OBJ_WEAPON_SS:
 		break;
@@ -223,6 +230,43 @@ void CBlackBall::OnCollision(CGameObject * pObj)
 	case Engine::OBJ_MONSTER_WEAPONR:
 		break;
 	case Engine::OBJ_MONSTER_BODY:
+		break;
+	case Engine::OBJ_END:
+		break;
+	default:
+		break;
+	}
+}
+
+void CBlackBall::EnterCollision(CGameObject * pObj)
+{
+	COLLISIONSTATE eType = pObj->Get_ObjType();
+
+	switch (eType)
+	{
+	case Engine::OBJ_PLAYER:
+		Dead = true;
+		break;
+	case Engine::OBJ_WEAPON_SS:
+		break;
+	case Engine::OBJ_WEAPON_SS1:
+		break;
+	case Engine::OBJ_BOSS1:
+		break;
+	case Engine::OBJ_WEAPON_KARMA14:
+		// 플레이어가 공격중일 때 검 과 볼이 만나면 look을 반사해서 날림 
+		break;
+	case Engine::OBJ_BOSS2:
+		break;
+	case Engine::OBJ_MONSTER_WEAPONL:
+		break;
+	case Engine::OBJ_MONSTER_WEAPONR:
+		break;
+	case Engine::OBJ_MONSTER_BODY:
+		break;
+	case Engine::OBJ_MONSTER_BALL:
+		break;
+	case Engine::OBJ_MONSTER_SICKLE:
 		break;
 	case Engine::OBJ_END:
 		break;
@@ -282,13 +326,15 @@ HRESULT CBlackBall::SetUp_ShaderResources()
 
 	RELEASE_INSTANCE(CGameInstance);
 
-	_float3 f;
-	XMStoreFloat3(&f, m_BallDesc.vPosition);
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
-	float U = m_fPos.z;
+	_float3 fPos;
+	XMStoreFloat3(&fPos, vPos);
 
-	//if (FAILED(m_pShaderCom->Set_RawValue("g_fUVData", &U, sizeof(float))))
-	//	return E_FAIL;
+	float U = fPos.z;
+
+	if (FAILED(m_pShaderCom->Set_RawValue("g_fUVData", &U, sizeof(float))))
+		return E_FAIL;
 
 	return S_OK;
 }

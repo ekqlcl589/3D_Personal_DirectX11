@@ -17,7 +17,7 @@ class CTSPlayer final : public CGameObject
 {
 public:
 	enum PARTS {PART_HEAD, PART_HAIR_B, PART_HAIR_F, PART_HAIR_S, PART_HAIR_T, PART_TOP, PART_PANTS, PART_CROCS, PART_CROCSR, PART_END};
-	enum WEAPON { WEAPON_KARMA14, WEAPON_WAIT, WEAPON_END };
+	enum WEAPON { WEAPON_KARMA14, WEAPON_WAIT, WEAPON_SIBAL, WEAPON_END };
 	enum DIR {FRONT, BACK, DIR_END };
 public:
 	enum  
@@ -83,6 +83,8 @@ private:
 
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
+
+	CModel* Get_Model() { return m_pModelCom; }
 
 private:
 	CShader* m_pShaderCom = { nullptr };

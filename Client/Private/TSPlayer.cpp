@@ -82,20 +82,6 @@ HRESULT CTSPlayer::Initialize(void * pArg)
 void CTSPlayer::Tick(_double TimeDelta)
 {
 
-	//if (!m_Front)
-	//{
-	//	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, m_pTransformCom->Get_State(CTransform::STATE_RIGHT) * -1);
-	//	m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_pTransformCom->Get_State(CTransform::STATE_LOOK) * -1);
-	//
-	//}
-	//else
-	//{
-	//	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, m_pTransformCom->Get_State(CTransform::STATE_RIGHT));
-	//	m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
-	//
-	//}
-	WeaponBoneUpdate();
-
 	if (m_tInfo._Hp <= 0.f)
 	{
 		m_tInfo._Hp = 0.f;
@@ -1568,16 +1554,16 @@ HRESULT CTSPlayer::Add_Weapon()
 
 	CBone* pBonePtr = m_pModelCom->Get_BonePtr("Weapon_Hand_R"); // ÀüÅõ°¡ ¾Æ´Ò ¶§ ºÙÀÌ´Â »À == Weapon_Spine_R
 	CBone* pBonePtrWait = m_pModelCom->Get_BonePtr("Weapon_Spine_R");
-	if (nullptr == pBonePtr)
+	if (nullptr == pBonePtr || nullptr == pBonePtrWait)
 		return E_FAIL;
 
-	CTwoHandedSword::WEAPONDESC WeaponDesc = { pBonePtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CTwoHandedSword::WEAPON_TS, OBJ_WEAPON_KARMA14 };
+	CWeapon::WEAPONDESC WeaponDesc = { pBonePtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CWeapon::WEAPON_TS, OBJ_WEAPON_KARMA14 };
 	Safe_AddRef(pBonePtr);
 
-	CTwoHandedSwordWait::WEAPONDESC WeaponDesc2 = { pBonePtrWait, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CTwoHandedSwordWait::WEAPON_WAIT, OBJ_END };
+	CWeapon::WEAPONDESC WeaponDesc2 = { pBonePtrWait, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CWeapon::WEAPON_WAIT, OBJ_NO_COLL };
 	Safe_AddRef(pBonePtrWait);
 
-	CGameObject* pWeapon = pInstance->Clone_GameObject_Add_Layer(TEXT("Prototype_GameObject_Weapon_TS"), &WeaponDesc);
+	CGameObject* pWeapon = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Weapon_TS"), &WeaponDesc);
 	CGameObject* pWeapon2 = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Weapon_TS_Wait"), &WeaponDesc2);
 
 	if (nullptr == pWeapon || nullptr == pWeapon2)
@@ -1641,14 +1627,6 @@ void CTSPlayer::Free()
 {
 	__super::Free();
 
-	for (_uint i = 0; i < WEAPON_END; ++i)
-	{
-		for (auto& pWeapon : m_vecWeapon[i])
-			Safe_Release(pWeapon);
-
-		m_vecWeapon[i].clear();
-	}
-
 	for (_uint i = 0; i < PART_END; ++i)
 	{
 		for (auto& pPart : m_vecParts[i])
@@ -1657,6 +1635,15 @@ void CTSPlayer::Free()
 		m_vecParts[i].clear();
 	}
 
+	for (_uint i = 0; i < WEAPON_END; ++i)
+	{
+		for (auto& pWeapon : m_vecWeapon[i])
+			Safe_Release(pWeapon);
+
+		m_vecWeapon[i].clear();
+	}
+
+	
 	Safe_Release(m_pColliderCom);
 
 	Safe_Release(m_pTransformCom);

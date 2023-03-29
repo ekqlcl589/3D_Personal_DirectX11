@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "MonsterSickle.h"
 #include "TSPlayer.h"
+#include "TargetCamera.h"
 
 CGrudgeWraith::CGrudgeWraith(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CMonster(pDevice, pContext)
@@ -60,6 +61,8 @@ void CGrudgeWraith::Tick(_double TimeDelta)
 {
 	if (m_bDead)
 	{
+		return;
+
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
 		if (FAILED(pInstance->Dleate_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster2"))))
@@ -67,7 +70,6 @@ void CGrudgeWraith::Tick(_double TimeDelta)
 
 		RELEASE_INSTANCE(CGameInstance);
 
-		return;
 	}
 	else
 	{
@@ -166,148 +168,118 @@ HRESULT CGrudgeWraith::Render()
 		return S_OK;
 
 	}
+	return S_OK;
 }
 
 void CGrudgeWraith::OnCollision(CGameObject * pObj)
 {
-	if (!m_bDead)
+
+	COLLISIONSTATE eType = pObj->Get_ObjType();
+
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	CGameObject* pPlayer = nullptr;
+	pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+	m_bHit = static_cast<CTSPlayer*>(pPlayer)->Get_Attack();
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	switch (eType)
 	{
-
-		COLLISIONSTATE eType = pObj->Get_ObjType();
-
-		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-		CGameObject* pPlayer = nullptr;
-		pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
-		m_bHit = static_cast<CTSPlayer*>(pPlayer)->Get_Attack();
-
-		RELEASE_INSTANCE(CGameInstance);
-
-		switch (eType)
-		{
-		case Engine::OBJ_PLAYER:
-			break;
-		case Engine::OBJ_WEAPON_SS:
-			break;
-		case Engine::OBJ_WEAPON_SS1:
-			break;
-		case Engine::OBJ_BOSS1:
-			break;
-		case Engine::OBJ_WEAPON_KARMA14:
-		{
-			if (true == m_bHit && false == m_bGod)
-			{
-				//CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-				//CGameObject* pTarget = nullptr;
-				//pTarget = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
-				//
-				//_bool m_PlayerRSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rSkill;
-				//_bool m_PlayerFSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().fSkill;
-				//_bool m_PlayerRageSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rageSkill;
-				//
-				//if (true == m_PlayerRSkill)
-				//	Damage = 30.f;
-				//else if (true == m_PlayerFSkill)
-				//	Damage = 45.f;
-				//else if (true == m_PlayerRageSkill)
-				//	Damage = 100.f;
-				//else
-				//	Damage = 5.f;
-				//
-				//Hit(Damage);
-				//cout << "칼한테 맞음" << m_tInfo._Hp << endl;
-				//
-				//RELEASE_INSTANCE(CGameInstance)
-
-				break;
-			}
-		}
-		case Engine::OBJ_BOSS2:
-			break;
-		case Engine::OBJ_MONSTER_WEAPONL:
-			break;
-		case Engine::OBJ_MONSTER_WEAPONR:
-			break;
-		case Engine::OBJ_MONSTER_BODY:
-			break;
-		case Engine::OBJ_MONSTER_BALL:
-			break;
-		case Engine::OBJ_END:
-			break;
-		default:
-			break;
-		}
+	case Engine::OBJ_PLAYER:
+		break;
+	case Engine::OBJ_WEAPON_SS:
+		break;
+	case Engine::OBJ_WEAPON_SS1:
+		break;
+	case Engine::OBJ_BOSS1:
+		break;
+	case Engine::OBJ_WEAPON_KARMA14:
+		break;
+	case Engine::OBJ_BOSS2:
+		break;
+	case Engine::OBJ_MONSTER_WEAPONL:
+		break;
+	case Engine::OBJ_MONSTER_WEAPONR:
+		break;
+	case Engine::OBJ_MONSTER_BODY:
+		break;
+	case Engine::OBJ_MONSTER_BALL:
+		break;
+	case Engine::OBJ_END:
+		break;
+	default:
+		break;
 	}
+	
 }
 
 void CGrudgeWraith::EnterCollision(CGameObject * pObj)
 {
-	if (!m_bDead)
+
+	COLLISIONSTATE eType = pObj->Get_ObjType();
+
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	CGameObject* pPlayer = nullptr;
+	pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+	m_bHit = static_cast<CTSPlayer*>(pPlayer)->Get_Attack();
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	switch (eType)
 	{
-
-		COLLISIONSTATE eType = pObj->Get_ObjType();
-
-		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-		CGameObject* pPlayer = nullptr;
-		pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
-		m_bHit = static_cast<CTSPlayer*>(pPlayer)->Get_Attack();
-
-		RELEASE_INSTANCE(CGameInstance);
-
-		switch (eType)
+	case Engine::OBJ_PLAYER:
+		break;
+	case Engine::OBJ_WEAPON_SS:
+		break;
+	case Engine::OBJ_WEAPON_SS1:
+		break;
+	case Engine::OBJ_BOSS1:
+		break;
+	case Engine::OBJ_WEAPON_KARMA14:
+	{
+		if (true == m_bHit && false == m_bGod)
 		{
-		case Engine::OBJ_PLAYER:
-			break;
-		case Engine::OBJ_WEAPON_SS:
-			break;
-		case Engine::OBJ_WEAPON_SS1:
-			break;
-		case Engine::OBJ_BOSS1:
-			break;
-		case Engine::OBJ_WEAPON_KARMA14:
-		{
-			if (true == m_bHit && false == m_bGod)
-			{
-				CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-				CGameObject* pTarget = nullptr;
-				pTarget = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+			CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+			CGameObject* pTarget = nullptr;
+			pTarget = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
 
-				_bool m_PlayerRSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rSkill;
-				_bool m_PlayerFSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().fSkill;
-				_bool m_PlayerRageSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rageSkill;
+			_bool m_PlayerRSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rSkill;
+			_bool m_PlayerFSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().fSkill;
+			_bool m_PlayerRageSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rageSkill;
 
-				if (true == m_PlayerRSkill)
-					Damage = 30.f;
-				else if (true == m_PlayerFSkill)
-					Damage = 45.f;
-				else if (true == m_PlayerRageSkill)
-					Damage = 100.f;
-				else
-					Damage = 5.f;
+			if (true == m_PlayerRSkill)
+				Damage = 30.f;
+			else if (true == m_PlayerFSkill)
+				Damage = 45.f;
+			else if (true == m_PlayerRageSkill)
+				Damage = 100.f;
+			else
+				Damage = 5.f;
 
-				Hit(Damage);
-				cout << "칼한테 맞음" << m_tInfo._Hp << endl;
+			Hit(Damage);
+			cout << "칼한테 맞음" << m_tInfo._Hp << endl;
 
-				RELEASE_INSTANCE(CGameInstance)
+			RELEASE_INSTANCE(CGameInstance)
 
-					break;
-			}
 		}
-		case Engine::OBJ_BOSS2:
-			break;
-		case Engine::OBJ_MONSTER_WEAPONL:
-			break;
-		case Engine::OBJ_MONSTER_WEAPONR:
-			break;
-		case Engine::OBJ_MONSTER_BODY:
-			break;
-		case Engine::OBJ_MONSTER_BALL:
-			break;
-		case Engine::OBJ_END:
-			break;
-		default:
-			break;
-		}
+		break;
 	}
+	case Engine::OBJ_BOSS2:
+		break;
+	case Engine::OBJ_MONSTER_WEAPONL:
+		break;
+	case Engine::OBJ_MONSTER_WEAPONR:
+		break;
+	case Engine::OBJ_MONSTER_BODY:
+		break;
+	case Engine::OBJ_MONSTER_BALL:
+		break;
+	case Engine::OBJ_END:
+		break;
+	default:
+		break;
+	}
+	
 }
 
 HRESULT CGrudgeWraith::Add_Coll()
@@ -355,7 +327,7 @@ void CGrudgeWraith::Animation_State(_double TimeDelta)
 
 	Use_Skill_Next(TimeDelta);
 
-	if (m_tInfo._Hp <= 100.f)
+	if (m_tInfo._Hp <= 250.f)
 		m_bSkill5 = true;
 	
 	Skill05(TimeDelta);
@@ -506,6 +478,11 @@ void CGrudgeWraith::Use_Skill(_double TimeDelta)
 
 void CGrudgeWraith::Use_Skill_Next(_double TimeDelta)
 {
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	CGameObject* pCamera = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
+
+	RELEASE_INSTANCE(CGameInstance);
+
 	if (m_Skill1Pair)
 	{
 		int RandSkill = 0; // use_skill을 통해 부르게 되면 한번 더 스위치 문으로 다음 모션을 부르는 건 안 될 듯
@@ -568,6 +545,10 @@ void CGrudgeWraith::Use_Skill_Next(_double TimeDelta)
 		m_tInfo.CurrAnim = G_Skill03_3;
 	}
 
+	if (m_tInfo.PrevAnim == G_Skill03_3 && m_AnimTimeAcc >= 5.0 && m_AnimTimeAcc <= 6.0)
+	{
+		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.7f, 0.1f);
+	}
 	if (m_tInfo.PrevAnim == G_Skill03_3 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 29.5)
 	{
 		m_tInfo.CurrAnim = G_Wait;
@@ -712,6 +693,11 @@ void CGrudgeWraith::Skill04(_double TimeDelta)
 
 void CGrudgeWraith::Skill05(_double TimeDelta)
 {
+	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_float3 fPosition;
+
+	XMStoreFloat3(&fPosition, vPosition);
+
 	if (m_bSkill5 && true == m_pModelCom->Get_AnimFinished()) // 그냥 현재 애니메이션이 종료되면?
 	{
 		m_tInfo.CurrAnim = G_Skill05_1;
@@ -719,6 +705,17 @@ void CGrudgeWraith::Skill05(_double TimeDelta)
 		m_bGod = true;
 	}
 
+	if (m_tInfo.PrevAnim == G_Skill05_1 && m_AnimTimeAcc >= 42.0 && m_AnimTimeAcc <= 43.0)
+	{
+		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+		CGameObject* pBlade = nullptr;
+
+		pBlade = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Monster_Blade"), &fPosition);
+
+		RELEASE_INSTANCE(CGameInstance);
+
+	}
 	if (m_tInfo.PrevAnim == G_Skill05_1 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 46.5)
 	{
 		m_tInfo.CurrAnim = G_Wait;

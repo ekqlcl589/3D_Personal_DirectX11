@@ -44,7 +44,7 @@ public: // 새로 만든 vecColl
 	void Add_Collied(CGameObject* _obj) { m_vecColl.insert(_obj); }
 
 	bool Check_Collied(CGameObject* _obj) { return m_vecColl.find(_obj) != m_vecColl.end(); }
-	bool Erase_Collied(CGameObject* _obj) { return m_vecColl.erase(_obj) ? true : false; }
+	bool Erase_Collied(CGameObject* _obj);
 
 
 protected:

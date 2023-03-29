@@ -171,6 +171,9 @@ _bool CCollisionMgr::Is_Colli_Dist(CGameObject * pDest, CGameObject * pSour)
 	CCollider* SrcColl = pSour->Get_Collider();
 	CCollider* DestColl = pDest->Get_Collider();
 
+	if (nullptr == SrcColl || nullptr == DestColl)
+		return false;
+
 	m_bIsColl = SrcColl->Collision(DestColl); // 충돌 정보 저장
 	m_CollCheck = m_bIsColl;
 
@@ -189,6 +192,9 @@ void CCollisionMgr::Check_Collision(COLLISIONSTATE eType, COLLISIONSTATE eType2)
 				Dest->Erase_Collied(Src);
 			if (Dest->Get_Dead() || Src->Get_Dead())
 				continue;
+			
+			if (nullptr == Dest || nullptr == Src)
+				return;
 
 			// 충돌한 경우
 			if (Is_Colli_Dist(Dest, Src))

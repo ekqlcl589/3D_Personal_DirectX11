@@ -65,7 +65,7 @@ void CPlayer_Basic_Combo::LateTick(_double TimeDelta)
 	{
 		__super::LateTick(TimeDelta);
 
-		Set_Transform();
+		//Set_Transform();
 
 		if(m_AnimStart)
 			m_pModelCom->Play_Animation(TimeDelta);

@@ -2,6 +2,8 @@
 #include "..\Public\TwoHandedSword.h"
 #include "GameInstance.h"
 
+_matrix CTwoHandedSword::WorldMatrix = XMMatrixIdentity();
+
 CTwoHandedSword::CTwoHandedSword(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CWeapon(pDevice, pContext)
 {
@@ -66,6 +68,8 @@ void CTwoHandedSword::LateTick(_double TimeDelta)
 	ParentMatrix.r[2] = XMVector3Normalize(ParentMatrix.r[2]);
 
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * ParentMatrix * m_Weapon.pParentTransform->Get_WorldMatrix());
+
+	WorldMatrix = XMLoadFloat4x4(&m_WorldMatrix);
 }
 
 HRESULT CTwoHandedSword::Render()

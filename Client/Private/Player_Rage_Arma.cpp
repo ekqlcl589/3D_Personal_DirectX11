@@ -47,8 +47,6 @@ void CPlayer_Rage_Arma::Tick(_double TimeDelta)
 
 	RELEASE_INSTANCE(CGameInstance);
 
-	if (nullptr != m_pColliderCom)
-		m_pColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
 }
 
 void CPlayer_Rage_Arma::LateTick(_double TimeDelta)
@@ -69,13 +67,6 @@ HRESULT CPlayer_Rage_Arma::Render()
 	{
 		if (FAILED(__super::Render()))
 			return E_FAIL;
-
-	#ifdef _DEBUG
-
-		if (nullptr != m_pColliderCom)
-			m_pColliderCom->Render();
-
-	#endif
 
 		if (FAILED(SetUp_ShaderResources()))
 			return E_FAIL;
@@ -124,15 +115,17 @@ _bool CPlayer_Rage_Arma::FadeInOut()
 
 void CPlayer_Rage_Arma::Set_Transform()
 {
-	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+//	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+//
+//	CGameObject* pWeapon = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Weapon_TS"));
+//	RELEASE_INSTANCE(CGameInstance);
+//
+//	_float4x4 Weapon = static_cast<CTwoHandedSword*>(pWeapon)->Get_WeaponMatrix();
+//
+	//CTwoHandedSword::WorldMatrix;
 
-	CGameObject* pWeapon = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Weapon_TS"));
-
-	RELEASE_INSTANCE(CGameInstance);
-
-	_float4x4 Weapon = static_cast<CTwoHandedSword*>(pWeapon)->Get_WeaponMatrix();
-
-	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(&Weapon));
+	//XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(&Weapon));
+	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * CTwoHandedSword::WorldMatrix);
 }
 
 HRESULT CPlayer_Rage_Arma::Add_Components()
@@ -160,15 +153,6 @@ HRESULT CPlayer_Rage_Arma::Add_Components()
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
-	CCollider::COLLIDERDESC ColliderDesc;
-	ZeroMemory(&ColliderDesc, sizeof ColliderDesc);
-
-	ColliderDesc.vScale = _float3(3.f, 3.f, 3.f);
-	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vScale.y * 0.5f, 0.f);
-
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"),
-		TEXT("Com_Collider"), (CComponent**)&m_pColliderCom, &ColliderDesc)))
-		return E_FAIL;
 
 	return S_OK;
 }
@@ -225,8 +209,6 @@ CGameObject * CPlayer_Rage_Arma::Clone(void * pArg)
 void CPlayer_Rage_Arma::Free()
 {
 	__super::Free();
-
-	Safe_Release(m_pColliderCom);
 
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pModelCom);

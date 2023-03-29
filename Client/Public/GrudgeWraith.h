@@ -82,7 +82,7 @@ private:
 	_bool m_bHit = false;
 	_bool m_bGod = false;
 
-	_uint Damage = 0;
+	_float Damage = 0.f;
 
 public:
 	static CGrudgeWraith* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

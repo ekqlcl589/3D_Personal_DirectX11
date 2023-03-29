@@ -23,6 +23,8 @@ public:
 public:
 	_float4x4 Get_WeaponMatrix() { return m_WorldMatrix; }
 
+	static _matrix WorldMatrix;
+
 private:
 	HRESULT Add_Components();
 	HRESULT SetUp_ShaderResources();

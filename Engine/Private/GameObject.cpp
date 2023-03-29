@@ -77,6 +77,17 @@ void CGameObject::Hit(_uint iDamage)
 {
 }
 
+bool CGameObject::Erase_Collied(CGameObject * _obj)
+{
+	if (_obj->Get_Dead())
+	{
+		return false;
+
+	}
+
+	return m_vecColl.erase(_obj) ? true : false;
+}
+
 HRESULT CGameObject::Add_Component(_uint iLevelIndex, const _tchar * pPrototypeTag, const _tchar * pComponentTag, CComponent ** ppOut, void * pArg)
 {
 	if (nullptr != Find_Component(pComponentTag))

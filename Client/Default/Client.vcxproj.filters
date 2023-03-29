@@ -190,6 +190,9 @@
     <Filter Include="02.GameObject\06. Monster\TargetTexture">
       <UniqueIdentifier>{d70c53ea-412c-4ef3-88ac-26041b070d6c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\10. Effrect\Monster">
+      <UniqueIdentifier>{b96777ed-cd94-42e1-9a5c-4ca3b8a20275}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -348,6 +351,9 @@
     <ClInclude Include="..\Public\TargetTextrue.h">
       <Filter>02.GameObject\06. Monster\TargetTexture</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\MonsterBlade.h">
+      <Filter>02.GameObject\10. Effrect\Monster</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -493,6 +499,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\TargetTextrue.cpp">
       <Filter>02.GameObject\06. Monster\TargetTexture</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MonsterBlade.cpp">
+      <Filter>02.GameObject\10. Effrect\Monster</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

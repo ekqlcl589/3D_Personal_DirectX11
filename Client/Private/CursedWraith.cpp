@@ -39,7 +39,7 @@ HRESULT CCursedWraith::Initialize(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPosition));
 
 	m_tInfo._MaxHp = 1000.f;
-	m_tInfo._Hp = 1000.f;
+	m_tInfo._Hp = 10.f;
 
 	m_tInfo._Hit = false;
 	m_tInfo.CurrAnim = CW_Wait;
@@ -201,34 +201,7 @@ void CCursedWraith::OnCollision(CGameObject * pObj)
 	case Engine::OBJ_BOSS1:
 		break;
 	case Engine::OBJ_WEAPON_KARMA14:
-	{
-		if (true == m_bHit)
-		{
-			//CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-			//CGameObject* pTarget = nullptr;
-			//pTarget = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
-			//
-			//_bool m_PlayerRSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rSkill;
-			//_bool m_PlayerFSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().fSkill;
-			//_bool m_PlayerRageSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rageSkill;
-			//
-			//if (true == m_PlayerRSkill)
-			//	Damage = 30.f;
-			//else if (true == m_PlayerFSkill)
-			//	Damage = 45.f;
-			//else if (true == m_PlayerRageSkill)
-			//	Damage = 100.f;
-			//else
-			//	Damage = 5.f;
-			//
-			//Hit(Damage);
-			//cout << "칼한테 맞음" << m_tInfo._Hp << endl;
-			//
-			//RELEASE_INSTANCE(CGameInstance)
-
-			break;
-		}
-	}
+		break;
 	case Engine::OBJ_BOSS2:
 		break;
 	case Engine::OBJ_MONSTER_WEAPONL:
@@ -269,14 +242,16 @@ void CCursedWraith::EnterCollision(CGameObject * pObj)
 		break;
 	case Engine::OBJ_WEAPON_KARMA14:
 	{
+		if (m_bHit)
+		{
 			CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 			CGameObject* pTarget = nullptr;
 			pTarget = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
-		
+
 			_bool m_PlayerRSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rSkill;
 			_bool m_PlayerFSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().fSkill;
 			_bool m_PlayerRageSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rageSkill;
-		
+
 			if (true == m_PlayerRSkill)
 				Damage = 30.f;
 			else if (true == m_PlayerFSkill)
@@ -285,17 +260,17 @@ void CCursedWraith::EnterCollision(CGameObject * pObj)
 				Damage = 100.f;
 			else
 				Damage = 5.f;
-		
+
 			m_tInfo._Hp -= Damage;
 
 			m_tInfo._Hit = true;
 			//Hit(Damage);
 			cout << "칼한테 맞음" << m_tInfo._Hp << endl;
-		
+
 			RELEASE_INSTANCE(CGameInstance)
-		
-				break;
-		
+
+		}
+		break;		
 	}
 	case Engine::OBJ_BOSS2:
 		break;
@@ -306,6 +281,7 @@ void CCursedWraith::EnterCollision(CGameObject * pObj)
 	case Engine::OBJ_MONSTER_BODY:
 		break;
 	case Engine::OBJ_MONSTER_BALL:
+		// 그러다가 그 공을 얘가 맞으면 기절상태 시전 그러기 위한 변수 하나 더 필요할 듯 
 		break;
 	case Engine::OBJ_END:
 		break;

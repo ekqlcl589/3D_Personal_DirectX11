@@ -34,7 +34,6 @@ void CTargetCamera::Tick(_double TimeDelta)
 {
 	m_fFov = m_CameraDesc.vFov;
 
-	cout << "Fov" << m_fFov << endl;
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
 	CGameObject* pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
