@@ -85,6 +85,7 @@ private:
 	_double m_AnimTimeAcc = { 0.0 };
 
 	_bool m_bSkill4 = false;
+	_bool m_bSkill5 = false;
 	_bool m_bRun = false;
 
 	_double m_CoolTime = 0.0;
