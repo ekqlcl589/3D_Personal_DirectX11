@@ -80,10 +80,7 @@ void CGameObject::Hit(_uint iDamage)
 bool CGameObject::Erase_Collied(CGameObject * _obj)
 {
 	if (_obj->Get_Dead())
-	{
 		return false;
-
-	}
 
 	return m_vecColl.erase(_obj) ? true : false;
 }

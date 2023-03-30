@@ -415,6 +415,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxAnimModel.hlsl"), VTXANIMMODEL_DELARATION::Element, VTXANIMMODEL_DELARATION::iNumElements))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxAnimModel_Normal"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxAnimMode_NormalMap.hlsl"), VTXANIMMODEL_DELARATION::Element, VTXANIMMODEL_DELARATION::iNumElements))))
+		return E_FAIL;
+	
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Cube_Shader"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxCubeTex.hlsl"), VTXCUBE_DELARATION::Element, VTXCUBE_DELARATION::iNumElements))))
 		return E_FAIL;
@@ -830,6 +834,10 @@ HRESULT CLoader::Loading_ForGamePlay2()
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Shader_VtxAnimModel"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxAnimModel.hlsl"), VTXANIMMODEL_DELARATION::Element, VTXANIMMODEL_DELARATION::iNumElements))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Shader_VtxAnimModel_Normal"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxAnimMode_NormalMap.hlsl"), VTXANIMMODEL_DELARATION::Element, VTXANIMMODEL_DELARATION::iNumElements))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Cube_Shader"),

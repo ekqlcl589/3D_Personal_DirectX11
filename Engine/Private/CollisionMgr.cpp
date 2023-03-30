@@ -113,7 +113,6 @@ void CCollisionMgr::OncollisionStay(COLLISIONSTATE eType)
 
 }
 
-
 HRESULT CCollisionMgr::Delete_CollideObj(COLLISIONSTATE eObjID, int iNum)
 {
 	/*for (auto& iter = m_mapObj[eObjID].begin(); iter != m_mapObj[eObjID].end(); iter++)
@@ -221,7 +220,7 @@ void CCollisionMgr::Check_Collision(COLLISIONSTATE eType, COLLISIONSTATE eType2)
 			else
 			{
 				// 리스트에 있으면 빼고 Leave 호출
-
+				// GameObject의 m_vecColl 안에 없어서 터지는 듯
 				Dest->Erase_Collied(Src); // 리스트에서 제거 
 				Src->Erase_Collied(Dest);
 			}

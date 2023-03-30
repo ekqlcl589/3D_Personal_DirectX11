@@ -922,6 +922,11 @@ void CTSPlayer::Attack_Special(_double TimeDelta)
 
 void CTSPlayer::Attack_Special2(_double TimeDelta)
 {
+	CGameInstance* p = GET_INSTANCE(CGameInstance);
+	CGameObject* pMonster = nullptr;
+	pMonster = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
+	RELEASE_INSTANCE(CGameInstance);
+
 	if (true == m_AttackCheck)
 	{
 		m_bAttackState = true;
@@ -931,7 +936,8 @@ void CTSPlayer::Attack_Special2(_double TimeDelta)
 
 			m_tInfo.CurrAnim = TS_BASIC_COMBO03_START;
 			m_tInfo.CurrAnim = TS_BASIC_COMBO02_LOOP; //
-
+			static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.1f);
+			// 기능 작동 안 됨 ㅈ댐 ㅋㅋ
 		}
 
 	}
@@ -948,20 +954,15 @@ void CTSPlayer::Attack_Go(_double TimeDelta)
 	CGameInstance* p = GET_INSTANCE(CGameInstance);
 	CGameObject* pMonster = nullptr;
 	pMonster = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
-	
+	RELEASE_INSTANCE(CGameInstance);
+
 	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 	_float3 fPos;
 
-	if (true == m_AttackCheck &&  m_tInfo.CurrAnim == TS_BASIC_COMBO01)
+	if (true == m_AttackCheck &&  m_tInfo.CurrAnim == TS_BASIC_COMBO01 && m_AnimTimeAcc >= 0.0 && m_AnimTimeAcc <= 2.0)
 	{
 		m_pTransformCom->Go_Straight(TimeDelta * 0.09);
-
-		if (m_pModelCom->Get_AnimTimeAcc() >= 7.0)
-		{
-
-			vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-		}
 
 	}
 
@@ -970,37 +971,19 @@ void CTSPlayer::Attack_Go(_double TimeDelta)
 		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 0.1f);
 	}
 
-	if (true == m_AttackCheck &&  m_tInfo.CurrAnim == TS_BASIC_COMBO02)
+	if (true == m_AttackCheck &&  m_tInfo.CurrAnim == TS_BASIC_COMBO02 && m_pModelCom->Get_AnimTimeAcc() >= 9.0 && m_pModelCom->Get_AnimTimeAcc() <= 12.0)
 	{
-		if (m_pModelCom->Get_AnimTimeAcc() >= 9.0)
-		{
-			m_pTransformCom->Go_Straight(TimeDelta * 0.09);
-
-			if (m_pModelCom->Get_AnimTimeAcc() >= 15.0)
-			{
-				if (!m_NoStraight)
-					vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-			}
-		}
+		m_pTransformCom->Go_Straight(TimeDelta * 0.09);
 	}
 
-	if (m_tInfo.CurrAnim == TS_BASIC_COMBO02 && m_AnimTimeAcc >= (m_AnimDuration / 2) - 13.0 && m_AnimTimeAcc <= (m_AnimDuration / 2) - 12.0)
+	if (m_tInfo.CurrAnim == TS_BASIC_COMBO02 && m_AnimTimeAcc >= (m_AnimDuration / 2) - 12.5 && m_AnimTimeAcc <= (m_AnimDuration / 2) - 12.0)
 	{
 		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 0.1f);
 	}
 
-	if (true == m_AttackCheck &&  m_tInfo.CurrAnim == TS_BASIC_COMBO03)
+	if (true == m_AttackCheck &&  m_tInfo.CurrAnim == TS_BASIC_COMBO03 && m_pModelCom->Get_AnimTimeAcc() >= 10.0 && m_pModelCom->Get_AnimTimeAcc() <= 13.0)
 	{
-		if (m_pModelCom->Get_AnimTimeAcc() >= 10.0)
-		{
-			m_pTransformCom->Go_Straight(TimeDelta * 0.13);
-
-			if (m_pModelCom->Get_AnimTimeAcc() >= 19.0)
-			{
-				m_AttackCheck = false;
-				vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-			}
-		}
+		m_pTransformCom->Go_Straight(TimeDelta * 0.13);
 	}
 
 	if (m_tInfo.CurrAnim == TS_BASIC_COMBO03 && m_AnimTimeAcc >= (m_AnimDuration / 2) - 22.0 && m_AnimTimeAcc <= (m_AnimDuration / 2) - 21.0)
@@ -1015,19 +998,13 @@ void CTSPlayer::Attack_Go(_double TimeDelta)
 
 	if (m_tInfo.CurrAnim == TS_BASIC_COMBO02_END)
 	{
-		if (m_pModelCom->Get_AnimTimeAcc() >= 8.0)
+		if (m_pModelCom->Get_AnimTimeAcc() >= 8.0 && m_pModelCom->Get_AnimTimeAcc() <= 10.0)
 		{
 			m_pTransformCom->Go_Straight(TimeDelta * 0.13);
 
-			if (m_pModelCom->Get_AnimTimeAcc() >= 13.0)
-			{
-				if (!m_NoStraight)
-					vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-			}
 		}
 	}
 
-	RELEASE_INSTANCE(CGameInstance);
 }
 
 void CTSPlayer::Jump(_double TimeDelta)
@@ -1168,25 +1145,17 @@ void CTSPlayer::Dash(_double TimeDelta)
 	//if (true == m_bDeah)
 	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
-	if(true == m_bDeah && m_tInfo.PrevAnim == TS_DASH)
+	if(true == m_bDeah && m_tInfo.CurrAnim == TS_DASH && m_AnimTimeAcc >= 4.0 && m_AnimTimeAcc <= 13.0)
 	{
-		if(m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) - 21.0)
-		{
-			m_pTransformCom->Go_Straight(TimeDelta * 1.7);
+			m_pTransformCom->Go_Straight(TimeDelta * 2.5);
 
-			if (m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2))
-			{
-				vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
-				if (m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 3.0)
-				{
-					m_bDeah = false;
-					m_tInfo.CurrAnim = TS_COMBAT_WAIT;
+	}
+	if (m_tInfo.CurrAnim == TS_DASH && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 6.0)
+	{
+		m_bDeah = false;
+		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
 
-				}
-
-			}
-		}
 	}
 }
 
@@ -1199,6 +1168,11 @@ void CTSPlayer::DashAttack(_double TimeDelta)
 
 void CTSPlayer::CombatWait()
 {
+	CGameInstance* p = GET_INSTANCE(CGameInstance);
+	CGameObject* pMonster = nullptr;
+	pMonster = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
+	RELEASE_INSTANCE(CGameInstance);
+
 	if (m_tInfo.PrevAnim == TS_BASIC_COMBO01 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 19.0)
 	{
 		m_AttackCheck = false;
@@ -1217,6 +1191,11 @@ void CTSPlayer::CombatWait()
 		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
 	}
 
+	if (false == m_AttackCheck && m_tInfo.PrevAnim == TS_SPECIALCOMBO_CRASH && m_AnimTimeAcc >= 10.0 && m_AnimTimeAcc <= 11.0)
+	{
+		m_DownAttack = true;
+		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.15f, 0.1f);
+	}
 	if (false == m_AttackCheck && m_tInfo.PrevAnim == TS_SPECIALCOMBO_CRASH && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 10.0) // CRASH가 두 번 들어 갔다가 끊기는 느낌 
 	{
 		m_DownAttack = false;
@@ -1276,7 +1255,7 @@ void CTSPlayer::Evasion(_double TimeDelta)
 		if (m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) - 3.0 ) // 이동은 5 ~ 6초 사이에만 하고 애니메이션은 계속 재생? 
 		{
 			// ? 이거 왜 됨?
-			m_pTransformCom->Go_Straight(TimeDelta * 1.2);
+			m_pTransformCom->Go_Straight(TimeDelta * 1.6);
 
 			if (m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) - 2.8)
 			{
@@ -1298,7 +1277,7 @@ void CTSPlayer::Evasion(_double TimeDelta)
 		if (m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) - 3.0) // 이동은 5 ~ 6초 사이에만 하고 애니메이션은 계속 재생? 
 		{
 			// ? 이거 왜 됨?
-			m_pTransformCom->Go_Back(TimeDelta * 1.2);
+			m_pTransformCom->Go_Back(TimeDelta * 1.6);
 
 			if (m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) - 2.8)
 			{
@@ -1332,6 +1311,31 @@ void CTSPlayer::E_Skill(_double TimeDelta)
 		m_bAttackState = true;
 
 	}
+
+	if(m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_START && m_AnimTimeAcc >= 14.0 && m_AnimTimeAcc <= 15.0)
+		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.2f, 0.1f);
+
+	if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_START && m_AnimTimeAcc >= 25.0 && m_AnimTimeAcc <= 26.0)
+		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.2f, 0.1f);
+
+	if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_START && m_AnimTimeAcc >= 36.0 && m_AnimTimeAcc <= 37.0)
+		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.2f, 0.1f);
+	
+	if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_START && m_AnimTimeAcc >= 44.0 && m_AnimTimeAcc <= 45.0)
+		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.2f, 0.1f);
+	
+	if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_START && m_AnimTimeAcc >= 52.0 && m_AnimTimeAcc <= 53.0)
+		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.2f, 0.1f);
+	
+	if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_START && m_AnimTimeAcc >= 57.0 && m_AnimTimeAcc <= 58.0)
+		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.2f, 0.1f);
+	
+	if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_START && m_AnimTimeAcc >= 75.0 && m_AnimTimeAcc <= 76.0)
+		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.2f, 0.1f);
+	
+	if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_START && m_AnimTimeAcc >= 79.0 && m_AnimTimeAcc <= 80.0)
+		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.2f, 0.1f);
+	
 	if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_START &&m_AnimTimeAcc >= (m_AnimDuration / 2) && m_AnimTimeAcc <= (m_AnimDuration / 2) + 1.0)
 		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 4.0f);
 	

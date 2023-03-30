@@ -19,6 +19,7 @@ public:
 	virtual HRESULT Render() override;
 
 	virtual void OnCollision(CGameObject* pObj)override;
+	virtual void EnterCollision(CGameObject* pObj)override;
 
 public:
 	_float4x4 Get_WeaponMatrix() { return m_WorldMatrix; }

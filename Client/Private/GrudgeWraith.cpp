@@ -483,10 +483,6 @@ void CGrudgeWraith::Use_Skill(_double TimeDelta)
 
 void CGrudgeWraith::Use_Skill_Next(_double TimeDelta)
 {
-	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-	CGameObject* pCamera = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
-
-	RELEASE_INSTANCE(CGameInstance);
 
 	if (m_Skill1Pair)
 	{
@@ -510,44 +506,24 @@ void CGrudgeWraith::Use_Skill_Next(_double TimeDelta)
 
 	}
 
-	if (m_tInfo.PrevAnim == G_Skill01_2&& m_AnimTimeAcc >= (m_AnimDuration / 2) + 37.0)
+	if (m_tInfo.PrevAnim == G_Skill01_2 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 36.0)
 	{
 		m_bAttack = false;
 		m_bSkill1 = false;
+		m_Skill1Pair = false;
 		m_tInfo.CurrAnim = G_Wait;
 	}
 
-	if (m_tInfo.PrevAnim == G_Skill01_3 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 41.0)
+	if (m_tInfo.PrevAnim == G_Skill01_3 && m_AnimTimeAcc >= 81.0)
 	{
 		m_bAttack = false;
 		m_bSkill1 = false;
+		m_Skill1Pair = false;
 		m_tInfo.CurrAnim = G_Wait;
 	}
 
 
-	if (m_tInfo.PrevAnim == G_Skill02_1 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 19.0)
-	{
-		m_tInfo.CurrAnim = G_Skill02_2;
-	}
-
-	if (m_tInfo.PrevAnim == G_Skill02_2 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 14.0 )
-	{
-		m_tInfo.CurrAnim = G_Skill02_3;
-	}
-
-	if (m_tInfo.PrevAnim == G_Skill02_3 && m_AnimTimeAcc >= 5.0 && m_AnimTimeAcc <= 6.0)
-	{
-		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.7f, 0.1f);
-	}
-
-	if (m_tInfo.PrevAnim == G_Skill02_3 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 33.0)
-	{
-		m_tInfo.CurrAnim = G_Wait;
-		m_bAttack = false;
-		m_SkillNext = false;
-		m_bSkill2 = false;
-	}
-
+	// 이 위치에 스킬 2_2 부터 있었음 
 	if (m_tInfo.PrevAnim == G_Skill03_1 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 27.5)
 	{
 		m_tInfo.CurrAnim = G_Skill03_2;
@@ -663,12 +639,40 @@ void CGrudgeWraith::Skill01_2()
 
 void CGrudgeWraith::Skill02(_double TimeDelta)
 {
-	if (m_bSkill2)
+	if (m_bSkill2 && !m_bAttack)
 	{
 		m_tInfo.CurrAnim = G_Skill02_1;
 		m_bAttack = true;
 		m_SkillNext = true;
 	}
+
+	if (m_tInfo.PrevAnim == G_Skill02_1 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 19.0)
+	{
+		m_tInfo.CurrAnim = G_Skill02_2;
+	}
+
+	if (m_tInfo.PrevAnim == G_Skill02_2 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 14.0)
+	{
+		m_tInfo.CurrAnim = G_Skill02_3;
+	}
+
+	if (m_tInfo.PrevAnim == G_Skill02_3 && m_AnimTimeAcc >= 5.0 && m_AnimTimeAcc <= 6.0)
+	{
+		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+		CGameObject* pCamera = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
+
+		RELEASE_INSTANCE(CGameInstance);
+		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.7f, 0.1f);
+	}
+
+	if (m_tInfo.PrevAnim == G_Skill02_3 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 33.0)
+	{
+		m_tInfo.CurrAnim = G_Wait;
+		m_bAttack = false;
+		m_SkillNext = false;
+		m_bSkill2 = false;
+	}
+
 }
 
 void CGrudgeWraith::Skill03(_double TimeDelta)

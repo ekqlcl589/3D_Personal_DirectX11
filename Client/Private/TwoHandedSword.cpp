@@ -97,7 +97,37 @@ HRESULT CTwoHandedSword::Render()
 
 void CTwoHandedSword::OnCollision(CGameObject * pObj)
 {
+	COLLISIONSTATE eType = pObj->Get_ObjType();
 
+	switch (eType)
+	{
+	case Engine::OBJ_PLAYER:
+		break;
+	case Engine::OBJ_WEAPON_SS:
+		break;
+	case Engine::OBJ_WEAPON_SS1:
+		break;
+	case Engine::OBJ_BOSS1:
+		break;
+	case Engine::OBJ_WEAPON_KARMA14:
+		break;
+	case Engine::OBJ_BOSS2:
+		break;
+	case Engine::OBJ_MONSTER_WEAPONL:
+		break;
+	case Engine::OBJ_MONSTER_WEAPONR:
+		break;
+	case Engine::OBJ_MONSTER_BODY:
+		break;
+	case Engine::OBJ_END:
+		break;
+	default:
+		break;
+	}
+}
+
+void CTwoHandedSword::EnterCollision(CGameObject * pObj)
+{
 	COLLISIONSTATE eType = pObj->Get_ObjType();
 
 	switch (eType)
