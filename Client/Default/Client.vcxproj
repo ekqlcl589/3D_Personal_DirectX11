@@ -197,6 +197,7 @@
     <ClInclude Include="..\Public\Player_Basic_Combo.h" />
     <ClInclude Include="..\Public\Player_Body.h" />
     <ClInclude Include="..\Public\Player_Rage_Arma.h" />
+    <ClInclude Include="..\Public\Ruins.h" />
     <ClInclude Include="..\Public\SkillIcon.h" />
     <ClInclude Include="..\Public\SkillIconF.h" />
     <ClInclude Include="..\Public\SkillIconR.h" />
@@ -250,6 +251,7 @@
     <ClCompile Include="..\Private\Player_Basic_Combo.cpp" />
     <ClCompile Include="..\Private\Player_Body.cpp" />
     <ClCompile Include="..\Private\Player_Rage_Arma.cpp" />
+    <ClCompile Include="..\Private\Ruins.cpp" />
     <ClCompile Include="..\Private\SkillIcon.cpp" />
     <ClCompile Include="..\Private\SkillIconF.cpp" />
     <ClCompile Include="..\Private\SkillIconR.cpp" />

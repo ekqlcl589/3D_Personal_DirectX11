@@ -37,6 +37,7 @@
 #include "MonsterHPBar.h"
 
 #include "TestTile.h"
+#include "Ruins.h"
 
 #include "Effect.h"
 
@@ -377,9 +378,20 @@ HRESULT CLoader::Loading_ForGamePlay()
 	_matrix		LocalMatrix55 = XMMatrixIdentity();
 	LocalMatrix55 = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 
+#pragma region Field
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Tile"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/StaticMesh/TrainingRoom/TraningRoom.fbx", CModel::MODEL_NONANIM, LocalMatrix55))))
 		return E_FAIL;
+
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Ruins"),
+	//	CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/StaticMesh/Ruins.fbx", CModel::MODEL_NONANIM, LocalMatrix55))))
+	//	return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Ruins"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/StaticMesh/Test/Test.fbx", CModel::MODEL_NONANIM, LocalMatrix55 * XMMatrixRotationY(XMConvertToRadians(90.0f))))))
+		return E_FAIL;
+
+#pragma endregion Field
 
 #pragma region Effect
 
@@ -571,11 +583,17 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CMouse::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+#pragma region Field
 	// Test Tile
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_TestTile"),
 		CTestTile::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Ruins"),
+		CRuins::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	
+#pragma endregion Field
 	/* For.Prototype_GameObject_SkyBox*/
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_SkyBox"),
 		CSkyBox::Create(m_pDevice, m_pContext))))
@@ -810,10 +828,12 @@ HRESULT CLoader::Loading_ForGamePlay2()
 	_matrix		LocalMatrix55 = XMMatrixIdentity();
 	LocalMatrix55 = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 
+#pragma region Field
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Model_Tile"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/StaticMesh/TrainingRoom/TraningRoom.fbx", CModel::MODEL_NONANIM, LocalMatrix55))))
 		return E_FAIL;
 
+#pragma endregion Field
 #pragma region Effect
 
 	_matrix		LocalMatrix555 = XMMatrixIdentity();

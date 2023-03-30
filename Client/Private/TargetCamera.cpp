@@ -259,8 +259,27 @@ void CTargetCamera::Target_Boss(_double TimeDelta)
 	// 플레이어의 카메라 트랜스폼이 특정 위치에 도달하면 ? 
 	// 혹은 특정 스테이지에 진입하면 바로 발동 시키고 카메라를 보스 앞 까지 이동 시켰다가 
 	// 특정 타임 이후 다시 플레이어로 돌아가게 
+	if (m_BossOn)
+	{
+		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+		CGameObject* pMonster = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
 
-	m_BossOn = false;
+		CTransform* pMonsterTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Com_Transform")));
+
+		_vector vPosition = pMonsterTransform->Get_State(CTransform::STATE_POSITION);
+
+		_float3 fPosition;
+
+		XMStoreFloat3(&fPosition, vPosition);
+
+		m_CameraDesc.vEye = fPosition;
+
+		m_CameraDesc.vAt = m_CameraDesc.vEye;
+		// 아 시바 이건 내일 만들자 오늘은 못 만들겠다...
+		RELEASE_INSTANCE(CGameInstance);
+		m_BossOn = false;
+
+	}
 }
 
 void CTargetCamera::View_TarGet(_double TimeDelta)

@@ -49,9 +49,6 @@
     <Filter Include="02.GameObject\06. Monster">
       <UniqueIdentifier>{90a30566-ac2e-4c6d-924d-58d5e4aa4e75}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\TileMesh">
-      <UniqueIdentifier>{0fc7bcd6-04a7-4d24-86b2-2e3261b77692}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\07. SkyBox">
       <UniqueIdentifier>{267a53e6-12d7-4b74-9d4c-f0a4a5a0595c}</UniqueIdentifier>
     </Filter>
@@ -193,6 +190,15 @@
     <Filter Include="02.GameObject\10. Effrect\Monster">
       <UniqueIdentifier>{b96777ed-cd94-42e1-9a5c-4ca3b8a20275}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Field">
+      <UniqueIdentifier>{5db4e6c5-62fb-44fe-8919-6198879e1fb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Field\TileMesh">
+      <UniqueIdentifier>{0fc7bcd6-04a7-4d24-86b2-2e3261b77692}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Field\Ruins">
+      <UniqueIdentifier>{6aa4292c-fea7-4eea-9e9b-b5750ad09801}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -238,7 +244,7 @@
       <Filter>02.GameObject\06. Monster</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\TestTile.h">
-      <Filter>02.GameObject\TileMesh</Filter>
+      <Filter>02.GameObject\Field\TileMesh</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\PlayerHPBar.h">
       <Filter>02.GameObject\04. UI\Player\HPBar</Filter>
@@ -354,6 +360,9 @@
     <ClInclude Include="..\Public\MonsterBlade.h">
       <Filter>02.GameObject\10. Effrect\Monster</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Ruins.h">
+      <Filter>02.GameObject\Field\Ruins</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -387,7 +396,7 @@
       <Filter>02.GameObject\06. Monster</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\TestTile.cpp">
-      <Filter>02.GameObject\TileMesh</Filter>
+      <Filter>02.GameObject\Field\TileMesh</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\PlayerHPBar.cpp">
       <Filter>02.GameObject\04. UI\Player\HPBar</Filter>
@@ -502,6 +511,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\MonsterBlade.cpp">
       <Filter>02.GameObject\10. Effrect\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Ruins.cpp">
+      <Filter>02.GameObject\Field\Ruins</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
