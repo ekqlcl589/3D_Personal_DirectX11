@@ -53,11 +53,15 @@ void CTargetCamera::Tick(_double TimeDelta)
 	{
 		m_fmulLook += TimeDelta * 3.0;
 
-		if (m_fmulLook >= 9.0)
-			m_fmulLook = 9.0;
 	}
 
-	Target_Renewal(TimeDelta);
+	if (m_fmulLook >= 9.0)
+		m_fmulLook = 9.0;
+
+	if (!m_BossOn)
+		Target_Renewal(TimeDelta);
+	else
+		Target_Boss(TimeDelta);
 
 	Key_Input(TimeDelta);
 
@@ -248,6 +252,15 @@ void CTargetCamera::Player_Skill(_double TimeDelta)
 	}
 
 
+}
+
+void CTargetCamera::Target_Boss(_double TimeDelta)
+{
+	// 플레이어의 카메라 트랜스폼이 특정 위치에 도달하면 ? 
+	// 혹은 특정 스테이지에 진입하면 바로 발동 시키고 카메라를 보스 앞 까지 이동 시켰다가 
+	// 특정 타임 이후 다시 플레이어로 돌아가게 
+
+	m_BossOn = false;
 }
 
 void CTargetCamera::View_TarGet(_double TimeDelta)

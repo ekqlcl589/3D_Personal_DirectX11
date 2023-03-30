@@ -49,6 +49,8 @@ public:
 	void Set_Skill07(_double TimeDelta);
 	void Set_Skill09(_double TimeDelta);
 
+	void Set_Recycle_Skill4(_double TimeDelta);
+
 	void Down();
 	void RT_Down();
 
@@ -94,6 +96,8 @@ private:
 	_bool m_Skill1 = false;
 	_bool m_Skill2 = false;
 	_bool m_Skill7 = false;
+
+	_bool m_ReCycle_Skill4 = false;
 
 public:
 	static CAncient_StonGolem* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

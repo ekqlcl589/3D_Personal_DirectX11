@@ -34,6 +34,8 @@ public:
 	 
 	void Player_Skill(_double TimeDelta);
 
+	void Target_Boss(_double TimeDelta);
+
 public:
 	void SetMaxAt(_float _MaxAt) { m_fMaxAtX = _MaxAt; }
 	void View_TarGet(_double TimeDelta);
@@ -75,8 +77,6 @@ private:
 
 	_float3	m_vShakePosition;
 
-	//_float m_fShakePower = 0.5f;
-
 private:
 	CGameInstance* m_pInstance = nullptr;
 	_float m_fRation = 0;
@@ -110,6 +110,9 @@ private:
 	_bool m_bSome = false;
 	_bool m_AdjustX = false;
 	_bool m_AdjustY = false;
+
+private:
+	_bool m_BossOn = false;
 
 public:
 	static CTargetCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -915,7 +915,7 @@ void CTSPlayer::Attack_Special(_double TimeDelta)
 		m_AttackCheck = false;
 		m_tInfo.CurrAnim = TS_SPECIALCOMBO_CRASH;
 
-		m_DownAttack = true;
+		//m_DownAttack = true;
 
 	}
 }
