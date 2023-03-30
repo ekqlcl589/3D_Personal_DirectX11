@@ -74,7 +74,7 @@ HRESULT CPlayerSkill::Render()
 	if (FAILED(SetUp_ShaderResource()))
 		return E_FAIL;
 
-	m_pShaderCom->Begin(2);
+	m_pShaderCom->Begin(1);
 
 	if (FAILED(__super::Render()))
 		return E_FAIL;
@@ -121,6 +121,11 @@ HRESULT CPlayerSkill::SetUp_ShaderResource()
 		return E_FAIL;
 
 	if (FAILED(m_pTexture->SetUp_ShaderResource(m_pShaderCom, "g_Texture", 0)))
+		return E_FAIL;
+
+	float uiCoolTime = 1.f;
+
+	if (FAILED(m_pShaderCom->Set_RawValue("g_fData", &uiCoolTime, sizeof(float))))
 		return E_FAIL;
 
 	return S_OK;
