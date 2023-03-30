@@ -41,7 +41,7 @@ HRESULT CAncient_StonGolem::Initialize(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPosition));
 
 	m_eType._MaxHp = 1000.f;
-	m_eType._Hp = 1000.f;
+	m_eType._Hp = 10.f;
 
 	m_f = m_pModelCom->Get_AnimTick();
 
@@ -332,12 +332,12 @@ void CAncient_StonGolem::Use_Skill(_double TimeDelta)
 {
 	int RandSkill = 0;
 	
-	RandSkill = rand() % 3;
+	RandSkill = rand() % 4;
 
 	switch (RandSkill)
 	{
 	case 0:
-		m_Skill1 = true;
+		m_ReCycle_Skill4 = true;
 		break;
 	case 1:
 		m_Skill2 = true;
@@ -346,9 +346,9 @@ void CAncient_StonGolem::Use_Skill(_double TimeDelta)
 		m_Skill7 = true;
 		break;
 
-	//case 3:
-	//	m_ReCycle_Skill4 = true;
-	//	break;
+	case 3:
+		m_Skill1 = true;
+		break;
 
 	default:
 		break;
@@ -372,6 +372,14 @@ void CAncient_StonGolem::Combat_Wait(_double TimeDelta)
 		m_bAttack = false;
 	}
 
+	if (m_PrevAnim == S_SKILL04_3 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 26.0)
+	{
+		m_bAttack = false; // false로 한 번 돌려서 거리가 멀어졌다면 따라 오게 
+
+		m_ReCycle_Skill4 = false;
+		m_CurrAnim = S_WAIT;
+	}
+
 	if (m_PrevAnim == S_SKILL07 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 78.0) // 그리고 1번 애님 끝나면 바로 2번 실행 
 	{
 		m_CurrAnim = S_WAIT;
@@ -385,6 +393,14 @@ void CAncient_StonGolem::Combat_Wait(_double TimeDelta)
 	//	m_bAttack = false;
 	//	m_bSkill5 = true;
 	//}
+
+	if (m_PrevAnim == S_SKILL09 && true == m_pModelCom->Get_AnimFinished())
+	{
+		m_dLerpTime = 0.f;
+		m_bTest = false;
+		m_bAttack = false;
+		m_CurrAnim = S_WAIT;
+	}
 
 }
 
@@ -423,12 +439,12 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 			if(m_ReCycle_Skill4)
 				m_pTransformCom->Chase_Tatget(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION), 5.f, TimeDelta);
 			else
-				m_pTransformCom->Chase_Tatget(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION), 5.f, TimeDelta * 4.0);
+				m_pTransformCom->Chase_Tatget(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION), 5.f, TimeDelta * 3.0);
 			//vPos += m_pPlayerTransform->Get_State(CTransform::STATE_POSITION);
 	
 			if (m_pModelCom->Get_AnimTimeAcc() >= 90.0)
 			{
-				vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION); // 시발 이거 또 이대로 계속 고정 되는 건 아니겠지?
+				vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 			}
 
 			if (m_pModelCom->Get_AnimTimeAcc() >= 93.0 && m_pModelCom->Get_AnimTimeAcc() <= 95.0)
@@ -441,6 +457,10 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 	
 	}
 
+
+	if(m_eType._Hp <= 300.f && !m_bSkill5)
+		Set_Skill05(TimeDelta); // 체력이 25% 이하로 떨어지면 몸을 웅크리면서 체력 회복 패턴 사용 
+	
 	if (m_PrevAnim == S_SKILL05_2 && true != m_pModelCom->Get_AnimFinished())
 	{
 		m_eType._Hp += TimeDelta * 50.f;
@@ -454,24 +474,23 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 
 		if (true == m_bDown)
 			RT_Down();
+	}
+	
+	if (!m_bAttack && m_SkillDelay >= 0)
+	{
+		--m_SkillDelay;
 
 	}
-
-	if(m_eType._Hp <= 300.f && !m_bSkill5)
-		Set_Skill05(TimeDelta); // 체력이 25% 이하로 떨어지면 몸을 웅크리면서 체력 회복 패턴 사용 
-	//else
-	//{
-		if (!m_bAttack && m_SkillDelay >= 0)
-			--m_SkillDelay;
-		else if (false == m_bRun && true == m_bSkill4 && !m_bAttack && m_SkillDelay < 0)
-			Use_Skill(TimeDelta);
-	//}
+	else if (!m_bRun && m_bSkill4 && !m_bAttack && m_SkillDelay <= 0)
+	{
+		Use_Skill(TimeDelta);
+	}
 
 	Set_Skill01(TimeDelta);
 	Set_Skill02(TimeDelta);
 	Set_Skill07(TimeDelta);
 
-	//Set_Recycle_Skill4(TimeDelta);
+	Set_Recycle_Skill4(TimeDelta);
 
 	RT_Down();
 
@@ -614,17 +633,10 @@ void CAncient_StonGolem::Set_Skill04(_double TimeDelta)
 
 	if (m_CurrAnim == S_SKILL04_2 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 50.0)
 	{
+		m_bSkill4 = true;
 		m_CurrAnim = S_SKILL04_3;
 	}
 	
-	if (m_PrevAnim == S_SKILL04_3 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 24.0)
-	{
-		m_bSkill4 = true;
-		m_bAttack = false; // false로 한 번 돌려서 거리가 멀어졌다면 따라 오게 
-
-		m_CurrAnim = S_WAIT;
-	}
-
 }
 
 void CAncient_StonGolem::Set_Skill05(_double TimeDelta)
@@ -668,7 +680,7 @@ void CAncient_StonGolem::Set_Skill07(_double TimeDelta)
 void CAncient_StonGolem::Set_Skill09(_double TimeDelta)
 {
 
-	if (m_pTransformCom->Compute_Distance(m_vTargetPos) <= 4.f)
+	if (m_pTransformCom->Compute_Distance(m_vTargetPos) <= 3.f)
 	{
 		if (false == m_bAttack &&  m_PrevAnim == S_WAIT && true == m_pModelCom->Get_AnimFinished())
 		{
@@ -679,26 +691,18 @@ void CAncient_StonGolem::Set_Skill09(_double TimeDelta)
 
 	}
 
-	if (m_PrevAnim == S_SKILL09 && true == m_pModelCom->Get_AnimFinished())
-	{
-		m_dLerpTime = 0.f;
-		m_bTest = false;
-		m_bAttack = false;
-		m_CurrAnim = S_WAIT;
-	}
 
 }
 
 void CAncient_StonGolem::Set_Recycle_Skill4(_double TimeDelta)
 {
-	if (m_ReCycle_Skill4 && !m_bAttack)
+	if (m_ReCycle_Skill4)
 	{
 		m_bAttack = true;
-		m_ReCycle_Skill4 = false;
 		m_CurrAnim = S_SKILL04_1;
 	}
 
-	if (m_CurrAnim == S_SKILL04_1 &&  m_AnimTimeAcc >= 29.0)//true == m_pModelCom->Get_AnimFinished())
+	if (m_PrevAnim == S_SKILL04_1 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 10.0)//true == m_pModelCom->Get_AnimFinished())
 	{
 		m_CurrAnim = S_SKILL04_2;
 
@@ -707,19 +711,11 @@ void CAncient_StonGolem::Set_Recycle_Skill4(_double TimeDelta)
 		// 애니메이션 끝나면 지형이 부서지는 이팩트 생성
 	}
 
-	if (m_CurrAnim == S_SKILL04_2 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 50.0)
-	{
-		m_CurrAnim = S_SKILL04_3;
-	}
-
-	if (m_CurrAnim == S_SKILL04_3 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 23.0)
+	if (m_PrevAnim == S_SKILL04_2 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 50.0)
 	{
 		m_ReCycle_Skill4 = false;
-		m_bAttack = false; // false로 한 번 돌려서 거리가 멀어졌다면 따라 오게 
-
-		m_CurrAnim = S_WAIT;
+		m_CurrAnim = S_SKILL04_3;
 	}
-
 
 }
 
