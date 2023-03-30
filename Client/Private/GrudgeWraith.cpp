@@ -37,8 +37,8 @@ HRESULT CGrudgeWraith::Initialize(void * pArg)
 	_float3 fPosition = { 5.f, 0.f, 5.f }; // 임시 위치값
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPosition));
 
-	m_tInfo._MaxHp = 300.f;
-	m_tInfo._Hp = 300.f;
+	m_tInfo._MaxHp = 500.f;
+	m_tInfo._Hp = 500.f;
 
 	m_tInfo.CurrAnim = G_Wait;
 	m_pModelCom->SetUp_Animation(m_tInfo.CurrAnim);
@@ -237,7 +237,7 @@ void CGrudgeWraith::EnterCollision(CGameObject * pObj)
 		break;
 	case Engine::OBJ_WEAPON_KARMA14:
 	{
-		if (true == m_bHit && false == m_bGod)
+		if (true == m_bHit)// && false == m_bGod)
 		{
 			CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 			CGameObject* pTarget = nullptr;
@@ -326,13 +326,15 @@ void CGrudgeWraith::Animation_State(_double TimeDelta)
 		Use_Skill(TimeDelta);
 
 	if (m_tInfo._Hp <= 250.f)
-		m_bSkill3 = true;
+		m_bSkill3 = true; // 이펙트 
 	
 	Skill01(TimeDelta);
 	Skill02(TimeDelta);
 	Skill05(TimeDelta);
 
-	Use_Skill_Next(TimeDelta);
+	//Use_Skill_Next(TimeDelta);
+
+	Combat_Wait(TimeDelta);
 
 	Run(TimeDelta);
 
@@ -464,15 +466,12 @@ void CGrudgeWraith::Use_Skill(_double TimeDelta)
 	switch (RandSkill)
 	{
 	case 0:
-		//Skill01(TimeDelta);
 		m_bSkill1 = true;
 		break;
 	case 1:
-		//Skill02(TimeDelta);
 		m_bSkill2 = true;
 		break;
 	case 2:
-		//Skill03(TimeDelta);
 		m_bSkill5 = true;
 		break;
 	default:
@@ -484,26 +483,37 @@ void CGrudgeWraith::Use_Skill(_double TimeDelta)
 void CGrudgeWraith::Use_Skill_Next(_double TimeDelta)
 {
 
-	if (m_Skill1Pair)
+	//if (m_Skill1Pair)
+	//{
+	//	int RandSkill = 0; // use_skill을 통해 부르게 되면 한번 더 스위치 문으로 다음 모션을 부르는 건 안 될 듯
+	//
+	//	RandSkill = rand() % 2;
+	//
+	//	switch (RandSkill)
+	//	{
+	//	case 0:
+	//		Skill01_1();
+	//		break;
+	//
+	//	case 1:
+	//		Skill01_2();
+	//		break;
+	//
+	//	default:
+	//		break;
+	//	}
+	//
+	//}
+
+}
+
+void CGrudgeWraith::Combat_Wait(_double TimeDelta)
+{
+	if (m_tInfo.PrevAnim == G_Skill01_1 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 47.0)
 	{
-		int RandSkill = 0; // use_skill을 통해 부르게 되면 한번 더 스위치 문으로 다음 모션을 부르는 건 안 될 듯
-
-		RandSkill = rand() % 2;
-
-		switch (RandSkill)
-		{
-		case 0:
-			Skill01_1();
-			break;
-
-		case 1:
-			Skill01_2();
-			break;
-
-		default:
-			break;
-		}
-
+		m_tInfo.CurrAnim = G_Skill01_2;
+		m_bSkill1 = false;
+		m_Skill1Pair = false;
 	}
 
 	if (m_tInfo.PrevAnim == G_Skill01_2 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 36.0)
@@ -522,7 +532,6 @@ void CGrudgeWraith::Use_Skill_Next(_double TimeDelta)
 		m_tInfo.CurrAnim = G_Wait;
 	}
 
-
 	// 이 위치에 스킬 2_2 부터 있었음 
 	if (m_tInfo.PrevAnim == G_Skill03_1 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 27.5)
 	{
@@ -540,8 +549,15 @@ void CGrudgeWraith::Use_Skill_Next(_double TimeDelta)
 		m_bAttack = false;
 		m_SkillNext = false;
 	}
-}
 
+	if (m_tInfo.PrevAnim == G_Skill05_1 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 46.0)
+	{
+		m_tInfo.CurrAnim = G_Wait;
+		m_bAttack = false;
+		m_bGod = false;
+	}
+
+}
 
 void CGrudgeWraith::Attack_Go(_double TimeDelta)
 {
@@ -590,15 +606,6 @@ void CGrudgeWraith::Run(_double TimeDelta)
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 		}
 	}
-	//else
-	//{
-	//	if (m_pTransformCom->Compute_Distance(m_vTargetPos) <= 20.f)
-	//	{
-	//		m_pTransformCom->Chase_Tatget(m_vTargetPos, 5.f, TimeDelta);
-	//		Skill04(TimeDelta);
-	//	}
-	//}
-
 }
 
 void CGrudgeWraith::Hit(const _int & _Damage)
@@ -624,6 +631,7 @@ void CGrudgeWraith::Skill01_1()
 	if (m_tInfo.PrevAnim == G_Skill01_1 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 48.0)
 	{
 		m_tInfo.CurrAnim = G_Skill01_2;
+		m_Skill1Pair = false;
 	}
 
 }
@@ -633,6 +641,7 @@ void CGrudgeWraith::Skill01_2()
 	if (m_tInfo.PrevAnim == G_Skill01_1 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 48.0)
 	{
 		m_tInfo.CurrAnim = G_Skill01_3;
+		m_Skill1Pair = false;
 	}
 
 }
@@ -732,12 +741,6 @@ void CGrudgeWraith::Skill05(_double TimeDelta)
 
 		RELEASE_INSTANCE(CGameInstance);
 
-	}
-	if (m_tInfo.PrevAnim == G_Skill05_1 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 46.5)
-	{
-		m_tInfo.CurrAnim = G_Wait;
-		m_bAttack = false;
-		m_bGod = false;
 	}
 }
 

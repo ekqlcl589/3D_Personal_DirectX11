@@ -36,6 +36,8 @@ public:
 	void Use_Skill(_double TimeDelta);
 	void Use_Skill_Next(_double TimeDelta);
 
+	void Combat_Wait(_double TimeDelta);
+
 	void Attack_Go(_double TimeDelta);
 
 private:

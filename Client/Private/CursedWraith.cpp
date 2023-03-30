@@ -39,7 +39,7 @@ HRESULT CCursedWraith::Initialize(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPosition));
 
 	m_tInfo._MaxHp = 1000.f;
-	m_tInfo._Hp = 10.f;
+	m_tInfo._Hp = 1000.f;
 
 	m_tInfo._Hit = false;
 	m_tInfo.CurrAnim = CW_Wait;
@@ -282,6 +282,7 @@ void CCursedWraith::EnterCollision(CGameObject * pObj)
 		break;
 	case Engine::OBJ_MONSTER_BALL:
 		// 그러다가 그 공을 얘가 맞으면 기절상태 시전 그러기 위한 변수 하나 더 필요할 듯 
+		RTBlow();
 		break;
 	case Engine::OBJ_END:
 		break;
@@ -304,11 +305,6 @@ void CCursedWraith::Animation_State(_double TimeDelta)
 		}
 	}
 
-	//Avoid(TimeDelta);
-
-	//if (!m_Test)
-	//Summons();
-
 	if (!m_bAttack && m_SkillDelay >= 0)
 		--m_SkillDelay;
 	else if (false == m_bWlak && false == m_tInfo._Hit && !m_bAttack && m_SkillDelay < 0)
@@ -323,7 +319,7 @@ void CCursedWraith::Animation_State(_double TimeDelta)
 		Summons();
 	}
 
-	Avoid(TimeDelta); // 스킬을 쓰고 나면 무조건 한 번은 뒤로 도망 
+	//Avoid(TimeDelta); // 스킬을 쓰고 나면 무조건 한 번은 뒤로 도망 
 
 }
 
@@ -597,6 +593,13 @@ void CCursedWraith::Summons()
 		m_bAvoid = true;
 
 	}
+}
+
+void CCursedWraith::RTBlow()
+{
+	m_tInfo.CurrAnim = CW_RTBLOW_AIR_F;
+
+	//나머지는 다른 함수에서 호출 
 }
 
 void CCursedWraith::Use_Skill(_double TimeDelta)

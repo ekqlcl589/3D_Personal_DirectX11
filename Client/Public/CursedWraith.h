@@ -42,6 +42,8 @@ public:
 
 	void Summons();
 
+	void RTBlow();
+
 	void Use_Skill(_double TimeDelta);
 	void Use_Skill_Next(_double TimeDelta);
 

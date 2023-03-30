@@ -564,6 +564,20 @@ void CAncient_StonGolem::Attack_Go(_double TimeDelta)
 	if (m_PrevAnim == S_SKILL09 && m_AnimTimeAcc >= 48.0 && m_AnimTimeAcc <= 49.0)
 		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.1f);
 
+	if (m_PrevAnim == S_SKILL04_1 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 10.0)//true == m_pModelCom->Get_AnimFinished())
+	{
+		m_CurrAnim = S_SKILL04_2;
+
+		if (m_pModelCom->Get_AnimTimeAcc() == (m_pModelCom->Get_AnimDuration() / 2))
+			m_bjump = true;
+		// 애니메이션 끝나면 지형이 부서지는 이팩트 생성
+	}
+
+	if (m_PrevAnim == S_SKILL04_2 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 50.0)
+	{
+		m_ReCycle_Skill4 = false;
+		m_CurrAnim = S_SKILL04_3;
+	}
 
 }
 
@@ -680,7 +694,7 @@ void CAncient_StonGolem::Set_Skill07(_double TimeDelta)
 void CAncient_StonGolem::Set_Skill09(_double TimeDelta)
 {
 
-	if (m_pTransformCom->Compute_Distance(m_vTargetPos) <= 3.f)
+	if (m_pTransformCom->Compute_Distance(m_vTargetPos) <= 4.f)
 	{
 		if (false == m_bAttack &&  m_PrevAnim == S_WAIT && true == m_pModelCom->Get_AnimFinished())
 		{
@@ -700,21 +714,6 @@ void CAncient_StonGolem::Set_Recycle_Skill4(_double TimeDelta)
 	{
 		m_bAttack = true;
 		m_CurrAnim = S_SKILL04_1;
-	}
-
-	if (m_PrevAnim == S_SKILL04_1 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 10.0)//true == m_pModelCom->Get_AnimFinished())
-	{
-		m_CurrAnim = S_SKILL04_2;
-
-		if (m_pModelCom->Get_AnimTimeAcc() == (m_pModelCom->Get_AnimDuration() / 2))
-			m_bjump = true;
-		// 애니메이션 끝나면 지형이 부서지는 이팩트 생성
-	}
-
-	if (m_PrevAnim == S_SKILL04_2 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 50.0)
-	{
-		m_ReCycle_Skill4 = false;
-		m_CurrAnim = S_SKILL04_3;
 	}
 
 }
