@@ -33,6 +33,7 @@ HRESULT CBlackBall::Initialize(void * pArg)
 
 	memcpy(&m_BallDesc, pArg, sizeof(BALLDESC));
 
+	_float3 fScale = m_pTransformCom->Get_Scale();
 	if (m_BallDesc.eType == TYPE_8)
 	{
 		m_vPosition = m_BallDesc.vPosition;
@@ -40,9 +41,9 @@ HRESULT CBlackBall::Initialize(void * pArg)
 		XMStoreFloat3(&m_fPos, m_vPosition);
 		m_fPos.y = 1.5f;
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_fPos)); // 생성시킬 때 y에 1.5 더해줌
-		m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_vLook);
-		//m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVectorSet(1.0f, 0.f, 0.f, 0.f));
-		//m_pTransformCom->Set_State(CTransform::STATE_UP, XMVectorSet(0.0f, 1.f, 0.f, 0.f));
+		m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_vLook* fScale.z);
+		m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVectorSet(1.0f, 0.f, 0.f, 0.f) * fScale.x);
+		m_pTransformCom->Set_State(CTransform::STATE_UP, XMVectorSet(0.0f, 1.f, 0.f, 0.f)* fScale.y);
 
 	}
 	else if (m_BallDesc.eType == TYPE_3)
@@ -56,8 +57,8 @@ HRESULT CBlackBall::Initialize(void * pArg)
 
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_fPos));
 		m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_vLook);
-		//m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVectorSet(1.0f, 0.f, 0.f, 0.f));
-		//m_pTransformCom->Set_State(CTransform::STATE_UP, XMVectorSet(0.0f, 1.f, 0.f, 0.f));
+		m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVectorSet(1.0f, 0.f, 0.f, 0.f));
+		m_pTransformCom->Set_State(CTransform::STATE_UP, XMVectorSet(0.0f, 1.f, 0.f, 0.f));
 
 	}
 	else if (m_BallDesc.eType == TYPE_DDEBASI)

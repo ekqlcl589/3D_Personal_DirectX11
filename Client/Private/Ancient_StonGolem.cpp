@@ -41,7 +41,7 @@ HRESULT CAncient_StonGolem::Initialize(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPosition));
 
 	m_eType._MaxHp = 1000.f;
-	m_eType._Hp = 10.f;
+	m_eType._Hp = 1000.f;
 
 	m_f = m_pModelCom->Get_AnimTick();
 
@@ -372,6 +372,12 @@ void CAncient_StonGolem::Combat_Wait(_double TimeDelta)
 		m_bAttack = false;
 	}
 
+	if (m_PrevAnim == S_SKILL04_2 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 50.0)
+	{
+		m_ReCycle_Skill4 = false;
+		m_CurrAnim = S_SKILL04_3;
+	}
+	
 	if (m_PrevAnim == S_SKILL04_3 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 26.0)
 	{
 		m_bAttack = false; // false로 한 번 돌려서 거리가 멀어졌다면 따라 오게 
@@ -571,12 +577,6 @@ void CAncient_StonGolem::Attack_Go(_double TimeDelta)
 		if (m_pModelCom->Get_AnimTimeAcc() == (m_pModelCom->Get_AnimDuration() / 2))
 			m_bjump = true;
 		// 애니메이션 끝나면 지형이 부서지는 이팩트 생성
-	}
-
-	if (m_PrevAnim == S_SKILL04_2 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 50.0)
-	{
-		m_ReCycle_Skill4 = false;
-		m_CurrAnim = S_SKILL04_3;
 	}
 
 }

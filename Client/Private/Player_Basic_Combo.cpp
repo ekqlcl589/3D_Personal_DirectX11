@@ -43,7 +43,7 @@ void CPlayer_Basic_Combo::Tick(_double TimeDelta)
 	CGameObject* pOwner = nullptr;
 
 	pOwner = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
-	m_bActive = static_cast<CTSPlayer*>(pOwner)->Get_Attack();
+	m_bActive =  static_cast<CTSPlayer*>(pOwner)->Get_Attack();
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -65,7 +65,7 @@ void CPlayer_Basic_Combo::LateTick(_double TimeDelta)
 	{
 		__super::LateTick(TimeDelta);
 
-		//Set_Transform();
+		XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * CTwoHandedSword::WorldMatrix * XMMatrixRotationY(270.f));
 
 		if(m_AnimStart)
 			m_pModelCom->Play_Animation(TimeDelta);
@@ -99,7 +99,7 @@ HRESULT CPlayer_Basic_Combo::Render()
 
 			m_pModelCom->SetUp_BoneMatrices(m_pShaderCom, "g_BoneMatrix", i);
 
-			m_pShaderCom->Begin(0);
+			m_pShaderCom->Begin(1);
 
 			m_pModelCom->Render(i);
 		}
@@ -132,30 +132,8 @@ _bool CPlayer_Basic_Combo::FadeInOut()
 
 void CPlayer_Basic_Combo::Set_Transform()
 {
-	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-	CTransform* pWeaponTrasnfrom = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Weapon_TS"), TEXT("Com_Transform")));
-
-	CGameObject* pWeapon = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Weapon_TS"));
-
-	RELEASE_INSTANCE(CGameInstance);
-
-
-	_vector vPosition = pWeaponTrasnfrom->Get_State(CTransform::STATE_POSITION);
-	_vector vLook = XMVector3Normalize(pWeaponTrasnfrom->Get_State(CTransform::STATE_LOOK));
-	_vector vRight = XMVector3Normalize(pWeaponTrasnfrom->Get_State(CTransform::STATE_RIGHT));
-	_vector vUp = XMVector3Normalize(pWeaponTrasnfrom->Get_State(CTransform::STATE_UP));
-
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
-	//m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
-	//m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
-	//m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
-
-	_matrix WeaponMatrix = pWeaponTrasnfrom->Get_WorldMatrix();
-
-	_float4x4 Weapon = static_cast<CTwoHandedSword*>(pWeapon)->Get_WeaponMatrix();
-
-	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(&Weapon));
+	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * CTwoHandedSword::WorldMatrix * XMMatrixRotationZ(90.f));
 }
 
 HRESULT CPlayer_Basic_Combo::Add_Components()

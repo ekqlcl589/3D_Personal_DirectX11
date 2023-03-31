@@ -319,7 +319,7 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 	// test player effect
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Basic"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/BasicCombo.fbx", CModel::MODEL_ANIM, Local))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/BasicCombo.fbx", CModel::MODEL_ANIM, Local * XMMatrixRotationY(180.f)))))
 		return E_FAIL;
 
 	_matrix Local2 = XMMatrixIdentity();

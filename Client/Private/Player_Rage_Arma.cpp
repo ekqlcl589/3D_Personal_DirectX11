@@ -122,7 +122,7 @@ void CPlayer_Rage_Arma::Set_Transform()
 //
 //	_float4x4 Weapon = static_cast<CTwoHandedSword*>(pWeapon)->Get_WeaponMatrix();
 //
-	//CTwoHandedSword::WorldMatrix;
+	//CTwoHandedSword::WorldMatrix; 
 
 	//XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(&Weapon));
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * CTwoHandedSword::WorldMatrix);
