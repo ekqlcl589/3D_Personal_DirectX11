@@ -32,6 +32,8 @@ HRESULT CPlayer_Basic_Combo::Initialize(void * pArg)
 
 	m_bActive = true;
 
+	m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(270.0f));
+
 	m_pModelCom->SetUp_Animation(0);
 
 	return S_OK;
@@ -39,36 +41,36 @@ HRESULT CPlayer_Basic_Combo::Initialize(void * pArg)
 
 void CPlayer_Basic_Combo::Tick(_double TimeDelta)
 {
-	CGameInstance* p = GET_INSTANCE(CGameInstance);
-	CGameObject* pOwner = nullptr;
-
-	pOwner = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
-	m_bActive =  static_cast<CTSPlayer*>(pOwner)->Get_Attack();
-
-	RELEASE_INSTANCE(CGameInstance);
-
-	if (m_bActive)
+	if (!m_bDead)
 	{
 		__super::Tick(TimeDelta);
+
+		if (m_pModelCom->Get_AnimTimeAcc() / (m_pModelCom->Get_AnimDuration() / 2) + 14.9)
+			m_bFadeIn = false;
+
+		if (true == m_pModelCom->Get_AnimFinished())
+		{
+			Set_Dead();
+		}
+
+		//FadeInOut();
 
 		if (nullptr != m_pColliderCom)
 			m_pColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
 
-		if (m_pModelCom->Get_AnimTimeAcc() / (m_pModelCom->Get_AnimDuration() / 2) + 14.9)
-			m_AnimStart = false;
 	}
 }
 
 void CPlayer_Basic_Combo::LateTick(_double TimeDelta)
 {
-	if (m_bActive)
+	if (!m_bDead)
 	{
 		__super::LateTick(TimeDelta);
 
-		//XMStoreFloat4x4(&m_WorldMatrix, XMMatrixRotationY(270.f) * m_pTransformCom->Get_WorldMatrix() * CTwoHandedSword::WorldMatrix);
-		XMStoreFloat4x4(&m_WorldMatrix, XMMatrixRotationZ(270.f) * m_pTransformCom->Get_WorldMatrix() * CTwoHandedSword::WorldMatrix);
+		XMStoreFloat4x4(&m_WorldMatrix, XMMatrixRotationY(90.f) * m_pTransformCom->Get_WorldMatrix() * CTwoHandedSword::WorldMatrix);
+		//XMStoreFloat4x4(&m_WorldMatrix, XMMatrixRotationZ(270.f) * m_pTransformCom->Get_WorldMatrix() * CTwoHandedSword::WorldMatrix);
 
-		//if(m_AnimStart)
+		//if (m_bFadeIn)
 			m_pModelCom->Play_Animation(TimeDelta);
 
 		if (nullptr != m_pRendererCom)
@@ -81,30 +83,28 @@ void CPlayer_Basic_Combo::LateTick(_double TimeDelta)
 
 HRESULT CPlayer_Basic_Combo::Render()
 {
-	if (m_bActive)
+	if (FAILED(__super::Render()))
+		return E_FAIL;
+
+	if (FAILED(SetUp_ShaderResources()))
+		return E_FAIL;
+
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < iNumMeshes; i++)
 	{
-		if (FAILED(__super::Render()))
-			return E_FAIL;
+		m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
+		m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DepthTexture", i, aiTextureType_DIFFUSE);
+		/*m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);
+		m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);*/
 
-		if (FAILED(SetUp_ShaderResources()))
-			return E_FAIL;
+		m_pModelCom->SetUp_BoneMatrices(m_pShaderCom, "g_BoneMatrix", i);
 
-		_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
+		m_pShaderCom->Begin(0);
 
-		for (_uint i = 0; i < iNumMeshes; i++)
-		{
-			m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
-			m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DepthTexture", i, aiTextureType_DIFFUSE);
-			/*m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);
-			m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);*/
-
-			m_pModelCom->SetUp_BoneMatrices(m_pShaderCom, "g_BoneMatrix", i);
-
-			m_pShaderCom->Begin(1);
-
-			m_pModelCom->Render(i);
-		}
+		m_pModelCom->Render(i);
 	}
+
 
 	return S_OK;
 }

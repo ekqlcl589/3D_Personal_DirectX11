@@ -296,6 +296,9 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 	_matrix Local = XMMatrixIdentity();
 	Local = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+
+	_matrix Local1234 = XMMatrixIdentity();
+	Local1234 = XMMatrixScaling(0.007f, 0.007f, 0.007f);
 #pragma region Monster
 	/* For.Prototype_Component_Model_TestMonster */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Boss0"),
@@ -324,7 +327,7 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 	// test player effect
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Basic"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/BasicCombo.fbx", CModel::MODEL_ANIM, Local * XMMatrixRotationY(180.f)))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/BasicCombo.fbx", CModel::MODEL_ANIM, Local1234))))
 		return E_FAIL;
 
 	_matrix Local2 = XMMatrixIdentity();

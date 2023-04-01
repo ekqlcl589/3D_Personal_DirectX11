@@ -860,7 +860,6 @@ void CTSPlayer::Attack_Combo(_double TimeDelta)
 		m_AttackCheck = true;
 		m_ComboCheck2 = true;
 		m_tInfo.CurrAnim = TS_BASIC_COMBO01;
-
 	}
 
 	if (m_tInfo.PrevAnim == TS_BASIC_COMBO01 && true != m_pModelCom->Get_AnimFinished())
@@ -868,7 +867,6 @@ void CTSPlayer::Attack_Combo(_double TimeDelta)
 		m_ComboCheck = true;
 		m_tInfo.CurrAnim = TS_BASIC_COMBO02; 
 		//static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.1f, 0.1f);
-
 	}
 
 	else if (m_tInfo.PrevAnim == TS_BASIC_COMBO02 && true != m_pModelCom->Get_AnimFinished())
@@ -876,7 +874,6 @@ void CTSPlayer::Attack_Combo(_double TimeDelta)
 		m_tInfo.CurrAnim = TS_BASIC_COMBO03;
 		//static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.1f, 0.2f);
 		m_bTest = false;
-
 	}
 
 	if (m_tInfo.PrevAnim == TS_BASIC_COMBO03 && true == m_pModelCom->Get_LerpAnimFinished())
@@ -970,6 +967,7 @@ void CTSPlayer::Attack_Go(_double TimeDelta)
 	if (m_tInfo.CurrAnim == TS_BASIC_COMBO01 && m_AnimTimeAcc >= (m_AnimDuration / 2) - 11.0 && m_AnimTimeAcc <= (m_AnimDuration / 2) - 10.0)
 	{
 		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 0.1f);
+		WeaponBoneUpdate();
 	}
 
 	if (true == m_AttackCheck &&  m_tInfo.CurrAnim == TS_BASIC_COMBO02 && m_pModelCom->Get_AnimTimeAcc() >= 9.0 && m_pModelCom->Get_AnimTimeAcc() <= 12.0)
@@ -980,6 +978,7 @@ void CTSPlayer::Attack_Go(_double TimeDelta)
 	if (m_tInfo.CurrAnim == TS_BASIC_COMBO02 && m_AnimTimeAcc >= (m_AnimDuration / 2) - 12.5 && m_AnimTimeAcc <= (m_AnimDuration / 2) - 12.0)
 	{
 		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 0.1f);
+		WeaponBoneUpdate();
 	}
 
 	if (true == m_AttackCheck &&  m_tInfo.CurrAnim == TS_BASIC_COMBO03 && m_pModelCom->Get_AnimTimeAcc() >= 10.0 && m_pModelCom->Get_AnimTimeAcc() <= 13.0)
@@ -990,11 +989,13 @@ void CTSPlayer::Attack_Go(_double TimeDelta)
 	if (m_tInfo.CurrAnim == TS_BASIC_COMBO03 && m_AnimTimeAcc >= (m_AnimDuration / 2) - 22.0 && m_AnimTimeAcc <= (m_AnimDuration / 2) - 21.0)
 	{
 		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 0.1f);
+		WeaponBoneUpdate();
 	}
 
 	if (m_tInfo.CurrAnim == TS_BASIC_COMBO03 && m_AnimTimeAcc >= (m_AnimDuration / 2) - 10.0 && m_AnimTimeAcc <= (m_AnimDuration / 2) - 9.0)
 	{
 		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.4f, 0.1f);
+		WeaponBoneUpdate();
 	}
 
 	if (m_tInfo.CurrAnim == TS_BASIC_COMBO02_END)
@@ -1420,6 +1421,12 @@ void CTSPlayer::Rage_Skill(_double TimeDelta)
 
 void CTSPlayer::WeaponBoneUpdate()
 {
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Basic"), TEXT("Effect"))))
+		return ;
+
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 HRESULT CTSPlayer::Add_Components()

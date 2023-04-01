@@ -47,7 +47,6 @@ protected:
 	_int m_Alpha = 100;
 	_int m_fFadeSpeed = 2;
 	_bool m_bFadeIn = true;
-	_bool m_bDead = false;
 
 private:
 	_float4x4 m_WorldMatrix;

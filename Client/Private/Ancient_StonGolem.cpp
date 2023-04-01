@@ -36,7 +36,7 @@ HRESULT CAncient_StonGolem::Initialize(void * pArg)
 	if (FAILED(Add_Coll())) 
 		return	E_FAIL;
 
-	_float3 fPosition = { 0.f, 0.f, 0.f };
+	_float3 fPosition = { 0.f, 0.f, 10.f };
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPosition));
 
@@ -469,6 +469,7 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 
 			if (m_pModelCom->Get_AnimTimeAcc() >= 93.0 && m_pModelCom->Get_AnimTimeAcc() <= 95.0)
 			{
+				Add_Effect();
 				static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.7f, 0.4f);
 
 			}
@@ -476,7 +477,6 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 		}
 	
 	}
-
 
 	if(m_eType._Hp <= 300.f && !m_bSkill5)
 		Set_Skill05(TimeDelta); // 체력이 25% 이하로 떨어지면 몸을 웅크리면서 체력 회복 패턴 사용 
@@ -536,14 +536,14 @@ void CAncient_StonGolem::Attack_Go(_double TimeDelta)
 	{
 		if (m_pModelCom->Get_AnimTimeAcc() >= 60.0 && m_pModelCom->Get_AnimTimeAcc() <= 65.0)
 		{
-			m_pTransformCom->Go_Straight(0.1 * TimeDelta);
-			static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.1f);
+			m_pTransformCom->Go_Straight(0.3 * TimeDelta);
+			static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.01f);
 
 		}
 		if (m_pModelCom->Get_AnimTimeAcc() >= 87.0 && m_pModelCom->Get_AnimTimeAcc() <= 100.0)
 		{
 			m_pTransformCom->Go_Straight(0.05 * TimeDelta);
-			static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.1f);
+			static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.01f);
 		}
 	}
 
@@ -663,7 +663,6 @@ void CAncient_StonGolem::Set_Skill04(_double TimeDelta)
 	{
 		m_bSkill4 = true;
 		m_CurrAnim = S_SKILL04_3;
-		Add_Effect();
 	}
 	
 }

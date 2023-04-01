@@ -305,6 +305,9 @@ void CCursedWraith::Animation_State(_double TimeDelta)
 		}
 	}
 
+	if (m_tInfo.PrevAnim == CW_Start && true == m_pModelCom->Get_AnimFinished())
+		m_tInfo.CurrAnim = CW_Wait;
+
 	if (!m_bAttack && m_SkillDelay >= 0)
 		--m_SkillDelay;
 	else if (false == m_bWlak && false == m_tInfo._Hit && !m_bAttack && m_SkillDelay < 0)
