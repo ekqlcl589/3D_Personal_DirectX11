@@ -205,6 +205,12 @@
     <Filter Include="02.GameObject\04. UI\Monster\Name">
       <UniqueIdentifier>{46b9ca9c-8e88-48d5-97d0-9b2e3442fe4f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\10. Effrect\Player\Skill\RageAmagetdon">
+      <UniqueIdentifier>{47a00732-d0cb-4a3e-b82f-37a99125e0a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\10. Effrect\Player\Skill\RockBraker">
+      <UniqueIdentifier>{cfe9cdcd-7b96-4156-a638-762ddf341912}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -342,9 +348,6 @@
     <ClInclude Include="..\Public\TwoHandedSwordWait.h">
       <Filter>02.GameObject\05. Player\Weapon\TS\Wait</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Player_Rage_Arma.h">
-      <Filter>02.GameObject\10. Effrect\Player\Skill</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Player_Basic_Combo.h">
       <Filter>02.GameObject\10. Effrect\Player\Basic</Filter>
     </ClInclude>
@@ -371,6 +374,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\MonsterName.h">
       <Filter>02.GameObject\04. UI\Monster\Name</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Player_Rage_Arma.h">
+      <Filter>02.GameObject\10. Effrect\Player\Skill\RageAmagetdon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Player_Skill_RockBreak.h">
+      <Filter>02.GameObject\10. Effrect\Player\Skill\RockBraker</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -497,9 +506,6 @@
     <ClCompile Include="..\Private\TwoHandedSwordWait.cpp">
       <Filter>02.GameObject\05. Player\Weapon\TS\Wait</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Player_Rage_Arma.cpp">
-      <Filter>02.GameObject\10. Effrect\Player\Skill</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Player_Basic_Combo.cpp">
       <Filter>02.GameObject\10. Effrect\Player\Basic</Filter>
     </ClCompile>
@@ -526,6 +532,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\MonsterName.cpp">
       <Filter>02.GameObject\04. UI\Monster\Name</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Player_Rage_Arma.cpp">
+      <Filter>02.GameObject\10. Effrect\Player\Skill\RageAmagetdon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Player_Skill_RockBreak.cpp">
+      <Filter>02.GameObject\10. Effrect\Player\Skill\RockBraker</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

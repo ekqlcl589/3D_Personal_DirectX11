@@ -1197,6 +1197,7 @@ void CTSPlayer::CombatWait()
 	{
 		m_DownAttack = true;
 		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.15f, 0.1f);
+		Add_Rock();
 	}
 	if (false == m_AttackCheck && m_tInfo.PrevAnim == TS_SPECIALCOMBO_CRASH && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 10.0) // CRASH°¡ µÎ ¹ø µé¾î °¬´Ù°¡ ²÷±â´Â ´À³¦ 
 	{
@@ -1364,7 +1365,7 @@ void CTSPlayer::R_Skill(_double TimeDelta)
 			m_AttackCheck = false;
 			m_tInfo.m_RSkill = 0.f;
 			m_tInfo.rSkill = false;
-
+			//
 		}
 	}
 }
@@ -1425,6 +1426,16 @@ void CTSPlayer::WeaponBoneUpdate()
 
 	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Basic"), TEXT("Effect"))))
 		return ;
+
+	RELEASE_INSTANCE(CGameInstance);
+}
+
+void CTSPlayer::Add_Rock()
+{
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_RockBreaker"), TEXT("Effect"))))
+		return;
 
 	RELEASE_INSTANCE(CGameInstance);
 }

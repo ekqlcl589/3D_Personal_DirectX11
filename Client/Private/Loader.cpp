@@ -24,6 +24,7 @@
 #include "Player_Rage_Arma.h"
 #include "Player_Basic_Combo.h"
 #include "TwoHandedSwordWait.h"
+#include "Player_Skill_RockBreak.h"
 
 
 #include "Ancient_StonGolem.h"
@@ -330,6 +331,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/BasicCombo.fbx", CModel::MODEL_ANIM, Local1234))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_RockBreak"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/RockBraker.fbx", CModel::MODEL_ANIM, Local1234))))
+		return E_FAIL;
+	
 	_matrix Local2 = XMMatrixIdentity();
 	Local2 = XMMatrixScaling(0.025f, 0.025f, 0.025f);
 
@@ -628,6 +633,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_Basic"),
 		CPlayer_Basic_Combo::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_RockBreaker"),
+		Player_Skill_RockBreak::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));

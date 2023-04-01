@@ -80,6 +80,7 @@ private:
 	void Rage_Skill(_double TimeDelta);
 
 	void WeaponBoneUpdate(); //  effect
+	void Add_Rock();
 
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
