@@ -28,6 +28,10 @@ HRESULT CEffect::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
+	memcpy(&m_vPosition, pArg, sizeof(_vector));
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vPosition);
+
 	m_bActive = true;
 
 	m_pModelCom->SetUp_Animation(0);
@@ -37,27 +41,36 @@ HRESULT CEffect::Initialize(void * pArg)
 
 void CEffect::Tick(_double TimeDelta)
 {
-	__super::Tick(TimeDelta);
-
-	if (true == m_bActive)
+	if (!m_bDead)
 	{
+		__super::Tick(TimeDelta);
+
+		if (true == m_pModelCom->Get_AnimFinished())
+			Set_Dead();
+
+		FadeInOut();
+
+		if (nullptr != m_pColliderCom)
+			m_pColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
+
+		if (true == m_pModelCom->Get_AnimFinished())
+			m_bFadeIn = false;
 	}
-
-	FadeInOut();
-
-	if (nullptr != m_pColliderCom)
-		m_pColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
 }
 
 void CEffect::LateTick(_double TimeDelta)
 {
-	__super::LateTick(TimeDelta);
-
-	m_pModelCom->Play_Animation(TimeDelta);
-
-	if (nullptr != m_pRendererCom)
+	if (!m_bDead)
 	{
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
+		__super::LateTick(TimeDelta);
+
+		if(m_bFadeIn)
+			m_pModelCom->Play_Animation(TimeDelta);
+
+		if (nullptr != m_pRendererCom)
+		{
+			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
+		}
 	}
 }
 

@@ -65,9 +65,10 @@ void CPlayer_Basic_Combo::LateTick(_double TimeDelta)
 	{
 		__super::LateTick(TimeDelta);
 
-		XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * CTwoHandedSword::WorldMatrix * XMMatrixRotationY(270.f));
+		//XMStoreFloat4x4(&m_WorldMatrix, XMMatrixRotationY(270.f) * m_pTransformCom->Get_WorldMatrix() * CTwoHandedSword::WorldMatrix);
+		XMStoreFloat4x4(&m_WorldMatrix, XMMatrixRotationZ(270.f) * m_pTransformCom->Get_WorldMatrix() * CTwoHandedSword::WorldMatrix);
 
-		if(m_AnimStart)
+		//if(m_AnimStart)
 			m_pModelCom->Play_Animation(TimeDelta);
 
 		if (nullptr != m_pRendererCom)

@@ -42,7 +42,7 @@ HRESULT CCursedWraith::Initialize(void * pArg)
 	m_tInfo._Hp = 1000.f;
 
 	m_tInfo._Hit = false;
-	m_tInfo.CurrAnim = CW_Wait;
+	m_tInfo.CurrAnim = CW_Start;
 	m_pModelCom->SetUp_Animation(m_tInfo.CurrAnim);
 
 	//m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(195.0f));

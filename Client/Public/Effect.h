@@ -46,6 +46,10 @@ protected:
 	_bool m_bFadeIn = true;
 	_bool m_bDead = false;
 
+private:
+	_vector m_vPosition;
+
+
 public:
 	static CEffect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr);

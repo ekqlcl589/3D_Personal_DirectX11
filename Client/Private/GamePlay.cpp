@@ -8,6 +8,7 @@
 #include "Monster.h"
 #include "TestTile.h"
 #include "MonsterHPBar.h"
+#include "MonsterName.h"
 
 CGamePlay::CGamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	:CLevel(pDevice, pContext)
@@ -197,6 +198,12 @@ HRESULT CGamePlay::Ready_MonsterUI(const _tchar * pLayerTag)
 	Owner = CMonsterHPBar::OWNER_GOLEM;
 
 	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_HPBar"), pLayerTag, &Owner)))
+		return E_FAIL;
+
+	CMonsterName::OWNER Name;
+	Name = CMonsterName::OWNER_GOLEM;
+
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_Name"), pLayerTag, &Name)))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);

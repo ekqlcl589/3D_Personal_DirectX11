@@ -128,6 +128,12 @@ void CTargetCamera::Target_Renewal(_double TimeDelta)
 	
 	m_Transform->LookAt(XMLoadFloat3(&m_CameraDesc.vAt));
 
+	if (fTarget.z >= -42.0 && m_BossCamTimer >= 5.0)
+	{
+		m_BossOn = true;
+		m_RenderName = true;
+	}
+
 	RELEASE_INSTANCE(CGameInstance);
 }
 
@@ -266,19 +272,35 @@ void CTargetCamera::Target_Boss(_double TimeDelta)
 
 		CTransform* pMonsterTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Com_Transform")));
 
+		RELEASE_INSTANCE(CGameInstance);
+
 		_vector vPosition = pMonsterTransform->Get_State(CTransform::STATE_POSITION);
+
+		_vector vLook = pMonsterTransform->Get_State(CTransform::STATE_LOOK);
 
 		_float3 fPosition;
 
 		XMStoreFloat3(&fPosition, vPosition);
 
+		fPosition.y += m_fDis;
+
 		m_CameraDesc.vEye = fPosition;
+		m_vLook = XMVector3Normalize(vLook);
 
-		m_CameraDesc.vAt = m_CameraDesc.vEye;
-		// 아 시바 이건 내일 만들자 오늘은 못 만들겠다...
-		RELEASE_INSTANCE(CGameInstance);
-		m_BossOn = false;
+		m_Transform->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_CameraDesc.vEye) + m_vLook * m_fmulLook);
+		
+		XMStoreFloat3(&m_CameraDesc.vAt, XMLoadFloat3(&m_CameraDesc.vEye) + m_vLook);
 
+		m_Transform->LookAt(XMLoadFloat3(&m_CameraDesc.vAt));
+		//m_BossOn = false;
+
+		m_BossCamTimer -= 1.f * TimeDelta;
+
+		if (m_BossCamTimer <= 0.0)
+		{
+			m_BossCamTimer = 0.0;
+			m_BossOn = false;
+		}
 	}
 }
 

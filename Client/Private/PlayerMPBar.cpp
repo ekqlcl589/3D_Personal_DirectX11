@@ -94,7 +94,7 @@ HRESULT CPlayerMPBar::Render()
 	if (FAILED(SetUp_ShaderResource()))
 		return E_FAIL;
 
-	m_pShaderCom->Begin(1);
+	m_pShaderCom->Begin(0);
 
 	if (FAILED(__super::Render()))
 		return E_FAIL;

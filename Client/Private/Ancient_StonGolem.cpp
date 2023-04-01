@@ -36,7 +36,7 @@ HRESULT CAncient_StonGolem::Initialize(void * pArg)
 	if (FAILED(Add_Coll())) 
 		return	E_FAIL;
 
-	_float3 fPosition = { 5.f, 0.f, 20.f };
+	_float3 fPosition = { 0.f, 0.f, 0.f };
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPosition));
 
@@ -315,6 +315,18 @@ void CAncient_StonGolem::Set_AnimationState(STONGOLEMANIMSTATE eType)
 		case Engine::S_SKILL10_3:
 			m_iAnimIndex = 21;
 			break;
+		case Engine::S_RE_SKILL04_1:
+			m_iAnimIndex = 11;
+			break;
+
+		case Engine::S_RE_SKILL04_2:
+			m_iAnimIndex = 12;
+			break;
+
+		case Engine::S_RE_SKILL04_3:
+			m_iAnimIndex = 13;
+			break;
+
 		case Engine::S_ANIMEND:
 			break; 
 		default:
@@ -372,13 +384,15 @@ void CAncient_StonGolem::Combat_Wait(_double TimeDelta)
 		m_bAttack = false;
 	}
 
-	if (m_PrevAnim == S_SKILL04_2 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 50.0)
+	if (m_PrevAnim == S_SKILL04_3 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 26.0)
 	{
+		m_bAttack = false; // false로 한 번 돌려서 거리가 멀어졌다면 따라 오게 
+
 		m_ReCycle_Skill4 = false;
-		m_CurrAnim = S_SKILL04_3;
+		m_CurrAnim = S_WAIT;
 	}
 	
-	if (m_PrevAnim == S_SKILL04_3 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 26.0)
+	if (m_PrevAnim == S_RE_SKILL04_3 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 26.0)
 	{
 		m_bAttack = false; // false로 한 번 돌려서 거리가 멀어졌다면 따라 오게 
 
@@ -436,7 +450,7 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 		Set_Skill04(TimeDelta); // 조우 후 공격 패턴 1
 	}
 
-	if (m_PrevAnim == S_SKILL04_2 && true != m_pModelCom->Get_AnimFinished())
+	if (m_PrevAnim == S_SKILL04_2 && true != m_pModelCom->Get_AnimFinished() || m_PrevAnim == S_RE_SKILL04_2 && true != m_pModelCom->Get_AnimFinished())
 	{
 		if (m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 5.0)
 		{
@@ -642,13 +656,14 @@ void CAncient_StonGolem::Set_Skill04(_double TimeDelta)
 
 		if (m_pModelCom->Get_AnimTimeAcc() == (m_pModelCom->Get_AnimDuration() / 2))
 			m_bjump = true;
-		// 애니메이션 끝나면 지형이 부서지는 이팩트 생성
+		
 	}
 
 	if (m_CurrAnim == S_SKILL04_2 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 50.0)
 	{
 		m_bSkill4 = true;
 		m_CurrAnim = S_SKILL04_3;
+		Add_Effect();
 	}
 	
 }
@@ -713,7 +728,23 @@ void CAncient_StonGolem::Set_Recycle_Skill4(_double TimeDelta)
 	if (m_ReCycle_Skill4)
 	{
 		m_bAttack = true;
-		m_CurrAnim = S_SKILL04_1;
+		m_CurrAnim = S_RE_SKILL04_1;
+	}
+
+	if (m_CurrAnim == S_RE_SKILL04_1 &&  m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 14.0)//true == m_pModelCom->Get_AnimFinished())
+	{
+		m_CurrAnim = S_RE_SKILL04_2;
+
+		if (m_pModelCom->Get_AnimTimeAcc() == (m_pModelCom->Get_AnimDuration() / 2))
+			m_bjump = true;
+		// 애니메이션 끝나면 지형이 부서지는 이팩트 생성
+	}
+
+	if (m_PrevAnim == S_RE_SKILL04_2 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 50.0)
+	{
+		m_ReCycle_Skill4 = false;
+		m_CurrAnim = S_RE_SKILL04_3;
+		Add_Effect();
 	}
 
 }
@@ -781,8 +812,8 @@ void CAncient_StonGolem::Dying()
 HRESULT CAncient_StonGolem::Add_Effect()
 {
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect"), TEXT("Layer_Effect"))))
+	// arg로 position을 넘겨서 해당 위치에 생성, 애니메이션이 한 번 끝나면 delete_gameobject
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect"), TEXT("Layer_Effect"), &m_pTransformCom->Get_State(CTransform::STATE_POSITION))))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);

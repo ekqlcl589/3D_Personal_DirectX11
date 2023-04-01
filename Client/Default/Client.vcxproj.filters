@@ -199,6 +199,12 @@
     <Filter Include="02.GameObject\Field\Ruins">
       <UniqueIdentifier>{6aa4292c-fea7-4eea-9e9b-b5750ad09801}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\04. UI\Monster\HpBar">
+      <UniqueIdentifier>{4232ad06-961a-48b4-9091-45f0f948d139}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04. UI\Monster\Name">
+      <UniqueIdentifier>{46b9ca9c-8e88-48d5-97d0-9b2e3442fe4f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -306,9 +312,6 @@
     <ClInclude Include="..\Public\TwoHandedSword.h">
       <Filter>02.GameObject\05. Player\Weapon\TS</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\MonsterHPBar.h">
-      <Filter>02.GameObject\04. UI\Monster</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\SkillIcon.h">
       <Filter>02.GameObject\04. UI\Player\Skill_Icon\E</Filter>
     </ClInclude>
@@ -362,6 +365,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\Ruins.h">
       <Filter>02.GameObject\Field\Ruins</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MonsterHPBar.h">
+      <Filter>02.GameObject\04. UI\Monster\HpBar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MonsterName.h">
+      <Filter>02.GameObject\04. UI\Monster\Name</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -458,9 +467,6 @@
     <ClCompile Include="..\Private\TwoHandedSword.cpp">
       <Filter>02.GameObject\05. Player\Weapon\TS</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\MonsterHPBar.cpp">
-      <Filter>02.GameObject\04. UI\Monster</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\SkillIcon.cpp">
       <Filter>02.GameObject\04. UI\Player\Skill_Icon\E</Filter>
     </ClCompile>
@@ -514,6 +520,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Ruins.cpp">
       <Filter>02.GameObject\Field\Ruins</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MonsterHPBar.cpp">
+      <Filter>02.GameObject\04. UI\Monster\HpBar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MonsterName.cpp">
+      <Filter>02.GameObject\04. UI\Monster\Name</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

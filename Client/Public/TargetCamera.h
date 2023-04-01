@@ -61,6 +61,9 @@ public:
 
 	XMMATRIX Go_Straight(FXMMATRIX Mat, float fScaler);
 
+public:
+	_bool Get_RenderNmae() { return m_RenderName; }
+
 private:
 	_bool m_Player_F_Skill = false;
 
@@ -113,6 +116,9 @@ private:
 
 private:
 	_bool m_BossOn = false;
+	_bool m_RenderName = false;
+
+	_double m_BossCamTimer = 12.f;
 
 public:
 	static CTargetCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "..\Public\MonsterHPBar.h"
+#include "..\Public\MonsterName.h"
 
 #include "GameInstance.h"
 #include "Shader.h"
@@ -10,17 +10,19 @@
 #include "GrudgeWraith.h"
 #include "CursedWraith.h"
 
-CMonsterHPBar::CMonsterHPBar(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+#include "TargetCamera.h"
+
+CMonsterName::CMonsterName(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CUI(pDevice, pContext)
 {
 }
 
-CMonsterHPBar::CMonsterHPBar(const CMonsterHPBar & rhs)
+CMonsterName::CMonsterName(const CMonsterName & rhs)
 	: CUI(rhs)
 {
 }
 
-HRESULT CMonsterHPBar::Initialize_Prototype()
+HRESULT CMonsterName::Initialize_Prototype()
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
@@ -28,7 +30,7 @@ HRESULT CMonsterHPBar::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CMonsterHPBar::Initialize(void * pArg)
+HRESULT CMonsterName::Initialize(void * pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -50,7 +52,7 @@ HRESULT CMonsterHPBar::Initialize(void * pArg)
 	m_fY = g_iWinSizeY >> 1;
 
 	XMStoreFloat4x4(&m_WorldMatrix,
-		XMMatrixScaling(700.f, 20.f, 1.f) * XMMatrixTranslation(m_fX - g_iWinSizeX * 0.5f, -m_fY + 680.f, 0.f));
+		XMMatrixScaling(m_fSizeX, m_fSizeY, 1.f)); // 화면 전체를 덮지만 글자 빼고 알파 0이라 ㄱㅊ? 
 
 	XMStoreFloat4x4(&m_ViewMatrix,
 		XMMatrixIdentity());
@@ -62,26 +64,34 @@ HRESULT CMonsterHPBar::Initialize(void * pArg)
 	return S_OK;
 }
 
-void CMonsterHPBar::Tick(_double TimeDelta)
+void CMonsterName::Tick(_double TimeDelta)
 {
 	if (Dead)
 	{
-		CGameInstance* p = GET_INSTANCE(CGameInstance);
-		if (FAILED(p->Dleate_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster_UI"))))
-			return;
-
-		RELEASE_INSTANCE(CGameInstance);
+		return;
 
 	}
 	else
 	{
 		__super::Tick(TimeDelta);
 
+		if (m_bRender)
+			m_fTimeder -= 1.0 * TimeDelta;
+
+		if (m_fTimeder <= 0.0)
+		{
+			m_fTimeder = 0.0;
+
+			XMStoreFloat4x4(&m_WorldMatrix,
+				XMMatrixScaling(m_fSizeX - 400.f, m_fSizeY - 200.f, 1.f) * XMMatrixTranslation(m_fX - g_iWinSizeX * 0.5f, -m_fY + 730.f, 0.f));
+
+		}
 		_float VertexHpY = 0.f;
 		_float TexHpY = 0.f;
 
 		CGameInstance* p = GET_INSTANCE(CGameInstance);
 		CGameObject* pMonster = nullptr;
+		CGameObject* pCamera = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
 
 		if (nullptr == p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster")))
 		{
@@ -126,35 +136,43 @@ void CMonsterHPBar::Tick(_double TimeDelta)
 			HP = 0;
 		}
 
+		m_bRender = static_cast<CTargetCamera*>(pCamera)->Get_RenderNmae();
+
 		RELEASE_INSTANCE(CGameInstance);
 
 		if (Dead)
+		{
+			m_bRender = false;
 			Set_Dead();
+		}
 
 	}
 
 }
 
-void CMonsterHPBar::LateTick(_double TimeDelta)
+void CMonsterName::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
 
 }
 
-HRESULT CMonsterHPBar::Render()
+HRESULT CMonsterName::Render()
 {
-	if (FAILED(SetUp_ShaderResource()))
-		return E_FAIL;
+	if (m_bRender)
+	{
+		if (FAILED(SetUp_ShaderResource()))
+			return E_FAIL;
 
-	m_pShaderCom->Begin(0);
+		m_pShaderCom->Begin(0);
 
-	if (FAILED(__super::Render()))
-		return E_FAIL;
+		if (FAILED(__super::Render()))
+			return E_FAIL;
+	}
 
 	return S_OK;
 }
 
-HRESULT CMonsterHPBar::Add_Components()
+HRESULT CMonsterName::Add_Components()
 {
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"),
 		TEXT("Com_Renderer"), (CComponent**)&m_pRenderer)))
@@ -172,14 +190,14 @@ HRESULT CMonsterHPBar::Add_Components()
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_MonsterHPBar"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_MonsterName"),
 		TEXT("Com_Texture"), (CComponent**)&m_pTexture)))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CMonsterHPBar::SetUp_ShaderResource()
+HRESULT CMonsterName::SetUp_ShaderResource()
 {
 	if (nullptr == m_pShaderCom)
 		return E_FAIL;
@@ -194,17 +212,17 @@ HRESULT CMonsterHPBar::SetUp_ShaderResource()
 	if (FAILED(m_pTexture->SetUp_ShaderResource(m_pShaderCom, "g_Texture", 0)))
 		return E_FAIL;
 
-	float uiHp = HP * 0.001f;
-
-	if (FAILED(m_pShaderCom->Set_RawValue("g_HpData", &uiHp, sizeof(float))))
-		return E_FAIL;
+	//float uiNmae = 1.f;
+	//
+	//if (FAILED(m_pShaderCom->Set_RawValue("g_HpData", &uiNmae, sizeof(float))))
+	//	return E_FAIL;
 
 	return S_OK;
 }
 
-CMonsterHPBar * CMonsterHPBar::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CMonsterName * CMonsterName::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {
-	CMonsterHPBar * pInstance = new CMonsterHPBar(pDevice, pContext);
+	CMonsterName * pInstance = new CMonsterName(pDevice, pContext);
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
 		MSG_BOX("HPBar Create Fail");
@@ -213,9 +231,9 @@ CMonsterHPBar * CMonsterHPBar::Create(ID3D11Device * pDevice, ID3D11DeviceContex
 	return pInstance;
 }
 
-CGameObject * CMonsterHPBar::Clone(void * pArg)
+CGameObject * CMonsterName::Clone(void * pArg)
 {
-	CMonsterHPBar * pInstance = new CMonsterHPBar(*this);
+	CMonsterName * pInstance = new CMonsterName(*this);
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
 		MSG_BOX("HPBar Clone Fail");
@@ -224,7 +242,7 @@ CGameObject * CMonsterHPBar::Clone(void * pArg)
 	return pInstance;
 }
 
-void CMonsterHPBar::Free()
+void CMonsterName::Free()
 {
 	Safe_Release(m_pShaderCom);
 	__super::Free();

@@ -46,7 +46,6 @@ HRESULT CTSPlayer::Initialize_Prototype()
 	m_tInfo.PrevAnim = TS_END;
 	m_bJump = false;
 
-
 	return S_OK;
 }
 
@@ -63,6 +62,8 @@ HRESULT CTSPlayer::Initialize(void * pArg)
 	
 	if (FAILED(Add_Weapon()))
 		return	E_FAIL;
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-1.1f, 0.f, -44.0f, 0.f));
 
 	m_eCollisionState = OBJ_PLAYER;
 

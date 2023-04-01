@@ -265,6 +265,10 @@ namespace Engine
 		S_SKILL10_1,
 		S_SKILL10_2,
 		S_SKILL10_3,
+		S_RE_SKILL04_1,
+		S_RE_SKILL04_2,
+		S_RE_SKILL04_3,
+
 		S_ANIMEND
 	};
 

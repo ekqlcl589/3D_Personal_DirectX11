@@ -3,6 +3,7 @@
 #include "..\Public\Loader.h"
 #include "TargetTextrue.h"
 #include "GameInstance.h"
+#include "MonsterName.h"
 #include "BackGround.h"
 #include "LoadingImg.h"
 #include "Calulator.h"
@@ -197,6 +198,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_MonsterHPBar"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/GUI_Common_gauge_Fill_01_Red_ver2.png")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_MonsterName"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Boss_Name.png")))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_ESkill"),
@@ -395,11 +400,14 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 #pragma region Effect
 
+	_matrix		LocalMatrix5558 = XMMatrixIdentity();
+	LocalMatrix5558 = XMMatrixScaling(0.03f, 0.03f, 0.03f);
+
 	_matrix		LocalMatrix555 = XMMatrixIdentity();
 	LocalMatrix555 = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Effect"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/GH_Rock01.fbx", CModel::MODEL_ANIM, LocalMatrix555))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/GH_Rock01.fbx", CModel::MODEL_ANIM, LocalMatrix5558))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Target"),
@@ -517,8 +525,8 @@ HRESULT CLoader::Loading_ForGamePlay()
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster_Weapon1"),
-	CMonsterSickle::Create(m_pDevice, m_pContext))))
-	return E_FAIL;
+		CMonsterSickle::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster_Blade"),
 		CMonsterBlade::Create(m_pDevice, m_pContext))))
@@ -577,6 +585,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster_HPBar"),
 		CMonsterHPBar::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster_Name"),
+		CMonsterName::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Mouse"),
