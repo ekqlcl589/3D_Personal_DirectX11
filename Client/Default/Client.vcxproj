@@ -188,6 +188,7 @@
     <ClInclude Include="..\Public\MonsterName.h" />
     <ClInclude Include="..\Public\MonsterSickle.h" />
     <ClInclude Include="..\Public\MonsterWeapon.h" />
+    <ClInclude Include="..\Public\Monster_Projectile_Effect.h" />
     <ClInclude Include="..\Public\Mouse.h" />
     <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\Public\PlayerHPBar.h" />
@@ -199,6 +200,7 @@
     <ClInclude Include="..\Public\Player_Body.h" />
     <ClInclude Include="..\Public\Player_Rage_Arma.h" />
     <ClInclude Include="..\Public\Player_Skill_RockBreak.h" />
+    <ClInclude Include="..\Public\ProjectileSton.h" />
     <ClInclude Include="..\Public\Ruins.h" />
     <ClInclude Include="..\Public\SkillIcon.h" />
     <ClInclude Include="..\Public\SkillIconF.h" />
@@ -244,6 +246,7 @@
     <ClCompile Include="..\Private\MonsterName.cpp" />
     <ClCompile Include="..\Private\MonsterSickle.cpp" />
     <ClCompile Include="..\Private\MonsterWeapon.cpp" />
+    <ClCompile Include="..\Private\Monster_Projectile_Effect.cpp" />
     <ClCompile Include="..\Private\Mouse.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\Private\PlayerHPBar.cpp" />
@@ -255,6 +258,7 @@
     <ClCompile Include="..\Private\Player_Body.cpp" />
     <ClCompile Include="..\Private\Player_Rage_Arma.cpp" />
     <ClCompile Include="..\Private\Player_Skill_RockBreak.cpp" />
+    <ClCompile Include="..\Private\ProjectileSton.cpp" />
     <ClCompile Include="..\Private\Ruins.cpp" />
     <ClCompile Include="..\Private\SkillIcon.cpp" />
     <ClCompile Include="..\Private\SkillIconF.cpp" />

@@ -552,6 +552,11 @@ void CAncient_StonGolem::Attack_Go(_double TimeDelta)
 
 	}
 
+	if (m_PrevAnim == S_SKILL02 && m_AnimTimeAcc >= 30.0 && m_AnimTimeAcc <= 31.0) // 그리고 1번 애님 끝나면 바로 2번 실행 
+	{
+		Add_Projectile();
+	}
+
 	if (true == m_bAttack && m_PrevAnim == S_SKILL07)
 	{
 		if (m_pModelCom->Get_AnimTimeAcc() >= 10.0 && m_pModelCom->Get_AnimTimeAcc() <= 11.0)
@@ -640,6 +645,7 @@ void CAncient_StonGolem::Set_Skill02(_double TimeDelta)
 	{
 		m_bAttack = true;
 		m_CurrAnim = S_SKILL02;
+
 	}
 
 }
@@ -735,7 +741,7 @@ void CAncient_StonGolem::Set_Recycle_Skill4(_double TimeDelta)
 		m_CurrAnim = S_RE_SKILL04_1;
 	}
 
-	if (m_CurrAnim == S_RE_SKILL04_1 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 10.0) //true == m_pModelCom->Get_AnimFinished())
+	if (m_CurrAnim == S_RE_SKILL04_1 && /*m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 10.0)*/ true != m_pModelCom->Get_AnimFinished())
 	{
 		m_CurrAnim = S_RE_SKILL04_2;
 	}
@@ -813,6 +819,18 @@ HRESULT CAncient_StonGolem::Add_Effect()
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 	// arg로 position을 넘겨서 해당 위치에 생성, 애니메이션이 한 번 끝나면 delete_gameobject
 	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect"), TEXT("Layer_Effect"), &m_pTransformCom->Get_State(CTransform::STATE_POSITION))))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CAncient_StonGolem::Add_Projectile()
+{
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Projectile"), TEXT("Layer_Effect"), &m_pTransformCom->Get_State(CTransform::STATE_POSITION))))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);

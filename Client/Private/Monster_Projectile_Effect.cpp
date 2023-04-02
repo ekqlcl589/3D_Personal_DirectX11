@@ -1,20 +1,18 @@
 #include "stdafx.h"
-#include "..\Public\Player_Basic_Combo.h"
+#include "..\Public\Monster_Projectile_Effect.h"
 #include "GameInstance.h"
-#include "TSPlayer.h"
-#include "TwoHandedSword.h"
-//
-CPlayer_Basic_Combo::CPlayer_Basic_Combo(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+
+Monster_Projectile_Effect::Monster_Projectile_Effect(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
 {
 }
 
-CPlayer_Basic_Combo::CPlayer_Basic_Combo(const CPlayer_Basic_Combo & rhs)
+Monster_Projectile_Effect::Monster_Projectile_Effect(const Monster_Projectile_Effect & rhs)
 	: CGameObject(rhs)
 {
 }
 
-HRESULT CPlayer_Basic_Combo::Initialize_Prototype()
+HRESULT Monster_Projectile_Effect::Initialize_Prototype()
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
@@ -22,7 +20,7 @@ HRESULT CPlayer_Basic_Combo::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CPlayer_Basic_Combo::Initialize(void * pArg)
+HRESULT Monster_Projectile_Effect::Initialize(void * pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -32,46 +30,39 @@ HRESULT CPlayer_Basic_Combo::Initialize(void * pArg)
 
 	m_bActive = true;
 
-	m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(270.0f));
-
 	m_pModelCom->SetUp_Animation(0);
+	
+	memcpy(&m_vPosition, pArg, sizeof(_vector));
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vPosition);
+
+	//m_pModelCom->Set_AnimTick(10.0);
 
 	return S_OK;
 }
 
-void CPlayer_Basic_Combo::Tick(_double TimeDelta)
+void Monster_Projectile_Effect::Tick(_double TimeDelta)
 {
 	if (!m_bDead)
 	{
 		__super::Tick(TimeDelta);
 
-		if (m_pModelCom->Get_AnimTimeAcc() / (m_pModelCom->Get_AnimDuration() / 2) + 10.0)
+		if (true == m_pModelCom->Get_AnimFinished())
 		{
 			m_bFadeIn = false;
 			Set_Dead();
-
 		}
 
-		//if (true == m_pModelCom->Get_AnimFinished())
-		//{
-		//}
-
 		//FadeInOut();
-
-		if (nullptr != m_pColliderCom)
-			m_pColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
-
 	}
+
 }
 
-void CPlayer_Basic_Combo::LateTick(_double TimeDelta)
+void Monster_Projectile_Effect::LateTick(_double TimeDelta)
 {
 	if (!m_bDead)
 	{
 		__super::LateTick(TimeDelta);
-
-		XMStoreFloat4x4(&m_WorldMatrix, XMMatrixRotationY(90.f) * m_pTransformCom->Get_WorldMatrix() * CTwoHandedSword::WorldMatrix);
-		//XMStoreFloat4x4(&m_WorldMatrix, XMMatrixRotationZ(270.f) * m_pTransformCom->Get_WorldMatrix() * CTwoHandedSword::WorldMatrix);
 
 		if (m_bFadeIn)
 			m_pModelCom->Play_Animation(TimeDelta);
@@ -84,7 +75,7 @@ void CPlayer_Basic_Combo::LateTick(_double TimeDelta)
 	}
 }
 
-HRESULT CPlayer_Basic_Combo::Render()
+HRESULT Monster_Projectile_Effect::Render()
 {
 	if (FAILED(__super::Render()))
 		return E_FAIL;
@@ -97,7 +88,7 @@ HRESULT CPlayer_Basic_Combo::Render()
 	for (_uint i = 0; i < iNumMeshes; i++)
 	{
 		m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
-		m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DepthTexture", i, aiTextureType_DIFFUSE);
+		//m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DepthTexture", i, aiTextureType_DIFFUSE);
 		/*m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);
 		m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);*/
 
@@ -112,7 +103,7 @@ HRESULT CPlayer_Basic_Combo::Render()
 	return S_OK;
 }
 
-_bool CPlayer_Basic_Combo::FadeInOut()
+_bool Monster_Projectile_Effect::FadeInOut()
 {
 	if (m_Alpha >= 100 && !m_bFadeIn)
 		m_Alpha -= m_fFadeSpeed;
@@ -132,15 +123,15 @@ _bool CPlayer_Basic_Combo::FadeInOut()
 	}
 
 	return false;
+	//셰이더로 던져야 하는데 흠;
 }
 
-void CPlayer_Basic_Combo::Set_Transform()
+void Monster_Projectile_Effect::Set_Transform()
 {
-
-	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * CTwoHandedSword::WorldMatrix * XMMatrixRotationZ(90.f));
+	//XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * CTwoHandedSword::WorldMatrix);
 }
 
-HRESULT CPlayer_Basic_Combo::Add_Components()
+HRESULT Monster_Projectile_Effect::Add_Components()
 {
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"),
 		TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom)))
@@ -157,7 +148,7 @@ HRESULT CPlayer_Basic_Combo::Add_Components()
 		TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Basic"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Projectile_Effect"),
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
@@ -165,19 +156,20 @@ HRESULT CPlayer_Basic_Combo::Add_Components()
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
+
 	return S_OK;
 }
 
-HRESULT CPlayer_Basic_Combo::SetUp_ShaderResources()
+HRESULT Monster_Projectile_Effect::SetUp_ShaderResources()
 {
 	if (nullptr == m_pShaderCom)
 		return E_FAIL;
 
-	//if (FAILED(m_pTransformCom->SetUp_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
-	//	return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Set_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+	if (FAILED(m_pTransformCom->SetUp_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
+
+	//if (FAILED(m_pShaderCom->Set_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+	//	return E_FAIL;
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
@@ -187,44 +179,39 @@ HRESULT CPlayer_Basic_Combo::SetUp_ShaderResources()
 	if (FAILED(m_pShaderCom->Set_Matrix("g_ProjMatrix", &pInstance->Get_Transformfloat4x4(CPipeLine::TS_PROJ))))
 		return E_FAIL;
 
-	//if (FAILED(pInstance->Set_ShaderRenderTargetResourceView(m_pShaderCom, TEXT("Target_Depth"), "g_DepthTexture")))
-	//	return E_FAIL;
-
 	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
 }
 
-CPlayer_Basic_Combo * CPlayer_Basic_Combo::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+Monster_Projectile_Effect * Monster_Projectile_Effect::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {
-	CPlayer_Basic_Combo*		pInstance = new CPlayer_Basic_Combo(pDevice, pContext);
+	Monster_Projectile_Effect*		pInstance = new Monster_Projectile_Effect(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Created : CPlayer_Basic_Combo");
+		MSG_BOX("Failed to Created : Monster_Projectile_Effect");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject * CPlayer_Basic_Combo::Clone(void * pArg)
+CGameObject * Monster_Projectile_Effect::Clone(void * pArg)
 {
-	CPlayer_Basic_Combo*		pInstance = new CPlayer_Basic_Combo(*this);
+	Monster_Projectile_Effect*		pInstance = new Monster_Projectile_Effect(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Clone : CPlayer_Basic_Combo");
+		MSG_BOX("Failed to Clone : Monster_Projectile_Effect");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CPlayer_Basic_Combo::Free()
+void Monster_Projectile_Effect::Free()
 {
 	__super::Free();
-
-	Safe_Release(m_pColliderCom);
 
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pModelCom);

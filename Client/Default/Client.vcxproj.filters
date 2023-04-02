@@ -211,6 +211,15 @@
     <Filter Include="02.GameObject\10. Effrect\Player\Skill\RockBraker">
       <UniqueIdentifier>{cfe9cdcd-7b96-4156-a638-762ddf341912}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\06. Monster\99.MonsterWeapon\ProjectileSton">
+      <UniqueIdentifier>{27c0ebb8-3bc0-4ace-9a8d-ee90ffd42a51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\10. Effrect\Monster\Blade">
+      <UniqueIdentifier>{3c6ca9ac-1042-4489-bfce-74964357a7c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\10. Effrect\Monster\ProjectileEffect">
+      <UniqueIdentifier>{130cf737-c033-40f8-9579-db87bef3055d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -363,9 +372,6 @@
     <ClInclude Include="..\Public\TargetTextrue.h">
       <Filter>02.GameObject\06. Monster\TargetTexture</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\MonsterBlade.h">
-      <Filter>02.GameObject\10. Effrect\Monster</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Ruins.h">
       <Filter>02.GameObject\Field\Ruins</Filter>
     </ClInclude>
@@ -380,6 +386,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\Player_Skill_RockBreak.h">
       <Filter>02.GameObject\10. Effrect\Player\Skill\RockBraker</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ProjectileSton.h">
+      <Filter>02.GameObject\06. Monster\99.MonsterWeapon\ProjectileSton</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MonsterBlade.h">
+      <Filter>02.GameObject\10. Effrect\Monster\Blade</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Monster_Projectile_Effect.h">
+      <Filter>02.GameObject\10. Effrect\Monster\ProjectileEffect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -521,9 +536,6 @@
     <ClCompile Include="..\Private\TargetTextrue.cpp">
       <Filter>02.GameObject\06. Monster\TargetTexture</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\MonsterBlade.cpp">
-      <Filter>02.GameObject\10. Effrect\Monster</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Ruins.cpp">
       <Filter>02.GameObject\Field\Ruins</Filter>
     </ClCompile>
@@ -538,6 +550,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\Player_Skill_RockBreak.cpp">
       <Filter>02.GameObject\10. Effrect\Player\Skill\RockBraker</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ProjectileSton.cpp">
+      <Filter>02.GameObject\06. Monster\99.MonsterWeapon\ProjectileSton</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MonsterBlade.cpp">
+      <Filter>02.GameObject\10. Effrect\Monster\Blade</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_Projectile_Effect.cpp">
+      <Filter>02.GameObject\10. Effrect\Monster\ProjectileEffect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

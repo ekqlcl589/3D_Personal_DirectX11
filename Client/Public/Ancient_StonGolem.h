@@ -63,6 +63,7 @@ public:
 
 public:
 	HRESULT Add_Effect();
+	HRESULT Add_Projectile();
 	void Set_Time();
 
 private:

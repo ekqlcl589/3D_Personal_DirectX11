@@ -1,6 +1,8 @@
 #include "stdafx.h"
 
 #include "..\Public\Loader.h"
+#include "Monster_Projectile_Effect.h"
+#include "ProjectileSton.h"
 #include "TargetTextrue.h"
 #include "GameInstance.h"
 #include "MonsterName.h"
@@ -422,6 +424,14 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/GH_Rock01.fbx", CModel::MODEL_ANIM, LocalMatrix5558))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Projectile"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/ProjectileSton.fbx", CModel::MODEL_NONANIM, LocalMatrix555 * XMMatrixRotationY(XMConvertToRadians(180.0f))))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Projectile_Effect"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Ston_Skill_2.fbx", CModel::MODEL_ANIM, LocalMatrix555))))
+		return E_FAIL;
+
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Target"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Eltheca_Elscope_Circle_aa.fbx", CModel::MODEL_NONANIM, LocalMatrix555))))
 		return E_FAIL;
@@ -627,6 +637,14 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CEffect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Projectile"),
+		CProjectileSton::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Projectile_Effect"),
+		Monster_Projectile_Effect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_Ball"),
 		CBlackBall::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
