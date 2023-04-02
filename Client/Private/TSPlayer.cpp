@@ -340,12 +340,6 @@ void CTSPlayer::EnterCollision(CGameObject * pObj)
 {
 	COLLISIONSTATE eType = pObj->Get_ObjType();
 
-	//CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-	//CGameObject* pMonster = nullptr;
-	//pMonster = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster2"));
-	//m_Hit = static_cast<CGrudgeWraith*>(pMonster)->Get_Attack();
-	//RELEASE_INSTANCE(CGameInstance);
-
 	switch (eType)
 	{
 	case Engine::OBJ_PLAYER:
@@ -423,9 +417,17 @@ void CTSPlayer::EnterCollision(CGameObject * pObj)
 
 void CTSPlayer::Key_Input(_double TimeDelta)
 {
-
 	_vector vPos;
 	vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	if (m_Dir == BACK)
+	{
+		m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(180.0f));
+	}
+	else
+		m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(0.0f));
+
+
 
 	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_W))
 	{
@@ -455,7 +457,9 @@ void CTSPlayer::Key_Input(_double TimeDelta)
 	{
 		m_bTest = false;
 		m_Dir = BACK;
-		//if(m_Dir == BACK)
+
+		//m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(180.0f));
+
 			m_pTransformCom->Go_Straight(TimeDelta);
 
 		m_tInfo.CurrAnim = TS_RUN_END;
@@ -1149,7 +1153,7 @@ void CTSPlayer::Dash(_double TimeDelta)
 
 	if(true == m_bDeah && m_tInfo.CurrAnim == TS_DASH && m_AnimTimeAcc >= 4.0 && m_AnimTimeAcc <= 13.0)
 	{
-			m_pTransformCom->Go_Straight(TimeDelta * 2.5);
+			m_pTransformCom->Go_Straight(TimeDelta * 3.0);
 
 
 	}

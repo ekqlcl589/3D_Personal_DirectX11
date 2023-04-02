@@ -392,17 +392,6 @@ void CAncient_StonGolem::Combat_Wait(_double TimeDelta)
 		m_CurrAnim = S_WAIT;
 	}
 	
-	if (m_CurrAnim == S_RE_SKILL04_1 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 10.0) //true == m_pModelCom->Get_AnimFinished())
-	{
-		m_CurrAnim = S_RE_SKILL04_2;
-	}
-
-	if (m_PrevAnim == S_RE_SKILL04_2 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 50.0)
-	{
-		m_ReCycle_Skill4 = false;
-		m_CurrAnim = S_RE_SKILL04_3;
-	}
-
 	if (m_PrevAnim == S_RE_SKILL04_3 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 26.0)
 	{
 		m_bAttack = false; // false로 한 번 돌려서 거리가 멀어졌다면 따라 오게 
@@ -746,6 +735,16 @@ void CAncient_StonGolem::Set_Recycle_Skill4(_double TimeDelta)
 		m_CurrAnim = S_RE_SKILL04_1;
 	}
 
+	if (m_CurrAnim == S_RE_SKILL04_1 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 10.0) //true == m_pModelCom->Get_AnimFinished())
+	{
+		m_CurrAnim = S_RE_SKILL04_2;
+	}
+
+	if (m_CurrAnim == S_RE_SKILL04_2 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 50.0)
+	{
+		m_ReCycle_Skill4 = false;
+		m_CurrAnim = S_RE_SKILL04_3;
+	}
 
 }
 
