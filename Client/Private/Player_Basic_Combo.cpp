@@ -45,12 +45,16 @@ void CPlayer_Basic_Combo::Tick(_double TimeDelta)
 	{
 		__super::Tick(TimeDelta);
 
-		if (m_pModelCom->Get_AnimTimeAcc() / (m_pModelCom->Get_AnimDuration() / 2) + 14.9)
+		if (m_pModelCom->Get_AnimTimeAcc() / (m_pModelCom->Get_AnimDuration() / 2) + 8.0)
+		{
 			m_bFadeIn = false;
+
+		}
 
 		if (true == m_pModelCom->Get_AnimFinished())
 		{
 			Set_Dead();
+
 		}
 
 		//FadeInOut();
@@ -70,7 +74,7 @@ void CPlayer_Basic_Combo::LateTick(_double TimeDelta)
 		XMStoreFloat4x4(&m_WorldMatrix, XMMatrixRotationY(90.f) * m_pTransformCom->Get_WorldMatrix() * CTwoHandedSword::WorldMatrix);
 		//XMStoreFloat4x4(&m_WorldMatrix, XMMatrixRotationZ(270.f) * m_pTransformCom->Get_WorldMatrix() * CTwoHandedSword::WorldMatrix);
 
-		//if (m_bFadeIn)
+		if (m_bFadeIn)
 			m_pModelCom->Play_Animation(TimeDelta);
 
 		if (nullptr != m_pRendererCom)

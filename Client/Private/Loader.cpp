@@ -300,6 +300,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 	_matrix Local1234 = XMMatrixIdentity();
 	Local1234 = XMMatrixScaling(0.007f, 0.007f, 0.007f);
+
+	_matrix Local5234 = XMMatrixIdentity();
+	Local5234 = XMMatrixScaling(0.05f, 0.05f, 0.05f);
+
 #pragma region Monster
 	/* For.Prototype_Component_Model_TestMonster */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Boss0"),
@@ -332,7 +336,7 @@ HRESULT CLoader::Loading_ForGamePlay()
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_RockBreak"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/RockBraker.fbx", CModel::MODEL_ANIM, Local1234))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/RockBraker.fbx", CModel::MODEL_ANIM, Local5234))))
 		return E_FAIL;
 	
 	_matrix Local2 = XMMatrixIdentity();

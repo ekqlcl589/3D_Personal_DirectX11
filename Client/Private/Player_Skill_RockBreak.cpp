@@ -34,6 +34,15 @@ HRESULT Player_Skill_RockBreak::Initialize(void * pArg)
 
 	m_pModelCom->SetUp_Animation(0);
 	
+	memcpy(&m_vPosition, pArg, sizeof(_vector));
+	XMStoreFloat3(&m_fPosition, m_vPosition);
+
+	m_fPosition.z + 3.f;
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_fPosition));
+
+	m_pModelCom->Set_AnimTick(10.0);
+
 	return S_OK;
 }
 
@@ -63,8 +72,8 @@ void Player_Skill_RockBreak::LateTick(_double TimeDelta)
 		XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * CTwoHandedSword::WorldMatrix);
 		//XMStoreFloat4x4(&m_WorldMatrix, XMMatrixRotationZ(270.f) * m_pTransformCom->Get_WorldMatrix() * CTwoHandedSword::WorldMatrix);
 
-		//if (m_bFadeIn)
-		m_pModelCom->Play_Animation(TimeDelta);
+		if (m_bFadeIn)
+			m_pModelCom->Play_Animation(TimeDelta);
 
 		if (nullptr != m_pRendererCom)
 		{
@@ -127,16 +136,6 @@ _bool Player_Skill_RockBreak::FadeInOut()
 
 void Player_Skill_RockBreak::Set_Transform()
 {
-//	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-//
-//	CGameObject* pWeapon = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Weapon_TS"));
-//	RELEASE_INSTANCE(CGameInstance);
-//
-//	_float4x4 Weapon = static_cast<CTwoHandedSword*>(pWeapon)->Get_WeaponMatrix();
-//
-	//CTwoHandedSword::WorldMatrix; 
-
-	//XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(&Weapon));
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * CTwoHandedSword::WorldMatrix);
 }
 

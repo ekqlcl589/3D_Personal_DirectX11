@@ -42,16 +42,17 @@ protected:
 	CTransform*	m_pTransformCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 
-protected:
+private:
 	_bool m_bActive = false;
 	_int m_Alpha = 100;
 	_int m_fFadeSpeed = 2;
 	_bool m_bFadeIn = true;
-	_bool m_bDead = false;
 
 private:
 	_float4x4 m_WorldMatrix;
 
+	_vector m_vPosition;
+	_float3 m_fPosition = { 0.f, 0.f, 0.f };
 public:
 	static Player_Skill_RockBreak* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr);

@@ -392,6 +392,17 @@ void CAncient_StonGolem::Combat_Wait(_double TimeDelta)
 		m_CurrAnim = S_WAIT;
 	}
 	
+	if (m_CurrAnim == S_RE_SKILL04_1 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 10.0) //true == m_pModelCom->Get_AnimFinished())
+	{
+		m_CurrAnim = S_RE_SKILL04_2;
+	}
+
+	if (m_PrevAnim == S_RE_SKILL04_2 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 50.0)
+	{
+		m_ReCycle_Skill4 = false;
+		m_CurrAnim = S_RE_SKILL04_3;
+	}
+
 	if (m_PrevAnim == S_RE_SKILL04_3 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 26.0)
 	{
 		m_bAttack = false; // false로 한 번 돌려서 거리가 멀어졌다면 따라 오게 
@@ -457,7 +468,7 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 			_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	
 			if(m_ReCycle_Skill4)
-				m_pTransformCom->Chase_Tatget(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION), 5.f, TimeDelta);
+				m_pTransformCom->Chase_Tatget(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION), 5.f, TimeDelta * 0.5);
 			else
 				m_pTransformCom->Chase_Tatget(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION), 5.f, TimeDelta * 3.0);
 			//vPos += m_pPlayerTransform->Get_State(CTransform::STATE_POSITION);
@@ -467,7 +478,7 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 				vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 			}
 
-			if (m_pModelCom->Get_AnimTimeAcc() >= 93.0 && m_pModelCom->Get_AnimTimeAcc() <= 95.0)
+			if (m_pModelCom->Get_AnimTimeAcc() >= 93.0 && m_pModelCom->Get_AnimTimeAcc() <= 94.0)
 			{
 				Add_Effect();
 				static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.7f, 0.4f);
@@ -534,17 +545,22 @@ void CAncient_StonGolem::Attack_Go(_double TimeDelta)
 
 	if (true == m_bAttack && m_PrevAnim == S_SKILL01)
 	{
+		if (m_pModelCom->Get_AnimTimeAcc() >= 50.0 && m_pModelCom->Get_AnimTimeAcc() <= 51.0)
+			static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.1f);
+
 		if (m_pModelCom->Get_AnimTimeAcc() >= 60.0 && m_pModelCom->Get_AnimTimeAcc() <= 65.0)
 		{
 			m_pTransformCom->Go_Straight(0.3 * TimeDelta);
-			static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.01f);
 
 		}
 		if (m_pModelCom->Get_AnimTimeAcc() >= 87.0 && m_pModelCom->Get_AnimTimeAcc() <= 100.0)
 		{
 			m_pTransformCom->Go_Straight(0.05 * TimeDelta);
-			static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.01f);
 		}
+
+		if (m_pModelCom->Get_AnimTimeAcc() >= 88.0 && m_pModelCom->Get_AnimTimeAcc() <= 89.0)
+			static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.1f);
+
 	}
 
 	if (true == m_bAttack && m_PrevAnim == S_SKILL07)
@@ -584,14 +600,14 @@ void CAncient_StonGolem::Attack_Go(_double TimeDelta)
 	if (m_PrevAnim == S_SKILL09 && m_AnimTimeAcc >= 48.0 && m_AnimTimeAcc <= 49.0)
 		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.1f);
 
-	if (m_PrevAnim == S_SKILL04_1 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 10.0)//true == m_pModelCom->Get_AnimFinished())
-	{
-		m_CurrAnim = S_SKILL04_2;
-
-		if (m_pModelCom->Get_AnimTimeAcc() == (m_pModelCom->Get_AnimDuration() / 2))
-			m_bjump = true;
-		// 애니메이션 끝나면 지형이 부서지는 이팩트 생성
-	}
+	//if (m_PrevAnim == S_SKILL04_1 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 10.0)//true == m_pModelCom->Get_AnimFinished())
+	//{
+	//	m_CurrAnim = S_SKILL04_2;
+	//
+	//	if (m_pModelCom->Get_AnimTimeAcc() == (m_pModelCom->Get_AnimDuration() / 2))
+	//		m_bjump = true;
+	//	// 애니메이션 끝나면 지형이 부서지는 이팩트 생성
+	//}
 
 }
 
@@ -730,21 +746,6 @@ void CAncient_StonGolem::Set_Recycle_Skill4(_double TimeDelta)
 		m_CurrAnim = S_RE_SKILL04_1;
 	}
 
-	if (m_CurrAnim == S_RE_SKILL04_1 &&  m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 14.0)//true == m_pModelCom->Get_AnimFinished())
-	{
-		m_CurrAnim = S_RE_SKILL04_2;
-
-		if (m_pModelCom->Get_AnimTimeAcc() == (m_pModelCom->Get_AnimDuration() / 2))
-			m_bjump = true;
-		// 애니메이션 끝나면 지형이 부서지는 이팩트 생성
-	}
-
-	if (m_PrevAnim == S_RE_SKILL04_2 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 50.0)
-	{
-		m_ReCycle_Skill4 = false;
-		m_CurrAnim = S_RE_SKILL04_3;
-		Add_Effect();
-	}
 
 }
 
