@@ -45,21 +45,14 @@ void CPlayer_Basic_Combo::Tick(_double TimeDelta)
 	{
 		__super::Tick(TimeDelta);
 
-		if (m_pModelCom->Get_AnimTimeAcc() / (m_pModelCom->Get_AnimDuration() / 2) + 10.0)
+		if (m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) - 3.0)
 		{
 			m_bFadeIn = false;
 			Set_Dead();
 
 		}
 
-		//if (true == m_pModelCom->Get_AnimFinished())
-		//{
-		//}
-
 		//FadeInOut();
-
-		if (nullptr != m_pColliderCom)
-			m_pColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
 
 	}
 }
@@ -71,7 +64,6 @@ void CPlayer_Basic_Combo::LateTick(_double TimeDelta)
 		__super::LateTick(TimeDelta);
 
 		XMStoreFloat4x4(&m_WorldMatrix, XMMatrixRotationY(90.f) * m_pTransformCom->Get_WorldMatrix() * CTwoHandedSword::WorldMatrix);
-		//XMStoreFloat4x4(&m_WorldMatrix, XMMatrixRotationZ(270.f) * m_pTransformCom->Get_WorldMatrix() * CTwoHandedSword::WorldMatrix);
 
 		if (m_bFadeIn)
 			m_pModelCom->Play_Animation(TimeDelta);
@@ -223,8 +215,6 @@ CGameObject * CPlayer_Basic_Combo::Clone(void * pArg)
 void CPlayer_Basic_Combo::Free()
 {
 	__super::Free();
-
-	Safe_Release(m_pColliderCom);
 
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pModelCom);

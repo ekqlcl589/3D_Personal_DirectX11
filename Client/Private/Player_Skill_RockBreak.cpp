@@ -70,7 +70,6 @@ void Player_Skill_RockBreak::LateTick(_double TimeDelta)
 		__super::LateTick(TimeDelta);
 
 		XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * CTwoHandedSword::WorldMatrix);
-		//XMStoreFloat4x4(&m_WorldMatrix, XMMatrixRotationZ(270.f) * m_pTransformCom->Get_WorldMatrix() * CTwoHandedSword::WorldMatrix);
 
 		if (m_bFadeIn)
 			m_pModelCom->Play_Animation(TimeDelta);

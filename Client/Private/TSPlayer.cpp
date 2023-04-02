@@ -429,12 +429,12 @@ void CTSPlayer::Key_Input(_double TimeDelta)
 
 	if (m_Dir == BACK)
 		m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(180.0f));
-	else if (m_Dir == FRONT)
-		m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(0.0f));
-	else if (m_Dir == LEFT)
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * -1.f);
-	else if(m_Dir == RIGHT)
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta);
+	//else if (m_Dir == FRONT)
+	//	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(0.0f));
+	//else if (m_Dir == LEFT)
+	//	m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * -1.f);
+	//else if(m_Dir == RIGHT)
+	//	m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta);
 
 	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_W))
 	{
@@ -488,6 +488,7 @@ void CTSPlayer::Key_Input(_double TimeDelta)
 		m_Dir = LEFT;
 		if(!m_AttackCheck)
 			m_tInfo.CurrAnim = TS_RUN_L;
+		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta * -1.f);
 	}
 	else if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_A))
 	{
@@ -504,6 +505,7 @@ void CTSPlayer::Key_Input(_double TimeDelta)
 
 		if (!m_AttackCheck)
 			m_tInfo.CurrAnim = TS_RUN_R;
+		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta);
 	}
 	if (CKeyMgr::GetInstance()->Key_Up(DIKEYBOARD_D))
 	{
@@ -1168,6 +1170,7 @@ void CTSPlayer::Dash(_double TimeDelta)
 void CTSPlayer::DashAttack(_double TimeDelta)
 {
 	m_bAttackState = true;
+	m_bDeah = false;
 	m_tInfo.CurrAnim = TS_DASHCOMBO;
 
 }
@@ -1219,8 +1222,8 @@ void CTSPlayer::CombatWait()
 
 	if (m_tInfo.PrevAnim == TS_DASHCOMBO && true == m_AnimTimeAcc >= (m_AnimDuration / 2) + 30.0)
 	{
-		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
 		m_bDeah = false;
+		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
 	}
 
 	if (m_tInfo.PrevAnim == TS_FRONT_EVASION && true == m_pModelCom->Get_AnimFinished())
@@ -1359,10 +1362,13 @@ void CTSPlayer::E_Skill(_double TimeDelta)
 		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.2f, 0.1f);
 	}
 	if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_START &&m_AnimTimeAcc >= (m_AnimDuration / 2) && m_AnimTimeAcc <= (m_AnimDuration / 2) + 1.0)
+	{
+		WeaponBoneUpdate();
 		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 4.0f);
-	
+	}
 	if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_START &&m_AnimTimeAcc >= (m_AnimDuration / 2) + 80.0)
 	{
+		WeaponBoneUpdate();
 		m_tInfo.CurrAnim = TS_SKILL_OUTRAGE_END;
 		m_Eskill = false;
 		m_AttackCheck = false;
@@ -1456,7 +1462,7 @@ void CTSPlayer::WeaponBoneUpdate()
 {
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Basic"), TEXT("Effect"))))
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Basic"), TEXT("Player_Effect_Basic"))))
 		return ;
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -1468,7 +1474,7 @@ void CTSPlayer::Add_Rock()
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_RockBreaker"), TEXT("Effect"), &vPosition)))
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_RockBreaker"), TEXT("Player_Effect"), &vPosition)))
 		return;
 
 	RELEASE_INSTANCE(CGameInstance);

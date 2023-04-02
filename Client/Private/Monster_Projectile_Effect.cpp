@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Monster_Projectile_Effect.h"
 #include "GameInstance.h"
-
+//
 Monster_Projectile_Effect::Monster_Projectile_Effect(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
 {
@@ -53,7 +53,7 @@ void Monster_Projectile_Effect::Tick(_double TimeDelta)
 			Set_Dead();
 		}
 
-		//FadeInOut();
+		FadeInOut();
 	}
 
 }

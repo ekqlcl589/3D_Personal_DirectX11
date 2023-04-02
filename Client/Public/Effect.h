@@ -7,7 +7,6 @@ class CShader;
 class CRenderer;
 class CTransform;
 class CModel;
-class CCollider;
 END
 
 BEGIN(Client)

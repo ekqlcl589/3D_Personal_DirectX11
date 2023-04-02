@@ -212,10 +212,10 @@ HRESULT CMonsterName::SetUp_ShaderResource()
 	if (FAILED(m_pTexture->SetUp_ShaderResource(m_pShaderCom, "g_Texture", 0)))
 		return E_FAIL;
 
-	//float uiNmae = 1.f;
-	//
-	//if (FAILED(m_pShaderCom->Set_RawValue("g_HpData", &uiNmae, sizeof(float))))
-	//	return E_FAIL;
+	float uiNmae = 1.f;
+	
+	if (FAILED(m_pShaderCom->Set_RawValue("g_HpData", &uiNmae, sizeof(float))))
+		return E_FAIL;
 
 	return S_OK;
 }

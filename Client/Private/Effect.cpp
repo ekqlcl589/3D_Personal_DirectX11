@@ -50,9 +50,6 @@ void CEffect::Tick(_double TimeDelta)
 
 		FadeInOut();
 
-		if (nullptr != m_pColliderCom)
-			m_pColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
-
 		if (true == m_pModelCom->Get_AnimFinished())
 			m_bFadeIn = false;
 	}
@@ -78,13 +75,6 @@ HRESULT CEffect::Render()
 {
 	if (FAILED(__super::Render()))
 		return E_FAIL;
-
-#ifdef _DEBUG
-
-	if (nullptr != m_pColliderCom)
-		m_pColliderCom->Render();
-
-#endif
 
 	if (FAILED(SetUp_ShaderResources()))
 		return E_FAIL;
@@ -155,16 +145,6 @@ HRESULT CEffect::Add_Components()
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
-	CCollider::COLLIDERDESC ColliderDesc;
-	ZeroMemory(&ColliderDesc, sizeof ColliderDesc);
-
-	ColliderDesc.vScale = _float3(3.f, 3.f, 3.f);
-	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vScale.y * 0.5f, 0.f);
-
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"),
-		TEXT("Com_Collider"), (CComponent**)&m_pColliderCom, &ColliderDesc)))
-		return E_FAIL;
-
 	return S_OK;
 }
 
@@ -217,8 +197,6 @@ CGameObject * CEffect::Clone(void * pArg)
 void CEffect::Free()
 {
 	__super::Free();
-
-	Safe_Release(m_pColliderCom);
 
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pModelCom);

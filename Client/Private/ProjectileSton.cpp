@@ -75,9 +75,9 @@ void CProjectileSton::Tick(_double TimeDelta)
 			m_LifeTime = 0.0;
 		}
 
-		if (m_fPos.y <= 0.f)
+		if (m_fPos.y <= 6.0f)
 		{
-			Add_Effect();
+			//Add_Effect();
 			Set_Dead();
 		}
 

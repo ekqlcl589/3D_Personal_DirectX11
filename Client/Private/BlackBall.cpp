@@ -2,6 +2,7 @@
 #include "..\Public\BlackBall.h"
 #include "GameInstance.h"
 #include "TargetCamera.h"
+#include "TSPlayer.h"
 
 CBlackBall::CBlackBall(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -69,17 +70,31 @@ HRESULT CBlackBall::Initialize(void * pArg)
 		XMStoreFloat3(&m_fPos, m_vPosition);
 		m_fPos.y = 20.f;
 
-		_float x;
-		_matrix matRotate = XMMatrixIdentity();
-		x = XMVectorGetX(XMVector3Length(m_vLook));
-		matRotate = XMMatrixRotationY(x);
+		//_float x;
+		//_matrix matRotate = XMMatrixIdentity();
+		//x = XMVectorGetX(XMVector3Length(m_vLook));
+		//matRotate = XMMatrixRotationY(x);
 
-		//m_vLook = XMVector3TransformNormal(m_vLook, matRotate);
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_fPos));
-		m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_vLook);
+		////m_vLook = XMVector3TransformNormal(m_vLook, matRotate);
+		//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_fPos));
+		//m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_vLook);
 
-		m_pTransformCom->Rotation(XMVectorSet(1.0f, 0.f, 0.f, 0.f), XMConvertToRadians(90.0f));
+		//m_pTransformCom->Rotation(XMVectorSet(1.0f, 0.f, 0.f, 0.f), XMConvertToRadians(90.0f));
 		
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_fPos));
+
+		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+		CGameObject* pTarget = static_cast<CTSPlayer*>(pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player")));
+
+		CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
+
+		_vector vTargetPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
+
+		RELEASE_INSTANCE(CGameInstance);
+
+		m_pTransformCom->LookAt(vTargetPos);
+
 		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Sphere2"),
 			TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 			return E_FAIL;

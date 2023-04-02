@@ -45,7 +45,7 @@ HRESULT CGamePlay::Initialize()
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Arma"), TEXT("Effect"))))
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Arma"), TEXT("Player_Effect"))))
 		return E_FAIL;
 	
 	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_TargetTexture"), TEXT("Effect"))))

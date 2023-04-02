@@ -42,11 +42,8 @@ HRESULT CGamePlay2::Initialize()
 		return E_FAIL;
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Arma"), TEXT("Effect"))))
-		return E_FAIL;
-
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Basic"), TEXT("Effect"))))
+	
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Effect_Arma"), TEXT("Player_Effect"))))
 		return E_FAIL;
 	
 	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_TargetTexture"), TEXT("Effect"))))
@@ -63,7 +60,7 @@ void CGamePlay2::Tick(_double TimeDelta)
 {
 #ifdef _DEBUG
 	_tchar			szWindowText[MAX_PATH] = TEXT("");
-	lstrcpy(szWindowText, TEXT("스테이지"));
+	lstrcpy(szWindowText, TEXT("스테이지2"));
 	SetWindowText(g_hWnd, szWindowText);
 #endif
 }
@@ -76,7 +73,10 @@ HRESULT CGamePlay2::Ready_Layer_BackGround(const _tchar * pLayerTag)
 	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Terrain"), pLayerTag)))
 	//	return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_TestTile"), pLayerTag)))
+	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_TestTile"), pLayerTag)))
+	//	return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Ruins"), pLayerTag)))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_SkyBox"), pLayerTag)))

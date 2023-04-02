@@ -41,7 +41,7 @@ HRESULT CAncient_StonGolem::Initialize(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPosition));
 
 	m_eType._MaxHp = 1000.f;
-	m_eType._Hp = 1000.f;
+	m_eType._Hp = 10.f;
 
 	m_f = m_pModelCom->Get_AnimTick();
 
@@ -490,6 +490,7 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 		{
 			m_eType._Hp = m_eType._MaxHp;
 			m_CurrAnim = S_SKILL05_3;
+			m_bSkill5 = true;
 		}
 
 		if (true == m_bDown)
@@ -552,7 +553,7 @@ void CAncient_StonGolem::Attack_Go(_double TimeDelta)
 
 	}
 
-	if (m_PrevAnim == S_SKILL02 && m_AnimTimeAcc >= 30.0 && m_AnimTimeAcc <= 31.0) // 그리고 1번 애님 끝나면 바로 2번 실행 
+	if (m_PrevAnim == S_SKILL02 && m_AnimTimeAcc >= 30.5 && m_AnimTimeAcc <= 31.0) // 그리고 1번 애님 끝나면 바로 2번 실행 
 	{
 		Add_Projectile();
 	}
