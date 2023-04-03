@@ -35,15 +35,14 @@ HRESULT CMonsterName::Initialize(void * pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	if (nullptr != pArg)
+		memcpy(&m_eOwner, pArg, sizeof OWNER);
+
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
 	if (FAILED(SetUp_ShaderResource()))
 		return E_FAIL;
-
-	if (nullptr != pArg)
-		memcpy(&m_eOwner, pArg, sizeof OWNER);
-
 	//m_eOwner = OWNER_WRAITH2;
 
 	m_fSizeX = g_iWinSizeX;
@@ -190,10 +189,19 @@ HRESULT CMonsterName::Add_Components()
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_MonsterName"),
-		TEXT("Com_Texture"), (CComponent**)&m_pTexture)))
-		return E_FAIL;
+	if (m_eOwner == OWNER_GOLEM)
+	{
+		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_MonsterName"),
+			TEXT("Com_Texture"), (CComponent**)&m_pTexture)))
+			return E_FAIL;
+	}
+	else if (m_eOwner == OWNER_WRAITH2)
+	{
+		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Texture_MonsterName"),
+			TEXT("Com_Texture"), (CComponent**)&m_pTexture)))
+			return E_FAIL;
 
+	}
 	return S_OK;
 }
 
@@ -225,7 +233,7 @@ CMonsterName * CMonsterName::Create(ID3D11Device * pDevice, ID3D11DeviceContext 
 	CMonsterName * pInstance = new CMonsterName(pDevice, pContext);
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("HPBar Create Fail");
+		MSG_BOX("CMonsterName Create Fail");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
@@ -236,7 +244,7 @@ CGameObject * CMonsterName::Clone(void * pArg)
 	CMonsterName * pInstance = new CMonsterName(*this);
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("HPBar Clone Fail");
+		MSG_BOX("CMonsterName Clone Fail");
 		Safe_Release(pInstance);
 	}
 	return pInstance;

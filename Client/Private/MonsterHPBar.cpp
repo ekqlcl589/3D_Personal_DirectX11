@@ -97,19 +97,7 @@ void CMonsterHPBar::Tick(_double TimeDelta)
 			HP = static_cast<CAncient_StonGolem*>(pMonster)->Get_Info()._Hp;
 			Dead = static_cast<CAncient_StonGolem*>(pMonster)->Get_Dead();
 		}
-		else if (m_eOwner == OWNER_CREATURE)
-		{
-			MaxHP = static_cast<CGianticCreature*>(pMonster)->Get_Info()._MaxHp;
-			HP = static_cast<CGianticCreature*>(pMonster)->Get_Info()._Hp;
-			Dead = static_cast<CGianticCreature*>(pMonster)->Get_Dead();
-		}
 
-		else if (m_eOwner == OWNER_WRAITH)
-		{
-			MaxHP = static_cast<CGrudgeWraith*>(pMonster)->Get_Info()._MaxHp;
-			HP = static_cast<CGrudgeWraith*>(pMonster)->Get_Info()._Hp;
-			Dead = static_cast<CGrudgeWraith*>(pMonster)->Get_Dead();
-		}
 		else if (m_eOwner == OWNER_WRAITH2)
 		{
 			MaxHP = static_cast<CCursedWraith*>(pMonster)->Get_Info()._MaxHp;

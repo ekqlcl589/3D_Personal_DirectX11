@@ -35,7 +35,7 @@ HRESULT CCursedWraith::Initialize(void * pArg)
 	//if (FAILED(Add_Coll()))
 	//	return	E_FAIL;
 
-	_float3 fPosition = { 0.f, 0.f, 5.f }; // 임시 위치값
+	_float3 fPosition = { 0.f, 0.f, -5.f }; // 임시 위치값
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPosition));
 
 	m_tInfo._MaxHp = 1000.f;
@@ -211,6 +211,7 @@ void CCursedWraith::OnCollision(CGameObject * pObj)
 	case Engine::OBJ_MONSTER_BODY:
 		break;
 	case Engine::OBJ_MONSTER_BALL:
+		m_bBlow = false;
 		break;
 	case Engine::OBJ_END:
 		break;
@@ -282,7 +283,11 @@ void CCursedWraith::EnterCollision(CGameObject * pObj)
 		break;
 	case Engine::OBJ_MONSTER_BALL:
 		// 그러다가 그 공을 얘가 맞으면 기절상태 시전 그러기 위한 변수 하나 더 필요할 듯 
-		RTBlow();
+		if (m_bHit)
+		{
+			m_tInfo._Hp -= 10.f;
+			m_bBlow = true;
+		}
 		break;
 	case Engine::OBJ_END:
 		break;
@@ -322,7 +327,11 @@ void CCursedWraith::Animation_State(_double TimeDelta)
 		Summons();
 	}
 
-	//Avoid(TimeDelta); // 스킬을 쓰고 나면 무조건 한 번은 뒤로 도망 
+	Avoid(TimeDelta); // 스킬을 쓰고 나면 무조건 한 번은 뒤로 도망 
+
+	RTBlow(TimeDelta);
+
+	//CombatWait(TimeDelta);
 
 }
 
@@ -427,11 +436,11 @@ void CCursedWraith::Avoid(_double TimeDelta)
 		m_tInfo.CurrAnim = CW_Avoid;
 		m_pTransformCom->Go_Back(0.9 * TimeDelta);
 
-		if (m_tInfo.PrevAnim == CW_Avoid && m_AnimTimeAcc >= (m_AnimDuration / 2) + 5.0)
+		if (m_tInfo.PrevAnim == CW_Avoid && m_AnimTimeAcc >= (m_AnimDuration / 2) + 2.0)
 		{
+			m_bAvoid = false;
 			vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 			m_tInfo.CurrAnim = CW_Wait;
-			m_bAvoid = false;
 		}
 	}
 }
@@ -472,7 +481,8 @@ void CCursedWraith::Skill01(_double TimeDelta)
 			BallDesc.vLook = XMLoadFloat3(&fPos) - vPosition;// vPosition; // 방향은 몬스터 위치 - 내(공) 위치 
 			BallDesc.eType = CBlackBall::TYPE_8;
 
-			pBall = Pinstance->Clone_GameObject_Add_Layer(TEXT("Prototype_GameObject_Effect_Ball"), &BallDesc);
+			if (FAILED(Pinstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Ball"), TEXT("Layer_Monster_Effect"), &BallDesc)))
+				return;
 
 			RELEASE_INSTANCE(CGameInstance);
 		}
@@ -520,9 +530,8 @@ void CCursedWraith::Skill02(_double TimeDelta)
 
 			CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-			CGameObject* pBall = nullptr;
-
-			pBall = pInstance->Clone_GameObject_Add_Layer(TEXT("Prototype_GameObject_Effect_Ball"), &BallDesc);
+			if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Ball"), TEXT("Layer_Monster_Effect"), &BallDesc)))
+				return;
 
 			RELEASE_INSTANCE(CGameInstance);
 		}
@@ -550,20 +559,17 @@ void CCursedWraith::Skill03(_double TimeDelta)
 	{
 		CBlackBall::BALLDESC BallDesc;
 		ZeroMemory(&BallDesc, sizeof(CBlackBall::BALLDESC));
-		//_vector vPosition = m_vTargetPos;
 
-		BallDesc.vPosition = m_vTargetPos; // 생성 위치는 몬스터 의 
-		BallDesc.vLook = m_vTargetPos;// -m_vPosition; // 방향은 타겟 - 위치 로 
+		BallDesc.vPosition = m_vPosition; // 생성 위치는 몬스터 위 LookAt 으로 생성될 때 플레이어 위치를 향해 날아감 
 		BallDesc.eType = CBlackBall::TYPE_DDEBASI;
 		
 		XMStoreFloat3(&m_fTargetPos, BallDesc.vPosition);
 
 		CGameObject* pMonster = nullptr;
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-		pMonster = pInstance->Clone_GameObject_Add_Layer(TEXT("Prototype_GameObject_Effect_Ball"), &BallDesc);
-
-		//CGameObject* pTexture = nullptr;
-		//pTexture = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_TargetTexture"), &m_fTargetPos);
+	
+		if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Ball"), TEXT("Layer_Monster_Effect"), &BallDesc)))
+			return ;
 		
 		RELEASE_INSTANCE(CGameInstance);
 
@@ -587,7 +593,9 @@ void CCursedWraith::Summons()
 
 		CGameObject* pMonster = nullptr;
 
-		pMonster = pInstance->Clone_GameObject_Add_Layer(TEXT("Prototype_GameObject_Monster2"));
+		//pMonster = pInstance->Clone_GameObject_Add_Layer(TEXT("Prototype_GameObject_Monster2"));
+		if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster2"), TEXT("Layer_Monster_JJol"))))
+			return;
 
 		RELEASE_INSTANCE(CGameInstance);
 
@@ -598,11 +606,20 @@ void CCursedWraith::Summons()
 	}
 }
 
-void CCursedWraith::RTBlow()
+void CCursedWraith::RTBlow(_double TimeDelta)
 {
-	m_tInfo.CurrAnim = CW_RTBLOW_AIR_F;
+	if (m_bBlow)
+	{
+		m_tInfo.CurrAnim = CW_RTSTAND_BIG_F;
+		m_pTransformCom->Go_Back(0.5 * TimeDelta);
+	}
+	
 
-	//나머지는 다른 함수에서 호출 
+	if (m_tInfo.PrevAnim == CW_RTSTAND_BIG_F && true == m_pModelCom->Get_AnimFinished())
+	{
+		m_bBlow = false;
+		m_tInfo.CurrAnim = CW_Wait;
+	}
 }
 
 void CCursedWraith::Use_Skill(_double TimeDelta)
@@ -672,12 +689,26 @@ void CCursedWraith::Hit(_double TimeDelta)
 	{
 
 		m_pTransformCom->Go_Back(TimeDelta * 1.0);
-		//m_tInfo.CurrAnim = CW_RTSTAND_BIG_F;
 		m_tInfo._Hit = false;
 	}
+		//m_tInfo.CurrAnim = CW_RTSTAND_BIG_F;
 
 	if (m_tInfo.PrevAnim == CW_RTSTAND_BIG_F && true == m_pModelCom->Get_AnimFinished())
 		m_tInfo.CurrAnim = CW_Wait;
+}
+
+void CCursedWraith::CombatWait(_double TimeDelta)
+{
+	if (m_tInfo.PrevAnim == CW_RTBLOW_AIR_F && true == m_pModelCom->Get_AnimFinished())
+	{
+		m_tInfo.CurrAnim = CW_RTBLOW_AIR_FALL_F;
+	}
+
+	if (m_tInfo.PrevAnim == CW_RTBLOW_AIR_FALL_F && true == m_pModelCom->Get_AnimFinished())
+	{
+		m_tInfo.CurrAnim = CW_RTBLOW_DOWN_F;
+	}
+
 }
 
 HRESULT CCursedWraith::Add_Components()

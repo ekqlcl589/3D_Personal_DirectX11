@@ -1115,20 +1115,27 @@ void CTSPlayer::Jump_Attack(_double TimeDelta)
 	if (true == m_bJump)
 	{
 		m_AttackCheck = true;
+		WeaponBoneUpdate();
 		m_tInfo.CurrAnim = TS_AIR_COMBO01;
 	}
 
 	if (m_tInfo.PrevAnim == TS_AIR_COMBO01 && true != m_pModelCom->Get_AnimFinished())
+	{
+		WeaponBoneUpdate();
 		m_tInfo.CurrAnim = TS_AIR_COMBO03;
+
+	}
 
 	if (m_tInfo.PrevAnim == TS_AIR_COMBO03 && true != m_pModelCom->Get_AnimFinished())
 	{
+		WeaponBoneUpdate();
 		m_tInfo.CurrAnim = TS_AIR_COMBO04;
 		m_pModelCom->Set_AnimTick(30.0);
 	}
 
 	if (m_tInfo.PrevAnim == TS_AIR_COMBO04 && true != m_pModelCom->Get_AnimFinished())
 	{
+		WeaponBoneUpdate();
 		m_tInfo.CurrAnim = TS_AIR_COMBO04_LENDING;
 		m_JumpAttack = false;
 		m_bLendiongCheck = false;
@@ -1363,12 +1370,13 @@ void CTSPlayer::E_Skill(_double TimeDelta)
 	}
 	if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_START &&m_AnimTimeAcc >= (m_AnimDuration / 2) && m_AnimTimeAcc <= (m_AnimDuration / 2) + 1.0)
 	{
-		WeaponBoneUpdate();
+		for(_uint i = 0; i < 30; i++)
+			WeaponBoneUpdate();
+
 		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 4.0f);
 	}
 	if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_START &&m_AnimTimeAcc >= (m_AnimDuration / 2) + 80.0)
 	{
-		WeaponBoneUpdate();
 		m_tInfo.CurrAnim = TS_SKILL_OUTRAGE_END;
 		m_Eskill = false;
 		m_AttackCheck = false;

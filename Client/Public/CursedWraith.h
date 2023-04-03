@@ -42,7 +42,7 @@ public:
 
 	void Summons();
 
-	void RTBlow();
+	void RTBlow(_double TimeDelta);
 
 	void Use_Skill(_double TimeDelta);
 	void Use_Skill_Next(_double TimeDelta);
@@ -50,6 +50,8 @@ public:
 	void BallCreate(_uint iCount);
 
 	void Hit(_double TimeDelta);
+
+	void CombatWait(_double TimeDelta);
 
 public:
 	CURSEDWRAITHINFO Get_Info() { return m_tInfo; }
@@ -91,6 +93,8 @@ private:
 	_bool m_bAvoid = false;
 
 	_bool m_bHit = false;
+
+	_bool m_bBlow = false;
 
 	_float Damage = 0;
 

@@ -64,6 +64,9 @@ private:
 	_float Damage = 0.f;
 	_double m_LifeTime = 0.f;
 
+	_bool m_bTakeHit = false;
+	_bool m_Hit = false;
+
 private:
 	BALLDESC m_BallDesc;
 

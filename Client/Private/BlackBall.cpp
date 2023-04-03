@@ -42,9 +42,9 @@ HRESULT CBlackBall::Initialize(void * pArg)
 		XMStoreFloat3(&m_fPos, m_vPosition);
 		m_fPos.y = 1.5f;
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_fPos)); // 생성시킬 때 y에 1.5 더해줌
-		m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_vLook* fScale.z);
 		m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVectorSet(1.0f, 0.f, 0.f, 0.f) * fScale.x);
-		m_pTransformCom->Set_State(CTransform::STATE_UP, XMVectorSet(0.0f, 1.f, 0.f, 0.f)* fScale.y);
+		m_pTransformCom->Set_State(CTransform::STATE_UP, XMVectorSet(0.0f, 1.f, 0.f, 0.f) * fScale.y);
+		m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_vLook * fScale.z);
 
 	}
 	else if (m_BallDesc.eType == TYPE_3)
@@ -57,29 +57,18 @@ HRESULT CBlackBall::Initialize(void * pArg)
 		m_vLook = XMVector3Normalize(m_BallDesc.vLook);
 
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_fPos));
-		m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_vLook);
-		m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVectorSet(1.0f, 0.f, 0.f, 0.f));
-		m_pTransformCom->Set_State(CTransform::STATE_UP, XMVectorSet(0.0f, 1.f, 0.f, 0.f));
+		m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVectorSet(1.0f, 0.f, 0.f, 0.f)* fScale.x);
+		m_pTransformCom->Set_State(CTransform::STATE_UP, XMVectorSet(0.0f, 1.f, 0.f, 0.f)* fScale.y);
+		m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_vLook * fScale.z);
 
 	}
 	else if (m_BallDesc.eType == TYPE_DDEBASI)
 	{
 		m_vPosition = m_BallDesc.vPosition;
-		m_vLook = XMVector3Normalize(m_BallDesc.vLook);
+		//m_vLook = XMVector3Normalize(m_BallDesc.vLook);
 
 		XMStoreFloat3(&m_fPos, m_vPosition);
 		m_fPos.y = 20.f;
-
-		//_float x;
-		//_matrix matRotate = XMMatrixIdentity();
-		//x = XMVectorGetX(XMVector3Length(m_vLook));
-		//matRotate = XMMatrixRotationY(x);
-
-		////m_vLook = XMVector3TransformNormal(m_vLook, matRotate);
-		//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_fPos));
-		//m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_vLook);
-
-		//m_pTransformCom->Rotation(XMVectorSet(1.0f, 0.f, 0.f, 0.f), XMConvertToRadians(90.0f));
 		
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_fPos));
 
@@ -174,7 +163,12 @@ void CBlackBall::Tick(_double TimeDelta)
 				static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::LOOK, 0.5f, 0.3f);
 		}
 		else
-			m_pTransformCom->Go_Straight(TimeDelta * 1.5f);
+		{
+			if (!m_Hit)
+				m_pTransformCom->Go_Straight(TimeDelta * 1.5f);
+			else
+				m_pTransformCom->Go_Back(TimeDelta * 1.5f);
+		}
 	}
 }
 
@@ -258,6 +252,12 @@ void CBlackBall::EnterCollision(CGameObject * pObj)
 {
 	COLLISIONSTATE eType = pObj->Get_ObjType();
 
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	CGameObject* pPlayer = nullptr;
+	pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+	m_bTakeHit = static_cast<CTSPlayer*>(pPlayer)->Get_Attack();
+	RELEASE_INSTANCE(CGameInstance);
+
 	switch (eType)
 	{
 	case Engine::OBJ_PLAYER:
@@ -271,6 +271,8 @@ void CBlackBall::EnterCollision(CGameObject * pObj)
 		break;
 	case Engine::OBJ_WEAPON_KARMA14:
 		// 플레이어가 공격중일 때 검 과 볼이 만나면 look을 반사해서 날림 
+		if (m_bTakeHit)
+			m_Hit = true;
 		break;
 	case Engine::OBJ_BOSS2:
 		break;
@@ -347,7 +349,8 @@ HRESULT CBlackBall::SetUp_ShaderResources()
 	_float3 fPos;
 	XMStoreFloat3(&fPos, vPos);
 
-	float U = fPos.z;
+
+		_float U = fPos.z;	
 
 	if (FAILED(m_pShaderCom->Set_RawValue("g_fUVData", &U, sizeof(float))))
 		return E_FAIL;

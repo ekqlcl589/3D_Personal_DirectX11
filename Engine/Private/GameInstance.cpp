@@ -98,7 +98,9 @@ HRESULT CGameInstance::Tick_Engine(_double TimeDelta)
 
 		m_pCollision_Mgr->Check_Collision(OBJ_BOSS1, OBJ_WEAPON_KARMA14); // 칼, Cursed 충돌
 		m_pCollision_Mgr->Check_Collision(OBJ_BOSS2, OBJ_WEAPON_KARMA14); //칼, Grudge 충돌 인데 왜 터지냐 시발
-		
+		m_pCollision_Mgr->Check_Collision(OBJ_MONSTER_BALL, OBJ_WEAPON_KARMA14);
+		m_pCollision_Mgr->Check_Collision(OBJ_BOSS1, OBJ_MONSTER_BALL); // 칼, Cursed 충돌
+
 	}
 	
 	m_pObject_Manager->LateTick(TimeDelta); 

@@ -182,15 +182,15 @@ void CCollisionMgr::Check_Collision(COLLISIONSTATE eType, COLLISIONSTATE eType2)
 	{
 		for (auto& Src : m_mapObj[eType])
 		{
+			if (nullptr == Dest || nullptr == Src)
+				return;
+
 			if (Dest->Get_Dead())
 				Src->Erase_Collied(Dest);
 			if (Src->Get_Dead())
 				Dest->Erase_Collied(Src);
 			if (Dest->Get_Dead() || Src->Get_Dead())
-				continue;
-			
-			if (nullptr == Dest || nullptr == Src)
-				return;
+				continue;			
 
 			// 충돌한 경우
 			if (Is_Colli_Dist(Dest, Src))

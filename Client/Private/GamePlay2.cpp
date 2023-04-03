@@ -6,6 +6,7 @@
 #include "Cube.h"
 #include "Monster.h"
 #include "TestTile.h"
+#include "MonsterName.h"
 #include "MonsterHPBar.h"
 
 CGamePlay2::CGamePlay2(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -186,6 +187,12 @@ HRESULT CGamePlay2::Ready_MonsterUI(const _tchar * pLayerTag)
 	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_HPBar"), pLayerTag, &Owner)))
 		return E_FAIL;
 
+	CMonsterName::OWNER Name;
+	Name = CMonsterName::OWNER_WRAITH2;
+
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Monster_Name"), pLayerTag, &Name)))
+		return E_FAIL;
+	
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
