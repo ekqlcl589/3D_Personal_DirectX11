@@ -198,6 +198,7 @@
     <ClInclude Include="..\Public\PlayerTop.h" />
     <ClInclude Include="..\Public\Player_Basic_Combo.h" />
     <ClInclude Include="..\Public\Player_Body.h" />
+    <ClInclude Include="..\Public\Player_Particle.h" />
     <ClInclude Include="..\Public\Player_Rage_Arma.h" />
     <ClInclude Include="..\Public\Player_Skill_RockBreak.h" />
     <ClInclude Include="..\Public\ProjectileSton.h" />
@@ -256,6 +257,7 @@
     <ClCompile Include="..\Private\PlayerTop.cpp" />
     <ClCompile Include="..\Private\Player_Basic_Combo.cpp" />
     <ClCompile Include="..\Private\Player_Body.cpp" />
+    <ClCompile Include="..\Private\Player_Particle.cpp" />
     <ClCompile Include="..\Private\Player_Rage_Arma.cpp" />
     <ClCompile Include="..\Private\Player_Skill_RockBreak.cpp" />
     <ClCompile Include="..\Private\ProjectileSton.cpp" />
@@ -295,6 +297,8 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMode_NormalMap.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCubeTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxModel.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxModel_Test.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPointInstance.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTerrain.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTexHp.hlsl" />

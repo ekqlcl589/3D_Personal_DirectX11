@@ -3,6 +3,7 @@
 #include "MonsterWeapon.h"
 #include "GameInstance.h"
 #include "TargetCamera.h"
+#include "ProjectileSton.h"
 #include "KeyMgr.h"
 #include "Effect.h"
 #include "Bone.h"
@@ -377,6 +378,9 @@ void CAncient_StonGolem::Combat_Wait(_double TimeDelta)
 		m_bAttack = false;
 	}
 
+	if (m_PrevAnim == S_SKILL02 && m_AnimTimeAcc >= 97.0 && m_AnimTimeAcc <= 98.0)
+		CProjectileSton::m_bThrow = true;
+
 	if (m_PrevAnim == S_SKILL02 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 91.0) // 그리고 1번 애님 끝나면 바로 2번 실행 
 	{
 		m_CurrAnim = S_WAIT;
@@ -513,6 +517,8 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 
 	Set_Recycle_Skill4(TimeDelta);
 
+	Set_Skill09(TimeDelta);
+
 	RT_Down();
 
 	Run(TimeDelta);
@@ -536,7 +542,10 @@ void CAncient_StonGolem::Attack_Go(_double TimeDelta)
 	if (true == m_bAttack && m_PrevAnim == S_SKILL01)
 	{
 		if (m_pModelCom->Get_AnimTimeAcc() >= 50.0 && m_pModelCom->Get_AnimTimeAcc() <= 51.0)
+		{
+			Add_Effect2();
 			static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.1f);
+		}
 
 		if (m_pModelCom->Get_AnimTimeAcc() >= 60.0 && m_pModelCom->Get_AnimTimeAcc() <= 65.0)
 		{
@@ -549,7 +558,10 @@ void CAncient_StonGolem::Attack_Go(_double TimeDelta)
 		}
 
 		if (m_pModelCom->Get_AnimTimeAcc() >= 88.0 && m_pModelCom->Get_AnimTimeAcc() <= 89.0)
+		{
+			Add_Effect2();
 			static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.1f);
+		}
 
 	}
 
@@ -577,6 +589,7 @@ void CAncient_StonGolem::Attack_Go(_double TimeDelta)
 
 		if (m_pModelCom->Get_AnimTimeAcc() >= 68.0 && m_pModelCom->Get_AnimTimeAcc() <= 69.0)
 		{
+			Add_Effect2();
 			static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.1f);
 		}
 
@@ -587,6 +600,7 @@ void CAncient_StonGolem::Attack_Go(_double TimeDelta)
 
 		if (m_pModelCom->Get_AnimTimeAcc() >= 107.0 && m_pModelCom->Get_AnimTimeAcc() <= 109.0)
 		{
+			Add_Effect2();
 			static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.1f);
 			vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 		}
@@ -626,9 +640,6 @@ void CAncient_StonGolem::Run(_double TimeDelta)
 
 		}
 	}
-
-	Set_Skill09(TimeDelta);
-
 }
 
 void CAncient_StonGolem::Set_Skill01(_double TimeDelta)
@@ -720,14 +731,10 @@ void CAncient_StonGolem::Set_Skill07(_double TimeDelta)
 void CAncient_StonGolem::Set_Skill09(_double TimeDelta)
 {
 
-	if (m_pTransformCom->Compute_Distance(m_vTargetPos) <= 4.f)
+	if (m_pTransformCom->Compute_Distance(m_vTargetPos) <= 4.f && !m_bAttack)
 	{
-		if (false == m_bAttack &&  m_PrevAnim == S_WAIT && true == m_pModelCom->Get_AnimFinished())
-		{
-			m_bAttack = true;
-			//m_bTest = true;
-			m_CurrAnim = S_SKILL09;
-		}
+		m_CurrAnim = S_SKILL09;
+		m_bAttack = true;
 
 	}
 
@@ -827,13 +834,26 @@ HRESULT CAncient_StonGolem::Add_Effect()
 	return S_OK;
 }
 
-HRESULT CAncient_StonGolem::Add_Projectile()
+HRESULT CAncient_StonGolem::Add_Effect2()
 {
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Projectile"), TEXT("Layer_Effect"), &m_pTransformCom->Get_State(CTransform::STATE_POSITION))))
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Projectile_Effect"), TEXT("Layer_Effect"), &m_pTransformCom->Get_State(CTransform::STATE_POSITION))))
 		return E_FAIL;
 
+	RELEASE_INSTANCE(CGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CAncient_StonGolem::Add_Projectile()
+{
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	CBone* pBoneR = m_pModelCom->Get_BonePtr("Bip001-R-Finger21");
+
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Projectile"), TEXT("Layer_Effect"), &pBoneR->Get_CombinedTransformMatrix())))
+		return E_FAIL;
+	// 이거 안 됨
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;

@@ -2,6 +2,9 @@
 #include "..\Public\ProjectileSton.h"
 #include "GameInstance.h"
 #include "TSPlayer.h"
+#include "MonsterWeapon.h"
+
+_bool CProjectileSton::m_bThrow = false;
 
 CProjectileSton::CProjectileSton(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -33,13 +36,13 @@ HRESULT CProjectileSton::Initialize(void * pArg)
 
 	m_iObjID = 13;
 
-	memcpy(&m_vPosition, pArg, sizeof(_vector));
+	memcpy(&m_matCombinedTransform, pArg, sizeof(_matrix));
 
-	XMStoreFloat3(&m_fPos, m_vPosition);
+	//XMStoreFloat3(&m_fPos, m_vPosition);
+	//
+	//m_fPos.y += 7.f;
 
-	m_fPos.y += 7.f;
-
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_fPos));
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_fPos));
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
@@ -53,9 +56,10 @@ HRESULT CProjectileSton::Initialize(void * pArg)
 
 	RELEASE_INSTANCE(CGameInstance);
 
-	m_pTransformCom->LookAt(vTargetPos);
+	//m_pTransformCom->LookAt(vTargetPos);
 
-	m_LifeTime = 2.0;
+	m_LifeTime = 10.0;
+
 	return S_OK;
 }
 
@@ -68,18 +72,31 @@ void CProjectileSton::Tick(_double TimeDelta)
 		m_LifeTime -= 1.0 * TimeDelta;
 
 		if (nullptr != m_pColliderCom)
-			m_pColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
-		if (m_LifeTime <= 0.0)
+			m_pColliderCom->Update(XMLoadFloat4x4(&m_matWorldMatrix));
+
+		if (m_bThrow)
 		{
-			m_pTransformCom->Go_Straight(3.5 * TimeDelta);
-			m_LifeTime = 0.0;
+			m_RealThrow = true;
+			//m_LifeTime = 0.0;
 		}
 
-		if (m_fPos.y <= 6.0f)
+		//if(m_RealThrow)
+		//	m_pTransformCom->Go_Back(6.5 * TimeDelta); 
+
+
+		if (m_LifeTime <= 0.0)
 		{
-			//Add_Effect();
-			Set_Dead();
+			m_bThrow = false;
+			m_LifeTime = 0.0;
+			Set_Dead(); 
 		}
+
+
+		//if (m_fPos.y <= 6.0f)
+		//{
+		//	//Add_Effect();
+		//	Set_Dead();
+		//}
 
 	}
 }
@@ -89,6 +106,9 @@ void CProjectileSton::LateTick(_double TimeDelta)
 	if (!m_bDead)
 	{
 		__super::LateTick(TimeDelta);
+
+		if(!m_bThrow)
+			XMStoreFloat4x4(&m_matWorldMatrix, m_pTransformCom->Get_WorldMatrix() * CMonsterWeapon::WorldMatrix);
 
 		if (nullptr != m_pRendererCom)
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
@@ -246,27 +266,18 @@ HRESULT CProjectileSton::SetUp_ShaderResources()
 	if (nullptr == m_pShaderCom)
 		return E_FAIL;
 
-	if (FAILED(m_pTransformCom->SetUp_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
-		return E_FAIL;
+	//if (FAILED(m_pTransformCom->SetUp_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
+	//	return E_FAIL;
 
+	if (FAILED(m_pShaderCom->Set_Matrix("g_WorldMatrix", &m_matWorldMatrix)))
+		return E_FAIL;
+	
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
 	if (FAILED(m_pShaderCom->Set_Matrix("g_ViewMatrix", &pGameInstance->Get_Transformfloat4x4(CPipeLine::TS_VIEW))))
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Set_Matrix("g_ProjMatrix", &pGameInstance->Get_Transformfloat4x4(CPipeLine::TS_PROJ))))
-		return E_FAIL;
-
-	RELEASE_INSTANCE(CGameInstance);
-
-	return S_OK;
-}
-
-HRESULT CProjectileSton::Add_Effect()
-{
-	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Projectile_Effect"), TEXT("Layer_Effect"), &m_pTransformCom->Get_State(CTransform::STATE_POSITION))))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);

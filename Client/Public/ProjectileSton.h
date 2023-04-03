@@ -37,9 +37,6 @@ private:
 	HRESULT SetUp_ShaderResources();
 
 public:
-	HRESULT Add_Effect();
-
-public:
 	CShader* m_pShaderCom = { nullptr };
 	CRenderer* m_pRendererCom = { nullptr };
 	CTransform*	m_pTransformCom = { nullptr };
@@ -50,9 +47,17 @@ private:
 	_vector m_vLook;
 	_float3 m_fPos;
 
+	_matrix m_matCombinedTransform;
+
+	_float4x4 m_matWorldMatrix;
+
 	_bool Dead = false;
 	_float Damage = 0.f;
 	_double m_LifeTime = 0.f;
+
+public:
+	static _bool m_bThrow;
+	_bool m_RealThrow = false;
 
 public:
 	static CProjectileSton* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

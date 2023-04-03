@@ -329,10 +329,8 @@ void CGrudgeWraith::Animation_State(_double TimeDelta)
 		m_bSkill3 = true; // ÀÌÆåÆ® 
 	
 	Skill01(TimeDelta);
-	Skill02(TimeDelta);
 	Skill05(TimeDelta);
-
-	//Use_Skill_Next(TimeDelta);
+	Skill02(TimeDelta);
 
 	Combat_Wait(TimeDelta);
 
@@ -469,10 +467,10 @@ void CGrudgeWraith::Use_Skill(_double TimeDelta)
 		m_bSkill1 = true;
 		break;
 	case 1:
-		m_bSkill2 = true;
+		m_bSkill5 = true;
 		break;
 	case 2:
-		m_bSkill5 = true;
+		m_bSkill2 = true;
 		break;
 	default:
 		break;
@@ -737,7 +735,8 @@ void CGrudgeWraith::Skill05(_double TimeDelta)
 
 		CGameObject* pBlade = nullptr;
 
-		pBlade = pInstance->Clone_GameObject_Add_Layer(TEXT("Prototype_GameObject_Monster_Blade"), &fPosition);
+		if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_Blade"), TEXT("Layer_Monster_Blade_Effect"), &fPosition)))
+			return;
 
 		RELEASE_INSTANCE(CGameInstance);
 

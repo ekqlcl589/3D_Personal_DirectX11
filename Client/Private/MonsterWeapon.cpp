@@ -7,6 +7,8 @@
 #include "GrudgeWraith.h"
 #include "CursedWraith.h"
 
+_matrix CMonsterWeapon::WorldMatrix = XMMatrixIdentity();
+
 CMonsterWeapon::CMonsterWeapon(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
 {
@@ -112,6 +114,9 @@ void CMonsterWeapon::LateTick(_double TimeDelta)
 		ParentMatrix.r[2] = XMVector3Normalize(ParentMatrix.r[2]);
 
 		XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * ParentMatrix * m_Weapon.pParentTransform->Get_WorldMatrix());
+	
+		if (m_Weapon.WeaponType == WEAPON_MONSTER_R)
+			WorldMatrix = XMLoadFloat4x4(&m_WorldMatrix);
 	}
 }
 

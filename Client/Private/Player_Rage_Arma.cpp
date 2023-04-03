@@ -76,7 +76,7 @@ HRESULT CPlayer_Rage_Arma::Render()
 		for (_uint i = 0; i < iNumMeshes; i++)
 		{
 			m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
-			//m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_NoiseTexture", i, aiTextureType_NOIS);
+			//m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_NoiseTexture", i, aiTextureType_DIFFUSE);
 			/*m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);*/
 
 			//m_pModelCom->SetUp_BoneMatrices(m_pShaderCom, "g_BoneMatrix", i);
@@ -149,10 +149,13 @@ HRESULT CPlayer_Rage_Arma::Add_Components()
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModel"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModel_Test"),
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Noise"),
+		TEXT("Com_Texture"), (CComponent**)&m_pTextureCom)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -177,6 +180,21 @@ HRESULT CPlayer_Rage_Arma::SetUp_ShaderResources()
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
+
+	if (FAILED(m_pTextureCom->SetUp_ShaderResource(m_pShaderCom, "g_NoiseTexture")))
+		return E_FAIL;
+
+	_float4 uiHp = { 0.f, 0.f, 0.f, 1.f };
+	float uiH =1.f;
+	float uip =0.f;
+
+	if (FAILED(m_pShaderCom->Set_RawValue("dissolveColor", &uiHp, sizeof(_float4))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Set_RawValue("dissolveAmount", &uiH, sizeof(float))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Set_RawValue("dissolveWidth", &uip, sizeof(float))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -213,5 +231,6 @@ void CPlayer_Rage_Arma::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);
+	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pRendererCom);
 }

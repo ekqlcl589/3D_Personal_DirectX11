@@ -1370,7 +1370,7 @@ void CTSPlayer::E_Skill(_double TimeDelta)
 	}
 	if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_START &&m_AnimTimeAcc >= (m_AnimDuration / 2) && m_AnimTimeAcc <= (m_AnimDuration / 2) + 1.0)
 	{
-		for(_uint i = 0; i < 30; i++)
+		for(_uint i = 0; i < 10; i++)
 			WeaponBoneUpdate();
 
 		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 4.0f);

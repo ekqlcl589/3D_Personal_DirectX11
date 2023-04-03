@@ -220,6 +220,9 @@
     <Filter Include="02.GameObject\10. Effrect\Monster\ProjectileEffect">
       <UniqueIdentifier>{130cf737-c033-40f8-9579-db87bef3055d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\10. Effrect\Particle">
+      <UniqueIdentifier>{8fe1f524-089c-4f06-ae4d-c8964550f0f1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -396,6 +399,9 @@
     <ClInclude Include="..\Public\Monster_Projectile_Effect.h">
       <Filter>02.GameObject\10. Effrect\Monster\ProjectileEffect</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Player_Particle.h">
+      <Filter>02.GameObject\10. Effrect\Particle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -560,6 +566,9 @@
     <ClCompile Include="..\Private\Monster_Projectile_Effect.cpp">
       <Filter>02.GameObject\10. Effrect\Monster\ProjectileEffect</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Player_Particle.cpp">
+      <Filter>02.GameObject\10. Effrect\Particle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -600,6 +609,12 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMode_NormalMap.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPointInstance.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxModel_Test.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

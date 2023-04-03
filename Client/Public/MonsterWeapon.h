@@ -54,6 +54,9 @@ private:
 	HRESULT SetUp_ShaderResources();
 
 public:
+	static _matrix WorldMatrix;
+
+private:
 	CShader* m_pShaderCom = { nullptr };
 	CRenderer* m_pRendererCom = { nullptr };
 	CTransform*	m_pTransformCom = { nullptr };

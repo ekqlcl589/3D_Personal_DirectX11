@@ -8,6 +8,7 @@ class CRenderer;
 class CTransform;
 class CModel;
 class CCollider;
+class CTexture;
 END
 
 BEGIN(Client)
@@ -41,6 +42,7 @@ protected:
 	CRenderer* m_pRendererCom = { nullptr };
 	CTransform*	m_pTransformCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
+	CTexture* m_pTextureCom = { nullptr };
 
 protected:
 	_bool m_bActive = false;

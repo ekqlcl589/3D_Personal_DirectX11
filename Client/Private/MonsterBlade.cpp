@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\MonsterBlade.h"
 #include "GameInstance.h"
+#include "TSPlayer.h"
 
 CMonsterBlade::CMonsterBlade(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -41,7 +42,16 @@ HRESULT CMonsterBlade::Initialize(void * pArg)
 
 	pInstance->Add_Collider(m_eCollisionState, Set_ObjID(m_iObjID), this);
 
+	CGameObject* pTarget = static_cast<CTSPlayer*>(pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player")));
+
+	CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
+
+	_vector vTargetPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
+
 	RELEASE_INSTANCE(CGameInstance);
+
+	m_pTransformCom->LookAt(vTargetPos);
+
 	return S_OK;
 }
 
