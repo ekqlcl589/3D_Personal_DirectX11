@@ -1488,6 +1488,18 @@ void CTSPlayer::Add_Rock()
 	RELEASE_INSTANCE(CGameInstance);
 }
 
+HRESULT CTSPlayer::Add_Particle()
+{
+	CGameInstance * pInstance = GET_INSTANCE(CGameInstance);
+
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Player_Particle"), TEXT("Player_Particle"), &m_pTransformCom->Get_State(CTransform::STATE_POSITION))))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	return S_OK;
+}
+
 HRESULT CTSPlayer::Add_Components()
 {
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"),

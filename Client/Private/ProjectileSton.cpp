@@ -48,12 +48,6 @@ HRESULT CProjectileSton::Initialize(void * pArg)
 
 	pInstance->Add_Collider(m_eCollisionState, Set_ObjID(m_iObjID), this);
 
-	CGameObject* pTarget = static_cast<CTSPlayer*>(pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player")));
-
-	CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
-
-	_vector vTargetPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
-
 	RELEASE_INSTANCE(CGameInstance);
 
 	//m_pTransformCom->LookAt(vTargetPos);
@@ -67,6 +61,17 @@ void CProjectileSton::Tick(_double TimeDelta)
 {
 	if (!m_bDead)
 	{
+
+		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+		CGameObject* pTarget = static_cast<CTSPlayer*>(pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player")));
+
+		CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
+
+		_vector vTargetPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
+
+		RELEASE_INSTANCE(CGameInstance);
+
 		__super::Tick(TimeDelta);
 
 		m_LifeTime -= 1.0 * TimeDelta;
@@ -80,13 +85,38 @@ void CProjectileSton::Tick(_double TimeDelta)
 			//m_LifeTime = 0.0;
 		}
 
-		//if(m_RealThrow)
-		//	m_pTransformCom->Go_Back(6.5 * TimeDelta); 
+		_matrix World = XMLoadFloat4x4(&m_matWorldMatrix);
 
+		_vector vPos = World.r[3];
+		_vector	vLook = World.r[2];
+
+		_vector vDir = vTargetPos - XMLoadFloat4x4(&m_matWorldMatrix).r[3];
+
+		if (m_RealThrow)
+		{
+			vPos += XMVector3Normalize(vDir) * 1.f;
+			cout << XMVectorGetX(vPos) << " x " << XMVectorGetY(vPos) <<" y " << XMVectorGetZ(vPos) << endl;
+			vPos = XMVectorSetW(vPos, 1.f);
+
+			// 제가 고쳐놨답니다 ^-^
+			World = XMLoadFloat4x4(&m_matWorldMatrix);
+			World.r[3] = vPos;
+
+			XMStoreFloat4x4(&m_matWorldMatrix, World);
+
+			//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4x4(&m_matWorldMatrix).r[3]);
+
+		}
+		//World.r[3] = vPos;
+		//
+		//XMLoadFloat4x4(&m_matWorldMatrix) = World;
+			//m_pTransformCom->Get_State(CTransform::STATE_POSITION) += XMVector3Normalize(vDir) * 1.0 * TimeDelta);
+		//m_pTransformCom->Go_Straight(0.5 * TimeDelta);
 
 		if (m_LifeTime <= 0.0)
 		{
 			m_bThrow = false;
+			m_RealThrow = false;
 			m_LifeTime = 0.0;
 			Set_Dead(); 
 		}
@@ -107,9 +137,9 @@ void CProjectileSton::LateTick(_double TimeDelta)
 	{
 		__super::LateTick(TimeDelta);
 
-		if(!m_bThrow)
+		if (!m_bThrow)
 			XMStoreFloat4x4(&m_matWorldMatrix, m_pTransformCom->Get_WorldMatrix() * CMonsterWeapon::WorldMatrix);
-
+		
 		if (nullptr != m_pRendererCom)
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 	}

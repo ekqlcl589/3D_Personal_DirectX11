@@ -697,6 +697,8 @@ void CAncient_StonGolem::Set_Skill05(_double TimeDelta)
 		m_bAttack = true;
 
 		m_CurrAnim = S_SKILL05_1;
+		Add_Particle();
+
 	}
 
 	if (m_PrevAnim == S_SKILL05_1 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 59.0)
@@ -854,6 +856,18 @@ HRESULT CAncient_StonGolem::Add_Projectile()
 	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Projectile"), TEXT("Layer_Effect"), &pBoneR->Get_CombinedTransformMatrix())))
 		return E_FAIL;
 	// ÀÌ°Å ¾È µÊ
+	RELEASE_INSTANCE(CGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CAncient_StonGolem::Add_Particle()
+{
+	CGameInstance * pInstance = GET_INSTANCE(CGameInstance);
+
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Golem_Particle"), TEXT("Golem_Particle"), &m_pTransformCom->Get_State(CTransform::STATE_POSITION))))
+		return E_FAIL;
+
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;

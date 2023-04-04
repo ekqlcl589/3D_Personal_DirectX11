@@ -91,6 +91,8 @@ HRESULT CMouse::Render()
 	m_pShaderCom->Begin(0);
 
 	m_pBufferCom->Render();
+
+	return S_OK;
 }
 
 HRESULT CMouse::Add_Components()

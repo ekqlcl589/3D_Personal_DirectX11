@@ -223,6 +223,12 @@
     <Filter Include="02.GameObject\10. Effrect\Particle">
       <UniqueIdentifier>{8fe1f524-089c-4f06-ae4d-c8964550f0f1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\10. Effrect\Particle\Player">
+      <UniqueIdentifier>{83a05ea4-1d20-4b4b-b7af-e4228ab0459a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\10. Effrect\Particle\Golem">
+      <UniqueIdentifier>{93e8acae-1ccc-418e-8b22-82f459516080}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -400,7 +406,10 @@
       <Filter>02.GameObject\10. Effrect\Monster\ProjectileEffect</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Player_Particle.h">
-      <Filter>02.GameObject\10. Effrect\Particle</Filter>
+      <Filter>02.GameObject\10. Effrect\Particle\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Golem_Particle.h">
+      <Filter>02.GameObject\10. Effrect\Particle\Golem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -567,7 +576,10 @@
       <Filter>02.GameObject\10. Effrect\Monster\ProjectileEffect</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Player_Particle.cpp">
-      <Filter>02.GameObject\10. Effrect\Particle</Filter>
+      <Filter>02.GameObject\10. Effrect\Particle\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Golem_Particle.cpp">
+      <Filter>02.GameObject\10. Effrect\Particle\Golem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

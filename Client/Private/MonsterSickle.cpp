@@ -125,6 +125,7 @@ HRESULT CMonsterSickle::Render()
 
 		return S_OK;
 	}
+	return S_OK;
 }
 
 void CMonsterSickle::OnCollision(CGameObject * pObj)

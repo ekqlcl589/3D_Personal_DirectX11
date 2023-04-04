@@ -65,6 +65,8 @@ public:
 	HRESULT Add_Effect();
 	HRESULT Add_Effect2();
 	HRESULT Add_Projectile();
+	HRESULT Add_Particle();
+
 	void Set_Time();
 
 private:

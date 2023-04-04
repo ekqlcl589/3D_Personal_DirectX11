@@ -1,20 +1,20 @@
 #include "stdafx.h"
-#include "..\Public\Player_Particle.h"
+#include "..\Public\Golem_Particle.h"
 
 #include "GameInstance.h"
 
-CPlayer_Particle::CPlayer_Particle(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)	
+CGolem_Particle::CGolem_Particle(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)	
 	: CGameObject(pDevice, pContext)
 {
 }
 
-CPlayer_Particle::CPlayer_Particle(const CPlayer_Particle & rhs)	
+CGolem_Particle::CGolem_Particle(const CGolem_Particle & rhs)	
 	: CGameObject(rhs)
 {
 }
 
 
-HRESULT CPlayer_Particle::Initialize_Prototype()
+HRESULT CGolem_Particle::Initialize_Prototype()
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
@@ -22,7 +22,7 @@ HRESULT CPlayer_Particle::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CPlayer_Particle::Initialize(void * pArg)
+HRESULT CGolem_Particle::Initialize(void * pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -40,19 +40,34 @@ HRESULT CPlayer_Particle::Initialize(void * pArg)
 	//RELEASE_INSTANCE(CGameInstance);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vPosition);
 
+	m_fTime = 3.f;
+
+	m_vTarget = m_vPosition;
+
 	return S_OK;
 }
 
-void CPlayer_Particle::Tick(_double TimeDelta)
+void CGolem_Particle::Tick(_double TimeDelta)
 {
  	__super::Tick(TimeDelta);
 
+	m_fTime -= 1.0 * TimeDelta;
 
+	if (m_fTime <= 0.0)
+	{
+		m_fTime = 0.0;
+		m_bStart = true;
+	}
 
-	m_pVIBufferCom->Update(TimeDelta);
+	if (m_bStart)
+		m_pVIBufferCom->RePosition(m_vTarget, TimeDelta);
+
+	//	m_pTransformCom->Go_Back( TimeDelta);
+
+	//m_pVIBufferCom->Update(TimeDelta);
 }
 
-void CPlayer_Particle::LateTick(_double TimeDelta)
+void CGolem_Particle::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
 
@@ -61,7 +76,7 @@ void CPlayer_Particle::LateTick(_double TimeDelta)
 
 }
 
-HRESULT CPlayer_Particle::Render()
+HRESULT CGolem_Particle::Render()
 {
 	if (FAILED(__super::Render()))
 		return E_FAIL;
@@ -77,7 +92,7 @@ HRESULT CPlayer_Particle::Render()
 	return S_OK;
 }
 
-HRESULT CPlayer_Particle::Add_Components()
+HRESULT CGolem_Particle::Add_Components()
 {
 	/* For.Com_Renderer*/
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"), 
@@ -113,7 +128,7 @@ HRESULT CPlayer_Particle::Add_Components()
 	return S_OK;
 }
 
-HRESULT CPlayer_Particle::SetUp_ShaderResources()
+HRESULT CGolem_Particle::SetUp_ShaderResources()
 {
 	if (nullptr == m_pShaderCom)
 		return E_FAIL;	
@@ -137,37 +152,42 @@ HRESULT CPlayer_Particle::SetUp_ShaderResources()
 	if (FAILED(m_pTextureCom->SetUp_ShaderResource(m_pShaderCom, "g_DiffuseTexture")))
 		return E_FAIL;
 
+	float fTime = m_fTime;
+
+	if (FAILED(m_pShaderCom->Set_RawValue("g_fTime", &fTime, sizeof(float))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
-CPlayer_Particle * CPlayer_Particle::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CGolem_Particle * CGolem_Particle::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {
-	CPlayer_Particle*		pInstance = new CPlayer_Particle(pDevice, pContext);
+	CGolem_Particle*		pInstance = new CGolem_Particle(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Created : CPlayer_Particle");
+		MSG_BOX("Failed to Created : CGolem_Particle");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject * CPlayer_Particle::Clone(void* pArg)
+CGameObject * CGolem_Particle::Clone(void* pArg)
 {
-	CPlayer_Particle*		pInstance = new CPlayer_Particle(*this);
+	CGolem_Particle*		pInstance = new CGolem_Particle(*this);
 
 	/* 우ㅏㅓㄴ형데이터 외에 사본에게 필요한 추가 초기화 데이터를 처리한ㄷ.,, */
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CPlayer_Particle");
+		MSG_BOX("Failed to Cloned : CGolem_Particle");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CPlayer_Particle::Free()
+void CGolem_Particle::Free()
 {
 	__super::Free();
 

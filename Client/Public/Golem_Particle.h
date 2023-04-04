@@ -13,12 +13,12 @@ END
 
 BEGIN(Client)
 
-class CPlayer_Particle final : public CGameObject
+class CGolem_Particle final : public CGameObject
 {
 protected:
-	CPlayer_Particle(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CPlayer_Particle(const CPlayer_Particle& rhs);
-	virtual ~CPlayer_Particle() = default;
+	CGolem_Particle(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CGolem_Particle(const CGolem_Particle& rhs);
+	virtual ~CGolem_Particle() = default;
 
 public:
 	virtual	HRESULT Initialize_Prototype() override;
@@ -35,14 +35,19 @@ private:
 	CVIBuffer_Point_Instance*	m_pVIBufferCom = { nullptr };
 
 private:
-	_vector m_vPosition;
+	_vector m_vPosition; // 생성될 위치 
+	_vector m_vTarget; // 생성된 후 모여들 위치 
+
+	_bool m_bStart = false;
+
+	_float m_fTime = 3.f; // 생성 후 n초 후 한 점에 모여들기 시작 
 
 private:
 	HRESULT Add_Components();
 	HRESULT SetUp_ShaderResources();
 
 public:
-	static CPlayer_Particle* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CGolem_Particle* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 
 	virtual CGameObject* Clone(void* pArg = nullptr) override;
 

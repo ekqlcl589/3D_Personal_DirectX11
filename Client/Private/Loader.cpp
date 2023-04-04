@@ -4,6 +4,7 @@
 #include "Monster_Projectile_Effect.h"
 #include "VIBuffer_Point_Instance.h"
 #include "Player_Particle.h"
+#include "Golem_Particle.h"
 #include "ProjectileSton.h"
 #include "TargetTextrue.h"
 #include "GameInstance.h"
@@ -686,6 +687,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CPlayer_Particle::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_Golem_Particle"),
+		CGolem_Particle::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
 	m_isFinished = true;

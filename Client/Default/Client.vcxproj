@@ -175,6 +175,7 @@
     <ClInclude Include="..\Public\GamePlay.h" />
     <ClInclude Include="..\Public\GamePlay2.h" />
     <ClInclude Include="..\Public\GianticCreature.h" />
+    <ClInclude Include="..\Public\Golem_Particle.h" />
     <ClInclude Include="..\Public\GrudgeWraith.h" />
     <ClInclude Include="..\Public\Hair.h" />
     <ClInclude Include="..\Public\Loader.h" />
@@ -234,6 +235,7 @@
     <ClCompile Include="..\Private\GamePlay.cpp" />
     <ClCompile Include="..\Private\GamePlay2.cpp" />
     <ClCompile Include="..\Private\GianticCreature.cpp" />
+    <ClCompile Include="..\Private\Golem_Particle.cpp" />
     <ClCompile Include="..\Private\GrudgeWraith.cpp" />
     <ClCompile Include="..\Private\Hair.cpp" />
     <ClCompile Include="..\Private\Loader.cpp" />

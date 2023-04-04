@@ -45,6 +45,15 @@ void CPlayer_Rage_Arma::Tick(_double TimeDelta)
 	pOwner = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
 	m_bActive = static_cast<CTSPlayer*>(pOwner)->Get_Info().fSkill;
 
+	//m_Time = static_cast<CTSPlayer*>(pOwner)->Get_Info().m_FSkill;
+	if (m_bActive)
+	{
+		m_Time -= 1.0 * TimeDelta;// static_cast<CTSPlayer*>(pOwner)->Get_Info().m_FSkill;
+
+		if (m_Time <= 0.f)
+			m_Time = 0.f;
+	}
+
 	RELEASE_INSTANCE(CGameInstance);
 
 }
@@ -76,7 +85,7 @@ HRESULT CPlayer_Rage_Arma::Render()
 		for (_uint i = 0; i < iNumMeshes; i++)
 		{
 			m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
-			//m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_NoiseTexture", i, aiTextureType_DIFFUSE);
+			//m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_NoiseTexture", i, aiTextureType_NORMALS);
 			/*m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);*/
 
 			//m_pModelCom->SetUp_BoneMatrices(m_pShaderCom, "g_BoneMatrix", i);
@@ -184,15 +193,15 @@ HRESULT CPlayer_Rage_Arma::SetUp_ShaderResources()
 	if (FAILED(m_pTextureCom->SetUp_ShaderResource(m_pShaderCom, "g_NoiseTexture")))
 		return E_FAIL;
 
-	_float4 uiHp = { 0.f, 0.f, 0.f, 1.f };
-	float uiH =1.f;
-	float uip =0.f;
-
+	_float4 uiHp = { 1.f, 1.f, 1.f, 1.f };
+	float uiH = 1.0 - m_Time;
+	float uip = 1.0 - m_Time;
+	
 	if (FAILED(m_pShaderCom->Set_RawValue("dissolveColor", &uiHp, sizeof(_float4))))
 		return E_FAIL;
-	if (FAILED(m_pShaderCom->Set_RawValue("dissolveAmount", &uiH, sizeof(float))))
+	if (FAILED(m_pShaderCom->Set_RawValue("dissolveAmount", &uiH, sizeof(float)))) // À§Ä¡?
 		return E_FAIL;
-	if (FAILED(m_pShaderCom->Set_RawValue("dissolveWidth", &uip, sizeof(float))))
+	if (FAILED(m_pShaderCom->Set_RawValue("dissolveWidth", &uip, sizeof(float)))) // Æø?
 		return E_FAIL;
 
 	return S_OK;

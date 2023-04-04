@@ -79,8 +79,10 @@ private:
 	void F_Skill(_double TimeDelta);
 	void Rage_Skill(_double TimeDelta);
 
+private:
 	void WeaponBoneUpdate(); //  effect
 	void Add_Rock();
+	HRESULT Add_Particle();
 
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }

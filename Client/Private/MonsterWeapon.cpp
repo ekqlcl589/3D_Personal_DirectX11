@@ -151,6 +151,7 @@ HRESULT CMonsterWeapon::Render()
 
 		return S_OK;
 	}
+	return S_OK;
 }
 
 void CMonsterWeapon::OnCollision(CGameObject * pObj)
