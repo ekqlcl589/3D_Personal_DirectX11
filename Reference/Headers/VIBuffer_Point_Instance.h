@@ -19,7 +19,13 @@ public:
 
 public:
 	void Update(_double TimeDelta);
+	
+public: // player
+	void Player_Flare(_fvector vPosition, _double TimeDelta);
+
+public: // monster
 	void RePosition(_fvector vTarget, _double TimeDelta);
+
 
 private:
 	ID3D11Buffer* m_pVBInstance = { nullptr };

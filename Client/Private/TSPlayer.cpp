@@ -82,7 +82,6 @@ HRESULT CTSPlayer::Initialize(void * pArg)
 
 void CTSPlayer::Tick(_double TimeDelta)
 {
-
 	if (m_tInfo._Hp <= 0.f)
 	{
 		m_tInfo._Hp = 0.f;
@@ -343,6 +342,10 @@ void CTSPlayer::EnterCollision(CGameObject * pObj)
 {
 	COLLISIONSTATE eType = pObj->Get_ObjType();
 
+	CGameInstance* p = GET_INSTANCE(CGameInstance);
+	CGameObject* pCamera = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
+	RELEASE_INSTANCE(CGameInstance);
+
 	switch (eType)
 	{
 	case Engine::OBJ_PLAYER:
@@ -412,6 +415,9 @@ void CTSPlayer::EnterCollision(CGameObject * pObj)
 		cout << "낫 한테 처맞음 시발련아 " << endl;
 		break;
 	case Engine::OBJ_MONSTER_PROJECTILE:
+
+		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.1f);
+
 		Hit(15);
 		cout << "돌 투사체 한테 맞음 " << endl;
 		break;
@@ -911,6 +917,7 @@ void CTSPlayer::Attack_Special(_double TimeDelta)
 			m_bAttackState = true;
 
 			m_tInfo.CurrAnim = TS_SPECIALCOMBO_CRASH_READY;
+			m_isParticleOn = true;
 		}
 	}
 
@@ -918,8 +925,6 @@ void CTSPlayer::Attack_Special(_double TimeDelta)
 	{
 		m_AttackCheck = false;
 		m_tInfo.CurrAnim = TS_SPECIALCOMBO_CRASH;
-
-		//m_DownAttack = true;
 
 	}
 }
@@ -1207,9 +1212,19 @@ void CTSPlayer::CombatWait()
 		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
 	}
 
+	if (m_tInfo.PrevAnim == TS_SPECIALCOMBO_CRASH_READY && m_AnimTimeAcc >= 28.0 && m_AnimTimeAcc <= 29.0)
+	{
+		if (m_isParticleOn)
+		{
+			if (FAILED(Add_Particle()))
+				return;
+		}
+	}
+
 	if (false == m_AttackCheck && m_tInfo.PrevAnim == TS_SPECIALCOMBO_CRASH && m_AnimTimeAcc >= 10.0 && m_AnimTimeAcc <= 11.0)
 	{
 		m_DownAttack = true;
+		m_isParticleOn = false;
 		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.15f, 0.1f);
 	}
 	if (false == m_AttackCheck && m_tInfo.PrevAnim == TS_SPECIALCOMBO_CRASH && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 10.0) // CRASH가 두 번 들어 갔다가 끊기는 느낌 

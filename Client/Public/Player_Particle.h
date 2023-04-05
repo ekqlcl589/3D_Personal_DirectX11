@@ -36,6 +36,9 @@ private:
 
 private:
 	_vector m_vPosition;
+	_vector m_vTarget; // 생성된 후 모여들 위치 
+
+	_bool m_isDead = false;
 
 private:
 	HRESULT Add_Components();

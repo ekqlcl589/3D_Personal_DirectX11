@@ -89,6 +89,8 @@ public:
 
 	CModel* Get_Model() { return m_pModelCom; }
 
+	_bool Get_IsParticle() { return m_isParticleOn; }
+
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CRenderer* m_pRendererCom = { nullptr };
@@ -164,6 +166,8 @@ private:
 	_bool m_bTest = false;
 
 	_bool m_DownAttack = false;
+
+	_bool m_isParticleOn = false;
 
 private:
 	_bool m_Eskill = false;

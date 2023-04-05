@@ -188,8 +188,37 @@ void CVIBuffer_Point_Instance::Update(/*_fmatrix WorldMatrix, */_double TimeDelt
 			((VTXMATRIX*)SubResource.pData)[i].vPosition.y = m_pOldHeight[i];
 	}
 	
+	m_pContext->Unmap(m_pVBInstance, 0);
+}
 
+void CVIBuffer_Point_Instance::Player_Flare(_fvector vPosition, _double TimeDelta)
+{
+	D3D11_MAPPED_SUBRESOURCE		SubResource;
+	ZeroMemory(&SubResource, sizeof SubResource);
 
+	if (FAILED(m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource)))
+		return;
+
+	for (_uint i = 0; i < m_iNumInstance; i++)
+	{
+		XMLoadFloat4(&((VTXMATRIX*)SubResource.pData)[i].vPosition) = vPosition;
+
+		//_vector vDir = vPosition - XMLoadFloat4(&((VTXMATRIX*)SubResource.pData)[i].vPosition);
+		//
+		//_vector vPos = XMLoadFloat4(&((VTXMATRIX*)SubResource.pData)[i].vPosition) += m_pSpeed[i] * XMVector3Normalize(vDir) * TimeDelta;
+		
+		((VTXMATRIX*)SubResource.pData)[i].vPosition.y += m_pSpeed[i] * TimeDelta;
+
+		//XMStoreFloat4(&((VTXMATRIX*)SubResource.pData)[i].vPosition, vPos);
+
+		if (((VTXMATRIX*)SubResource.pData)[i].vPosition.y >= 5.f)
+		{
+			((VTXMATRIX*)SubResource.pData)[i].vPosition.x = rand() % (_int(5) + 1) - (_int(5) >> 1);
+			((VTXMATRIX*)SubResource.pData)[i].vPosition.y = m_pOldHeight[i];;
+			((VTXMATRIX*)SubResource.pData)[i].vPosition.z = rand() % (_int(5) + 1) - (_int(5) >> 1);
+		}
+
+	}
 
 	m_pContext->Unmap(m_pVBInstance, 0);
 }
@@ -204,23 +233,19 @@ void CVIBuffer_Point_Instance::RePosition(_fvector vTarget, _double TimeDelta)
 
 	for (_uint i = 0; i < m_iNumInstance; i++)
 	{
-		_vector vDir = vTarget - XMLoadFloat4(&(*(VTXMATRIX*)SubResource.pData).vPosition);
-		XMVector3Normalize(vDir);
-		// 이게 안 됨 다시 
+		_vector vDir = XMLoadFloat4(&((VTXMATRIX*)SubResource.pData)[i].vPosition) - vTarget;
+		
+		_vector vPos = XMLoadFloat4(&((VTXMATRIX*)SubResource.pData)[i].vPosition) -= m_pSpeed[i] * XMVector3Normalize(vDir) * TimeDelta;
 
-		//((VTXMATRIX*)SubResource.pData)[i].vPosition.x -= m_pSpeed[i] * TimeDelta;
-		((VTXMATRIX*)SubResource.pData)[i].vPosition.y -= m_pSpeed[i] * TimeDelta;
-		((VTXMATRIX*)SubResource.pData)[i].vPosition.z -= m_pSpeed[i] * TimeDelta;
+		XMStoreFloat4(&((VTXMATRIX*)SubResource.pData)[i].vPosition, vPos);
 
-		//XMLoadFloat4(&((VTXMATRIX*)SubResource.pData)[i].vPosition) -= XMVector3Normalize(vDir) * m_pSpeed[i] * TimeDelta;
-		//((VTXMATRIX*)SubResource.pData)[i].vPosition.z -= m_pSpeed[i] * TimeDelta;
-
-		if (((VTXMATRIX*)SubResource.pData)[i].vPosition.x <= 0.f  || ((VTXMATRIX*)SubResource.pData)[i].vPosition.y <= 0.f || ((VTXMATRIX*)SubResource.pData)[i].vPosition.z <= 0.f)
+		if (((VTXMATRIX*)SubResource.pData)[i].vPosition.y <= 0.f)
 		{
-			((VTXMATRIX*)SubResource.pData)[i].vPosition.x = m_pOldHeight[i];
+			((VTXMATRIX*)SubResource.pData)[i].vPosition.x = rand() % (_int(15) + 1) - (_int(15) >> 1);
 			((VTXMATRIX*)SubResource.pData)[i].vPosition.y = m_pOldHeight[i];
-			((VTXMATRIX*)SubResource.pData)[i].vPosition.z = m_pOldHeight[i];
+			((VTXMATRIX*)SubResource.pData)[i].vPosition.z = rand() % (_int(15) + 1) - (_int(15) >> 1);
 		}
+
 	}
 	m_pContext->Unmap(m_pVBInstance, 0);
 }

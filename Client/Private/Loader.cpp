@@ -245,6 +245,14 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Particle/flare.png")))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Player_Particle"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Particle/flare1.png")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Player_Particle2"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Particle/flare2.png")))))
+		return E_FAIL;
+
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Noise"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/T_Smoke_Disolve_00.png")))))
 		return E_FAIL;
@@ -263,6 +271,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CVIBuffer_Point_Instance::Create(m_pDevice, m_pContext, 15.f, 6.f, 15.f, 3.f, 10.f, 100))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Point_Instance_Up"),
+		CVIBuffer_Point_Instance::Create(m_pDevice, m_pContext, 5.f, 1.f, 5.f, 3.f, 10.f, 100))))
+		return E_FAIL;
+	
 	lstrcpy(m_szLoadingText, TEXT("모델를 로딩중입니다."));
 
 	_matrix		LocalMatrix = XMMatrixIdentity();

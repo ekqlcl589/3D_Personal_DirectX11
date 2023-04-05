@@ -42,7 +42,7 @@ HRESULT CAncient_StonGolem::Initialize(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPosition));
 
 	m_eType._MaxHp = 1000.f;
-	m_eType._Hp = 1000.f;
+	m_eType._Hp = 310.f;
 
 	m_f = m_pModelCom->Get_AnimTick();
 
@@ -404,6 +404,17 @@ void CAncient_StonGolem::Combat_Wait(_double TimeDelta)
 		m_CurrAnim = S_WAIT;
 	}
 
+	if (m_PrevAnim == S_SKILL05_3 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 68.0)
+	{
+		m_bAttack = false;
+		m_bSkill5 = true;
+		m_isParticleOn = false;
+		m_CurrAnim = S_WAIT;
+	}
+
+	if (m_PrevAnim == S_STANDUP_F && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 44.0)
+		m_CurrAnim = S_WAIT;
+
 	if (m_PrevAnim == S_SKILL07 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 78.0) // 그리고 1번 애님 끝나면 바로 2번 실행 
 	{
 		m_CurrAnim = S_WAIT;
@@ -494,6 +505,7 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 		{
 			m_eType._Hp = m_eType._MaxHp;
 			m_CurrAnim = S_SKILL05_3;
+			m_isParticleOn = false;
 			m_bSkill5 = true;
 		}
 
@@ -695,9 +707,11 @@ void CAncient_StonGolem::Set_Skill05(_double TimeDelta)
 	if (m_PrevAnim == S_WAIT && true != m_pModelCom->Get_AnimFinished())
 	{
 		m_bAttack = true;
-
+		m_isParticleOn = true;
 		m_CurrAnim = S_SKILL05_1;
-		Add_Particle();
+
+		if(m_isParticleOn)
+			Add_Particle();
 
 	}
 
@@ -710,14 +724,6 @@ void CAncient_StonGolem::Set_Skill05(_double TimeDelta)
 	{
 		m_CurrAnim = S_SKILL05_3;
 	}
-
-	if (m_PrevAnim == S_SKILL05_3 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 68.0)
-	{
-		m_bAttack = false;
-		m_bSkill5 = true;
-		m_CurrAnim = S_WAIT;
-	}
-
 }
 
 void CAncient_StonGolem::Set_Skill07(_double TimeDelta)
@@ -771,8 +777,12 @@ void CAncient_StonGolem::Down()
 
 void CAncient_StonGolem::RT_Down() 
 {
-	if(true == m_bDown)
+	if (true == m_bDown)
+	{
+		m_isParticleOn = false;
 		m_CurrAnim = RTDOWN_F;
+		m_bSkill5 = true;
+	}
 	
 	if (m_PrevAnim == RTDOWN_F && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 29.0)
 	{
@@ -784,10 +794,9 @@ void CAncient_StonGolem::RT_Down()
 	if (m_PrevAnim == DOWN_F && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 5.0)
 	{
 		m_CurrAnim = S_STANDUP_F;
+		m_bDown = false;
 	}
 
-	if (m_PrevAnim == S_STANDUP_F && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 44.0)
-		m_CurrAnim = S_WAIT;
 }
 
 void CAncient_StonGolem::Stand()
@@ -853,9 +862,9 @@ HRESULT CAncient_StonGolem::Add_Projectile()
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 	CBone* pBoneR = m_pModelCom->Get_BonePtr("Bip001-R-Finger21");
 
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Projectile"), TEXT("Layer_Effect"), &pBoneR->Get_CombinedTransformMatrix())))
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Projectile"), TEXT("Layer_Effect"))))
 		return E_FAIL;
-	// 이거 안 됨
+	
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;

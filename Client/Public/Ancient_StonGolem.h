@@ -61,6 +61,8 @@ public:
 public:
 	STONGOLEMANIMSTATE Get_CurrAnim() { return m_CurrAnim; }
 
+	_bool Get_isParticle() { return m_isParticleOn; }
+
 public:
 	HRESULT Add_Effect();
 	HRESULT Add_Effect2();
@@ -100,8 +102,10 @@ private:
 	_bool m_Skill1 = false;
 	_bool m_Skill2 = false;
 	_bool m_Skill7 = false;
-
+	
 	_bool m_ReCycle_Skill4 = false;
+
+	_bool m_isParticleOn = false;
 
 public:
 	static CAncient_StonGolem* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

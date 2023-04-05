@@ -2,6 +2,7 @@
 #include "..\Public\Golem_Particle.h"
 
 #include "GameInstance.h"
+#include "Ancient_StonGolem.h"
 
 CGolem_Particle::CGolem_Particle(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)	
 	: CGameObject(pDevice, pContext)
@@ -30,50 +31,60 @@ HRESULT CGolem_Particle::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;	
 
-	memcpy(&m_vPosition, pArg, sizeof(_vector));
+	memcpy(&m_vPosition, pArg, sizeof(_vector)); // 골렘의 포지션을 받아와서 골렘 포지션을 기준으로 x, y, z 로 퍼져서 생성 
 
-	//CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-	//CGameObject* pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
-	//CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_CameraTransform")));
-	//_vector TargetPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
-
-	//RELEASE_INSTANCE(CGameInstance);
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vPosition);
 
 	m_fTime = 3.f;
 
-	m_vTarget = m_vPosition;
+	//m_vTarget = m_vPosition; 
 
 	return S_OK;
 }
 
 void CGolem_Particle::Tick(_double TimeDelta)
 {
- 	__super::Tick(TimeDelta);
-
-	m_fTime -= 1.0 * TimeDelta;
-
-	if (m_fTime <= 0.0)
+	if (!m_bDead)
 	{
-		m_fTime = 0.0;
-		m_bStart = true;
+ 		__super::Tick(TimeDelta);
+
+		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+		CGameObject* pMonster = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
+		CTransform* pTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Com_Transform")));
+		_vector TargetPos = pTransform->Get_State(CTransform::STATE_POSITION);
+
+		RELEASE_INSTANCE(CGameInstance);
+		//m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vPosition); 시발.. 그냥 원점에 생성 시키고 골렘한테 모여드는 거로 하자...
+	
+		//m_pTransformCom->Set_State(CTransform::STATE_POSITION, TargetPos);
+
+
+		m_fTime -= 1.0 * TimeDelta;
+
+		if (m_fTime <= 0.0)
+		{
+			m_fTime = 0.0;
+			m_bStart = true;
+		}
+
+		if (m_bStart)
+			m_pVIBufferCom->RePosition(TargetPos, TimeDelta);
+		
+		m_isDead = static_cast<CAncient_StonGolem*>(pMonster)->Get_isParticle();
+
+		if (!m_isDead)
+			Set_Dead();
 	}
-
-	if (m_bStart)
-		m_pVIBufferCom->RePosition(m_vTarget, TimeDelta);
-
-	//	m_pTransformCom->Go_Back( TimeDelta);
-
-	//m_pVIBufferCom->Update(TimeDelta);
 }
 
 void CGolem_Particle::LateTick(_double TimeDelta)
 {
-	__super::LateTick(TimeDelta);
+	if (!m_bDead)
+	{
+		__super::LateTick(TimeDelta);
 
-	if (nullptr != m_pRendererCom)
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONLIGHT, this);
-
+		if (nullptr != m_pRendererCom)
+			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONLIGHT, this);
+	}
 }
 
 HRESULT CGolem_Particle::Render()

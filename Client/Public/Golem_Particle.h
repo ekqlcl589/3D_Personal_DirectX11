@@ -42,6 +42,8 @@ private:
 
 	_float m_fTime = 3.f; // 생성 후 n초 후 한 점에 모여들기 시작 
 
+	_bool m_isDead = false;
+
 private:
 	HRESULT Add_Components();
 	HRESULT SetUp_ShaderResources();

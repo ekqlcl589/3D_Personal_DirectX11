@@ -47,13 +47,15 @@ private:
 	_vector m_vLook;
 	_float3 m_fPos;
 
-	_matrix m_matCombinedTransform;
-
 	_float4x4 m_matWorldMatrix;
 
 	_bool Dead = false;
 	_float Damage = 0.f;
 	_double m_LifeTime = 0.f;
+
+	//CTransform* pPlayerTransform = { nullptr };
+	//
+	//_vector vTargetPos;
 
 public:
 	static _bool m_bThrow;

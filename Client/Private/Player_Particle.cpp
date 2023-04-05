@@ -2,6 +2,7 @@
 #include "..\Public\Player_Particle.h"
 
 #include "GameInstance.h"
+#include "TSPlayer.h"
 
 CPlayer_Particle::CPlayer_Particle(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)	
 	: CGameObject(pDevice, pContext)
@@ -38,27 +39,42 @@ HRESULT CPlayer_Particle::Initialize(void * pArg)
 	//_vector TargetPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
 
 	//RELEASE_INSTANCE(CGameInstance);
+	m_vTarget = m_vPosition;
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vPosition);
-
 	return S_OK;
 }
 
 void CPlayer_Particle::Tick(_double TimeDelta)
 {
- 	__super::Tick(TimeDelta);
+	if (!m_bDead)
+	{
+ 		__super::Tick(TimeDelta);
 
+		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+		CGameObject* pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+		//CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_CameraTransform")));
+		//_vector TargetPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
 
+		RELEASE_INSTANCE(CGameInstance);
 
-	m_pVIBufferCom->Update(TimeDelta);
+		m_pVIBufferCom->Player_Flare(m_vTarget, TimeDelta);
+
+		m_isDead = static_cast<CTSPlayer*>(pPlayer)->Get_IsParticle();
+
+		if (!m_isDead)
+			Set_Dead();
+	}
 }
 
 void CPlayer_Particle::LateTick(_double TimeDelta)
 {
-	__super::LateTick(TimeDelta);
+	if (!m_bDead)
+	{
+		__super::LateTick(TimeDelta);
 
-	if (nullptr != m_pRendererCom)
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONLIGHT, this);
-
+		if (nullptr != m_pRendererCom)
+			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONLIGHT, this);
+	}
 }
 
 HRESULT CPlayer_Particle::Render()
@@ -96,7 +112,7 @@ HRESULT CPlayer_Particle::Add_Components()
 		return E_FAIL;
 
 	/* For.Com_VIBuffer */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Point_Instance"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Point_Instance_Up"),
 		TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBufferCom)))
 		return E_FAIL;	
 
@@ -106,7 +122,7 @@ HRESULT CPlayer_Particle::Add_Components()
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Particle"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Player_Particle"),
 		TEXT("Com_Texture"), (CComponent**)&m_pTextureCom)))
 		return E_FAIL;	
 

@@ -36,21 +36,12 @@ HRESULT CProjectileSton::Initialize(void * pArg)
 
 	m_iObjID = 13;
 
-	memcpy(&m_matCombinedTransform, pArg, sizeof(_matrix));
-
-	//XMStoreFloat3(&m_fPos, m_vPosition);
-	//
-	//m_fPos.y += 7.f;
-
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_fPos));
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
 	pInstance->Add_Collider(m_eCollisionState, Set_ObjID(m_iObjID), this);
 
 	RELEASE_INSTANCE(CGameInstance);
-
-	//m_pTransformCom->LookAt(vTargetPos);
 
 	m_LifeTime = 10.0;
 
@@ -82,7 +73,6 @@ void CProjectileSton::Tick(_double TimeDelta)
 		if (m_bThrow)
 		{
 			m_RealThrow = true;
-			//m_LifeTime = 0.0;
 		}
 
 		_matrix World = XMLoadFloat4x4(&m_matWorldMatrix);
@@ -94,24 +84,17 @@ void CProjectileSton::Tick(_double TimeDelta)
 
 		if (m_RealThrow)
 		{
-			vPos += XMVector3Normalize(vDir) * 1.f;
+			vPos += XMVector3Normalize(vDir) * 1.f; //  타임 델타 곱하고.. 속도 주고...
 			cout << XMVectorGetX(vPos) << " x " << XMVectorGetY(vPos) <<" y " << XMVectorGetZ(vPos) << endl;
 			vPos = XMVectorSetW(vPos, 1.f);
 
-			// 제가 고쳐놨답니다 ^-^
 			World = XMLoadFloat4x4(&m_matWorldMatrix);
 			World.r[3] = vPos;
 
 			XMStoreFloat4x4(&m_matWorldMatrix, World);
 
-			//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4x4(&m_matWorldMatrix).r[3]);
 
 		}
-		//World.r[3] = vPos;
-		//
-		//XMLoadFloat4x4(&m_matWorldMatrix) = World;
-			//m_pTransformCom->Get_State(CTransform::STATE_POSITION) += XMVector3Normalize(vDir) * 1.0 * TimeDelta);
-		//m_pTransformCom->Go_Straight(0.5 * TimeDelta);
 
 		if (m_LifeTime <= 0.0)
 		{
@@ -120,13 +103,6 @@ void CProjectileSton::Tick(_double TimeDelta)
 			m_LifeTime = 0.0;
 			Set_Dead(); 
 		}
-
-
-		//if (m_fPos.y <= 6.0f)
-		//{
-		//	//Add_Effect();
-		//	Set_Dead();
-		//}
 
 	}
 }
