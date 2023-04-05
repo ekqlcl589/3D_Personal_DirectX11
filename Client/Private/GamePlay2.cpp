@@ -47,8 +47,8 @@ HRESULT CGamePlay2::Initialize()
 	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Effect_Arma"), TEXT("Player_Effect"))))
 		return E_FAIL;
 	
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_TargetTexture"), TEXT("Effect"))))
-		return E_FAIL;
+	//if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_TargetTexture"), TEXT("Effect"))))
+	//	return E_FAIL;
 	
 	RELEASE_INSTANCE(CGameInstance);
 

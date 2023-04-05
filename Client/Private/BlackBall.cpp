@@ -199,7 +199,11 @@ HRESULT CBlackBall::Render()
 		{
 			m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
 
-			m_pShaderCom->Begin(0);
+
+			if (m_BallDesc.eType == TYPE_DDEBASI)
+				m_pShaderCom->Begin(1);
+			else
+				m_pShaderCom->Begin(0);
 
 			m_pModelCom->Render(i);
 		}

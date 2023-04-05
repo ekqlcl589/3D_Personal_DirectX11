@@ -64,6 +64,8 @@ void CPlayer_Rage_Arma::LateTick(_double TimeDelta)
 
 	Set_Transform();
 
+	FadeInOut();
+
 	if (nullptr != m_pRendererCom)
 	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
@@ -101,18 +103,18 @@ HRESULT CPlayer_Rage_Arma::Render()
 
 _bool CPlayer_Rage_Arma::FadeInOut()
 {
-	if (m_Alpha >= 100 && !m_bFadeIn)
+	if (m_Alpha >= 100.f && !m_bFadeIn)
 		m_Alpha -= m_fFadeSpeed;
 
-	if (m_Alpha < 255 && m_bFadeIn)
+	if (m_Alpha < 255.f && m_bFadeIn)
 		m_Alpha += m_fFadeSpeed;
 	else
 		m_bFadeIn = false;
 
-	if (m_Alpha > 255)
-		m_Alpha = 255;
+	if (m_Alpha > 255.f)
+		m_Alpha = 255.f;
 
-	if (m_Alpha < 100)
+	if (m_Alpha < 100.f)
 	{
 		m_bDead = true;
 		return true;
@@ -194,8 +196,8 @@ HRESULT CPlayer_Rage_Arma::SetUp_ShaderResources()
 		return E_FAIL;
 
 	_float4 uiHp = { 1.f, 1.f, 1.f, 1.f };
-	float uiH = 1.0 - m_Time;
-	float uip = 1.0 - m_Time;
+	float uiH = 1.0 - m_Alpha;
+	float uip = 1.0 - m_Alpha;
 	
 	if (FAILED(m_pShaderCom->Set_RawValue("dissolveColor", &uiHp, sizeof(_float4))))
 		return E_FAIL;

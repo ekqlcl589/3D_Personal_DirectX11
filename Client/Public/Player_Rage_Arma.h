@@ -46,7 +46,7 @@ protected:
 
 protected:
 	_bool m_bActive = false;
-	_int m_Alpha = 100;
+	_float m_Alpha = 100.f;
 	_int m_fFadeSpeed = 2;
 	_bool m_bFadeIn = true;
 	_bool m_bDead = false;
