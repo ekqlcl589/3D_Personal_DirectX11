@@ -481,7 +481,7 @@ void CCursedWraith::Skill01(_double TimeDelta)
 			BallDesc.vLook = XMLoadFloat3(&fPos) - vPosition;// vPosition; // 방향은 몬스터 위치 - 내(공) 위치 
 			BallDesc.eType = CBlackBall::TYPE_8;
 
-			if (FAILED(Pinstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Ball"), TEXT("Layer_Monster_Effect"), &BallDesc)))
+			if (FAILED(Pinstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Effect_Ball"), TEXT("Layer_Monster_Effect"), &BallDesc)))
 				return;
 
 			RELEASE_INSTANCE(CGameInstance);
@@ -530,7 +530,7 @@ void CCursedWraith::Skill02(_double TimeDelta)
 
 			CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-			if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Ball"), TEXT("Layer_Monster_Effect"), &BallDesc)))
+			if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Effect_Ball"), TEXT("Layer_Monster_Effect"), &BallDesc)))
 				return;
 
 			RELEASE_INSTANCE(CGameInstance);
@@ -568,7 +568,7 @@ void CCursedWraith::Skill03(_double TimeDelta)
 		CGameObject* pMonster = nullptr;
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 	
-		if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Ball"), TEXT("Layer_Monster_Effect"), &BallDesc)))
+		if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Effect_Ball"), TEXT("Layer_Monster_Effect"), &BallDesc)))
 			return ;
 		
 		RELEASE_INSTANCE(CGameInstance);

@@ -46,6 +46,7 @@ HRESULT CBlackBall::Initialize(void * pArg)
 		m_pTransformCom->Set_State(CTransform::STATE_UP, XMVectorSet(0.0f, 1.f, 0.f, 0.f) * fScale.y);
 		m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_vLook * fScale.z);
 
+		Add_Effect();
 	}
 	else if (m_BallDesc.eType == TYPE_3)
 	{
@@ -60,6 +61,8 @@ HRESULT CBlackBall::Initialize(void * pArg)
 		m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVectorSet(1.0f, 0.f, 0.f, 0.f)* fScale.x);
 		m_pTransformCom->Set_State(CTransform::STATE_UP, XMVectorSet(0.0f, 1.f, 0.f, 0.f)* fScale.y);
 		m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_vLook * fScale.z);
+
+		Add_Effect();
 
 	}
 	else if (m_BallDesc.eType == TYPE_DDEBASI)
@@ -358,6 +361,18 @@ HRESULT CBlackBall::SetUp_ShaderResources()
 
 	if (FAILED(m_pShaderCom->Set_RawValue("g_fUVData", &U, sizeof(float))))
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CBlackBall::Add_Effect()
+{
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Effect_Fire"), TEXT("Fire_Effect"))))
+		return E_FAIL;
+	
+	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
 }

@@ -453,6 +453,7 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 		if (m_PrevAnim == S_SKILL10_1 && true == m_pModelCom->Get_AnimFinished())// m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 45.0)
 		{
 			m_eType._Hp = 0.f;
+			m_isParticleOn = false;
 			m_bDead = true;
 			//OnDead();
 			return OBJ_DEAD;

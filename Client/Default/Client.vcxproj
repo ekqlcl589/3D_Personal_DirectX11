@@ -172,6 +172,7 @@
     <ClInclude Include="..\Public\CursedWraith.h" />
     <ClInclude Include="..\Public\DynamicCamera.h" />
     <ClInclude Include="..\Public\Effect.h" />
+    <ClInclude Include="..\Public\FireEffect.h" />
     <ClInclude Include="..\Public\GamePlay.h" />
     <ClInclude Include="..\Public\GamePlay2.h" />
     <ClInclude Include="..\Public\GianticCreature.h" />
@@ -232,6 +233,7 @@
     <ClCompile Include="..\Private\CursedWraith.cpp" />
     <ClCompile Include="..\Private\DynamicCamera.cpp" />
     <ClCompile Include="..\Private\Effect.cpp" />
+    <ClCompile Include="..\Private\FireEffect.cpp" />
     <ClCompile Include="..\Private\GamePlay.cpp" />
     <ClCompile Include="..\Private\GamePlay2.cpp" />
     <ClCompile Include="..\Private\GianticCreature.cpp" />

@@ -47,9 +47,6 @@ HRESULT CGamePlay2::Initialize()
 	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Effect_Arma"), TEXT("Player_Effect"))))
 		return E_FAIL;
 	
-	//if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_TargetTexture"), TEXT("Effect"))))
-	//	return E_FAIL;
-	
 	RELEASE_INSTANCE(CGameInstance);
 
 	//LoadData(L"../Data/Cube/Cube.dat");
@@ -321,7 +318,7 @@ CGamePlay2 * CGamePlay2::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pC
 
 	if (FAILED(pInstance->Initialize()))
 	{
-		MSG_BOX("Create Fail GamePlay");
+		MSG_BOX("Create Fail GamePlay2");
 		Safe_Release(pInstance);
 	}
 	return pInstance;

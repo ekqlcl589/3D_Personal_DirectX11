@@ -195,16 +195,20 @@ HRESULT CPlayer_Rage_Arma::SetUp_ShaderResources()
 	if (FAILED(m_pTextureCom->SetUp_ShaderResource(m_pShaderCom, "g_NoiseTexture")))
 		return E_FAIL;
 
-	_float4 uiHp = { 1.f, 1.f, 1.f, 1.f };
-	float uiH = 1.0 - m_Alpha;
-	float uip = 1.0 - m_Alpha;
+	float time = m_Time;
+
+	float scale = 0.5f;
+	float Tiling = 0.1f;
+
+	_float3 Velocity = { 1.f, 1.f, 1.f };
+
+	m_pShaderCom->Set_RawValue("time", &time, sizeof(float));
+
+	m_pShaderCom->Set_RawValue("dissolveNoiseScale", &scale, sizeof(float));
+	m_pShaderCom->Set_RawValue("dissolveNoiseTiling", &Tiling, sizeof(float));
 	
-	if (FAILED(m_pShaderCom->Set_RawValue("dissolveColor", &uiHp, sizeof(_float4))))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Set_RawValue("dissolveAmount", &uiH, sizeof(float)))) // À§Ä¡?
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Set_RawValue("dissolveWidth", &uip, sizeof(float)))) // Æø?
-		return E_FAIL;
+	m_pShaderCom->Set_RawValue("dissolveNoiseVelocity", &Velocity, sizeof(_float3));
+
 
 	return S_OK;
 }

@@ -157,6 +157,9 @@
     <Filter Include="01.Utillity\09.RenderTarget\Mgr">
       <UniqueIdentifier>{efa4c7c9-77f3-4331-b81d-681fbf977020}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utillity\02. GameObject\02. AlphaBlend">
+      <UniqueIdentifier>{4fa1fb42-a855-4a37-b0ad-a425611c7876}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -318,6 +321,9 @@
     <ClInclude Include="..\Public\RenderTarget.h">
       <Filter>01.Utillity\09.RenderTarget</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\BlendObject.h">
+      <Filter>01.Utillity\02. GameObject\02. AlphaBlend</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\GameInstance.cpp">
@@ -463,6 +469,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\RenderTarget.cpp">
       <Filter>01.Utillity\09.RenderTarget</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BlendObject.cpp">
+      <Filter>01.Utillity\02. GameObject\02. AlphaBlend</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -362,6 +362,14 @@ _bool CGameInstance::isIn_WorldSpace(_fvector vPoint, _float fRadius)
 	return m_pFrustum->isIn_WorldSpace(vPoint, fRadius);
 }
 
+HRESULT CGameInstance::Set_ShaderRenderTargetResourceView(CShader * pShader, const _tchar * pTargetTag, const char * pContantName)
+{
+	if (nullptr == m_pTarget_Manager)
+		return E_FAIL;
+
+	return m_pTarget_Manager->Set_ShaderResourceView(pShader, pTargetTag, pContantName);
+}
+
 
 void CGameInstance::Release_Engine()
 {

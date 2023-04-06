@@ -73,6 +73,9 @@ public: // For Font_Mgr
 public: /* For.Frustum */
 	_bool isIn_WorldSpace(_fvector vPoint, _float fRadius = 0.f);
 
+public: /* For.Target_fManager */
+	HRESULT Set_ShaderRenderTargetResourceView(class CShader* pShader, const _tchar* pTargetTag, const char* pContantName);
+
 private:
 	class CGraphic_Device* m_pGraphic_Device = { nullptr };
 	class CLevel_Mgr* m_pLevel_Manager = { nullptr };

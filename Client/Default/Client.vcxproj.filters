@@ -217,9 +217,6 @@
     <Filter Include="02.GameObject\10. Effrect\Monster\Blade">
       <UniqueIdentifier>{3c6ca9ac-1042-4489-bfce-74964357a7c2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\10. Effrect\Monster\ProjectileEffect">
-      <UniqueIdentifier>{130cf737-c033-40f8-9579-db87bef3055d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\10. Effrect\Particle">
       <UniqueIdentifier>{8fe1f524-089c-4f06-ae4d-c8964550f0f1}</UniqueIdentifier>
     </Filter>
@@ -228,6 +225,12 @@
     </Filter>
     <Filter Include="02.GameObject\10. Effrect\Particle\Golem">
       <UniqueIdentifier>{93e8acae-1ccc-418e-8b22-82f459516080}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\10. Effrect\Monster\RockEffect">
+      <UniqueIdentifier>{130cf737-c033-40f8-9579-db87bef3055d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\10. Effrect\Monster\Fire">
+      <UniqueIdentifier>{ed120bbc-4173-465c-9e23-90332efbd574}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -403,13 +406,16 @@
       <Filter>02.GameObject\10. Effrect\Monster\Blade</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Monster_Projectile_Effect.h">
-      <Filter>02.GameObject\10. Effrect\Monster\ProjectileEffect</Filter>
+      <Filter>02.GameObject\10. Effrect\Monster\RockEffect</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Player_Particle.h">
       <Filter>02.GameObject\10. Effrect\Particle\Player</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Golem_Particle.h">
       <Filter>02.GameObject\10. Effrect\Particle\Golem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\FireEffect.h">
+      <Filter>02.GameObject\10. Effrect\Monster\Fire</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -573,13 +579,16 @@
       <Filter>02.GameObject\10. Effrect\Monster\Blade</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Monster_Projectile_Effect.cpp">
-      <Filter>02.GameObject\10. Effrect\Monster\ProjectileEffect</Filter>
+      <Filter>02.GameObject\10. Effrect\Monster\RockEffect</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Player_Particle.cpp">
       <Filter>02.GameObject\10. Effrect\Particle\Player</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Golem_Particle.cpp">
       <Filter>02.GameObject\10. Effrect\Particle\Golem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\FireEffect.cpp">
+      <Filter>02.GameObject\10. Effrect\Monster\Fire</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

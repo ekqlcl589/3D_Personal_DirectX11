@@ -52,7 +52,7 @@ protected:
 	_bool m_bDead = false;
 
 private:
-	_float m_Time = 0.f;
+	_float m_Time = 10.f;
 
 private:
 	_float4x4 m_WorldMatrix;

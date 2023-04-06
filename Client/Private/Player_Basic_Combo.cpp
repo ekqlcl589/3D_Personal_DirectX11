@@ -45,7 +45,7 @@ void CPlayer_Basic_Combo::Tick(_double TimeDelta)
 	{
 		__super::Tick(TimeDelta);
 
-		if (m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) - 3.0)
+		if (m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) - 4.0)
 		{
 			m_bFadeIn = false;
 			Set_Dead();

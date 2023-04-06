@@ -47,6 +47,8 @@ private:
 	HRESULT Add_Components();
 	HRESULT SetUp_ShaderResources();
 
+	HRESULT Add_Effect();
+
 public:
 	CShader* m_pShaderCom = { nullptr };
 	CRenderer* m_pRendererCom = { nullptr };
@@ -54,6 +56,8 @@ public:
 	CModel* m_pModelCom = { nullptr };
 
 	_bool m_bStart = { false };
+
+	_bool m_isEffectOn = true;
 
 private:
 	_vector m_vPosition;
