@@ -301,7 +301,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMode_NormalMap.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCubeTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxModel.hlsl" />
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxModel_Test.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxModels_Effect.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPointInstance.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTerrain.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTex.hlsl" />

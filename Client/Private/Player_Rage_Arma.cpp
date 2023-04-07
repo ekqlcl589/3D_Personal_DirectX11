@@ -31,7 +31,7 @@ HRESULT CPlayer_Rage_Arma::Initialize(void * pArg)
 		return E_FAIL;
 
 	m_bActive = true;
-	m_fDissolveTime = 6.f;
+	m_fDissolveTime = 5.f;
 
 	return S_OK;
 }
@@ -58,6 +58,8 @@ void CPlayer_Rage_Arma::Tick(_double TimeDelta)
 		if (m_Time <= 0.f)
 			m_Time = 0.f;
 	}
+	else
+		m_fDissolveTime = 5.f;
 
 	RELEASE_INSTANCE(CGameInstance);
 
