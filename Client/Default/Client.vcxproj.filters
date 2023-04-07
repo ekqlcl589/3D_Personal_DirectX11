@@ -232,6 +232,9 @@
     <Filter Include="02.GameObject\10. Effrect\Monster\Fire">
       <UniqueIdentifier>{ed120bbc-4173-465c-9e23-90332efbd574}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\10. Effrect\Player\Rage">
+      <UniqueIdentifier>{18c27f35-c381-4949-a618-154df20b9be6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -417,6 +420,9 @@
     <ClInclude Include="..\Public\FireEffect.h">
       <Filter>02.GameObject\10. Effrect\Monster\Fire</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\PlayerRageEffect.h">
+      <Filter>02.GameObject\10. Effrect\Player\Rage</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -589,6 +595,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\FireEffect.cpp">
       <Filter>02.GameObject\10. Effrect\Monster\Fire</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PlayerRageEffect.cpp">
+      <Filter>02.GameObject\10. Effrect\Player\Rage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

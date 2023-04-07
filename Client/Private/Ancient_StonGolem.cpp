@@ -494,6 +494,9 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 	
 	}
 
+	if(m_PrevAnim == S_RESPAN && m_AnimTimeAcc >= 249.0 && m_AnimTimeAcc <= 250.0)
+		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.7f, 0.4f);
+
 	if(m_eType._Hp <= 300.f && !m_bSkill5)
 		Set_Skill05(TimeDelta); // 체력이 25% 이하로 떨어지면 몸을 웅크리면서 체력 회복 패턴 사용 
 	

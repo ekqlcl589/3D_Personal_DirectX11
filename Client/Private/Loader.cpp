@@ -27,6 +27,7 @@
 #include "SwordShield.h"
 #include "TwoHandedSword.h"
 #include "Player_Rage_Arma.h"
+#include "PlayerRageEffect.h"
 #include "Player_Basic_Combo.h"
 #include "TwoHandedSwordWait.h"
 #include "Player_Skill_RockBreak.h"
@@ -329,7 +330,7 @@ HRESULT CLoader::Loading_ForGamePlay()
 	Local = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 
 	_matrix Local1234 = XMMatrixIdentity();
-	Local1234 = XMMatrixScaling(0.007f, 0.007f, 0.007f);
+	Local1234 = XMMatrixScaling(0.009f, 0.009f, 0.009f);
 
 	_matrix Local5234 = XMMatrixIdentity();
 	Local5234 = XMMatrixScaling(0.05f, 0.05f, 0.05f);
@@ -365,6 +366,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/BasicCombo.fbx", CModel::MODEL_ANIM, Local1234))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_RageTest"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/RageTest.fbx", CModel::MODEL_NONANIM, LocalMatrix66))))
+		return E_FAIL;
+	
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_RockBreak"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/RockBraker.fbx", CModel::MODEL_ANIM, Local5234))))
 		return E_FAIL;
@@ -705,6 +710,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CGolem_Particle::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_Player_Rage"),
+		CPlayerRageEffect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
 	m_isFinished = true;

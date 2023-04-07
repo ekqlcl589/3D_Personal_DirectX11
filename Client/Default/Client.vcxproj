@@ -195,6 +195,7 @@
     <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\Public\PlayerHPBar.h" />
     <ClInclude Include="..\Public\PlayerMPBar.h" />
+    <ClInclude Include="..\Public\PlayerRageEffect.h" />
     <ClInclude Include="..\Public\PlayerRageSkill.h" />
     <ClInclude Include="..\Public\PlayerSkill.h" />
     <ClInclude Include="..\Public\PlayerTop.h" />
@@ -256,6 +257,7 @@
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\Private\PlayerHPBar.cpp" />
     <ClCompile Include="..\Private\PlayerMPBar.cpp" />
+    <ClCompile Include="..\Private\PlayerRageEffect.cpp" />
     <ClCompile Include="..\Private\PlayerRageSkill.cpp" />
     <ClCompile Include="..\Private\PlayerSkill.cpp" />
     <ClCompile Include="..\Private\PlayerTop.cpp" />

@@ -358,18 +358,18 @@ HRESULT CBlackBall::SetUp_ShaderResources()
 	//if (FAILED(m_pShaderCom->Set_RawValue("g_fUVData", &U, sizeof(float))))
 	//	return E_FAIL;
 	
-	m_vCamPos = CPipeLine::GetInstance()->Get_CamPos();
+	_vector vCamDir = CPipeLine::GetInstance()->Get_TransformMatrix(CPipeLine::TS_VIEW).r[2];
+		
+	m_pShaderCom->Set_RawValue("g_vCamDir", &vCamDir, sizeof(_vector));
 
-	_float GlowScale = 0.4f;
+	m_LifeTime = min(1.f, max(0.f, m_LifeTime));
 
-	if (FAILED(m_pShaderCom->Set_RawValue("g_fGlowScale", &GlowScale, sizeof(float))))
-		return E_FAIL;
+	_float fAhlpa = Lerp(0.f, 1.f, sqrt(m_LifeTime * 1.5f));
 
-	if (FAILED(m_pShaderCom->Set_RawValue("g_vCamDir", &m_vCamPos, sizeof(_float4))))
-		return E_FAIL;
+	fAhlpa = min(1.f, max(0.f, fAhlpa));
 
-	if (FAILED(m_pShaderCom->Set_RawValue("g_fAhlpa", &m_fAlpha, sizeof(float))))
-		return E_FAIL;
+	m_pShaderCom->Set_RawValue("g_fAhlpa", &fAhlpa, sizeof(_float));
+	m_pShaderCom->Set_RawValue("g_fGlowScale", &m_fGlowScale, sizeof(_float));
 
 	return S_OK;
 }

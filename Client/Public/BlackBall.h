@@ -67,6 +67,7 @@ private:
 	_bool Dead = false;
 	_float Damage = 0.f;
 	_double m_LifeTime = 0.f;
+	_float m_fGlowScale = 0.5f;
 
 	_bool m_bTakeHit = false;
 	_bool m_Hit = false;
