@@ -31,6 +31,7 @@ HRESULT CPlayer_Rage_Arma::Initialize(void * pArg)
 		return E_FAIL;
 
 	m_bActive = true;
+	m_fDissolveTime = 6.f;
 
 	return S_OK;
 }
@@ -49,6 +50,10 @@ void CPlayer_Rage_Arma::Tick(_double TimeDelta)
 	if (m_bActive)
 	{
 		m_Time -= 1.0 * TimeDelta;// static_cast<CTSPlayer*>(pOwner)->Get_Info().m_FSkill;
+		
+		m_fDissolveTime -= TimeDelta;
+
+		fDissolveAmount = Lerp(1.f, 0.f, m_fDissolveTime / 4.f);
 
 		if (m_Time <= 0.f)
 			m_Time = 0.f;
@@ -195,22 +200,17 @@ HRESULT CPlayer_Rage_Arma::SetUp_ShaderResources()
 	if (FAILED(m_pTextureCom->SetUp_ShaderResource(m_pShaderCom, "g_NoiseTexture")))
 		return E_FAIL;
 
-	float time = m_Time;
-
-	float scale = 0.5f;
-	float Tiling = 0.1f;
-
-	_float3 Velocity = { 1.f, 1.f, 1.f };
-
-	m_pShaderCom->Set_RawValue("time", &time, sizeof(float));
-
-	m_pShaderCom->Set_RawValue("dissolveNoiseScale", &scale, sizeof(float));
-	m_pShaderCom->Set_RawValue("dissolveNoiseTiling", &Tiling, sizeof(float));
-	
-	m_pShaderCom->Set_RawValue("dissolveNoiseVelocity", &Velocity, sizeof(_float3));
-
+	if (FAILED(m_pShaderCom->Set_RawValue("g_fDissolveAmount", &fDissolveAmount, sizeof(float))))
+		return E_FAIL;
 
 	return S_OK;
+}
+
+float CPlayer_Rage_Arma::Lerp(const float & fLeft, const float & fRight, float fRatio)
+{
+	fRatio = max(min(fRatio, 1.f), 0.f);
+
+	return (fLeft * (1.f - fRatio)) + (fRight * (fRatio));
 }
 
 CPlayer_Rage_Arma * CPlayer_Rage_Arma::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)

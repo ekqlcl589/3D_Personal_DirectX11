@@ -93,7 +93,7 @@ HRESULT CGameInstance::Tick_Engine(_double TimeDelta)
 
 	if (4 == m_pLevel_Manager->Get_LevelIndex())
 	{
-		m_pCollision_Mgr->Check_Collision(OBJ_PLAYER, OBJ_MONSTER_BALL); // 플레이어, 공 충돌
+		//m_pCollision_Mgr->Check_Collision(OBJ_PLAYER, OBJ_MONSTER_BALL); // 플레이어, 공 충돌
 		m_pCollision_Mgr->Check_Collision(OBJ_PLAYER, OBJ_MONSTER_SICKLE);
 
 		m_pCollision_Mgr->Check_Collision(OBJ_BOSS1, OBJ_WEAPON_KARMA14); // 칼, Cursed 충돌
