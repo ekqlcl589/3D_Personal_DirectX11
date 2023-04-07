@@ -71,6 +71,11 @@ private:
 	_bool m_bTakeHit = false;
 	_bool m_Hit = false;
 
+
+private:
+	_float m_fAlpha;
+	_float4 m_vCamPos;
+
 private:
 	BALLDESC m_BallDesc;
 

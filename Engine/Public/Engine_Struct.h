@@ -449,6 +449,9 @@ namespace Engine
 		_bool fSkill;
 		_bool rageSkill;
 
+		_bool SpecialAttack1;
+		_bool SpecialAttack2;
+
 		TSPLAYERANIM CurrAnim;
 		TSPLAYERANIM PrevAnim;
 

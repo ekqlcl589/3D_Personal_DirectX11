@@ -52,6 +52,7 @@ private:
 	_float4x4 m_WorldMatrix;
 
 	_bool m_AnimStart = false;
+	_bool m_SpecialAttack = false;
 
 public:
 	static CPlayer_Basic_Combo* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

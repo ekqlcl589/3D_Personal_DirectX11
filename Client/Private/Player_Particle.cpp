@@ -57,6 +57,8 @@ void CPlayer_Particle::Tick(_double TimeDelta)
 
 		RELEASE_INSTANCE(CGameInstance);
 
+		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta);
+
 		m_pVIBufferCom->Player_Flare(m_vTarget, TimeDelta);
 
 		m_isDead = static_cast<CTSPlayer*>(pPlayer)->Get_IsParticle();

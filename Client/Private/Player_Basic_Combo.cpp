@@ -45,7 +45,14 @@ void CPlayer_Basic_Combo::Tick(_double TimeDelta)
 	{
 		__super::Tick(TimeDelta);
 
-		if (m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) - 4.0)
+		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+		CGameObject* pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+
+		RELEASE_INSTANCE(CGameInstance);
+
+		m_SpecialAttack = static_cast<CTSPlayer*>(pPlayer)->Get_Info().SpecialAttack2;
+
+		if (!m_SpecialAttack && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) - 4.0)
 		{
 			m_bFadeIn = false;
 			Set_Dead();
@@ -65,7 +72,7 @@ void CPlayer_Basic_Combo::LateTick(_double TimeDelta)
 
 		XMStoreFloat4x4(&m_WorldMatrix, XMMatrixRotationY(90.f) * m_pTransformCom->Get_WorldMatrix() * CTwoHandedSword::WorldMatrix);
 
-		if (m_bFadeIn)
+		//if (m_bFadeIn) 사실상 죽으면 상관 없는 조건문 아닌가..?
 			m_pModelCom->Play_Animation(TimeDelta);
 
 		if (nullptr != m_pRendererCom)

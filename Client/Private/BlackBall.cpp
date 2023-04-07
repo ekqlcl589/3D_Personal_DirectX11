@@ -203,10 +203,7 @@ HRESULT CBlackBall::Render()
 			m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
 
 
-			if (m_BallDesc.eType == TYPE_DDEBASI)
-				m_pShaderCom->Begin(1);
-			else
-				m_pShaderCom->Begin(0);
+			m_pShaderCom->Begin(2);
 
 			m_pModelCom->Render(i);
 		}
@@ -326,7 +323,7 @@ HRESULT CBlackBall::Add_Components()
 		TEXT("Com_Collider"), (CComponent**)&m_pColliderCom, &ColliderDesc)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxWave"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModel_Effect"),
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
@@ -358,7 +355,20 @@ HRESULT CBlackBall::SetUp_ShaderResources()
 
 	_float U = fPos.z;	
 
-	if (FAILED(m_pShaderCom->Set_RawValue("g_fUVData", &U, sizeof(float))))
+	//if (FAILED(m_pShaderCom->Set_RawValue("g_fUVData", &U, sizeof(float))))
+	//	return E_FAIL;
+	
+	m_vCamPos = CPipeLine::GetInstance()->Get_CamPos();
+
+	_float GlowScale = 0.4f;
+
+	if (FAILED(m_pShaderCom->Set_RawValue("g_fGlowScale", &GlowScale, sizeof(float))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Set_RawValue("g_vCamDir", &m_vCamPos, sizeof(_float4))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Set_RawValue("g_fAhlpa", &m_fAlpha, sizeof(float))))
 		return E_FAIL;
 
 	return S_OK;

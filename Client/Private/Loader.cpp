@@ -274,7 +274,7 @@ HRESULT CLoader::Loading_ForGamePlay()
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Point_Instance_Up"),
-		CVIBuffer_Point_Instance::Create(m_pDevice, m_pContext, 5.f, 1.f, 5.f, 3.f, 10.f, 100))))
+		CVIBuffer_Point_Instance::Create(m_pDevice, m_pContext, 5.f, 1.f, 3.f, 3.f, 10.f, 100))))
 		return E_FAIL;
 	
 	lstrcpy(m_szLoadingText, TEXT("모델를 로딩중입니다."));

@@ -215,7 +215,7 @@ void CVIBuffer_Point_Instance::Player_Flare(_fvector vPosition, _double TimeDelt
 		{
 			((VTXMATRIX*)SubResource.pData)[i].vPosition.x = rand() % (_int(5) + 1) - (_int(5) >> 1);
 			((VTXMATRIX*)SubResource.pData)[i].vPosition.y = m_pOldHeight[i];;
-			((VTXMATRIX*)SubResource.pData)[i].vPosition.z = rand() % (_int(5) + 1) - (_int(5) >> 1);
+			((VTXMATRIX*)SubResource.pData)[i].vPosition.z = rand() % (_int(3) + 1) - (_int(3) >> 1);
 		}
 
 	}

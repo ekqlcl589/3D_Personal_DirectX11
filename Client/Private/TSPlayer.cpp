@@ -945,6 +945,7 @@ void CTSPlayer::Attack_Special2(_double TimeDelta)
 
 			m_tInfo.CurrAnim = TS_BASIC_COMBO03_START;
 			m_tInfo.CurrAnim = TS_BASIC_COMBO02_LOOP; //
+			m_tInfo.SpecialAttack2 = true;
 			static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.1f);
 			// ±â´É ÀÛµ¿ ¾È µÊ ¤¸´ï ¤»¤»
 		}
@@ -954,6 +955,7 @@ void CTSPlayer::Attack_Special2(_double TimeDelta)
 	if (m_tInfo.CurrAnim == TS_BASIC_COMBO02_LOOP && false == m_ComboCheck2)
 	{
 		m_AttackCheck = false;
+		m_tInfo.SpecialAttack2 = false;
 		m_tInfo.CurrAnim = TS_BASIC_COMBO02_END;
 	}
 }
@@ -986,7 +988,7 @@ void CTSPlayer::Attack_Go(_double TimeDelta)
 		m_pTransformCom->Go_Straight(TimeDelta * 0.09);
 	}
 
-	if (m_tInfo.CurrAnim == TS_BASIC_COMBO02 && m_AnimTimeAcc >= (m_AnimDuration / 2) - 12.1 && m_AnimTimeAcc <= (m_AnimDuration / 2) - 12.0)
+	if (m_tInfo.CurrAnim == TS_BASIC_COMBO02 && m_AnimTimeAcc >= 8.0 && m_AnimTimeAcc <= 9.0)
 	{
 		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 0.1f);
 		WeaponBoneUpdate();
@@ -1016,6 +1018,36 @@ void CTSPlayer::Attack_Go(_double TimeDelta)
 			m_pTransformCom->Go_Straight(TimeDelta * 0.13);
 
 		}
+
+	}
+
+	if (m_tInfo.PrevAnim == TS_BASIC_COMBO02_END && m_AnimTimeAcc >= 9.0 && m_AnimTimeAcc <= 10.0)
+	{
+		WeaponBoneUpdate();
+		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.1f);
+	}
+
+	if (m_tInfo.PrevAnim == TS_AIR_COMBO01 && m_AnimTimeAcc >= 8.0 && m_AnimTimeAcc <= 9.0)
+	{
+		WeaponBoneUpdate();
+		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 0.1f);
+	}
+
+	if (m_tInfo.PrevAnim == TS_AIR_COMBO03 && m_AnimTimeAcc >= 9.0 && m_AnimTimeAcc <= 10.0)
+	{
+		WeaponBoneUpdate();
+		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 0.1f);
+	}
+
+	if (m_tInfo.PrevAnim == TS_AIR_COMBO04 && m_AnimTimeAcc >= 20.0 && m_AnimTimeAcc <= 21.0)
+	{
+		WeaponBoneUpdate();
+		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 0.1f);
+	}
+
+	if (m_tInfo.PrevAnim == TS_AIR_COMBO04_LENDING && m_AnimTimeAcc >= 2.0 && m_AnimTimeAcc <= 3.0)
+	{
+		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.1f);
 	}
 
 }
@@ -1107,6 +1139,11 @@ void CTSPlayer::Jump(_double TimeDelta)
 
 void CTSPlayer::Jump_Attack(_double TimeDelta)
 {
+	CGameInstance* p = GET_INSTANCE(CGameInstance);
+	CGameObject* pMonster = nullptr;
+	pMonster = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
+	RELEASE_INSTANCE(CGameInstance);
+
 	m_bAttackState = true;
 	m_JumpAttack = true;
 	m_bLendiongCheck = true;
@@ -1120,27 +1157,21 @@ void CTSPlayer::Jump_Attack(_double TimeDelta)
 	if (true == m_bJump)
 	{
 		m_AttackCheck = true;
-		WeaponBoneUpdate();
 		m_tInfo.CurrAnim = TS_AIR_COMBO01;
 	}
 
 	if (m_tInfo.PrevAnim == TS_AIR_COMBO01 && true != m_pModelCom->Get_AnimFinished())
 	{
-		WeaponBoneUpdate();
 		m_tInfo.CurrAnim = TS_AIR_COMBO03;
-
 	}
 
 	if (m_tInfo.PrevAnim == TS_AIR_COMBO03 && true != m_pModelCom->Get_AnimFinished())
 	{
-		WeaponBoneUpdate();
 		m_tInfo.CurrAnim = TS_AIR_COMBO04;
-		m_pModelCom->Set_AnimTick(30.0);
 	}
 
 	if (m_tInfo.PrevAnim == TS_AIR_COMBO04 && true != m_pModelCom->Get_AnimFinished())
 	{
-		WeaponBoneUpdate();
 		m_tInfo.CurrAnim = TS_AIR_COMBO04_LENDING;
 		m_JumpAttack = false;
 		m_bLendiongCheck = false;
@@ -1225,7 +1256,8 @@ void CTSPlayer::CombatWait()
 	{
 		m_DownAttack = true;
 		m_isParticleOn = false;
-		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.15f, 0.1f);
+		WeaponBoneUpdate();
+		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 0.1f);
 	}
 	if (false == m_AttackCheck && m_tInfo.PrevAnim == TS_SPECIALCOMBO_CRASH && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 10.0) // CRASH°¡ µÎ ¹ø µé¾î °¬´Ù°¡ ²÷±â´Â ´À³¦ 
 	{
@@ -1240,6 +1272,12 @@ void CTSPlayer::CombatWait()
 		m_AttackCheck = false;
 		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
 
+	}
+
+	if (m_tInfo.PrevAnim == TS_DASHCOMBO && true == m_AnimTimeAcc >= 7.0 && m_AnimTimeAcc <= 8.0)
+	{
+		WeaponBoneUpdate();
+		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.15f, 0.1f);
 	}
 
 	if (m_tInfo.PrevAnim == TS_DASHCOMBO && true == m_AnimTimeAcc >= (m_AnimDuration / 2) + 30.0)
@@ -1373,28 +1411,35 @@ void CTSPlayer::E_Skill(_double TimeDelta)
 		WeaponBoneUpdate();
 		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.2f, 0.1f);
 	}
-	if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_START && m_AnimTimeAcc >= 75.0 && m_AnimTimeAcc <= 76.0)
-	{
-		WeaponBoneUpdate();
-		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.2f, 0.1f);
-	}
-	if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_START && m_AnimTimeAcc >= 79.0 && m_AnimTimeAcc <= 80.0)
-	{
-		WeaponBoneUpdate();
-		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.2f, 0.1f);
-	}
-	if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_START &&m_AnimTimeAcc >= (m_AnimDuration / 2) && m_AnimTimeAcc <= (m_AnimDuration / 2) + 1.0)
-	{
-		for(_uint i = 0; i < 10; i++)
-			WeaponBoneUpdate();
-
-		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 4.0f);
-	}
-	if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_START &&m_AnimTimeAcc >= (m_AnimDuration / 2) + 80.0)
+	//if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_START && m_AnimTimeAcc >= 75.0 && m_AnimTimeAcc <= 76.0)
+	//{
+	//	WeaponBoneUpdate();
+	//	static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.2f, 0.1f);
+	//}
+	//if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_START && m_AnimTimeAcc >= 79.0 && m_AnimTimeAcc <= 80.0)
+	//{
+	//	WeaponBoneUpdate();
+	//	static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.2f, 0.1f);
+	//}
+	//if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_START &&m_AnimTimeAcc >= (m_AnimDuration / 2) && m_AnimTimeAcc <= (m_AnimDuration / 2) + 1.0)
+	//{
+	//	for(_uint i = 0; i < 10; i++)
+	//		WeaponBoneUpdate();
+	//
+	//	static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 4.0f);
+	//}
+	if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_START &&m_AnimTimeAcc >= 65.0)
 	{
 		m_tInfo.CurrAnim = TS_SKILL_OUTRAGE_END;
 		m_Eskill = false;
 		m_AttackCheck = false;
+	}
+
+	if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_END && m_AnimTimeAcc >= 8.0 && m_AnimTimeAcc <= 9.0)
+	{
+		WeaponBoneUpdate();
+		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.4f, 0.1f);
+
 	}
 }
 
@@ -1416,6 +1461,13 @@ void CTSPlayer::R_Skill(_double TimeDelta)
 	if (m_tInfo.PrevAnim == TS_SKILL_ROCKBREAK && m_AnimTimeAcc >= 11.0 && m_AnimTimeAcc <= 12.0)
 	{
 		Add_Rock();
+		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.2f);
+
+	}
+
+	if (m_tInfo.PrevAnim == TS_SKILL_ROCKBREAK && m_AnimTimeAcc >= 13.0 && m_AnimTimeAcc <= 14.0)
+	{
+		WeaponBoneUpdate();
 		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.2f);
 
 	}
