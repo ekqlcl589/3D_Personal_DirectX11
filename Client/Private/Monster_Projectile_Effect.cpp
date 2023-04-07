@@ -38,6 +38,8 @@ HRESULT Monster_Projectile_Effect::Initialize(void * pArg)
 
 	//m_pModelCom->Set_AnimTick(10.0);
 
+	m_fDissolveTime = 3.f;
+
 	return S_OK;
 }
 
@@ -49,11 +51,15 @@ void Monster_Projectile_Effect::Tick(_double TimeDelta)
 
 		if (true == m_pModelCom->Get_AnimFinished())
 		{
+			m_fDissolveTime -= TimeDelta;
+
+			fDissolveAmount = Lerp(1.f, 0.f, m_fDissolveTime / 3.f);
 			m_bFadeIn = false;
-			Set_Dead();
+
+			if (m_fDissolveTime <= 0.f)
+				Set_Dead();
 		}
 
-		FadeInOut();
 	}
 
 }
@@ -94,7 +100,7 @@ HRESULT Monster_Projectile_Effect::Render()
 
 		m_pModelCom->SetUp_BoneMatrices(m_pShaderCom, "g_BoneMatrix", i);
 
-		m_pShaderCom->Begin(0);
+		m_pShaderCom->Begin(1);
 
 		m_pModelCom->Render(i);
 	}
@@ -152,10 +158,13 @@ HRESULT Monster_Projectile_Effect::Add_Components()
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxAnimModel"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModel_Effect"),
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Noise"),
+		TEXT("Com_Texture"), (CComponent**)&m_pTextureCom)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -180,6 +189,13 @@ HRESULT Monster_Projectile_Effect::SetUp_ShaderResources()
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
+
+	if (FAILED(m_pTextureCom->SetUp_ShaderResource(m_pShaderCom, "g_NoiseTexture")))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Set_RawValue("g_fDissolveAmount", &fDissolveAmount, sizeof(float))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -213,6 +229,7 @@ void Monster_Projectile_Effect::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);

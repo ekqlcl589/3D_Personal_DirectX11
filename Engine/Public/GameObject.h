@@ -4,6 +4,7 @@
 BEGIN(Engine)
 
 class CCollider;
+class CTexture;
 
 class ENGINE_DLL CGameObject abstract : public CBase
 {
@@ -59,6 +60,15 @@ protected:
 	_bool m_bDead = { false };
 
 	int	m_iObjID = -1;
+
+protected:
+	CTexture* m_pTextureCom = { nullptr };
+
+	float Lerp(const float& fLeft, const float& fRight, float fRatio);
+
+	float fDissolveAmount = 0.f;
+
+	_float m_fDissolveTime;
 
 protected:
 	unordered_map<const _tchar*, class CComponent*>			m_Components;

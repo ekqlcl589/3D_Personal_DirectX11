@@ -356,8 +356,7 @@ HRESULT CBlackBall::SetUp_ShaderResources()
 	_float3 fPos;
 	XMStoreFloat3(&fPos, vPos);
 
-
-		_float U = fPos.z;	
+	_float U = fPos.z;	
 
 	if (FAILED(m_pShaderCom->Set_RawValue("g_fUVData", &U, sizeof(float))))
 		return E_FAIL;

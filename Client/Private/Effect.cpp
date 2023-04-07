@@ -36,6 +36,8 @@ HRESULT CEffect::Initialize(void * pArg)
 
 	m_pModelCom->SetUp_Animation(0);
 
+	m_fDissolveTime = 5.f;
+
 	return S_OK;
 }
 
@@ -46,12 +48,15 @@ void CEffect::Tick(_double TimeDelta)
 		__super::Tick(TimeDelta);
 
 		if (true == m_pModelCom->Get_AnimFinished())
-			Set_Dead();
+		{
+			m_fDissolveTime -= TimeDelta;
 
-		FadeInOut();
-
-		if (true == m_pModelCom->Get_AnimFinished())
+			fDissolveAmount = Lerp(1.f, 0.f, m_fDissolveTime / 5.f);
 			m_bFadeIn = false;
+
+			if (m_fDissolveTime <= 0.f)
+				Set_Dead();
+		}
 	}
 }
 
@@ -89,7 +94,7 @@ HRESULT CEffect::Render()
 
 		m_pModelCom->SetUp_BoneMatrices(m_pShaderCom, "g_BoneMatrix", i);
 
-		m_pShaderCom->Begin(0);
+		m_pShaderCom->Begin(1);
 
 		m_pModelCom->Render(i);
 	}
@@ -141,10 +146,14 @@ HRESULT CEffect::Add_Components()
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxAnimModel"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModel_Effect"),
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Noise"),
+		TEXT("Com_Texture"), (CComponent**)&m_pTextureCom)))
+		return E_FAIL;
+	
 	return S_OK;
 }
 
@@ -165,6 +174,13 @@ HRESULT CEffect::SetUp_ShaderResources()
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
+	
+	if (FAILED(m_pTextureCom->SetUp_ShaderResource(m_pShaderCom, "g_NoiseTexture")))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Set_RawValue("g_fDissolveAmount", &fDissolveAmount, sizeof(float))))
+		return E_FAIL;
+	
 	return S_OK;
 }
 
@@ -198,6 +214,7 @@ void CEffect::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);

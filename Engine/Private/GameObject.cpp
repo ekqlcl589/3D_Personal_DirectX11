@@ -85,6 +85,13 @@ bool CGameObject::Erase_Collied(CGameObject * _obj)
 	return m_vecColl.erase(_obj) ? true : false;
 }
 
+float CGameObject::Lerp(const float & fLeft, const float & fRight, float fRatio)
+{
+	fRatio = max(min(fRatio, 1.f), 0.f);
+
+	return (fLeft * (1.f - fRatio)) + (fRight * (fRatio));
+}
+
 HRESULT CGameObject::Add_Component(_uint iLevelIndex, const _tchar * pPrototypeTag, const _tchar * pComponentTag, CComponent ** ppOut, void * pArg)
 {
 	if (nullptr != Find_Component(pComponentTag))

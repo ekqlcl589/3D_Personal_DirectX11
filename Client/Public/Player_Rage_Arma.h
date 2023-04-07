@@ -37,8 +37,6 @@ private:
 	HRESULT Add_Components();
 	HRESULT SetUp_ShaderResources();
 
-	float Lerp(const float& fLeft, const float& fRight, float fRatio);
-
 protected:
 	CShader* m_pShaderCom = { nullptr };
 	CRenderer* m_pRendererCom = { nullptr };
@@ -52,11 +50,6 @@ protected:
 	_int m_fFadeSpeed = 2;
 	_bool m_bFadeIn = true;
 	_bool m_bDead = false;
-
-private:
-	_float m_Time = 10.f;
-	float fDissolveAmount = 0.f;
-	_float m_fDissolveTime;
 
 private:
 	_float4x4 m_WorldMatrix;

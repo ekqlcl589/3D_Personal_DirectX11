@@ -28,8 +28,10 @@ HRESULT CFireEffect::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	_float3 fScale = { 3.f, 3.f, 3.f };
+	_float3 fScale = { 5.f, 5.f, 5.f };
 	m_pTransformCom->Set_Scale(fScale);
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fScale));
 
 	return S_OK;
 }
@@ -38,17 +40,17 @@ void CFireEffect::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 
-	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-	
-	CTransform* pTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY2, TEXT("Layer_Monster_Effect"), TEXT("Com_Transform")));
-	
-	RELEASE_INSTANCE(CGameInstance);
-	
-	m_vPosition = pTransform->Get_State(CTransform::STATE_POSITION);
+	//CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	//
+	//CTransform* pTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY2, TEXT("Layer_Monster_Effect"), TEXT("Com_Transform")));
+	//
+	//RELEASE_INSTANCE(CGameInstance);
+	//
+	//m_vPosition = pTransform->Get_State(CTransform::STATE_POSITION);
+	//
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vPosition);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vPosition);
-
-	m_fFrame += 30.f * TimeDelta;
+	m_fFrame += 4.f * TimeDelta;
 	if (m_fFrame >= 4.0f)
 		m_fFrame = 0.f;
 }

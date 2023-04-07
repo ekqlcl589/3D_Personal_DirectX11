@@ -31,7 +31,7 @@ HRESULT CPlayer_Rage_Arma::Initialize(void * pArg)
 		return E_FAIL;
 
 	m_bActive = true;
-	m_fDissolveTime = 5.f;
+	m_fDissolveTime = 6.f;
 
 	return S_OK;
 }
@@ -48,18 +48,13 @@ void CPlayer_Rage_Arma::Tick(_double TimeDelta)
 
 	//m_Time = static_cast<CTSPlayer*>(pOwner)->Get_Info().m_FSkill;
 	if (m_bActive)
-	{
-		m_Time -= 1.0 * TimeDelta;// static_cast<CTSPlayer*>(pOwner)->Get_Info().m_FSkill;
-		
+	{		
 		m_fDissolveTime -= TimeDelta;
 
-		fDissolveAmount = Lerp(1.f, 0.f, m_fDissolveTime / 4.f);
-
-		if (m_Time <= 0.f)
-			m_Time = 0.f;
+		fDissolveAmount = Lerp(1.f, 0.f, m_fDissolveTime / 6.f);
 	}
 	else
-		m_fDissolveTime = 5.f;
+		m_fDissolveTime = 6.f;
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -167,7 +162,7 @@ HRESULT CPlayer_Rage_Arma::Add_Components()
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModel_Test"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModel_Effect"),
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
@@ -206,13 +201,6 @@ HRESULT CPlayer_Rage_Arma::SetUp_ShaderResources()
 		return E_FAIL;
 
 	return S_OK;
-}
-
-float CPlayer_Rage_Arma::Lerp(const float & fLeft, const float & fRight, float fRatio)
-{
-	fRatio = max(min(fRatio, 1.f), 0.f);
-
-	return (fLeft * (1.f - fRatio)) + (fRight * (fRatio));
 }
 
 CPlayer_Rage_Arma * CPlayer_Rage_Arma::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
