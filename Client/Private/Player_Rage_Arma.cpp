@@ -45,6 +45,7 @@ void CPlayer_Rage_Arma::Tick(_double TimeDelta)
 
 	pOwner = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
 	m_bActive = static_cast<CTSPlayer*>(pOwner)->Get_Info().fSkill;
+	m_bRage = static_cast<CTSPlayer*>(pOwner)->Get_Info().rageSkill;
 
 	//m_Time = static_cast<CTSPlayer*>(pOwner)->Get_Info().m_FSkill;
 	if (m_bActive)
@@ -54,6 +55,9 @@ void CPlayer_Rage_Arma::Tick(_double TimeDelta)
 		fDissolveAmount = Lerp(1.f, 0.f, m_fDissolveTime / 6.f);
 	}
 	else
+		m_fDissolveTime = 6.f;
+
+	if(!m_bRage)
 		m_fDissolveTime = 6.f;
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -76,7 +80,7 @@ void CPlayer_Rage_Arma::LateTick(_double TimeDelta)
 
 HRESULT CPlayer_Rage_Arma::Render()
 {
-	if (m_bActive)
+	if (m_bActive || m_bRage)
 	{
 		if (FAILED(__super::Render()))
 			return E_FAIL;

@@ -83,6 +83,8 @@ private:
 	void WeaponBoneUpdate(); //  effect
 	void Add_Rock();
 	HRESULT Add_Particle();
+	HRESULT Add_ComboEffect();
+	HRESULT Add_RageEffect();
 
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }

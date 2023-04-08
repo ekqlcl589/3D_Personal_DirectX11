@@ -358,8 +358,12 @@ HRESULT CBlackBall::SetUp_ShaderResources()
 	//if (FAILED(m_pShaderCom->Set_RawValue("g_fUVData", &U, sizeof(float))))
 	//	return E_FAIL;
 	
-	_vector vCamDir = CPipeLine::GetInstance()->Get_TransformMatrix(CPipeLine::TS_VIEW).r[2];
+	_vector vCamDir = CPipeLine::GetInstance()->Get_TransformMatrixInverse(CPipeLine::TS_VIEW).r[2];
 		
+	// 고장났음 고쳐야 함 
+	// 플레이어 스킬쓸 때 불꽃 회전하는거 같은 이펙트 논 애님이라도 transform->turn 으로 어떻게든 비비면 
+	// 가능할 듯 
+	// 경찬이가 준 파동 어떻게든 적용해서 사용해보셈 -> grudge가 땅 찍을 때? 아니면 골렘이 찍을 때 
 	m_pShaderCom->Set_RawValue("g_vCamDir", &vCamDir, sizeof(_vector));
 
 	m_LifeTime = min(1.f, max(0.f, m_LifeTime));

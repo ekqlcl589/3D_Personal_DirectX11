@@ -12,6 +12,7 @@
 #include "Ancient_StonGolem.h"
 #include "GrudgeWraith.h"
 #include "TargetCamera.h"
+#include "PlayerComboReady.h"
 
 CTSPlayer::CTSPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -155,7 +156,15 @@ void CTSPlayer::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
 
-	m_pModelCom->Play_Animation(TimeDelta);
+	if (m_tInfo.rageSkill)
+	{
+		m_pModelCom->Play_Animation(TimeDelta * 0.03);
+
+	}
+	else
+	{
+		m_pModelCom->Play_Animation(TimeDelta);
+	}
 
 	m_AnimDuration = m_pModelCom->Get_AnimDuration();
 
@@ -917,6 +926,7 @@ void CTSPlayer::Attack_Special(_double TimeDelta)
 			m_bAttackState = true;
 
 			m_tInfo.CurrAnim = TS_SPECIALCOMBO_CRASH_READY;
+			m_tInfo.SpecialAttack1 = true;
 			m_isParticleOn = true;
 		}
 	}
@@ -1223,7 +1233,6 @@ void CTSPlayer::CombatWait()
 	CGameInstance* p = GET_INSTANCE(CGameInstance);
 	CGameObject* pMonster = nullptr;
 	pMonster = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
-	RELEASE_INSTANCE(CGameInstance);
 
 	if (m_tInfo.PrevAnim == TS_BASIC_COMBO01 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 19.0)
 	{
@@ -1249,6 +1258,56 @@ void CTSPlayer::CombatWait()
 		{
 			if (FAILED(Add_Particle()))
 				return;
+
+			CPlayerComboReady::READYEFFECT eType;
+			eType.eType = CPlayerComboReady::TYPE_1;
+			eType.vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 0.1f);
+
+			if (FAILED(p->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Player_ComboReady"), TEXT("Player_Effect"), &eType)))
+				return;
+		}
+	}
+
+	if (m_tInfo.PrevAnim == TS_SPECIALCOMBO_CRASH_READY && m_AnimTimeAcc >= 60.0 && m_AnimTimeAcc <= 61.0)
+	{
+		if (m_isParticleOn)
+		{
+			CPlayerComboReady::READYEFFECT eType;
+			eType.eType = CPlayerComboReady::TYPE_2;
+			eType.vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 0.1f);
+
+			if (FAILED(p->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Player_ComboReady"), TEXT("Player_Effect"), &eType)))
+				return;
+		}
+	}
+
+	if (m_tInfo.PrevAnim == TS_SPECIALCOMBO_CRASH_READY && m_AnimTimeAcc >= 91.0 && m_AnimTimeAcc <= 92.0)
+	{
+		if (m_isParticleOn)
+		{
+			CPlayerComboReady::READYEFFECT eType;
+			eType.eType = CPlayerComboReady::TYPE_3;
+			eType.vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 0.1f);
+
+			if (FAILED(p->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Player_ComboReady"), TEXT("Player_Effect"), &eType)))
+				return;
+		}
+	}
+
+	if (m_tInfo.PrevAnim == TS_SPECIALCOMBO_CRASH_READY && m_AnimTimeAcc >= 119.0 && m_AnimTimeAcc <= 120.0)
+	{
+		if (m_isParticleOn)
+		{
+			CPlayerComboReady::READYEFFECT eType;
+			eType.eType = CPlayerComboReady::TYPE_4;
+			eType.vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 0.1f);
+
+			if (FAILED(p->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Player_ComboReady"), TEXT("Player_Effect"), &eType)))
+				return;
 		}
 	}
 
@@ -1256,8 +1315,9 @@ void CTSPlayer::CombatWait()
 	{
 		m_DownAttack = true;
 		m_isParticleOn = false;
+		m_tInfo.SpecialAttack1 = false;
 		WeaponBoneUpdate();
-		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 0.1f);
+		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.7f, 0.1f);
 	}
 	if (false == m_AttackCheck && m_tInfo.PrevAnim == TS_SPECIALCOMBO_CRASH && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 10.0) // CRASH°¡ µÎ ¹ø µé¾î °¬´Ù°¡ ²÷±â´Â ´À³¦ 
 	{
@@ -1313,6 +1373,8 @@ void CTSPlayer::CombatWait()
 		m_tInfo.CurrAnim = TS_WAIT;
 		m_bAttackState = false;
 	}
+
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 void CTSPlayer::Evasion(_double TimeDelta)
@@ -1514,23 +1576,43 @@ void CTSPlayer::F_Skill(_double TimeDelta)
 
 void CTSPlayer::Rage_Skill(_double TimeDelta)
 {
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	CGameObject* pCamera = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
+	RELEASE_INSTANCE(CGameInstance);
+
 	if (m_RagesKill && m_tInfo.m_RageSkill >= 25.f)
 	{
 		m_bAttackState = true;
 		m_tInfo.CurrAnim = TS_RAGESKILL_DOUBLESLASH;
 		m_AttackCheck = true;
-		m_tInfo.rageSkill = true;
 
-		if (m_tInfo.PrevAnim == TS_RAGESKILL_DOUBLESLASH && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 30.0)
-		{
-			m_tInfo.CurrAnim = TS_COMBAT_WAIT;
-			m_RagesKill = false;
-			m_AttackCheck = false;
-			m_tInfo.m_RageSkill = 0.f;
-			m_tInfo.rageSkill = false;
-
-		}
 	}
+
+	if (m_tInfo.PrevAnim == TS_RAGESKILL_DOUBLESLASH && m_AnimTimeAcc >= 15.0 && m_AnimTimeAcc <= 16.0)
+	{
+		WeaponBoneUpdate();
+		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.2f);
+	}
+
+	if (m_tInfo.PrevAnim == TS_RAGESKILL_DOUBLESLASH && m_AnimTimeAcc >= 73.0 && m_AnimTimeAcc <= 74.0)
+	{
+		m_tInfo.rageSkill = true;
+		Add_RageEffect();
+		//static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.7f, 0.01f); 
+	}
+	if (m_tInfo.PrevAnim == TS_RAGESKILL_DOUBLESLASH && m_AnimTimeAcc >= 75.0 && m_AnimTimeAcc <= 76.0)
+	{
+		m_tInfo.rageSkill = false;
+	}
+	if (m_tInfo.PrevAnim == TS_RAGESKILL_DOUBLESLASH && m_AnimTimeAcc >= 142.0)
+	{
+		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
+		m_RagesKill = false;
+		m_AttackCheck = false;
+		m_tInfo.m_RageSkill = 0.f;
+
+	}
+
 }
 
 void CTSPlayer::WeaponBoneUpdate()
@@ -1560,6 +1642,34 @@ HRESULT CTSPlayer::Add_Particle()
 	CGameInstance * pInstance = GET_INSTANCE(CGameInstance);
 
 	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Player_Particle"), TEXT("Player_Particle"), &m_pTransformCom->Get_State(CTransform::STATE_POSITION))))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CTSPlayer::Add_ComboEffect()
+{
+	CGameInstance * pInstance = GET_INSTANCE(CGameInstance);
+
+	CPlayerComboReady::READYEFFECT eType;
+	eType.eType = CPlayerComboReady::TYPE_1;
+	eType.vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Player_ComboReady"), TEXT("Player_Effect"), &eType)))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CTSPlayer::Add_RageEffect()
+{
+	CGameInstance * pInstance = GET_INSTANCE(CGameInstance);
+
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Player_Rage"), TEXT("Player_Rage_Effect"))))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);

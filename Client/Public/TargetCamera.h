@@ -32,7 +32,7 @@ public:
 
 	void Key_Input(_double TimeDelta);
 	 
-	void Player_Skill(_double TimeDelta);
+	void Player_RageSkill(_double TimeDelta);
 
 	void Target_Boss(_double TimeDelta);
 
@@ -66,6 +66,8 @@ public:
 
 private:
 	_bool m_Player_F_Skill = false;
+
+	_bool m_Player_Rage_Skill = false;
 
 	_float m_fFov = 0.f;
 

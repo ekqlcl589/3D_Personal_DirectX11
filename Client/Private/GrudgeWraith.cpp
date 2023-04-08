@@ -668,7 +668,11 @@ void CGrudgeWraith::Skill02(_double TimeDelta)
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 		CGameObject* pCamera = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
 
+		if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Effect_Wraith"), TEXT("Wraith_Effect"), &m_pTransformCom->Get_State(CTransform::STATE_POSITION))))
+			return ;
+
 		RELEASE_INSTANCE(CGameInstance);
+
 		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.7f, 0.1f);
 	}
 

@@ -48,9 +48,6 @@ HRESULT CGamePlay::Initialize()
 	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Arma"), TEXT("Player_Effect"))))
 		return E_FAIL;
 	
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Player_Rage"), TEXT("Player_Effect"))))
-		return E_FAIL;
-
 	RELEASE_INSTANCE(CGameInstance);
 
 	//LoadData(L"../Data/Cube/Cube.dat");

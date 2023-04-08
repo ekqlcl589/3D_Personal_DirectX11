@@ -78,6 +78,13 @@ void CChannel::Invalidate_Transform(_double TrackPosition, _uint* pCurrKeyFrame,
 		while (TrackPosition >= m_vecKeyFrame[*pCurrKeyFrame + 1].Time)
 			++*pCurrKeyFrame; //한 프레임 넘겨줌, 혹여나 여기서 프레임을 빠르게 하기 위해 tickpers를 늘리면 증가 폭이 커지면서 2 ~ 3개의 프레임이 넘어가 버리면서 스케일이나 이런게 튀는 현상이 발생할 수 있음 
 		// 그래서 조건문이 아니라 while문을 돌면서 루프 안에서 굴리게 끔 만듦
+
+		//if (bInsAnim)
+		//{
+		//	while (TrackPosition >= m_vecKeyFrame[*pCurrKeyFrame].Time)
+		//		--*pCurrKeyFrame;
+		//}
+
 		_double Ratio = (TrackPosition - m_vecKeyFrame[*pCurrKeyFrame].Time) /
 			(m_vecKeyFrame[*pCurrKeyFrame + 1].Time - m_vecKeyFrame[*pCurrKeyFrame].Time);
 

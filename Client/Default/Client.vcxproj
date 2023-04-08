@@ -193,6 +193,7 @@
     <ClInclude Include="..\Public\Monster_Projectile_Effect.h" />
     <ClInclude Include="..\Public\Mouse.h" />
     <ClInclude Include="..\Public\Player.h" />
+    <ClInclude Include="..\Public\PlayerComboReady.h" />
     <ClInclude Include="..\Public\PlayerHPBar.h" />
     <ClInclude Include="..\Public\PlayerMPBar.h" />
     <ClInclude Include="..\Public\PlayerRageEffect.h" />
@@ -220,6 +221,7 @@
     <ClInclude Include="..\Public\TwoHandedSword.h" />
     <ClInclude Include="..\Public\TwoHandedSwordWait.h" />
     <ClInclude Include="..\Public\Weapon.h" />
+    <ClInclude Include="..\Public\WraithAttackEffect.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -255,6 +257,7 @@
     <ClCompile Include="..\Private\Monster_Projectile_Effect.cpp" />
     <ClCompile Include="..\Private\Mouse.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
+    <ClCompile Include="..\Private\PlayerComboReady.cpp" />
     <ClCompile Include="..\Private\PlayerHPBar.cpp" />
     <ClCompile Include="..\Private\PlayerMPBar.cpp" />
     <ClCompile Include="..\Private\PlayerRageEffect.cpp" />
@@ -282,6 +285,7 @@
     <ClCompile Include="..\Private\TwoHandedSword.cpp" />
     <ClCompile Include="..\Private\TwoHandedSwordWait.cpp" />
     <ClCompile Include="..\Private\Weapon.cpp" />
+    <ClCompile Include="..\Private\WraithAttackEffect.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject.h"
+
 #include "Client_Defines.h"
 
 BEGIN(Engine)
@@ -8,17 +9,27 @@ class CRenderer;
 class CTransform;
 class CModel;
 class CCollider;
+class CTexture;
 END
 
 BEGIN(Client)
 
-class CPlayerRageEffect final :
+class CPlayerComboReady final :
 	public CGameObject
 {
+public:
+	enum TYPE { TYPE_1, TYPE_2, TYPE_3, TYPE_4, TYPE_END};
+
+	typedef struct tagReadyEffect
+	{
+		_vector vPosition;
+		TYPE eType;
+	}READYEFFECT;
+
 private:
-	CPlayerRageEffect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CPlayerRageEffect(const CPlayerRageEffect& rhs);
-	virtual ~CPlayerRageEffect() = default;
+	CPlayerComboReady(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CPlayerComboReady(const CPlayerComboReady& rhs);
+	virtual ~CPlayerComboReady() = default;
 
 public:
 	virtual	HRESULT Initialize_Prototype();
@@ -31,18 +42,21 @@ private:
 	HRESULT Add_Components();
 	HRESULT SetUp_ShaderResources();
 
-protected:
+private:
 	CShader* m_pShaderCom = { nullptr };
 	CRenderer* m_pRendererCom = { nullptr };
 	CTransform*	m_pTransformCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 
 private:
-	_float4x4 m_WorldMatrix;
+	_vector m_vPosition;
+
 	_bool m_bActive = false;
 
+	READYEFFECT m_ReadyDesc;
+
 public:
-	static CPlayerRageEffect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CPlayerComboReady* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr);
 	virtual void Free() override;
 };

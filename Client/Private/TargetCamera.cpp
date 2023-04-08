@@ -42,6 +42,8 @@ void CTargetCamera::Tick(_double TimeDelta)
 	
 	m_Player_F_Skill = static_cast<CTSPlayer*>(pPlayer)->Get_Info().fSkill;
 
+	m_Player_Rage_Skill = static_cast<CTSPlayer*>(pPlayer)->Get_Info().rageSkill;
+
 	if (m_Player_F_Skill)
 	{
 		m_fmulLook -= TimeDelta * 3.0 ;
@@ -58,10 +60,17 @@ void CTargetCamera::Tick(_double TimeDelta)
 	if (m_fmulLook >= 9.0)
 		m_fmulLook = 9.0;
 
-	if (!m_BossOn)
-		Target_Renewal(TimeDelta);
+	if (m_Player_Rage_Skill)
+	{
+		//Player_RageSkill(TimeDelta);
+	}
 	else
-		Target_Boss(TimeDelta);
+	{
+		if (!m_BossOn)
+			Target_Renewal(TimeDelta);
+		else
+			Target_Boss(TimeDelta);
+	}
 
 	Key_Input(TimeDelta);
 
@@ -249,15 +258,35 @@ void CTargetCamera::Key_Input(_double TimeDelta)
 
 }
 
-void CTargetCamera::Player_Skill(_double TimeDelta)
+void CTargetCamera::Player_RageSkill(_double TimeDelta)
 {
-	if (m_Player_F_Skill)
-	{
-		//m_CameraDesc.vAt.z += 0.005f * TimeDelta;
-		//Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 0.4f);
-	}
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
+	CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
 
+	CTransform* pCamT = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_CameraTransform")));
+
+	_vector vPosition = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
+
+	_vector vLook = pCamT->Get_State(CTransform::STATE_LOOK) * -1;
+
+	_float3 fTarget;
+
+	XMStoreFloat3(&fTarget, vPosition);
+
+	fTarget.y -= m_fDis;
+
+	m_CameraDesc.vEye = fTarget;
+	m_vLook = XMVector3Normalize(vLook);
+
+	m_Transform->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_CameraDesc.vEye) -= m_vLook * 2);
+
+	pCamT->Turn(XMLoadFloat3(&m_CameraDesc.vAt), 1.5 * TimeDelta);
+	//XMStoreFloat3(&m_CameraDesc.vAt, XMLoadFloat3(&m_CameraDesc.vEye) + m_vLook);
+
+	m_Transform->LookAt(XMLoadFloat3(&m_CameraDesc.vAt));
+
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 void CTargetCamera::Target_Boss(_double TimeDelta)

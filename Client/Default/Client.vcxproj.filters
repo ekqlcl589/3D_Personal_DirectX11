@@ -235,6 +235,12 @@
     <Filter Include="02.GameObject\10. Effrect\Player\Rage">
       <UniqueIdentifier>{18c27f35-c381-4949-a618-154df20b9be6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\10. Effrect\Monster\WraithAttack">
+      <UniqueIdentifier>{cd66aaac-204e-4a0c-95fa-ec91f76c683f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\10. Effrect\Player\Basic\ComboReady">
+      <UniqueIdentifier>{366b70b8-71ec-48fe-897c-281195a615d9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -423,6 +429,12 @@
     <ClInclude Include="..\Public\PlayerRageEffect.h">
       <Filter>02.GameObject\10. Effrect\Player\Rage</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\PlayerComboReady.h">
+      <Filter>02.GameObject\10. Effrect\Player\Basic\ComboReady</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\WraithAttackEffect.h">
+      <Filter>02.GameObject\10. Effrect\Monster\WraithAttack</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -598,6 +610,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\PlayerRageEffect.cpp">
       <Filter>02.GameObject\10. Effrect\Player\Rage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PlayerComboReady.cpp">
+      <Filter>02.GameObject\10. Effrect\Player\Basic\ComboReady</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\WraithAttackEffect.cpp">
+      <Filter>02.GameObject\10. Effrect\Monster\WraithAttack</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

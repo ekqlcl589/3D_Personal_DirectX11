@@ -3,6 +3,8 @@
 #include "..\Public\Loader.h"
 #include "Monster_Projectile_Effect.h"
 #include "VIBuffer_Point_Instance.h"
+#include "WraithAttackEffect.h"
+#include "PlayerComboReady.h"
 #include "Player_Particle.h"
 #include "Golem_Particle.h"
 #include "ProjectileSton.h"
@@ -275,7 +277,7 @@ HRESULT CLoader::Loading_ForGamePlay()
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Point_Instance_Up"),
-		CVIBuffer_Point_Instance::Create(m_pDevice, m_pContext, 5.f, 1.f, 3.f, 3.f, 10.f, 100))))
+		CVIBuffer_Point_Instance::Create(m_pDevice, m_pContext, 3.f, 1.f, 3.f, 3.f, 10.f, 100))))
 		return E_FAIL;
 	
 	lstrcpy(m_szLoadingText, TEXT("모델를 로딩중입니다."));
@@ -366,8 +368,26 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/BasicCombo.fbx", CModel::MODEL_ANIM, Local1234))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_RageTest"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/RageTest.fbx", CModel::MODEL_NONANIM, LocalMatrix66))))
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_ComboReady1"),
+	//	CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Ready/Ready.fbx", CModel::MODEL_NONANIM, Local1234))))
+	//	return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_ComboReady1"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Ready/Ready1.fbx", CModel::MODEL_NONANIM, Local1234))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_ComboReady2"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Ready/Ready2.fbx", CModel::MODEL_NONANIM, Local1234))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_ComboReady3"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Ready/Ready3.fbx", CModel::MODEL_NONANIM, Local1234))))
+		return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_ComboReady4"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Ready/Ready4.fbx", CModel::MODEL_NONANIM, Local1234))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_RageAttack"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/RageAttack1.fbx", CModel::MODEL_ANIM, Local1234))))
 		return E_FAIL;
 	
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_RockBreak"),
@@ -714,6 +734,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CPlayerRageEffect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_Player_ComboReady"),
+		CPlayerComboReady::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
 	m_isFinished = true;
@@ -776,6 +800,10 @@ HRESULT CLoader::Loading_ForGamePlay2()
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Texture_Rage_Skill"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/SkillIcon/Icon_RageSkill_TS_DoubleSlash.png")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Texture_Noise"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Dissolve0.png")))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Sky */
@@ -913,10 +941,17 @@ HRESULT CLoader::Loading_ForGamePlay2()
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Head/Hair/h_t.fbx", CModel::MODEL_NONANIM, LocalMatrix5))))
 		return E_FAIL;
 
+
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Model_Crocs"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Parts/Crocs/Crocs_item.fbx", CModel::MODEL_NONANIM, Locals))))
 		return E_FAIL;
 
+	_matrix Locals234 = XMMatrixIdentity();
+	Locals234 = XMMatrixScaling(0.025f, 0.025f, 0.025f);
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Model_WraithAttack"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/SpecialCombo.fbx", CModel::MODEL_ANIM, Locals234))))
+		return E_FAIL;
 #pragma endregion HairModel
 
 #pragma region 애니메이션 옷 파츠
@@ -956,6 +991,10 @@ HRESULT CLoader::Loading_ForGamePlay2()
 	/* For.Prototype_Component_Shader_VtxModel */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Shader_VtxModel"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/shader_VtxModel.hlsl"), VTXNONANIMMODEL_DELARATION::Element, VTXNONANIMMODEL_DELARATION::iNumElements))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Shader_VtxModel_Effect"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxModels_Effect.hlsl"), VTXANIMMODEL_DELARATION::Element, VTXANIMMODEL_DELARATION::iNumElements))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Shader_VtxAnimModel"),
@@ -1137,6 +1176,11 @@ HRESULT CLoader::Loading_ForGamePlay2()
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_Fire"),
 		CFireEffect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_Wraith"),
+		CWraithAttackEffect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 

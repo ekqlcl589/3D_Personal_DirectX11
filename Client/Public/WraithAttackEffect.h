@@ -12,13 +12,13 @@ END
 
 BEGIN(Client)
 
-class CPlayerRageEffect final :
+class CWraithAttackEffect final :
 	public CGameObject
 {
 private:
-	CPlayerRageEffect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CPlayerRageEffect(const CPlayerRageEffect& rhs);
-	virtual ~CPlayerRageEffect() = default;
+	CWraithAttackEffect(ID3D11Device * pDevice, ID3D11DeviceContext * pContext);
+	CWraithAttackEffect(const CWraithAttackEffect& rhs);
+	virtual ~CWraithAttackEffect() = default;
 
 public:
 	virtual	HRESULT Initialize_Prototype();
@@ -31,18 +31,18 @@ private:
 	HRESULT Add_Components();
 	HRESULT SetUp_ShaderResources();
 
-protected:
+private:
 	CShader* m_pShaderCom = { nullptr };
 	CRenderer* m_pRendererCom = { nullptr };
 	CTransform*	m_pTransformCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 
 private:
-	_float4x4 m_WorldMatrix;
+	_vector m_vPosition;
 	_bool m_bActive = false;
 
 public:
-	static CPlayerRageEffect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CWraithAttackEffect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr);
 	virtual void Free() override;
 };

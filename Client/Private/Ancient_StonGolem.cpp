@@ -51,6 +51,8 @@ HRESULT CAncient_StonGolem::Initialize(void * pArg)
 
 	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(195.0f));
 
+	m_fDissolveTime = 6.f;
+
 	return S_OK;
 }
 
@@ -450,12 +452,16 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 		m_eType._Hp = 1.f;
 		m_CurrAnim = S_SKILL10_1; // 원래는 스킬 모션인데 죽는게 따로 없어서 이걸로 대체 
 
-		if (m_PrevAnim == S_SKILL10_1 && true == m_pModelCom->Get_AnimFinished())// m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 45.0)
+		m_fDissolveTime -= TimeDelta;
+		
+		fDissolveAmount = Lerp(1.f, 0.f, m_fDissolveTime / 6.f);
+		
+		if (m_fDissolveTime <= 0.f)
 		{
 			m_eType._Hp = 0.f;
 			m_isParticleOn = false;
-			m_bDead = true;
-			//OnDead();
+			Set_Dead();
+
 			return OBJ_DEAD;
 		}
 	}
@@ -922,6 +928,10 @@ HRESULT CAncient_StonGolem::Add_Components()
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Noise"),
+		TEXT("Com_Texture"), (CComponent**)&m_pTextureCom)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -942,6 +952,12 @@ HRESULT CAncient_StonGolem::SetUp_ShaderResources()
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
+
+	if (FAILED(m_pTextureCom->SetUp_ShaderResource(m_pShaderCom, "g_NoiseTexture")))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Set_RawValue("g_fDissolveAmount", &fDissolveAmount, sizeof(float))))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -977,6 +993,7 @@ void CAncient_StonGolem::Free()
 	__super::Free();
 
 	Safe_Release(m_pColliderCom);
+	Safe_Release(m_pTextureCom);
 
 	for (_uint i = 0; i < WEAPON_END; ++i)
 	{
