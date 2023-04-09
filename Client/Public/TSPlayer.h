@@ -51,6 +51,7 @@ public:
 
 	_bool Get_Attack() { return m_AttackCheck; }
 	_bool Get_DownAttack() { return m_DownAttack; }
+	_bool Get_RageState() { return m_RagesKill; }
 
 public:
 	void Hit(const _int& _Damage);

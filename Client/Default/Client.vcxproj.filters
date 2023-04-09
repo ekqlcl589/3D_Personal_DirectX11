@@ -241,6 +241,9 @@
     <Filter Include="02.GameObject\10. Effrect\Player\Basic\ComboReady">
       <UniqueIdentifier>{366b70b8-71ec-48fe-897c-281195a615d9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\06. Monster\03_Wraith\JOBMOBㅋㅋ">
+      <UniqueIdentifier>{f9ea436d-95ec-448c-9ade-57d530cabbf9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -435,6 +438,9 @@
     <ClInclude Include="..\Public\WraithAttackEffect.h">
       <Filter>02.GameObject\10. Effrect\Monster\WraithAttack</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\EffectMonster.h">
+      <Filter>02.GameObject\06. Monster\03_Wraith\JOBMOBㅋㅋ</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -617,6 +623,9 @@
     <ClCompile Include="..\Private\WraithAttackEffect.cpp">
       <Filter>02.GameObject\10. Effrect\Monster\WraithAttack</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\EffectMonster.cpp">
+      <Filter>02.GameObject\06. Monster\03_Wraith\JOBMOBㅋㅋ</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -663,6 +672,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxModels_Effect.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxBlur.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

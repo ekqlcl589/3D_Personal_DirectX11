@@ -45,7 +45,7 @@ void CPlayer_Rage_Arma::Tick(_double TimeDelta)
 
 	pOwner = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
 	m_bActive = static_cast<CTSPlayer*>(pOwner)->Get_Info().fSkill;
-	m_bRage = static_cast<CTSPlayer*>(pOwner)->Get_Info().rageSkill;
+	m_bRage = static_cast<CTSPlayer*>(pOwner)->Get_RageState();
 
 	//m_Time = static_cast<CTSPlayer*>(pOwner)->Get_Info().m_FSkill;
 	if (m_bActive)

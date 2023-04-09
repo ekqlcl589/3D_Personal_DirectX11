@@ -48,7 +48,7 @@ void CPlayerRageEffect::Tick(_double TimeDelta)
 
 		RELEASE_INSTANCE(CGameInstance);
 
-		m_bActive = static_cast<CTSPlayer*>(pPlayer)->Get_Info().rageSkill;
+		m_bActive = static_cast<CTSPlayer*>(pPlayer)->Get_RageState();
 
 		if (!m_bActive)
 		{

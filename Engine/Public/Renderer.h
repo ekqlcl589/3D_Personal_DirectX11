@@ -11,7 +11,17 @@ private:
 	virtual ~CRenderer() = default;
 
 public:
-	enum RENDERGROUP {RENDER_PRIORITY, RENDER_NONALPHA, RENDER_NONLIGHT, RENDER_ALPHABLEND, RENDER_UI, RENDER_END};
+	enum RENDERGROUP 
+	{
+		RENDER_PRIORITY,
+		RENDER_NONALPHA, 
+		RENDER_BLUR,
+		RENDER_GLOW,
+		RENDER_NONLIGHT, 
+		RENDER_ALPHABLEND, 
+		RENDER_UI, 
+		RENDER_END
+	};
 
 public:
 	virtual HRESULT Initialize_Prototype()override;
@@ -38,6 +48,7 @@ private:
 private:
 	class CVIBuffer_Rect* m_pVIBuffer = nullptr;
 	class CShader* m_pShader = nullptr;
+	class CShader* m_pBlurShader = nullptr;
 	_float4x4 m_FullScreenWorldMatrix, m_ViewMatrix, m_ProjMatrix;
 
 private:
@@ -48,6 +59,9 @@ private:
 	void Render_Priority();
 	void Render_NonAlphaBlend();
 	void Render_Lights();
+	void Render_Blur();
+	void Render_Glow();
+
 	void Render_Blend();
 	void Render_NonLight();
 	void Render_AlphaBlend();

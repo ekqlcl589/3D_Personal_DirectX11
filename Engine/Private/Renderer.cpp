@@ -49,6 +49,16 @@ HRESULT CRenderer::Initialize_Prototype()
 		DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
+#pragma region Test
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Blur"), ViewportDesc.Width, ViewportDesc.Height, 
+		DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Glow"), ViewportDesc.Width, ViewportDesc.Height,
+		DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+#pragma endregion Test
+
 	/* »ý¼º ·»´õÅ¸°ÙµéÀ» ¿ëµµ¿¡ µû¶ó ¹­´Â´Ù. */
 	/* For.MRT_Deferred */
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_Deferred"), TEXT("Target_Diffuse"))))
@@ -57,6 +67,13 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_Deferred"), TEXT("Target_Depth"))))
 		return E_FAIL;
+
+#pragma region Test
+	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_BlurEffect"), TEXT("Target_Blur"))))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_Effect"), TEXT("Target_Glow"))))
+		return E_FAIL;
+#pragma endregion Test
 
 	/* For.MRT_LightAcc */
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_LightAcc"), TEXT("Target_Shade"))))
@@ -69,7 +86,9 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 
 	m_pShader = CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Deferred.hlsl"), VTXTEX_DELARATION::Element, VTXTEX_DELARATION::iNumElements);
-	if (nullptr == m_pShader)
+	
+	m_pBlurShader = CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxBlur.hlsl"), VTXTEX_DELARATION::Element, VTXTEX_DELARATION::iNumElements);
+	if (nullptr == m_pShader || nullptr == m_pBlurShader)
 		return E_FAIL;
 
 	XMStoreFloat4x4(&m_FullScreenWorldMatrix,
@@ -81,16 +100,24 @@ HRESULT CRenderer::Initialize_Prototype()
 
 
 #ifdef _DEBUG
-	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Diffuse"), 10.0f, 10.f, 20.f, 20.f)))
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Diffuse"), 100.0f, 100.f, 200.f, 200.f)))
 		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Normal"), 10.0f, 30.f, 20.f, 20.f)))
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Normal"), 100.0f, 300.f, 200.f, 200.f)))
 		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Depth"), 10.0f, 50.f, 20.f, 20.f)))
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Depth"), 100.0f, 500.f, 200.f, 200.f)))
 		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Shade"), 30.f, 10.f, 20.f, 20.f)))
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Shade"), 300.f, 100.f, 200.f, 200.f)))
 		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Specular"), 30.f, 30.f, 20.f, 20.f)))
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Specular"), 300.f, 300.f, 200.f, 200.f)))
 		return E_FAIL;
+
+#pragma region Test
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Blur"), 500.f, 100.f, 200.f, 200.f)))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Glow"), 500.f, 300.f, 200.f, 200.f)))
+		return E_FAIL;
+#pragma endregion Test
+
 #endif
 
 	return S_OK;
@@ -125,6 +152,9 @@ void CRenderer::Draw_Renderer()
 	Render_Priority();
 	Render_NonAlphaBlend();
 	Render_Lights();
+	// blur
+	//Render_Blur();
+	
 	Render_Blend();
 	Render_NonLight();
 	Render_AlphaBlend();
@@ -141,6 +171,12 @@ void CRenderer::Draw_Renderer()
 		return;
 
 	m_pTarget_Manager->Render(TEXT("MRT_Deferred"), m_pShader, m_pVIBuffer);
+
+#pragma region Test
+	m_pTarget_Manager->Render(TEXT("MRT_BlurEffect"), m_pShader, m_pVIBuffer);
+	m_pTarget_Manager->Render(TEXT("MRT_Effect"), m_pShader, m_pVIBuffer);
+#pragma endregion Test
+
 	m_pTarget_Manager->Render(TEXT("MRT_LightAcc"), m_pShader, m_pVIBuffer);
 #endif
 
@@ -241,6 +277,51 @@ void CRenderer::Render_Lights()
 		return;
 }
 
+void CRenderer::Render_Blur()
+{
+	//Prototype_Component_Texture_Blur
+	if (FAILED(m_pTarget_Manager->Begin(m_pContext, TEXT("MRT_BlurEffect"))))
+		return;
+
+	if (FAILED( m_pTarget_Manager->Set_ShaderResourceView(m_pBlurShader, TEXT("Target_Blur"), "g_BlurTexture")))
+		return;
+
+	if (FAILED(m_pBlurShader->Set_Matrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
+		return;
+	if (FAILED(m_pBlurShader->Set_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pBlurShader->Set_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	_float fPixelWidth = 1280.f;
+	_float fPixelHeight = 720.f;
+
+	m_pBlurShader->Set_RawValue("g_Width", &fPixelWidth, sizeof(_float));
+	m_pBlurShader->Set_RawValue("g_Height", &fPixelHeight, sizeof(_float));
+
+	float blurPower = 0.5f;
+	m_pBlurShader->Set_RawValue("g_BlurPower", &blurPower, sizeof(_float));
+
+	m_pBlurShader->Begin(0);
+	m_pVIBuffer->Render();
+
+	if (FAILED(m_pTarget_Manager->End(m_pContext)))
+		return;
+
+}
+
+void CRenderer::Render_Glow()
+{
+	for (auto& pGameObject : m_RenderObject[RENDER_GLOW])
+	{
+		if (nullptr != pGameObject)
+			pGameObject->Render();
+
+		Safe_Release(pGameObject);
+	}
+	m_RenderObject[RENDER_GLOW].clear();
+}
+
 void CRenderer::Render_Blend()
 {
 	if (FAILED(m_pShader->Set_Matrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
@@ -324,6 +405,7 @@ void CRenderer::Free()
 
 	Safe_Release(m_pLight_Manager);
 	Safe_Release(m_pShader);
+	Safe_Release(m_pBlurShader);
 	Safe_Release(m_pVIBuffer);
 	Safe_Release(m_pTarget_Manager);
 

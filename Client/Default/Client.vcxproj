@@ -172,6 +172,7 @@
     <ClInclude Include="..\Public\CursedWraith.h" />
     <ClInclude Include="..\Public\DynamicCamera.h" />
     <ClInclude Include="..\Public\Effect.h" />
+    <ClInclude Include="..\Public\EffectMonster.h" />
     <ClInclude Include="..\Public\FireEffect.h" />
     <ClInclude Include="..\Public\GamePlay.h" />
     <ClInclude Include="..\Public\GamePlay2.h" />
@@ -236,6 +237,7 @@
     <ClCompile Include="..\Private\CursedWraith.cpp" />
     <ClCompile Include="..\Private\DynamicCamera.cpp" />
     <ClCompile Include="..\Private\Effect.cpp" />
+    <ClCompile Include="..\Private\EffectMonster.cpp" />
     <ClCompile Include="..\Private\FireEffect.cpp" />
     <ClCompile Include="..\Private\GamePlay.cpp" />
     <ClCompile Include="..\Private\GamePlay2.cpp" />
@@ -305,6 +307,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Cell.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimModel.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMode_NormalMap.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxBlur.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCubeTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxModel.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxModels_Effect.hlsl" />

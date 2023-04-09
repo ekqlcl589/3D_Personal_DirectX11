@@ -41,6 +41,7 @@ public:
 	void Skill03(_double TimeDelta);
 
 	void Summons();
+	HRESULT SummonsEffectMonster();
 
 	void RTBlow(_double TimeDelta);
 
@@ -89,6 +90,7 @@ private:
 	_bool m_Skill1 = false;
 	_bool m_Skill2 = false;
 	_bool m_Skill3 = false;
+	_bool m_SummonsMonster = false;
 
 	_bool m_bAvoid = false;
 

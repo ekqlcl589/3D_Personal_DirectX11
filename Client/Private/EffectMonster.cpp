@@ -1,20 +1,19 @@
 #include "stdafx.h"
-#include "..\Public\Player_Skill_RockBreak.h"
+#include "..\Public\EffectMonster.h"
 #include "GameInstance.h"
 #include "TSPlayer.h"
-#include "TwoHandedSword.h"
-//
-Player_Skill_RockBreak::Player_Skill_RockBreak(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
-	: CGameObject(pDevice, pContext)
+
+CEffectMonster::CEffectMonster(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+	: CMonster(pDevice, pContext)
 {
 }
 
-Player_Skill_RockBreak::Player_Skill_RockBreak(const Player_Skill_RockBreak & rhs)
-	: CGameObject(rhs)
+CEffectMonster::CEffectMonster(const CEffectMonster & rhs)
+	: CMonster(rhs)
 {
 }
 
-HRESULT Player_Skill_RockBreak::Initialize_Prototype()
+HRESULT CEffectMonster::Initialize_Prototype()
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
@@ -22,7 +21,7 @@ HRESULT Player_Skill_RockBreak::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT Player_Skill_RockBreak::Initialize(void * pArg)
+HRESULT CEffectMonster::Initialize(void * pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -30,66 +29,73 @@ HRESULT Player_Skill_RockBreak::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_bActive = true;
+	memcpy(&m_vPosition, pArg, sizeof(_vector));
+
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
+
+	m_vPosition = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
+	RELEASE_INSTANCE(CGameInstance);
+
+	_float3 fPos;
+	XMStoreFloat3(&fPos, m_vPosition);
+
+	fPos.x += 3.f;
+	//fPos.y += 5.f;
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPos));
+	
+	m_pTransformCom->LookAt(m_vTargetPos);
 
 	m_pModelCom->SetUp_Animation(0);
-	
-	memcpy(&m_vPosition, pArg, sizeof(_vector));
-	XMStoreFloat3(&m_fPosition, m_vPosition);
-
-	m_fPosition.z += 3.f;
-
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_fPosition));
-
-	m_pModelCom->Set_AnimTick(10.0);
 
 	m_fDissolveTime = 5.f;
+
+	m_bFadeIn = true;
 
 	return S_OK;
 }
 
-void Player_Skill_RockBreak::Tick(_double TimeDelta)
+void CEffectMonster::Tick(_double TimeDelta)
 {
 	if (!m_bDead)
 	{
 		__super::Tick(TimeDelta);
 
+		if (nullptr != m_pColliderCom)
+			m_pColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
+
 
 		if (true == m_pModelCom->Get_AnimFinished())
 		{
 			m_fDissolveTime -= TimeDelta;
-
+			
 			fDissolveAmount = Lerp(1.f, 0.f, m_fDissolveTime / 5.f);
 			m_bFadeIn = false;
 
-			if(m_fDissolveTime <= 0.f)
+			if (m_fDissolveTime <= 0.f)
 				Set_Dead();
 		}
 
 	}
-
 }
 
-void Player_Skill_RockBreak::LateTick(_double TimeDelta)
+void CEffectMonster::LateTick(_double TimeDelta)
 {
 	if (!m_bDead)
 	{
 		__super::LateTick(TimeDelta);
 
-		XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * CTwoHandedSword::WorldMatrix);
-
 		if (m_bFadeIn)
 			m_pModelCom->Play_Animation(TimeDelta);
 
 		if (nullptr != m_pRendererCom)
-		{
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
-		}
 
 	}
 }
 
-HRESULT Player_Skill_RockBreak::Render()
+HRESULT CEffectMonster::Render()
 {
 	if (FAILED(__super::Render()))
 		return E_FAIL;
@@ -102,7 +108,6 @@ HRESULT Player_Skill_RockBreak::Render()
 	for (_uint i = 0; i < iNumMeshes; i++)
 	{
 		m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
-		//m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DepthTexture", i, aiTextureType_DIFFUSE);
 		/*m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);
 		m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);*/
 
@@ -113,39 +118,10 @@ HRESULT Player_Skill_RockBreak::Render()
 		m_pModelCom->Render(i);
 	}
 
-
 	return S_OK;
 }
 
-_bool Player_Skill_RockBreak::FadeInOut()
-{
-	if (m_Alpha >= 100 && !m_bFadeIn)
-		m_Alpha -= m_fFadeSpeed;
-
-	if (m_Alpha < 255 && m_bFadeIn)
-		m_Alpha += m_fFadeSpeed;
-	else
-		m_bFadeIn = false;
-
-	if (m_Alpha > 255)
-		m_Alpha = 255;
-
-	if (m_Alpha < 100)
-	{
-		m_bDead = true;
-		return true;
-	}
-
-	return false;
-	//셰이더로 던져야 하는데 흠;
-}
-
-void Player_Skill_RockBreak::Set_Transform()
-{
-	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * CTwoHandedSword::WorldMatrix);
-}
-
-HRESULT Player_Skill_RockBreak::Add_Components()
+HRESULT CEffectMonster::Add_Components()
 {
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"),
 		TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom)))
@@ -154,43 +130,35 @@ HRESULT Player_Skill_RockBreak::Add_Components()
 	CTransform::TRANSFORM_DESC		TransformDesc;
 	ZeroMemory(&TransformDesc, sizeof(CTransform::TRANSFORM_DESC));
 
-	TransformDesc.fSpeed = 5.f;
+	TransformDesc.fSpeed = 3.f;
 	TransformDesc.fRotation = XMConvertToRadians(90.0f);
-
 
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Transform"),
 		TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_RockBreak"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Model_Effect_Monster"),
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModel_Effect"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Shader_VtxModel_Effect"),
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Noise"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Texture_Noise"),
 		TEXT("Com_Texture"), (CComponent**)&m_pTextureCom)))
 		return E_FAIL;
-
-	//if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Blur"),
-	//	TEXT("Com_Texture1"), (CComponent**)&m_pTextureCom)))
-	//	return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT Player_Skill_RockBreak::SetUp_ShaderResources()
+HRESULT CEffectMonster::SetUp_ShaderResources()
 {
 	if (nullptr == m_pShaderCom)
 		return E_FAIL;
 
 	if (FAILED(m_pTransformCom->SetUp_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
-
-	//if (FAILED(m_pShaderCom->Set_Matrix("g_WorldMatrix", &m_WorldMatrix)))
-	//	return E_FAIL;
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
@@ -204,46 +172,53 @@ HRESULT Player_Skill_RockBreak::SetUp_ShaderResources()
 
 	if (FAILED(m_pTextureCom->SetUp_ShaderResource(m_pShaderCom, "g_NoiseTexture")))
 		return E_FAIL;
-
+	
 	if (FAILED(m_pShaderCom->Set_RawValue("g_fDissolveAmount", &fDissolveAmount, sizeof(float))))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-Player_Skill_RockBreak * Player_Skill_RockBreak::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CEffectMonster * CEffectMonster::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {
-	Player_Skill_RockBreak*		pInstance = new Player_Skill_RockBreak(pDevice, pContext);
+	CEffectMonster*		pInstance = new CEffectMonster(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Created : Player_Skill_RockBreak");
+		MSG_BOX("Failed to Created : CEffectMonster");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject * Player_Skill_RockBreak::Clone(void * pArg)
+CGameObject * CEffectMonster::Clone(void * pArg)
 {
-	Player_Skill_RockBreak*		pInstance = new Player_Skill_RockBreak(*this);
+	CEffectMonster*		pInstance = new CEffectMonster(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Clone : Player_Skill_RockBreak");
+		MSG_BOX("Failed to Cloned : CEffectMonster");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void Player_Skill_RockBreak::Free()
+void CEffectMonster::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pColliderCom);
+
+	for (_uint i = 0; i < WEAPON_END; ++i)
+	{
+		for (auto& pWeapon : m_vecWeapon[i])
+			Safe_Release(pWeapon);
+
+		m_vecWeapon[i].clear();
+	}
+
 	Safe_Release(m_pTextureCom);
-	Safe_Release(m_pTransformCom);
-	Safe_Release(m_pModelCom);
-	Safe_Release(m_pShaderCom);
-	Safe_Release(m_pRendererCom);
+
 }

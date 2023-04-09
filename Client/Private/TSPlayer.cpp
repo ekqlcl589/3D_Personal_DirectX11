@@ -1597,6 +1597,7 @@ void CTSPlayer::Rage_Skill(_double TimeDelta)
 	if (m_tInfo.PrevAnim == TS_RAGESKILL_DOUBLESLASH && m_AnimTimeAcc >= 73.0 && m_AnimTimeAcc <= 74.0)
 	{
 		m_tInfo.rageSkill = true;
+		//WeaponBoneUpdate();
 		Add_RageEffect();
 		//static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.7f, 0.01f); 
 	}

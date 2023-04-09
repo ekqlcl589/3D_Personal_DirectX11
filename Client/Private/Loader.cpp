@@ -27,6 +27,7 @@
 #include "PlayerTop.h"
 #include "Player_Body.h"
 #include "SwordShield.h"
+#include "EffectMonster.h"
 #include "TwoHandedSword.h"
 #include "Player_Rage_Arma.h"
 #include "PlayerRageEffect.h"
@@ -260,6 +261,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Noise"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Dissolve0.png")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Blur"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/T_BlurMask_0.png")))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("정점버퍼를 로딩중입니다."));
@@ -889,6 +894,10 @@ HRESULT CLoader::Loading_ForGamePlay2()
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Boss/Grudge_Wraith/CursedWraith.fbx", CModel::MODEL_ANIM, LocalMatrix66))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Model_Effect_Monster"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/ETC/Test.fbx", CModel::MODEL_ANIM, LocalMatrix66))))
+		return E_FAIL;
+
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Model_Sphere"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/Test.fbx", CModel::MODEL_NONANIM, Local))))
 		return E_FAIL;
@@ -1090,6 +1099,10 @@ HRESULT CLoader::Loading_ForGamePlay2()
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster_Weapon2"),
 		CMonsterSickle::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster_Effect_Monster"),
+		CEffectMonster::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 #pragma endregion Monster

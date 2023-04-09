@@ -66,6 +66,8 @@ protected:
 	_float3 m_fToTagetPos = { 0.f, 0.f, 0.f };
 	_vector m_vTargetPos;
 
+	_float3 m_fPlayerPos;
+
 	CGameObject* m_pTarget = nullptr;
 	CTransform* m_pPlayerTransform = nullptr;
 

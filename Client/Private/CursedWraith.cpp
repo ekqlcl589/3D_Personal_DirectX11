@@ -321,7 +321,7 @@ void CCursedWraith::Animation_State(_double TimeDelta)
 	Skill01(TimeDelta);
 	Skill02(TimeDelta);
 	Skill03(TimeDelta);
-
+	SummonsEffectMonster();
 	if (m_tInfo._Hp <= 800.f)
 	{
 		Summons();
@@ -606,6 +606,30 @@ void CCursedWraith::Summons()
 	}
 }
 
+HRESULT CCursedWraith::SummonsEffectMonster()
+{
+	if(m_SummonsMonster && m_tInfo.PrevAnim == CW_Wait && true == m_pModelCom->Get_AnimFinished())
+		m_tInfo.CurrAnim = CW_SKILL_07;
+
+	if (m_tInfo.PrevAnim == CW_SKILL_07 && m_AnimTimeAcc >= 98.0 && m_AnimTimeAcc <= 99.0)
+	{
+		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+		if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Monster_Effect_Monster"), TEXT("Effect_Monster"), &m_pTransformCom->Get_State(CTransform::STATE_POSITION))))
+			return E_FAIL;
+
+		RELEASE_INSTANCE(CGameInstance);
+	}
+	
+	if (m_tInfo.PrevAnim == CW_SKILL_07 && m_AnimTimeAcc >= 138.0)
+	{
+		m_tInfo.CurrAnim = CW_Wait;
+		m_SummonsMonster = false;
+	}
+
+	return S_OK;
+}
+
 void CCursedWraith::RTBlow(_double TimeDelta)
 {
 	if (m_bBlow)
@@ -626,7 +650,7 @@ void CCursedWraith::Use_Skill(_double TimeDelta)
 {
 	_uint RandSkill = 0;
 
-	RandSkill = rand() % 3;
+	RandSkill = rand() % 4;
 
 	switch (RandSkill)
 	{
@@ -640,6 +664,10 @@ void CCursedWraith::Use_Skill(_double TimeDelta)
 
 	case 2:
 		m_Skill1 = true;
+		break;
+
+	case 3:
+		m_SummonsMonster = true;
 		break;
 
 	default:

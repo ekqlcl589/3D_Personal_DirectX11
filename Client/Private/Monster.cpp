@@ -52,6 +52,7 @@ void CMonster::Tick(_double TimeDelta)
 	RELEASE_INSTANCE(CGameInstance);
 
 	m_vTargetPos = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION);// -m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	XMStoreFloat3(&m_fPlayerPos, m_vTargetPos);
 
 	ChaseToPlayer(TimeDelta);
 
