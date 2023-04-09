@@ -163,6 +163,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Public\AddCollision.h" />
     <ClInclude Include="..\Public\Ancient_StonGolem.h" />
     <ClInclude Include="..\Public\BackGround.h" />
     <ClInclude Include="..\Public\BlackBall.h" />
@@ -197,6 +198,7 @@
     <ClInclude Include="..\Public\PlayerComboReady.h" />
     <ClInclude Include="..\Public\PlayerHPBar.h" />
     <ClInclude Include="..\Public\PlayerMPBar.h" />
+    <ClInclude Include="..\Public\PlayerRageAddEffect.h" />
     <ClInclude Include="..\Public\PlayerRageEffect.h" />
     <ClInclude Include="..\Public\PlayerRageSkill.h" />
     <ClInclude Include="..\Public\PlayerSkill.h" />
@@ -229,6 +231,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Private\AddCollision.cpp" />
     <ClCompile Include="..\Private\Ancient_StonGolem.cpp" />
     <ClCompile Include="..\Private\BackGround.cpp" />
     <ClCompile Include="..\Private\BlackBall.cpp" />
@@ -262,6 +265,7 @@
     <ClCompile Include="..\Private\PlayerComboReady.cpp" />
     <ClCompile Include="..\Private\PlayerHPBar.cpp" />
     <ClCompile Include="..\Private\PlayerMPBar.cpp" />
+    <ClCompile Include="..\Private\PlayerRageAddEffect.cpp" />
     <ClCompile Include="..\Private\PlayerRageEffect.cpp" />
     <ClCompile Include="..\Private\PlayerRageSkill.cpp" />
     <ClCompile Include="..\Private\PlayerSkill.cpp" />

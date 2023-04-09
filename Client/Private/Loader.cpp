@@ -33,6 +33,7 @@
 #include "PlayerRageEffect.h"
 #include "Player_Basic_Combo.h"
 #include "TwoHandedSwordWait.h"
+#include "PlayerRageAddEffect.h"
 #include "Player_Skill_RockBreak.h"
 
 
@@ -63,6 +64,8 @@
 #include "PlayerRageSkill.h"
 
 #include "FireEffect.h"
+
+#include "AddCollision.h"
 
 CLoader::CLoader(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: m_pDevice(pDevice)
@@ -498,6 +501,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/WraithTest.fbx", CModel::MODEL_NONANIM, LocalMatrix555))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Player_Rage_Add_Effect"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/RageAddEffect.fbx", CModel::MODEL_NONANIM, LocalMatrix555))))
+		return E_FAIL;
+
 #pragma endregion Effect
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더를 로딩중입니다."));
@@ -741,6 +748,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_Player_ComboReady"),
 		CPlayerComboReady::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_Player_Rage_Add"),
+		CPlayerRageAddEffect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
@@ -1194,6 +1205,9 @@ HRESULT CLoader::Loading_ForGamePlay2()
 		CWraithAttackEffect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_Coll"),
+		CAddCollision::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 

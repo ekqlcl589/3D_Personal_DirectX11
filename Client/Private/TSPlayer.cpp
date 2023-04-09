@@ -339,6 +339,9 @@ void CTSPlayer::OnCollision(CGameObject * pObj)
 	case Engine::OBJ_MONSTER_PROJECTILE:
 		break;
 
+	case Engine::OBJ_NO_COLL:
+		break;
+
 	case Engine::OBJ_END:
 		break;
 	default:
@@ -430,6 +433,12 @@ void CTSPlayer::EnterCollision(CGameObject * pObj)
 		Hit(15);
 		cout << "돌 투사체 한테 맞음 " << endl;
 		break;
+
+	case Engine::OBJ_NO_COLL:
+		Hit(15);
+		cout << "맞음 " << endl;
+		break;
+
 	case Engine::OBJ_END:
 		break;
 	default:

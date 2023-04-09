@@ -31,6 +31,8 @@ private:
 	HRESULT Add_Components();
 	HRESULT SetUp_ShaderResources();
 
+	HRESULT Add_Coll();
+
 	_bool m_bFadeIn = true;
 	_vector m_vPosition;
 

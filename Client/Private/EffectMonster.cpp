@@ -2,6 +2,7 @@
 #include "..\Public\EffectMonster.h"
 #include "GameInstance.h"
 #include "TSPlayer.h"
+#include "AddCollision.h"
 
 CEffectMonster::CEffectMonster(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CMonster(pDevice, pContext)
@@ -27,6 +28,9 @@ HRESULT CEffectMonster::Initialize(void * pArg)
 		return E_FAIL;
 
 	if (FAILED(Add_Components()))
+		return E_FAIL;
+
+	if (FAILED(Add_Coll()))
 		return E_FAIL;
 
 	memcpy(&m_vPosition, pArg, sizeof(_vector));
@@ -62,8 +66,16 @@ void CEffectMonster::Tick(_double TimeDelta)
 	{
 		__super::Tick(TimeDelta);
 
-		if (nullptr != m_pColliderCom)
-			m_pColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
+		for (_uint i = 0; i < WEAPON_END; i++)
+		{
+			for (auto& pWeapon : m_vecWeapon[i])
+			{
+				if (nullptr != pWeapon)
+				{
+					pWeapon->Tick(TimeDelta);
+				}
+			}
+		}
 
 
 		if (true == m_pModelCom->Get_AnimFinished())
@@ -86,6 +98,15 @@ void CEffectMonster::LateTick(_double TimeDelta)
 	{
 		__super::LateTick(TimeDelta);
 
+		for (_uint i = 0; i < WEAPON_END; i++)
+		{
+			for (auto& pWeapon : m_vecWeapon[i])
+			{
+				if (nullptr != pWeapon)
+					pWeapon->LateTick(TimeDelta);
+			}
+		}
+		
 		if (m_bFadeIn)
 			m_pModelCom->Play_Animation(TimeDelta);
 
@@ -118,6 +139,13 @@ HRESULT CEffectMonster::Render()
 		m_pModelCom->Render(i);
 	}
 
+#ifdef _DEBUG
+
+	if (nullptr != m_pColliderCom)
+		m_pColliderCom->Render();
+
+#endif
+
 	return S_OK;
 }
 
@@ -143,6 +171,16 @@ HRESULT CEffectMonster::Add_Components()
 
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Shader_VtxModel_Effect"),
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
+		return E_FAIL;
+
+	CCollider::COLLIDERDESC ColliderDesc;
+	ZeroMemory(&ColliderDesc, sizeof ColliderDesc);
+
+	ColliderDesc.vScale = _float3(1.f, 1.f, 1.f);
+	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vScale.y * 0.5f, 0.f);
+
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_OBB"),
+		TEXT("Com_Collider"), (CComponent**)&m_pColliderCom, &ColliderDesc)))
 		return E_FAIL;
 
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Texture_Noise"),
@@ -175,6 +213,30 @@ HRESULT CEffectMonster::SetUp_ShaderResources()
 	
 	if (FAILED(m_pShaderCom->Set_RawValue("g_fDissolveAmount", &fDissolveAmount, sizeof(float))))
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CEffectMonster::Add_Coll()
+{
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+	CBone* pBoneR = m_pModelCom->Get_BonePtr("Bone19");
+
+	if (nullptr == pBoneR)// || nullptr == pBoneSpine)
+		return E_FAIL;
+
+	CAddCollision::COLLDESC WeaponDesc1 = { pBoneR, m_pModelCom->Get_LocalMatrix(), m_pTransformCom };
+	Safe_AddRef(pBoneR);
+
+	CGameObject* pWeaponR = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Effect_Coll"), &WeaponDesc1);
+
+	if (nullptr == pWeaponR)
+		return E_FAIL;
+
+	m_vecWeapon[WEAPON_MONSTERR].push_back(pWeaponR);
+
+	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
 }

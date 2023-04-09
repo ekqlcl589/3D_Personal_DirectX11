@@ -54,6 +54,8 @@ void CMonsterSickle::Tick(_double TimeDelta)
 {
 	if (!m_bDead)
 	{
+		__super::Tick(TimeDelta);
+	
 		if (nullptr != m_pColliderCom)
 			m_pColliderCom->Update(XMLoadFloat4x4(&m_WorldMatrix));
 

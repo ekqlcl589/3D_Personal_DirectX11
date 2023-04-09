@@ -46,7 +46,7 @@ HRESULT CBlackBall::Initialize(void * pArg)
 		m_pTransformCom->Set_State(CTransform::STATE_UP, XMVectorSet(0.0f, 1.f, 0.f, 0.f) * fScale.y);
 		m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_vLook * fScale.z);
 
-		Add_Effect();
+		//Add_Effect();
 	}
 	else if (m_BallDesc.eType == TYPE_3)
 	{
@@ -62,7 +62,7 @@ HRESULT CBlackBall::Initialize(void * pArg)
 		m_pTransformCom->Set_State(CTransform::STATE_UP, XMVectorSet(0.0f, 1.f, 0.f, 0.f)* fScale.y);
 		m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_vLook * fScale.z);
 
-		Add_Effect();
+		//Add_Effect();
 
 	}
 	else if (m_BallDesc.eType == TYPE_DDEBASI)
@@ -203,7 +203,7 @@ HRESULT CBlackBall::Render()
 			m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
 
 
-			m_pShaderCom->Begin(2);
+			m_pShaderCom->Begin(0);
 
 			m_pModelCom->Render(i);
 		}
@@ -323,7 +323,7 @@ HRESULT CBlackBall::Add_Components()
 		TEXT("Com_Collider"), (CComponent**)&m_pColliderCom, &ColliderDesc)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModel_Effect"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModel"),
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
@@ -348,32 +348,32 @@ HRESULT CBlackBall::SetUp_ShaderResources()
 
 	RELEASE_INSTANCE(CGameInstance);
 
-	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	//_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
-	_float3 fPos;
-	XMStoreFloat3(&fPos, vPos);
+	//_float3 fPos;
+	//XMStoreFloat3(&fPos, vPos);
 
-	_float U = fPos.z;	
+	//_float U = fPos.z;
 
-	//if (FAILED(m_pShaderCom->Set_RawValue("g_fUVData", &U, sizeof(float))))
-	//	return E_FAIL;
-	
-	_vector vCamDir = CPipeLine::GetInstance()->Get_TransformMatrixInverse(CPipeLine::TS_VIEW).r[2];
-		
-	// 고장났음 고쳐야 함 
-	// 플레이어 스킬쓸 때 불꽃 회전하는거 같은 이펙트 논 애님이라도 transform->turn 으로 어떻게든 비비면 
-	// 가능할 듯 
-	// 경찬이가 준 파동 어떻게든 적용해서 사용해보셈 -> grudge가 땅 찍을 때? 아니면 골렘이 찍을 때 
-	m_pShaderCom->Set_RawValue("g_vCamDir", &vCamDir, sizeof(_vector));
+	////if (FAILED(m_pShaderCom->Set_RawValue("g_fUVData", &U, sizeof(float))))
+	////	return E_FAIL;
 
-	m_LifeTime = min(1.f, max(0.f, m_LifeTime));
+	//_vector vCamDir = CPipeLine::GetInstance()->Get_TransformMatrixInverse(CPipeLine::TS_VIEW).r[2];
 
-	_float fAhlpa = Lerp(0.f, 1.f, sqrt(m_LifeTime * 1.5f));
+	//// 고장났음 고쳐야 함 
+	//// 플레이어 스킬쓸 때 불꽃 회전하는거 같은 이펙트 논 애님이라도 transform->turn 으로 어떻게든 비비면 
+	//// 가능할 듯 
+	//// 경찬이가 준 파동 어떻게든 적용해서 사용해보셈 -> grudge가 땅 찍을 때? 아니면 골렘이 찍을 때 
+	//m_pShaderCom->Set_RawValue("g_vCamDir", &vCamDir, sizeof(_vector));
 
-	fAhlpa = min(1.f, max(0.f, fAhlpa));
+	//m_LifeTime = min(1.f, max(0.f, m_LifeTime));
 
-	m_pShaderCom->Set_RawValue("g_fAhlpa", &fAhlpa, sizeof(_float));
-	m_pShaderCom->Set_RawValue("g_fGlowScale", &m_fGlowScale, sizeof(_float));
+	//_float fAhlpa = Lerp(0.f, 1.f, sqrt(m_LifeTime * 1.5f));
+
+	//fAhlpa = min(1.f, max(0.f, fAhlpa));
+
+	//m_pShaderCom->Set_RawValue("g_fAhlpa", &fAhlpa, sizeof(_float));
+	//m_pShaderCom->Set_RawValue("g_fGlowScale", &m_fGlowScale, sizeof(_float));
 
 	return S_OK;
 }

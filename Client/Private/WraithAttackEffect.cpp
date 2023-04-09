@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\WraithAttackEffect.h"
 #include "GameInstance.h"
+#include "TSPlayer.h"
 
 CWraithAttackEffect::CWraithAttackEffect(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -32,13 +33,21 @@ HRESULT CWraithAttackEffect::Initialize(void * pArg)
 
 	memcpy(&m_vPosition, pArg, sizeof(_vector));
 	
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vPosition);
 
-	m_pModelCom->Set_AnimTick(10.0);
+	m_pModelCom->Set_AnimTick(13.0);
 
 	m_fDissolveTime = 3.f;
 
 	m_bActive = true;
+
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
+
+	m_vPosition = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
+	RELEASE_INSTANCE(CGameInstance);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vPosition);
+
+	//m_pTransformCom->LookAt(m_vPosition);
 
 	return S_OK;
 }

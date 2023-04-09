@@ -184,9 +184,6 @@
     <Filter Include="02.GameObject\06. Monster\99.MonsterWeapon\Sickle">
       <UniqueIdentifier>{385482eb-b048-41d2-aaaa-8cd92a56dd1f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\06. Monster\TargetTexture">
-      <UniqueIdentifier>{d70c53ea-412c-4ef3-88ac-26041b070d6c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\10. Effrect\Monster">
       <UniqueIdentifier>{b96777ed-cd94-42e1-9a5c-4ca3b8a20275}</UniqueIdentifier>
     </Filter>
@@ -243,6 +240,12 @@
     </Filter>
     <Filter Include="02.GameObject\06. Monster\03_Wraith\JOBMOBㅋㅋ">
       <UniqueIdentifier>{f9ea436d-95ec-448c-9ade-57d530cabbf9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\10. Effrect\Player\Rage\AddEffect">
+      <UniqueIdentifier>{9c8217ed-d835-485c-9adb-d19747caa142}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\10. Effrect\Monster\TargetTexture">
+      <UniqueIdentifier>{d70c53ea-412c-4ef3-88ac-26041b070d6c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -394,7 +397,7 @@
       <Filter>02.GameObject\06. Monster\99.MonsterWeapon\Sickle</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\TargetTextrue.h">
-      <Filter>02.GameObject\06. Monster\TargetTexture</Filter>
+      <Filter>02.GameObject\10. Effrect\Monster\TargetTexture</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Ruins.h">
       <Filter>02.GameObject\Field\Ruins</Filter>
@@ -441,6 +444,10 @@
     <ClInclude Include="..\Public\EffectMonster.h">
       <Filter>02.GameObject\06. Monster\03_Wraith\JOBMOBㅋㅋ</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\PlayerRageAddEffect.h">
+      <Filter>02.GameObject\10. Effrect\Player\Rage\AddEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AddCollision.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -579,7 +586,7 @@
       <Filter>02.GameObject\06. Monster\99.MonsterWeapon\Sickle</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\TargetTextrue.cpp">
-      <Filter>02.GameObject\06. Monster\TargetTexture</Filter>
+      <Filter>02.GameObject\10. Effrect\Monster\TargetTexture</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Ruins.cpp">
       <Filter>02.GameObject\Field\Ruins</Filter>
@@ -626,6 +633,10 @@
     <ClCompile Include="..\Private\EffectMonster.cpp">
       <Filter>02.GameObject\06. Monster\03_Wraith\JOBMOBㅋㅋ</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\PlayerRageAddEffect.cpp">
+      <Filter>02.GameObject\10. Effrect\Player\Rage\AddEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AddCollision.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
