@@ -85,6 +85,7 @@ void CTSPlayer::Tick(_double TimeDelta)
 {
 	if (m_tInfo._Hp <= 0.f)
 	{
+		m_isParticleOn = false;
 		m_tInfo._Hp = 0.f;
 		m_tInfo.CurrAnim = TS_DIE;
 
@@ -1604,6 +1605,8 @@ void CTSPlayer::Rage_Skill(_double TimeDelta)
 
 	if (!m_AnimInves && m_tInfo.PrevAnim == TS_RAGESKILL_DOUBLESLASH && m_AnimTimeAcc >= 13.0 && m_AnimTimeAcc <= 14.0)
 	{
+		m_isParticleOn = true;
+		Add_Particle();
 		WeaponBoneUpdate();
 		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.2f);
 	}
@@ -1611,10 +1614,9 @@ void CTSPlayer::Rage_Skill(_double TimeDelta)
 	if (!m_AnimInves && m_tInfo.PrevAnim == TS_RAGESKILL_DOUBLESLASH && m_AnimTimeAcc >= 72.5 && m_AnimTimeAcc <= 73.0)
 	{
 		//m_tInfo.rageSkill = true; // 애니메이션 느려짐
-		//WeaponBoneUpdate();
 		Add_RageEffect();
 		Add_Add_RageEffect();
-		//static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.7f, 0.01f); 
+		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.7f, 0.4f); 
 	}
 
 	if (m_InvesCheck && !m_AnimInves && m_tInfo.PrevAnim == TS_RAGESKILL_DOUBLESLASH && m_AnimTimeAcc >= 103.0 && m_AnimTimeAcc <= 104.0)
@@ -1625,10 +1627,19 @@ void CTSPlayer::Rage_Skill(_double TimeDelta)
 
 	if (m_AnimInves && m_tInfo.PrevAnim == TS_RAGESKILL_DOUBLESLASH && m_AnimTimeAcc <= 72.0) // 역재생 중에 72 프레임 보다 작아지면 역재생 종료 
 	{
-		m_tInfo.rageSkill = false; 
 		m_InvesCheck = false;
 		m_AnimInves = false;
 	}
+
+	if (!m_AnimInves && m_tInfo.PrevAnim == TS_RAGESKILL_DOUBLESLASH && m_AnimTimeAcc >= 105.0)
+	{
+		m_RagesKill = false;
+		m_tInfo.rageSkill = false;
+	}
+
+	if (!m_AnimInves && m_tInfo.PrevAnim == TS_RAGESKILL_DOUBLESLASH && m_AnimTimeAcc >= 110.0)
+		m_isParticleOn = false;
+
 	//else if (!m_AnimInves && m_tInfo.PrevAnim == TS_RAGESKILL_DOUBLESLASH && m_AnimTimeAcc >= 75.0 && m_AnimTimeAcc <= 76.0)
 	//{
 	//	m_AnimInves = true;
@@ -1644,6 +1655,7 @@ void CTSPlayer::Rage_Skill(_double TimeDelta)
 	if (!m_AnimInves && m_tInfo.PrevAnim == TS_RAGESKILL_DOUBLESLASH && m_AnimTimeAcc >= 152.0)
 	{
 		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
+		m_isParticleOn = false;
 		m_RagesKill = false;
 		m_AttackCheck = false;
 		m_InvesCheck = true;

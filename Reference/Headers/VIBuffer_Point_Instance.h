@@ -26,6 +26,7 @@ public: // player
 public: // monster
 	void RePosition(_fvector vTarget, _double TimeDelta);
 
+	void FireSparks(_fvector vTarget, _double TimeDelta);
 
 private:
 	ID3D11Buffer* m_pVBInstance = { nullptr };

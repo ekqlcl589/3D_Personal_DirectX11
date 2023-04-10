@@ -52,14 +52,23 @@ void CPlayer_Particle::Tick(_double TimeDelta)
 
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 		CGameObject* pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
-		//CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_CameraTransform")));
+		CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_CameraTransform")));
 		//_vector TargetPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
+		m_isRageSkill = static_cast<CTSPlayer*>(pPlayer)->Get_RageState();
 
 		RELEASE_INSTANCE(CGameInstance);
 
 		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta);
+		if (m_isRageSkill)
+		{
+			//m_pVIBufferCom->RePosition(pPlayerTransform->Get_State(CTransform::STATE_POSITION), TimeDelta);
+			m_pVIBufferCom->FireSparks(pPlayerTransform->Get_State(CTransform::STATE_POSITION), TimeDelta);
+		}
+		else
+		{
+			m_pVIBufferCom->Player_Flare(m_vTarget, TimeDelta);
 
-		m_pVIBufferCom->Player_Flare(m_vTarget, TimeDelta);
+		}
 
 		m_isDead = static_cast<CTSPlayer*>(pPlayer)->Get_IsParticle();
 

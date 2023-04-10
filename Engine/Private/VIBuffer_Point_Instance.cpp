@@ -250,6 +250,38 @@ void CVIBuffer_Point_Instance::RePosition(_fvector vTarget, _double TimeDelta)
 	m_pContext->Unmap(m_pVBInstance, 0);
 }
 
+void CVIBuffer_Point_Instance::FireSparks(_fvector vTarget, _double TimeDelta)
+{
+	D3D11_MAPPED_SUBRESOURCE		SubResource;
+	ZeroMemory(&SubResource, sizeof SubResource);
+
+	if (FAILED(m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource)))
+		return;
+
+	for (_uint i = 0; i < m_iNumInstance; i++)
+	{
+		XMLoadFloat4(&((VTXMATRIX*)SubResource.pData)[i].vPosition) = vTarget;
+
+		XMStoreFloat4(&((VTXMATRIX*)SubResource.pData)[i].vPosition, vTarget);
+
+		_float3 fPos;
+
+		XMStoreFloat3(&fPos, vTarget);
+
+		((VTXMATRIX*)SubResource.pData)[i].vPosition.y += m_pSpeed[i] * TimeDelta;
+
+		if (((VTXMATRIX*)SubResource.pData)[i].vPosition.y > fPos.y + 5.f)
+		{
+			((VTXMATRIX*)SubResource.pData)[i].vPosition.x = rand() % (_int(3) + 1) - (_int(3) >> 1);
+			((VTXMATRIX*)SubResource.pData)[i].vPosition.y = m_pOldHeight[i];
+			((VTXMATRIX*)SubResource.pData)[i].vPosition.z = rand() % (_int(3) + 1) - (_int(3) >> 1);
+		}
+
+	}
+
+	m_pContext->Unmap(m_pVBInstance, 0);
+}
+
 
 CVIBuffer_Point_Instance * CVIBuffer_Point_Instance::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, _float fWidth, _float fHeight, _float fDepth, _float fMinSpeed, _float fMaxSpeed, _uint iNumInstance)
 {
