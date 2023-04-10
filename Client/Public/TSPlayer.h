@@ -86,6 +86,7 @@ private:
 	HRESULT Add_Particle();
 	HRESULT Add_ComboEffect();
 	HRESULT Add_RageEffect();
+	HRESULT Add_Add_RageEffect();
 
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
@@ -171,6 +172,9 @@ private:
 	_bool m_DownAttack = false;
 
 	_bool m_isParticleOn = false;
+
+	_bool m_AnimInves = false;
+	_bool m_InvesCheck = true;
 
 private:
 	_bool m_Eskill = false;

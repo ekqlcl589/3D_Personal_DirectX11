@@ -30,7 +30,11 @@ HRESULT CPlayerRageAddEffect::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Rotation(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(70.0f));
+	XMStoreFloat4x4(&m_WorldMatrix, XMMatrixRotationY(90.f) * m_pTransformCom->Get_WorldMatrix() * CTwoHandedSword::WorldMatrix);
+
+	m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(270.0f));
+
+	m_fDissolveTime = 5.f;
 
 	return S_OK;
 }
@@ -46,13 +50,18 @@ void CPlayerRageAddEffect::Tick(_double TimeDelta)
 
 		RELEASE_INSTANCE(CGameInstance);
 
-		//m_bActive = static_cast<CTSPlayer*>(pPlayer)->Get_RageState();
+		m_bActive = static_cast<CTSPlayer*>(pPlayer)->Get_RageState();
 
-		//if (!m_bActive)
-		//{
-		//	Set_Dead();
-		//
-		//}
+		if (!m_bActive)
+		{
+			m_fDissolveTime -= TimeDelta;
+
+			fDissolveAmount = Lerp(1.f, 0.f, m_fDissolveTime / 5.f);
+
+			if (m_fDissolveTime <= 0.f)
+				Set_Dead();
+
+		}
 
 	}
 
@@ -63,6 +72,7 @@ void CPlayerRageAddEffect::LateTick(_double TimeDelta)
 	if (!m_bDead)
 	{
 		__super::LateTick(TimeDelta);
+
 
 		if (nullptr != m_pRendererCom)
 		{
@@ -116,8 +126,12 @@ HRESULT CPlayerRageAddEffect::Add_Components()
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModel"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModel_Effect"),
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Noise"),
+		TEXT("Com_Texture"), (CComponent**)&m_pTextureCom)))
 		return E_FAIL;
 
 	return S_OK;
@@ -128,11 +142,11 @@ HRESULT CPlayerRageAddEffect::SetUp_ShaderResources()
 	if (nullptr == m_pShaderCom)
 		return E_FAIL;
 
-	if (FAILED(m_pTransformCom->SetUp_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
-		return E_FAIL;
-
-	//if (FAILED(m_pShaderCom->Set_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+	//if (FAILED(m_pTransformCom->SetUp_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 	//	return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Set_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return E_FAIL;
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
@@ -143,6 +157,12 @@ HRESULT CPlayerRageAddEffect::SetUp_ShaderResources()
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
+
+	if (FAILED(m_pTextureCom->SetUp_ShaderResource(m_pShaderCom, "g_NoiseTexture")))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Set_RawValue("g_fDissolveAmount", &fDissolveAmount, sizeof(float))))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -180,5 +200,7 @@ void CPlayerRageAddEffect::Free()
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);
+	Safe_Release(m_pTextureCom);
+
 	Safe_Release(m_pRendererCom);
 }

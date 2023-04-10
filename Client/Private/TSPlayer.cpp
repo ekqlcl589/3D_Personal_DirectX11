@@ -158,13 +158,18 @@ void CTSPlayer::LateTick(_double TimeDelta)
 
 	if (m_tInfo.rageSkill)
 	{
-		m_pModelCom->Play_Animation(TimeDelta * 0.03);
+		m_pModelCom->Play_Animation(TimeDelta * 0.07);
 
+	}
+	else if (m_AnimInves)
+	{
+		m_pModelCom->Play_Animation(-1.0 * TimeDelta);
 	}
 	else
 	{
 		m_pModelCom->Play_Animation(TimeDelta);
 	}
+
 
 	m_AnimDuration = m_pModelCom->Get_AnimDuration();
 
@@ -758,7 +763,7 @@ void CTSPlayer::Animation(TSPLAYERANIM eType, _double TimeDelta)
 			m_iAnimIndex = 44;
 			break;
 		case Engine::TS_RAGESKILL_DOUBLESLASH:
-			m_iAnimIndex = 45;
+			m_iAnimIndex = 90;
 			break;
 		case Engine::TS_SKILL_ROCKBREAK:
 			m_iAnimIndex = 46;
@@ -1597,28 +1602,51 @@ void CTSPlayer::Rage_Skill(_double TimeDelta)
 
 	}
 
-	if (m_tInfo.PrevAnim == TS_RAGESKILL_DOUBLESLASH && m_AnimTimeAcc >= 15.0 && m_AnimTimeAcc <= 16.0)
+	if (!m_AnimInves && m_tInfo.PrevAnim == TS_RAGESKILL_DOUBLESLASH && m_AnimTimeAcc >= 13.0 && m_AnimTimeAcc <= 14.0)
 	{
 		WeaponBoneUpdate();
 		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.2f);
 	}
 
-	if (m_tInfo.PrevAnim == TS_RAGESKILL_DOUBLESLASH && m_AnimTimeAcc >= 73.0 && m_AnimTimeAcc <= 74.0)
+	if (!m_AnimInves && m_tInfo.PrevAnim == TS_RAGESKILL_DOUBLESLASH && m_AnimTimeAcc >= 72.5 && m_AnimTimeAcc <= 73.0)
 	{
-		m_tInfo.rageSkill = true;
+		//m_tInfo.rageSkill = true; // 애니메이션 느려짐
 		//WeaponBoneUpdate();
 		Add_RageEffect();
+		Add_Add_RageEffect();
 		//static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.7f, 0.01f); 
 	}
-	if (m_tInfo.PrevAnim == TS_RAGESKILL_DOUBLESLASH && m_AnimTimeAcc >= 75.0 && m_AnimTimeAcc <= 76.0)
+
+	if (m_InvesCheck && !m_AnimInves && m_tInfo.PrevAnim == TS_RAGESKILL_DOUBLESLASH && m_AnimTimeAcc >= 103.0 && m_AnimTimeAcc <= 104.0)
 	{
-		m_tInfo.rageSkill = false;
+		m_AnimInves = true; // 애니메이션 역재생 시작   
+		m_tInfo.rageSkill = false; // 속도 원상복구 
 	}
-	if (m_tInfo.PrevAnim == TS_RAGESKILL_DOUBLESLASH && m_AnimTimeAcc >= 142.0)
+
+	if (m_AnimInves && m_tInfo.PrevAnim == TS_RAGESKILL_DOUBLESLASH && m_AnimTimeAcc <= 72.0) // 역재생 중에 72 프레임 보다 작아지면 역재생 종료 
+	{
+		m_tInfo.rageSkill = false; 
+		m_InvesCheck = false;
+		m_AnimInves = false;
+	}
+	//else if (!m_AnimInves && m_tInfo.PrevAnim == TS_RAGESKILL_DOUBLESLASH && m_AnimTimeAcc >= 75.0 && m_AnimTimeAcc <= 76.0)
+	//{
+	//	m_AnimInves = true;
+	//	m_tInfo.rageSkill = false;
+	//}
+
+	//if (m_tInfo.PrevAnim == TS_RAGESKILL_DOUBLESLASH && m_AnimTimeAcc >= 76.0)
+	//{
+	//	m_AnimInves = false;
+	//	m_tInfo.rageSkill = false;
+	//}
+
+	if (!m_AnimInves && m_tInfo.PrevAnim == TS_RAGESKILL_DOUBLESLASH && m_AnimTimeAcc >= 152.0)
 	{
 		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
 		m_RagesKill = false;
 		m_AttackCheck = false;
+		m_InvesCheck = true;
 		m_tInfo.m_RageSkill = 0.f;
 
 	}
@@ -1684,6 +1712,18 @@ HRESULT CTSPlayer::Add_RageEffect()
 
 	RELEASE_INSTANCE(CGameInstance);
 
+	return S_OK;
+}
+
+HRESULT CTSPlayer::Add_Add_RageEffect()
+{
+	CGameInstance * pInstance = GET_INSTANCE(CGameInstance);
+
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Player_Rage_Add"), TEXT("Player_Effect"))))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(CGameInstance);
+	
 	return S_OK;
 }
 

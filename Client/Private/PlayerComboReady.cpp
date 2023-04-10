@@ -32,6 +32,8 @@ HRESULT CPlayerComboReady::Initialize(void * pArg)
 		return E_FAIL;
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_ReadyDesc.vPosition);
+
+	return S_OK;
 }
 
 void CPlayerComboReady::Tick(_double TimeDelta)

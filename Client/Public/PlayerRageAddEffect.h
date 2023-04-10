@@ -40,6 +40,7 @@ protected:
 private:
 	_float4x4 m_WorldMatrix;
 	_bool m_bActive = false;
+	_vector m_vPosition;
 
 public:
 	static CPlayerRageAddEffect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -611,7 +611,7 @@ HRESULT CCursedWraith::SummonsEffectMonster()
 	if(m_SummonsMonster && m_tInfo.PrevAnim == CW_Wait && true == m_pModelCom->Get_AnimFinished())
 		m_tInfo.CurrAnim = CW_SKILL_07;
 
-	if (m_tInfo.PrevAnim == CW_SKILL_07 && m_AnimTimeAcc >= 98.0 && m_AnimTimeAcc <= 99.0)
+	if (m_tInfo.PrevAnim == CW_SKILL_07 && m_AnimTimeAcc >= 98.5 && m_AnimTimeAcc <= 99.0)
 	{
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
