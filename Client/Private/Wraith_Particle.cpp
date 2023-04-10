@@ -1,21 +1,21 @@
 #include "stdafx.h"
-#include "..\Public\Player_Particle.h"
+#include "..\Public\Wraith_Particle.h"
 
 #include "GameInstance.h"
 #include "TSPlayer.h"
 
-CPlayer_Particle::CPlayer_Particle(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)	
+CWraith_Particle::CWraith_Particle(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)	
 	: CGameObject(pDevice, pContext)
 {
 }
 
-CPlayer_Particle::CPlayer_Particle(const CPlayer_Particle & rhs)	
+CWraith_Particle::CWraith_Particle(const CWraith_Particle & rhs)	
 	: CGameObject(rhs)
 {
 }
 
 
-HRESULT CPlayer_Particle::Initialize_Prototype()
+HRESULT CWraith_Particle::Initialize_Prototype()
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
@@ -23,7 +23,7 @@ HRESULT CPlayer_Particle::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CPlayer_Particle::Initialize(void * pArg)
+HRESULT CWraith_Particle::Initialize(void * pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -44,7 +44,7 @@ HRESULT CPlayer_Particle::Initialize(void * pArg)
 	return S_OK;
 }
 
-void CPlayer_Particle::Tick(_double TimeDelta)
+void CWraith_Particle::Tick(_double TimeDelta)
 {
 	if (!m_bDead)
 	{
@@ -77,7 +77,7 @@ void CPlayer_Particle::Tick(_double TimeDelta)
 	}
 }
 
-void CPlayer_Particle::LateTick(_double TimeDelta)
+void CWraith_Particle::LateTick(_double TimeDelta)
 {
 	if (!m_bDead)
 	{
@@ -88,7 +88,7 @@ void CPlayer_Particle::LateTick(_double TimeDelta)
 	}
 }
 
-HRESULT CPlayer_Particle::Render()
+HRESULT CWraith_Particle::Render()
 {
 	if (FAILED(__super::Render()))
 		return E_FAIL;
@@ -104,7 +104,7 @@ HRESULT CPlayer_Particle::Render()
 	return S_OK;
 }
 
-HRESULT CPlayer_Particle::Add_Components()
+HRESULT CWraith_Particle::Add_Components()
 {
 	/* For.Com_Renderer*/
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"), 
@@ -140,7 +140,7 @@ HRESULT CPlayer_Particle::Add_Components()
 	return S_OK;
 }
 
-HRESULT CPlayer_Particle::SetUp_ShaderResources()
+HRESULT CWraith_Particle::SetUp_ShaderResources()
 {
 	if (nullptr == m_pShaderCom)
 		return E_FAIL;	
@@ -167,34 +167,34 @@ HRESULT CPlayer_Particle::SetUp_ShaderResources()
 	return S_OK;
 }
 
-CPlayer_Particle * CPlayer_Particle::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CWraith_Particle * CWraith_Particle::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {
-	CPlayer_Particle*		pInstance = new CPlayer_Particle(pDevice, pContext);
+	CWraith_Particle*		pInstance = new CWraith_Particle(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Created : CPlayer_Particle");
+		MSG_BOX("Failed to Created : CWraith_Particle");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject * CPlayer_Particle::Clone(void* pArg)
+CGameObject * CWraith_Particle::Clone(void* pArg)
 {
-	CPlayer_Particle*		pInstance = new CPlayer_Particle(*this);
+	CWraith_Particle*		pInstance = new CWraith_Particle(*this);
 
 	/* 우ㅏㅓㄴ형데이터 외에 사본에게 필요한 추가 초기화 데이터를 처리한ㄷ.,, */
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CPlayer_Particle");
+		MSG_BOX("Failed to Cloned : CWraith_Particle");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CPlayer_Particle::Free()
+void CWraith_Particle::Free()
 {
 	__super::Free();
 

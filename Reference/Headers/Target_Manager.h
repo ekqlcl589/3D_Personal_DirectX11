@@ -20,6 +20,8 @@ public:
 	HRESULT Begin(ID3D11DeviceContext * pContext, const _tchar * pMRTTag);	
 	HRESULT End(ID3D11DeviceContext* pContext);
 
+	HRESULT NoneClerBegin(ID3D11DeviceContext * pContext, const _tchar * pMRTTag);
+
 public:
 	HRESULT Set_ShaderResourceView(class CShader* pShader, const _tchar* pTargetTag, const char* pContantName);
 

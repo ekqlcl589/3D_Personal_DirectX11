@@ -247,6 +247,9 @@
     <Filter Include="02.GameObject\10. Effrect\Monster\TargetTexture">
       <UniqueIdentifier>{d70c53ea-412c-4ef3-88ac-26041b070d6c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\10. Effrect\Particle\Wraith">
+      <UniqueIdentifier>{4a940a59-c90d-4951-8448-c11059cf2c4a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -448,6 +451,9 @@
       <Filter>02.GameObject\10. Effrect\Player\Rage\AddEffect</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\AddCollision.h" />
+    <ClInclude Include="..\Public\Wraith_Particle.h">
+      <Filter>02.GameObject\10. Effrect\Particle\Wraith</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -637,6 +643,9 @@
       <Filter>02.GameObject\10. Effrect\Player\Rage\AddEffect</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\AddCollision.cpp" />
+    <ClCompile Include="..\Private\Wraith_Particle.cpp">
+      <Filter>02.GameObject\10. Effrect\Particle\Wraith</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

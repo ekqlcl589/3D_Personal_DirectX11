@@ -160,6 +160,9 @@
     <Filter Include="01.Utillity\02. GameObject\02. AlphaBlend">
       <UniqueIdentifier>{4fa1fb42-a855-4a37-b0ad-a425611c7876}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00.System\03. SoundMgr">
+      <UniqueIdentifier>{104cc95c-9138-460b-94e6-2701d0bd913e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -324,6 +327,9 @@
     <ClInclude Include="..\Public\BlendObject.h">
       <Filter>01.Utillity\02. GameObject\02. AlphaBlend</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\SoundMgr.h">
+      <Filter>00.System\03. SoundMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\GameInstance.cpp">
@@ -472,6 +478,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\BlendObject.cpp">
       <Filter>01.Utillity\02. GameObject\02. AlphaBlend</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SoundMgr.cpp">
+      <Filter>00.System\03. SoundMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

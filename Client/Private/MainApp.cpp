@@ -8,6 +8,8 @@
 #include "KeyMgr.h"
 #include "DynamicCamera.h"
 #include "TargetCamera.h"
+#include "SoundMgr.h"
+
 CMainApp::CMainApp()
 	:m_pGameInstance(CGameInstance::GetInstance())
 {
@@ -39,11 +41,15 @@ HRESULT CMainApp::Initialize()
 	if (FAILED(Open_Level(LEVEL_LOGO)))
 		return E_FAIL;
 
+	CSoundMgr::GetInstance()->Initialize();
+
 	return S_OK;
 }
 
 void CMainApp::Tick(_double TimeDelta)
 {
+	CSoundMgr::GetInstance()->Update_Sound();
+
 	if (nullptr == m_pGameInstance)
 		return;
 
@@ -185,6 +191,7 @@ void CMainApp::Free()
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pGameInstance);
 
+	CSoundMgr::GetInstance()->DestroyInstance();
 	CKeyMgr::GetInstance()->DestroyInstance();
 	CGameInstance::Release_Engine();
 }

@@ -39,9 +39,13 @@
 #include <queue>
 #include <deque>
 #include <set>
+#include <map>
 #include <algorithm>
 #include <iostream>
 
+#include <io.h>
+#include "fmod.h"
+#include "fmod.hpp"
 
 using namespace std;
 using namespace DirectX;

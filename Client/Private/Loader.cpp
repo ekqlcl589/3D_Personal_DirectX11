@@ -29,6 +29,7 @@
 #include "SwordShield.h"
 #include "EffectMonster.h"
 #include "TwoHandedSword.h"
+#include "Wraith_Particle.h"
 #include "Player_Rage_Arma.h"
 #include "PlayerRageEffect.h"
 #include "Player_Basic_Combo.h"
@@ -752,6 +753,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_Player_Rage_Add"),
 		CPlayerRageAddEffect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_Wraith_Particle"),
+		CWraith_Particle::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));

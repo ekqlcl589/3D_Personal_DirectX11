@@ -76,6 +76,30 @@ HRESULT CTarget_Manager::End(ID3D11DeviceContext* pContext)
 	return S_OK;
 }
 
+HRESULT CTarget_Manager::NoneClerBegin(ID3D11DeviceContext * pContext, const _tchar * pMRTTag)
+{
+	list<CRenderTarget*>*	pMRTList = Find_MRT(pMRTTag);
+	if (nullptr == pMRTList)
+		return E_FAIL;
+
+	pContext->OMGetRenderTargets(1, &m_pBackBufferView, &m_pDepthStencilView);
+
+	ID3D11RenderTargetView*		pRenderTargets[8];
+
+	_uint	iNumViews = { 0 };
+
+	for (auto& pRenderTarget : *pMRTList)
+	{
+		//pRenderTarget->Clear();
+		pRenderTargets[iNumViews++] = pRenderTarget->Get_RTV();
+	}
+
+	/* ·»´õÅ¸°ÙµéÀ» ÀåÄ¡¿¡ ¹ÙÀÎµùÇÏ³®. */
+	pContext->OMSetRenderTargets(iNumViews, pRenderTargets, m_pDepthStencilView);
+
+	return S_OK;
+}
+
 HRESULT CTarget_Manager::Set_ShaderResourceView(CShader * pShader, const _tchar * pTargetTag, const char * pContantName)
 {
 	if (nullptr == pShader)
