@@ -273,12 +273,6 @@ void CTSPlayer::OnCollision(CGameObject * pObj)
 {
 	COLLISIONSTATE eType = pObj->Get_ObjType();
 
-	//CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-	//CGameObject* pMonster = nullptr;
-	//pMonster = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster2"));
-	//m_Hit = static_cast<CGrudgeWraith*>(pMonster)->Get_Attack();
-	//RELEASE_INSTANCE(CGameInstance);
-
 	switch (eType)
 	{
 	case Engine::OBJ_PLAYER:
@@ -294,62 +288,22 @@ void CTSPlayer::OnCollision(CGameObject * pObj)
 	case Engine::OBJ_BOSS2:
 		break;
 	case Engine::OBJ_MONSTER_WEAPONL:
-	{
-		//Hit(10); // 몬스터 공격력 가져와서 대입  
-		//m_Hit = true;
-		//cout << "왼 팔 히트" << endl;
-		//cout << m_tInfo._Hp << endl;
-
 		break;
-	}
-
 	case Engine::OBJ_MONSTER_WEAPONR:
-	{
-		//if (m_Hit)
-		//{
-			//Hit(10); // 몬스터 공격력 가져와서 대입 
-			//m_Hit = true;
-			//cout << "오른 팔 히트" << endl;
-			//cout << m_tInfo._Hp << endl;
-
-			break;
-
-		//}
-
-	}
+		break;
 	case Engine::OBJ_MONSTER_BODY:
-		//m_tInfo.CurrAnim = TS_STURN_LOOP;
-
-		//if (!m_Hit)
-		//{
-		//	Damage(10); // 몬스터 공격력 가져와서 대입 
-		//	m_Hit = true;
-		//	m_NoStraight = true;
-		//	cout << "몸통 히트" << endl;
-		//}
-		//pColl = false;
-	//}
-	//else
-	//	m_NoStraight = false;
-
 		break;
-
 	case Engine::OBJ_MONSTER_BALL:
-		//Hit(10);
-		//m_Hit = true;
 		break;
-
 	case Engine::OBJ_MONSTER_SICKLE:
 		break;
-
 	case Engine::OBJ_MONSTER_PROJECTILE:
 		break;
-
 	case Engine::OBJ_NO_COLL:
 		break;
-
 	case Engine::OBJ_END:
 		break;
+
 	default:
 		break;
 	}
@@ -390,21 +344,15 @@ void CTSPlayer::EnterCollision(CGameObject * pObj)
 
 	case Engine::OBJ_MONSTER_WEAPONR:
 	{
-		//if (m_Hit)
-		//{
 		Hit(10); // 몬스터 공격력 가져와서 대입 
 		m_Hit = true;
 		cout << "오른 팔 히트" << endl;
 		cout << m_tInfo._Hp << endl;
 
 		break;
-
-		//}
-
 	}
 	case Engine::OBJ_MONSTER_BODY:
-		m_tInfo.CurrAnim = TS_STURN_LOOP;
-
+	{
 		if (!m_Hit)
 		{
 			Damage(10); // 몬스터 공격력 가져와서 대입 
@@ -414,12 +362,9 @@ void CTSPlayer::EnterCollision(CGameObject * pObj)
 
 			//pColl = false;
 		}
-		else
-		{
-			m_NoStraight = false;
-		}
 
 		break;
+	}
 
 	case Engine::OBJ_MONSTER_BALL:
 		Hit(3);
@@ -804,7 +749,9 @@ void CTSPlayer::Animation(TSPLAYERANIM eType, _double TimeDelta)
 void CTSPlayer::Hit(const _int & _Damage)
 {
 	m_tInfo._Hp -= _Damage;
-	m_tInfo.CurrAnim = TS_STURN_LOOP;
+
+	if(!m_AttackCheck)
+		m_tInfo.CurrAnim = TS_STURN_LOOP;
 	//if (m_tInfo.PrevAnim == TS_STURN_LOOP && true == m_pModelCom->Get_AnimFinished())
 	//{
 	//	cout <<"상태 : " << m_tInfo.CurrAnim << endl;
@@ -1333,6 +1280,7 @@ void CTSPlayer::CombatWait()
 		m_tInfo.SpecialAttack1 = false;
 		WeaponBoneUpdate();
 		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.7f, 0.1f);
+		Add_ComboEffect2();
 	}
 	if (false == m_AttackCheck && m_tInfo.PrevAnim == TS_SPECIALCOMBO_CRASH && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 10.0) // CRASH가 두 번 들어 갔다가 끊기는 느낌 
 	{
@@ -1712,6 +1660,16 @@ HRESULT CTSPlayer::Add_ComboEffect()
 
 	RELEASE_INSTANCE(CGameInstance);
 
+	return S_OK;
+}
+
+HRESULT CTSPlayer::Add_ComboEffect2()
+{
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Effect_Wraith"), TEXT("Wraith_Effect"), &m_pTransformCom->Get_State(CTransform::STATE_POSITION))))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
 }
 

@@ -2,7 +2,7 @@
 #include "..\Public\Wraith_Particle.h"
 
 #include "GameInstance.h"
-#include "TSPlayer.h"
+#include "GrudgeWraith.h"
 
 CWraith_Particle::CWraith_Particle(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)	
 	: CGameObject(pDevice, pContext)
@@ -51,26 +51,18 @@ void CWraith_Particle::Tick(_double TimeDelta)
  		__super::Tick(TimeDelta);
 
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-		CGameObject* pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
-		CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_CameraTransform")));
+		CGameObject* pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Monster_JJol"));
+		CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY2, TEXT("Layer_Monster_JJol"), TEXT("Com_Transform")));
 		//_vector TargetPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
-		m_isRageSkill = static_cast<CTSPlayer*>(pPlayer)->Get_RageState();
+		m_isRageSkill = static_cast<CGrudgeWraith*>(pPlayer)->Get_Skill();
 
 		RELEASE_INSTANCE(CGameInstance);
 
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta);
-		if (m_isRageSkill)
-		{
-			m_pVIBufferCom->RePosition(pPlayerTransform->Get_State(CTransform::STATE_POSITION), TimeDelta);
-			//m_pVIBufferCom->FireSparks(pPlayerTransform->Get_State(CTransform::STATE_POSITION), TimeDelta);
-		}
-		else
-		{
-			m_pVIBufferCom->Player_Flare(m_vTarget, TimeDelta);
+		//m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta);
+		m_pVIBufferCom->RePosition(pPlayerTransform->Get_State(CTransform::STATE_POSITION), TimeDelta);
+		//m_pVIBufferCom->FireSparks(pPlayerTransform->Get_State(CTransform::STATE_POSITION), TimeDelta);
 
-		}
-
-		m_isDead = static_cast<CTSPlayer*>(pPlayer)->Get_IsParticle();
+		m_isDead = static_cast<CGrudgeWraith*>(pPlayer)->Get_IsParticle();
 
 		if (!m_isDead)
 			Set_Dead();
@@ -123,17 +115,17 @@ HRESULT CWraith_Particle::Add_Components()
 		return E_FAIL;
 
 	/* For.Com_VIBuffer */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Point_Instance_Up"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_VIBuffer_Point_Instance_Wraith"),
 		TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBufferCom)))
 		return E_FAIL;	
 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxPointInstance"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Shader_VtxPointInstance"),
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Player_Particle"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Texture_Wraith_Particle"),
 		TEXT("Com_Texture"), (CComponent**)&m_pTextureCom)))
 		return E_FAIL;	
 

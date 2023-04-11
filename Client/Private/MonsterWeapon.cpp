@@ -240,6 +240,10 @@ void CMonsterWeapon::OnCollision(CGameObject * pObj)
 			break;
 		case Engine::OBJ_MONSTER_BODY:
 			break;
+
+		case Engine::OBJ_PLAYER_RAGESKILL:
+			break;
+
 		case Engine::OBJ_END:
 			break;
 		default:
@@ -329,6 +333,26 @@ void CMonsterWeapon::EnterCollision(CGameObject * pObj)
 			break;
 		case Engine::OBJ_END:
 			break;
+		case Engine::OBJ_PLAYER_RAGESKILL:
+		{
+			CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+			CGameObject* pOwner = nullptr;
+
+			if (nullptr == pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster")))
+			{
+				Set_Dead();
+				return;
+			}
+
+			pOwner = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
+
+			_uint Hp = static_cast<CAncient_StonGolem*>(pOwner)->Get_Info()._Hp;
+			static_cast<CAncient_StonGolem*>(pOwner)->Set_Info(100.f);
+
+			cout << "필살기 맞음" << endl;
+		}
+			break;
+
 		default:
 			break;
 		}

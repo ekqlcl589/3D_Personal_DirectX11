@@ -59,11 +59,13 @@ public:
 	void Set_Info(_uint iDamage) { m_tInfo._Hp -= iDamage; }
 
 	_bool Get_Attack() { return m_bAttack; }
-
+	_bool Get_Skill() { return m_bSkill2; }
+	_bool Get_IsParticle() { return m_isParticle; }
 private:
 	HRESULT Add_Components();
 	HRESULT SetUp_ShaderResources();
 	HRESULT Add_Coll();
+	HRESULT Add_Particle();
 
 private:
 	WRAITHINFO m_tInfo;
@@ -84,6 +86,8 @@ private:
 	_bool m_bGod = false;
 
 	_float Damage = 0.f;
+
+	_bool m_isParticle = false;
 
 private:
 	_bool m_bSkill1 = false;

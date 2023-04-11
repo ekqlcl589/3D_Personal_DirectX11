@@ -35,7 +35,7 @@ HRESULT CCursedWraith::Initialize(void * pArg)
 	//if (FAILED(Add_Coll()))
 	//	return	E_FAIL;
 
-	_float3 fPosition = { 0.f, 0.f, -5.f }; // 임시 위치값
+	_float3 fPosition = { -1.f, 0.f, -5.f }; // 임시 위치값
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPosition));
 
 	m_tInfo._MaxHp = 1000.f;
@@ -213,6 +213,9 @@ void CCursedWraith::OnCollision(CGameObject * pObj)
 	case Engine::OBJ_MONSTER_BALL:
 		m_bBlow = false;
 		break;
+	case Engine::OBJ_PLAYER_RAGESKILL:
+		m_bBlow = false;
+		break;
 	case Engine::OBJ_END:
 		break;
 	default:
@@ -291,6 +294,15 @@ void CCursedWraith::EnterCollision(CGameObject * pObj)
 		break;
 	case Engine::OBJ_END:
 		break;
+	case Engine::OBJ_PLAYER_RAGESKILL:
+		if (m_bHit)
+		{
+			m_bBlow = true;
+			m_tInfo._Hp -= 30.f;
+			cout << "필살기 맞음" << endl;
+		}
+		break;
+
 	default:
 		break;
 	}
@@ -594,7 +606,7 @@ void CCursedWraith::Summons()
 		CGameObject* pMonster = nullptr;
 
 		//pMonster = pInstance->Clone_GameObject_Add_Layer(TEXT("Prototype_GameObject_Monster2"));
-		if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster2"), TEXT("Layer_Monster_JJol"))))
+		if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Monster2"), TEXT("Layer_Monster_JJol"))))
 			return;
 
 		RELEASE_INSTANCE(CGameInstance);
@@ -689,25 +701,6 @@ void CCursedWraith::Use_Skill_Next(_double TimeDelta)
 		m_tInfo.CurrAnim = CW_Wait;
 		m_bAttack = false;
 		m_SkillNext = false;
-	}
-}
-
-void CCursedWraith::BallCreate(_uint iCount)
-{
-	if ( true == m_BallCreate)
-	{
-
-		for (_uint i = 0; i < iCount; i++)
-		{
-			CGameInstance* Pinstance = GET_INSTANCE(CGameInstance);
-
-			CGameObject* pBall = nullptr;
-
-			pBall = Pinstance->Clone_GameObject_Add_Layer(TEXT("Prototype_GameObject_Effect_Ball"));
-
-			RELEASE_INSTANCE(CGameInstance);
-
-		}
 	}
 }
 

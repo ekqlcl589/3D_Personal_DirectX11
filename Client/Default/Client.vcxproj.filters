@@ -250,6 +250,12 @@
     <Filter Include="02.GameObject\10. Effrect\Particle\Wraith">
       <UniqueIdentifier>{4a940a59-c90d-4951-8448-c11059cf2c4a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Levels\01.GamePlay\Lobby">
+      <UniqueIdentifier>{efcff05a-c649-4e34-a598-8ba9dc8976c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\10. Effrect\Player\Basic\ㅋㅋ">
+      <UniqueIdentifier>{4a7d3960-1748-44ce-a63a-a5fcd1c6e577}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -441,9 +447,6 @@
     <ClInclude Include="..\Public\PlayerComboReady.h">
       <Filter>02.GameObject\10. Effrect\Player\Basic\ComboReady</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\WraithAttackEffect.h">
-      <Filter>02.GameObject\10. Effrect\Monster\WraithAttack</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\EffectMonster.h">
       <Filter>02.GameObject\06. Monster\03_Wraith\JOBMOBㅋㅋ</Filter>
     </ClInclude>
@@ -453,6 +456,12 @@
     <ClInclude Include="..\Public\AddCollision.h" />
     <ClInclude Include="..\Public\Wraith_Particle.h">
       <Filter>02.GameObject\10. Effrect\Particle\Wraith</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\WraithAttackEffect.h">
+      <Filter>02.GameObject\10. Effrect\Player\Basic\ㅋㅋ</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RealWraithAttackEffect.h">
+      <Filter>02.GameObject\10. Effrect\Monster\WraithAttack</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -633,9 +642,6 @@
     <ClCompile Include="..\Private\PlayerComboReady.cpp">
       <Filter>02.GameObject\10. Effrect\Player\Basic\ComboReady</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\WraithAttackEffect.cpp">
-      <Filter>02.GameObject\10. Effrect\Monster\WraithAttack</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\EffectMonster.cpp">
       <Filter>02.GameObject\06. Monster\03_Wraith\JOBMOBㅋㅋ</Filter>
     </ClCompile>
@@ -645,6 +651,12 @@
     <ClCompile Include="..\Private\AddCollision.cpp" />
     <ClCompile Include="..\Private\Wraith_Particle.cpp">
       <Filter>02.GameObject\10. Effrect\Particle\Wraith</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\WraithAttackEffect.cpp">
+      <Filter>02.GameObject\10. Effrect\Player\Basic\ㅋㅋ</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RealWraithAttackEffect.cpp">
+      <Filter>02.GameObject\10. Effrect\Monster\WraithAttack</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

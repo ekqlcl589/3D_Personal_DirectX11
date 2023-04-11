@@ -63,16 +63,17 @@ void CMonsterSickle::Tick(_double TimeDelta)
 
 		CGameObject* pOwner = nullptr;
 
-		if (nullptr == pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster")))
-		{
-			RELEASE_INSTANCE(CGameInstance);
-			return;
-		}
-
-		pOwner = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
-		RELEASE_INSTANCE(CGameInstance);
-
-		Dead = static_cast<CGrudgeWraith*>(pOwner)->Get_Dead();
+		RELEASE_INSTANCE(CGameInstance); // ¿©±â ¿Ö ÅÍÁü..?
+		//if (nullptr == pInstance->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Monster_JJol")))
+		//{
+		//	RELEASE_INSTANCE(CGameInstance);
+		//	return;
+		//}
+		//
+		//pOwner = pInstance->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Monster_JJol"));
+		//RELEASE_INSTANCE(CGameInstance);
+		//
+		//Dead = static_cast<CGrudgeWraith*>(pOwner)->Get_Dead();
 
 		if (Dead)
 			Set_Dead();

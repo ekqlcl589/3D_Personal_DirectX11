@@ -1,19 +1,19 @@
 #include "stdafx.h"
-#include "..\Public\WraithAttackEffect.h"
+#include "..\Public\RealWraithAttackEffect.h"
 #include "GameInstance.h"
 #include "TSPlayer.h"
 
-CWraithAttackEffect::CWraithAttackEffect(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CRealWraithAttackEffect::CRealWraithAttackEffect(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
 {
 }
 
-CWraithAttackEffect::CWraithAttackEffect(const CWraithAttackEffect & rhs)
+CRealWraithAttackEffect::CRealWraithAttackEffect(const CRealWraithAttackEffect & rhs)
 	: CGameObject(rhs)
 {
 }
 
-HRESULT CWraithAttackEffect::Initialize_Prototype()
+HRESULT CRealWraithAttackEffect::Initialize_Prototype()
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
@@ -21,7 +21,7 @@ HRESULT CWraithAttackEffect::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CWraithAttackEffect::Initialize(void * pArg)
+HRESULT CRealWraithAttackEffect::Initialize(void * pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -29,21 +29,10 @@ HRESULT CWraithAttackEffect::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_pModelCom->SetUp_Animation(0);
-
 	memcpy(&m_vPosition, pArg, sizeof(_vector));
-	
-
-	m_pModelCom->Set_AnimTick(13.0);
-
-	m_fDissolveTime = 3.f;
 
 	m_bActive = true;
 
-	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-	CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
-
-	m_vPosition = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
 	RELEASE_INSTANCE(CGameInstance);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vPosition);
 
@@ -52,33 +41,21 @@ HRESULT CWraithAttackEffect::Initialize(void * pArg)
 	return S_OK;
 }
 
-void CWraithAttackEffect::Tick(_double TimeDelta)
+void CRealWraithAttackEffect::Tick(_double TimeDelta)
 {
 	if (!m_bDead)
 	{
 		__super::Tick(TimeDelta);
 
-		if (true == m_pModelCom->Get_AnimFinished())
-		{
-			m_fDissolveTime -= TimeDelta;
-
-			fDissolveAmount = Lerp(1.f, 0.f, m_fDissolveTime / 3.f);
-			m_bActive = false;
-			if (m_fDissolveTime <= 0.f)
-				Set_Dead();
-		}
-
+		m_pTransformCom->Go_Straight(1.5 * TimeDelta);
 	}
 }
 
-void CWraithAttackEffect::LateTick(_double TimeDelta)
+void CRealWraithAttackEffect::LateTick(_double TimeDelta)
 {
 	if (!m_bDead)
 	{
 		__super::LateTick(TimeDelta);
-
-		if (m_bActive)
-			m_pModelCom->Play_Animation(TimeDelta);
 
 		if (nullptr != m_pRendererCom)
 		{
@@ -88,7 +65,7 @@ void CWraithAttackEffect::LateTick(_double TimeDelta)
 	}
 }
 
-HRESULT CWraithAttackEffect::Render()
+HRESULT CRealWraithAttackEffect::Render()
 {
 	if (FAILED(__super::Render()))
 		return E_FAIL;
@@ -105,9 +82,8 @@ HRESULT CWraithAttackEffect::Render()
 		/*m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);
 		m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);*/
 
-		m_pModelCom->SetUp_BoneMatrices(m_pShaderCom, "g_BoneMatrix", i);
 
-		m_pShaderCom->Begin(1);
+		m_pShaderCom->Begin(0);
 
 		m_pModelCom->Render(i);
 	}
@@ -116,7 +92,7 @@ HRESULT CWraithAttackEffect::Render()
 	return S_OK;
 }
 
-HRESULT CWraithAttackEffect::Add_Components()
+HRESULT CRealWraithAttackEffect::Add_Components()
 {
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"),
 		TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom)))
@@ -133,22 +109,18 @@ HRESULT CWraithAttackEffect::Add_Components()
 		TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_WraithAttack"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Model_RealWraithAttack"),
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModel_Effect"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Shader_VtxModel"),
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
-		return E_FAIL;
-
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Noise"),
-		TEXT("Com_Texture"), (CComponent**)&m_pTextureCom)))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CWraithAttackEffect::SetUp_ShaderResources()
+HRESULT CRealWraithAttackEffect::SetUp_ShaderResources()
 {
 	if (nullptr == m_pShaderCom)
 		return E_FAIL;
@@ -169,42 +141,36 @@ HRESULT CWraithAttackEffect::SetUp_ShaderResources()
 
 	RELEASE_INSTANCE(CGameInstance);
 
-	if (FAILED(m_pTextureCom->SetUp_ShaderResource(m_pShaderCom, "g_NoiseTexture")))
-		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Set_RawValue("g_fDissolveAmount", &fDissolveAmount, sizeof(float))))
-		return E_FAIL;
-
 	return S_OK;
 }
 
-CWraithAttackEffect * CWraithAttackEffect::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CRealWraithAttackEffect * CRealWraithAttackEffect::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {
-	CWraithAttackEffect*		pInstance = new CWraithAttackEffect(pDevice, pContext);
+	CRealWraithAttackEffect*		pInstance = new CRealWraithAttackEffect(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Created : CWraithAttackEffect");
+		MSG_BOX("Failed to Created : CRealWraithAttackEffect");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject * CWraithAttackEffect::Clone(void * pArg)
+CGameObject * CRealWraithAttackEffect::Clone(void * pArg)
 {
-	CWraithAttackEffect*		pInstance = new CWraithAttackEffect(*this);
+	CRealWraithAttackEffect*		pInstance = new CRealWraithAttackEffect(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Clone : CWraithAttackEffect");
+		MSG_BOX("Failed to Clone : CRealWraithAttackEffect");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CWraithAttackEffect::Free()
+void CRealWraithAttackEffect::Free()
 {
 	__super::Free();
 

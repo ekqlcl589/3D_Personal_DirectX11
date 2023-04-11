@@ -43,7 +43,7 @@ HRESULT CProjectileSton::Initialize(void * pArg)
 
 	RELEASE_INSTANCE(CGameInstance);
 
-	m_LifeTime = 10.0;
+	m_LifeTime = 5.0;
 
 	return S_OK;
 }

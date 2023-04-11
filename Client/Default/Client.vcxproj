@@ -209,6 +209,7 @@
     <ClInclude Include="..\Public\Player_Rage_Arma.h" />
     <ClInclude Include="..\Public\Player_Skill_RockBreak.h" />
     <ClInclude Include="..\Public\ProjectileSton.h" />
+    <ClInclude Include="..\Public\RealWraithAttackEffect.h" />
     <ClInclude Include="..\Public\Ruins.h" />
     <ClInclude Include="..\Public\SkillIcon.h" />
     <ClInclude Include="..\Public\SkillIconF.h" />
@@ -277,6 +278,7 @@
     <ClCompile Include="..\Private\Player_Rage_Arma.cpp" />
     <ClCompile Include="..\Private\Player_Skill_RockBreak.cpp" />
     <ClCompile Include="..\Private\ProjectileSton.cpp" />
+    <ClCompile Include="..\Private\RealWraithAttackEffect.cpp" />
     <ClCompile Include="..\Private\Ruins.cpp" />
     <ClCompile Include="..\Private\SkillIcon.cpp" />
     <ClCompile Include="..\Private\SkillIconF.cpp" />

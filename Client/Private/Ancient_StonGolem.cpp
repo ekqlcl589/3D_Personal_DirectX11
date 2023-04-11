@@ -42,7 +42,7 @@ HRESULT CAncient_StonGolem::Initialize(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPosition));
 
 	m_eType._MaxHp = 1000.f;
-	m_eType._Hp = 1000.f;
+	m_eType._Hp = 10.f;
 
 	m_f = m_pModelCom->Get_AnimTick();
 
@@ -91,9 +91,12 @@ void CAncient_StonGolem::LateTick(_double TimeDelta)
 	{
 		__super::LateTick(TimeDelta);
 
-		m_pModelCom->Play_Animation(TimeDelta);
-		m_AnimDuration = m_pModelCom->Get_AnimDuration();
-		m_AnimTimeAcc = m_pModelCom->Get_AnimTimeAcc();
+		if (!m_IsAnimStop)
+		{
+			m_pModelCom->Play_Animation(TimeDelta);
+			m_AnimDuration = m_pModelCom->Get_AnimDuration();
+			m_AnimTimeAcc = m_pModelCom->Get_AnimTimeAcc();
+		}
 
 #ifdef _DEBUG
 
@@ -452,10 +455,16 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 		m_eType._Hp = 1.f;
 		m_CurrAnim = S_SKILL10_1; // 원래는 스킬 모션인데 죽는게 따로 없어서 이걸로 대체 
 
-		m_fDissolveTime -= TimeDelta;
 		
-		fDissolveAmount = Lerp(1.f, 0.f, m_fDissolveTime / 6.f);
+		if (m_PrevAnim == S_SKILL10_1 && true == m_pModelCom->Get_AnimFinished())
+		{
+			m_IsAnimStop = true;
+			
+			m_fDissolveTime -= TimeDelta;
 		
+			fDissolveAmount = Lerp(1.f, 0.f, m_fDissolveTime / 6.f);
+		}
+
 		if (m_fDissolveTime <= 0.f)
 		{
 			m_eType._Hp = 0.f;
@@ -652,7 +661,8 @@ void CAncient_StonGolem::Run(_double TimeDelta)
 		{
 			m_bRun = true;
 			m_CurrAnim = S_RUN; // 여기
-			m_pTransformCom->Chase_Tatget(m_vTargetPos, 5.f, TimeDelta);
+			if(!m_bjump)
+				m_pTransformCom->Chase_Tatget(m_vTargetPos, 5.f, TimeDelta);
 		}
 		if (m_pTransformCom->Compute_Distance(m_vTargetPos) <= 5.f)
 		{

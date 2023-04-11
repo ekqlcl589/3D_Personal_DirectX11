@@ -53,6 +53,7 @@ public:
 	_bool Get_DownAttack() { return m_DownAttack; }
 	_bool Get_RageState() { return m_RagesKill; }
 
+	_bool Get_JumpState() { return m_bJump; }
 public:
 	void Hit(const _int& _Damage);
 	void Damage(const _int& _Damage);
@@ -85,6 +86,7 @@ private:
 	void Add_Rock();
 	HRESULT Add_Particle();
 	HRESULT Add_ComboEffect();
+	HRESULT Add_ComboEffect2();
 	HRESULT Add_RageEffect();
 	HRESULT Add_Add_RageEffect();
 

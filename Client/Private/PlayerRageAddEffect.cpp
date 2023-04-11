@@ -32,9 +32,23 @@ HRESULT CPlayerRageAddEffect::Initialize(void * pArg)
 
 	XMStoreFloat4x4(&m_WorldMatrix, XMMatrixRotationY(90.f) * m_pTransformCom->Get_WorldMatrix() * CTwoHandedSword::WorldMatrix);
 
+	_matrix World = XMLoadFloat4x4(&m_WorldMatrix);
+
+	_vector vPos = World.r[3];
+
 	m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(270.0f));
 
 	m_fDissolveTime = 5.f;
+
+	m_eCollisionState = OBJ_PLAYER_RAGESKILL;
+
+	m_iObjID = 14;
+
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+	pInstance->Add_Collider(m_eCollisionState, Set_ObjID(m_iObjID), this);
+
+	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
 }
@@ -44,6 +58,9 @@ void CPlayerRageAddEffect::Tick(_double TimeDelta)
 	if (!m_bDead)
 	{
 		__super::Tick(TimeDelta);
+
+		if (nullptr != m_pColliderCom)
+			m_pColliderCom->Update(XMLoadFloat4x4(&m_WorldMatrix));
 
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 		CGameObject* pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
@@ -76,7 +93,7 @@ void CPlayerRageAddEffect::LateTick(_double TimeDelta)
 
 		if (nullptr != m_pRendererCom)
 		{
-			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
+			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_ALPHABLEND, this);
 		}
 	}
 }
@@ -132,6 +149,16 @@ HRESULT CPlayerRageAddEffect::Add_Components()
 
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Noise"),
 		TEXT("Com_Texture"), (CComponent**)&m_pTextureCom)))
+		return E_FAIL;
+
+	CCollider::COLLIDERDESC ColliderDesc;
+	ZeroMemory(&ColliderDesc, sizeof ColliderDesc);
+
+	ColliderDesc.vScale = _float3(5.f, 5.f, 5.f);
+	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vScale.y * 0.5f, 0.f);
+
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"),
+		TEXT("Com_Collider_AABB"), (CComponent**)&m_pColliderCom, &ColliderDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -197,6 +224,7 @@ void CPlayerRageAddEffect::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pColliderCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);

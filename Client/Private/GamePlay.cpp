@@ -340,5 +340,7 @@ CGamePlay * CGamePlay::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pCon
 
 void CGamePlay::Free()
 {
+	CSoundMgr::GetInstance()->StopAll();
+
 	__super::Free();
 }

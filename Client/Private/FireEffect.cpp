@@ -48,7 +48,12 @@ void CFireEffect::Tick(_double TimeDelta)
 	
 	m_vPosition = pTransform->Get_State(CTransform::STATE_POSITION);
 	
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vPosition);
+	_float3 fPos;
+
+	XMStoreFloat3(&fPos, m_vPosition);
+
+	fPos.y = 1.5f;
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPos));
 
 	m_fFrame += 4.f * TimeDelta;
 	if (m_fFrame >= 4.0f)
@@ -59,10 +64,10 @@ void CFireEffect::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
 
-	Compute_CamDistance(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	//Compute_CamDistance(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 	if (nullptr != m_pRendererCom)
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_ALPHABLEND, this);
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 }
 
 HRESULT CFireEffect::Render()

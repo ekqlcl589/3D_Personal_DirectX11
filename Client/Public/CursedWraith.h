@@ -48,8 +48,6 @@ public:
 	void Use_Skill(_double TimeDelta);
 	void Use_Skill_Next(_double TimeDelta);
 
-	void BallCreate(_uint iCount);
-
 	void Hit(_double TimeDelta);
 
 	void CombatWait(_double TimeDelta);

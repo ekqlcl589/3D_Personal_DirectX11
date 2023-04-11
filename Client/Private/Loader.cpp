@@ -35,6 +35,7 @@
 #include "Player_Basic_Combo.h"
 #include "TwoHandedSwordWait.h"
 #include "PlayerRageAddEffect.h"
+#include "RealWraithAttackEffect.h"
 #include "Player_Skill_RockBreak.h"
 
 
@@ -374,7 +375,7 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 	// test player effect
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Basic"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/BasicCombo.fbx", CModel::MODEL_ANIM, Local1234))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/BasicCombo.fbx", CModel::MODEL_ANIM, Local1234 * XMMatrixRotationZ(XMConvertToRadians(180.0f))))))
 		return E_FAIL;
 
 	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_ComboReady1"),
@@ -504,6 +505,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Player_Rage_Add_Effect"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/RageAddEffect.fbx", CModel::MODEL_NONANIM, LocalMatrix555))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_WraithAttack"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/SpecialCombo.fbx", CModel::MODEL_ANIM, LocalMatrix555 * XMMatrixRotationY(XMConvertToRadians(-90.f))))))
 		return E_FAIL;
 
 #pragma endregion Effect
@@ -755,8 +760,8 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CPlayerRageAddEffect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_Wraith_Particle"),
-		CWraith_Particle::Create(m_pDevice, m_pContext))))
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_Wraith"),
+		CWraithAttackEffect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
@@ -827,6 +832,10 @@ HRESULT CLoader::Loading_ForGamePlay2()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Dissolve0.png")))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Texture_Wraith_Particle"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Particle/HFS_Ring_T03.png")))))
+		return E_FAIL;
+
 	/* For.Prototype_Component_Texture_Sky */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Texture_Sky"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/SkyBox/TrainigRoom.dds"), 4))))
@@ -844,6 +853,10 @@ HRESULT CLoader::Loading_ForGamePlay2()
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_VIBuffer_Cube"),
 		CVIBuffer_Cube::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_VIBuffer_Point_Instance_Wraith"),
+		CVIBuffer_Point_Instance::Create(m_pDevice, m_pContext, 3.f, 1.f, 3.f, 3.f, 10.f, 100))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("모델를 로딩중입니다."));
@@ -972,10 +985,10 @@ HRESULT CLoader::Loading_ForGamePlay2()
 		return E_FAIL;
 
 	_matrix Locals234 = XMMatrixIdentity();
-	Locals234 = XMMatrixScaling(0.025f, 0.025f, 0.025f);
+	Locals234 = XMMatrixScaling(0.025f, 0.025f, 0.025f) * XMMatrixRotationZ(XMConvertToRadians(90.f));
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Model_WraithAttack"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/SpecialCombo.fbx", CModel::MODEL_ANIM, Locals234))))
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Model_RealWraithAttack"),
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/WraithAttack.fbx", CModel::MODEL_NONANIM, Locals234))))
 		return E_FAIL;
 #pragma endregion HairModel
 
@@ -1036,6 +1049,10 @@ HRESULT CLoader::Loading_ForGamePlay2()
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Shader_VtxWave"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxTexWave.hlsl"), VTXNONANIMMODEL_DELARATION::Element, VTXNONANIMMODEL_DELARATION::iNumElements))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Shader_VtxPointInstance"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxPointInstance.hlsl"), VTXPOINTINSTANCE_DECLARATION::Elements, VTXPOINTINSTANCE_DECLARATION::iNumElements))))
 		return E_FAIL;
 
 	/*if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Transform"),
@@ -1206,12 +1223,16 @@ HRESULT CLoader::Loading_ForGamePlay2()
 		CFireEffect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_Wraith"),
-		CWraithAttackEffect::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_Coll"),
 		CAddCollision::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_Wraith_Particle"),
+		CWraith_Particle::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_Wraith_Attack"),
+		CRealWraithAttackEffect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));

@@ -92,6 +92,8 @@ private:
 	_double m_AnimDuration = { 0.0 };
 	_double m_AnimTimeAcc = { 0.0 };
 
+	_bool m_IsAnimStop = false;
+
 	_bool m_bSkill4 = false;
 	_bool m_bSkill5 = false;
 	_bool m_bRun = false;

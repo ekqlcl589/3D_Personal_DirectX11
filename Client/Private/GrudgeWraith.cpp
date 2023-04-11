@@ -92,7 +92,6 @@ void CGrudgeWraith::Tick(_double TimeDelta)
 
 		if (nullptr != m_pColliderCom)
 			m_pColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
-
 	}
 }
 
@@ -205,6 +204,8 @@ void CGrudgeWraith::OnCollision(CGameObject * pObj)
 		break;
 	case Engine::OBJ_MONSTER_BALL:
 		break;
+	case Engine::OBJ_PLAYER_RAGESKILL:
+		break;
 	case Engine::OBJ_END:
 		break;
 	default:
@@ -274,6 +275,13 @@ void CGrudgeWraith::EnterCollision(CGameObject * pObj)
 		break;
 	case Engine::OBJ_MONSTER_BALL:
 		break;
+	case Engine::OBJ_PLAYER_RAGESKILL:
+		if (true == m_bHit)// && false == m_bGod)
+		{
+			Hit(100.f);
+		}
+		break;
+
 	case Engine::OBJ_END:
 		break;
 	default:
@@ -303,6 +311,17 @@ HRESULT CGrudgeWraith::Add_Coll()
 
 	RELEASE_INSTANCE(CGameInstance);
 
+	return S_OK;
+}
+
+HRESULT CGrudgeWraith::Add_Particle()
+{
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Effect_Wraith_Particle"), TEXT("Wraith_Particle"), &m_pTransformCom->Get_State(CTransform::STATE_POSITION))))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
 }
 
@@ -651,6 +670,8 @@ void CGrudgeWraith::Skill02(_double TimeDelta)
 		m_tInfo.CurrAnim = G_Skill02_1;
 		m_bAttack = true;
 		m_SkillNext = true;
+		m_isParticle = true;
+		Add_Particle();
 	}
 
 	if (m_tInfo.PrevAnim == G_Skill02_1 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 19.0)
@@ -668,7 +689,8 @@ void CGrudgeWraith::Skill02(_double TimeDelta)
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 		CGameObject* pCamera = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
 
-		if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Effect_Wraith"), TEXT("Wraith_Effect"), &m_pTransformCom->Get_State(CTransform::STATE_POSITION))))
+		m_isParticle = false;
+		if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Effect_Wraith_Attack"), TEXT("Wraith_Effect"), &m_pTransformCom->Get_State(CTransform::STATE_POSITION))))
 			return ;
 
 		RELEASE_INSTANCE(CGameInstance);

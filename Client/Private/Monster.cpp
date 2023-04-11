@@ -31,6 +31,8 @@ HRESULT CMonster::Initialize(void * pArg)
 
 	m_pTarget = static_cast<CTSPlayer*>(pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player")));
 	
+	m_bjump = static_cast<CTSPlayer*>(m_pTarget)->Get_JumpState();
+
 	m_pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
 
 

@@ -41,12 +41,13 @@ HRESULT CBlackBall::Initialize(void * pArg)
 		m_vLook = XMVector3Normalize(m_BallDesc.vLook) * -1;
 		XMStoreFloat3(&m_fPos, m_vPosition);
 		m_fPos.y = 1.5f;
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_fPos)); // 생성시킬 때 y에 1.5 더해줌
 		m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVectorSet(1.0f, 0.f, 0.f, 0.f) * fScale.x);
 		m_pTransformCom->Set_State(CTransform::STATE_UP, XMVectorSet(0.0f, 1.f, 0.f, 0.f) * fScale.y);
 		m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_vLook * fScale.z);
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_fPos)); // 생성시킬 때 y에 1.5 더해줌
 
 		//Add_Effect();
+		Add_Effect();
 	}
 	else if (m_BallDesc.eType == TYPE_3)
 	{
@@ -57,13 +58,14 @@ HRESULT CBlackBall::Initialize(void * pArg)
 		m_fPos.y = 1.5f;
 		m_vLook = XMVector3Normalize(m_BallDesc.vLook);
 
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_fPos));
 		m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVectorSet(1.0f, 0.f, 0.f, 0.f)* fScale.x);
 		m_pTransformCom->Set_State(CTransform::STATE_UP, XMVectorSet(0.0f, 1.f, 0.f, 0.f)* fScale.y);
 		m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_vLook * fScale.z);
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_fPos));
 
 		//Add_Effect();
 
+		Add_Effect();
 	}
 	else if (m_BallDesc.eType == TYPE_DDEBASI)
 	{
@@ -124,16 +126,7 @@ HRESULT CBlackBall::Initialize(void * pArg)
 
 void CBlackBall::Tick(_double TimeDelta)
 {
-	if (m_bDead)
-	{
-		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-
-		if (FAILED(pInstance->Dleate_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Ball"))))
-			return;
-
-		RELEASE_INSTANCE(CGameInstance);
-	}
-	else
+	if(!m_bDead)
 	{
 		_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 		_float3 fPosition;
@@ -144,8 +137,7 @@ void CBlackBall::Tick(_double TimeDelta)
 		if (m_LifeTime <= 0.0)
 		{
 			m_LifeTime = 0.0;
-			Dead = true;
-			return;
+			Set_Dead();
 		}
 
 		__super::Tick(TimeDelta);
@@ -167,17 +159,17 @@ void CBlackBall::Tick(_double TimeDelta)
 		}
 		else
 		{
-			if (!m_Hit)
-				m_pTransformCom->Go_Straight(TimeDelta * 1.5f);
-			else
-				m_pTransformCom->Go_Back(TimeDelta * 1.5f);
+			//if (!m_Hit)
+			//	m_pTransformCom->Go_Straight(TimeDelta * 1.5f);
+			//else
+			//	m_pTransformCom->Go_Back(TimeDelta * 1.5f);
 		}
 	}
 }
 
 void CBlackBall::LateTick(_double TimeDelta)
 {
-	if (!Dead)
+	if (!m_bDead)
 	{
 		__super::LateTick(TimeDelta);
 
@@ -188,36 +180,31 @@ void CBlackBall::LateTick(_double TimeDelta)
 
 HRESULT CBlackBall::Render()
 {
-	if (!Dead)
+	if (FAILED(__super::Render()))
+		return E_FAIL;
+
+	if (FAILED(SetUp_ShaderResources()))
+		return E_FAIL;
+
+	_uint		iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < iNumMeshes; i++)
 	{
-		if (FAILED(__super::Render()))
-			return E_FAIL;
-
-		if (FAILED(SetUp_ShaderResources()))
-			return E_FAIL;
-
-		_uint		iNumMeshes = m_pModelCom->Get_NumMeshes();
-
-		for (_uint i = 0; i < iNumMeshes; i++)
-		{
-			m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
+		m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
 
 
-			m_pShaderCom->Begin(0);
+		m_pShaderCom->Begin(0);
 
-			m_pModelCom->Render(i);
-		}
-
-	#ifdef _DEBUG
-
-		if (nullptr != m_pColliderCom)
-			m_pColliderCom->Render();
-
-	#endif
-
-
-		return S_OK;
+		m_pModelCom->Render(i);
 	}
+
+#ifdef _DEBUG
+
+	if (nullptr != m_pColliderCom)
+		m_pColliderCom->Render();
+
+#endif
+
 	return S_OK;
 }
 
