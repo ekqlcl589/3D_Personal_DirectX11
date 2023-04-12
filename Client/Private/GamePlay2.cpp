@@ -68,16 +68,16 @@ HRESULT CGamePlay2::Ready_Layer_BackGround(const _tchar * pLayerTag)
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Terrain"), pLayerTag)))
+	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Terrain"), pLayerTag)))
 	//	return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_TestTile"), pLayerTag)))
+	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_TestTile"), pLayerTag)))
 	//	return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Ruins"), pLayerTag)))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Ruins"), pLayerTag)))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_SkyBox"), pLayerTag)))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_SkyBox"), pLayerTag)))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);
@@ -105,7 +105,7 @@ HRESULT CGamePlay2::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CameraDesc.Transform_Desc.fSpeed = 10.f;
 	CameraDesc.Transform_Desc.fRotation = XMConvertToRadians(90.f);
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Camera"), pLayerTag, &CameraDesc)))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Camera"), pLayerTag, &CameraDesc)))
 		return E_FAIL;
 	
 	Safe_Release(pGameInstance);
@@ -138,34 +138,34 @@ HRESULT CGamePlay2::Ready_UI(const _tchar * pLayerTag)
 {
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-	//if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Mouse"), pLayerTag)))
+	//if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Mouse"), pLayerTag)))
 	//	return E_FAIL;
 
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_HPBar"), pLayerTag)))
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_HPBar"), pLayerTag)))
 		return E_FAIL;
 	
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_MPBar"), pLayerTag)))
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_MPBar"), pLayerTag)))
 		return E_FAIL;
 
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Skill_E"), pLayerTag)))
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Skill_E"), pLayerTag)))
 		return E_FAIL;
 
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Skill_R"), pLayerTag)))
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Skill_R"), pLayerTag)))
 		return E_FAIL;
 
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Skill_F"), pLayerTag)))
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Skill_F"), pLayerTag)))
 		return E_FAIL;
 
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_RageSkill"), pLayerTag)))
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_RageSkill"), pLayerTag)))
 		return E_FAIL;
 
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Player_Skill_Icon"), pLayerTag)))
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Player_Skill_Icon"), pLayerTag)))
 		return E_FAIL;
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Player_Skill_IconR"), pLayerTag)))
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Player_Skill_IconR"), pLayerTag)))
 		return E_FAIL;
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Player_Skill_IconF"), pLayerTag)))
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Player_Skill_IconF"), pLayerTag)))
 		return E_FAIL;
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Player_Skill_IconRage"), pLayerTag)))
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Player_Skill_IconRage"), pLayerTag)))
 		return E_FAIL;
 	
 
@@ -181,7 +181,7 @@ HRESULT CGamePlay2::Ready_MonsterUI(const _tchar * pLayerTag)
 	CMonsterHPBar::OWNER Owner;
 	Owner = CMonsterHPBar::OWNER_WRAITH2;
 
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_HPBar"), pLayerTag, &Owner)))
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Monster_HPBar"), pLayerTag, &Owner)))
 		return E_FAIL;
 
 	CMonsterName::OWNER Name;
@@ -199,7 +199,7 @@ HRESULT CGamePlay2::Ready_Layer_Player(const _tchar * pLayerTag)
 {
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Player_Body"), pLayerTag)))
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Player_Body"), pLayerTag)))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -211,13 +211,13 @@ HRESULT CGamePlay2::Ready_Layer_Monster(const _tchar * pLayerTag)
 {
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-	//if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster"), pLayerTag)))
+	//if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Monster"), pLayerTag)))
 	//	return E_FAIL;
 
-	//if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster1"), pLayerTag)))
+	//if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Monster1"), pLayerTag)))
 	//	return E_FAIL;
 
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster3"), pLayerTag)))
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Monster3"), pLayerTag)))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -246,7 +246,7 @@ void CGamePlay2::LoadData(_tchar * szFilePath)
 		if (0 == dwByte)
 			break;
 
-		pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Cube"), TEXT("Layer_Cube"), &DataFile);
+		pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Cube"), TEXT("Layer_Cube"), &DataFile);
 
 	}
 	RELEASE_INSTANCE(CGameInstance);
@@ -275,7 +275,7 @@ void CGamePlay2::LoadMonster(_tchar * szFilePath)
 		if (0 == dwByte)
 			break;
 
-		pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster"), TEXT("Layer_Player"), &DataFile);
+		pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Monster"), TEXT("Layer_Player"), &DataFile);
 
 	}
 	RELEASE_INSTANCE(CGameInstance);
@@ -304,7 +304,7 @@ void CGamePlay2::LoadMeshTile(_tchar * szFilePath)
 		if (0 == dwByte)
 			break;
 
-		pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_TestTile"), TEXT("Layer_Tile"), &DataFile);
+		pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_TestTile"), TEXT("Layer_Tile"), &DataFile);
 
 	}
 	RELEASE_INSTANCE(CGameInstance);

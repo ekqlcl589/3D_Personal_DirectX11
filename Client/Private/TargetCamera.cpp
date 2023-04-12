@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "TSPlayer.h"
 #include "KeyMgr.h"
+#include "Level_Mgr.h"
 
 CTargetCamera::CTargetCamera(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CCamera(pDevice, pContext)
@@ -35,9 +36,15 @@ void CTargetCamera::Tick(_double TimeDelta)
 	m_fFov = m_CameraDesc.vFov;
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	CLevel_Mgr* L = GET_INSTANCE(CLevel_Mgr);
+	CGameObject* pPlayer = nullptr;
 
-	CGameObject* pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+	if (L->Get_LevelIndex() == LEVEL_GAMEPLAY)
+		pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+	else if (L->Get_LevelIndex() == LEVEL_GAMEPLAY2)
+		pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Player"));
 
+	RELEASE_INSTANCE(CLevel_Mgr);
 	RELEASE_INSTANCE(CGameInstance);
 	
 	m_Player_F_Skill = static_cast<CTSPlayer*>(pPlayer)->Get_Info().fSkill;
@@ -100,11 +107,24 @@ HRESULT CTargetCamera::Render()
 void CTargetCamera::Target_Renewal(_double TimeDelta)
 {
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	CLevel_Mgr* L = GET_INSTANCE(CLevel_Mgr);
 
-	CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
+	CTransform* pPlayerTransform = nullptr;
+	CTransform* pCamT = nullptr;
 
-	CTransform* pCamT = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_CameraTransform")));
-	
+	if (L->Get_LevelIndex() == LEVEL_GAMEPLAY)
+	{
+		pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
+
+		pCamT = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_CameraTransform")));
+	}
+	else if (L->Get_LevelIndex() == LEVEL_GAMEPLAY2)
+	{
+		pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY2, TEXT("Layer_Player"), TEXT("Com_Transform")));
+
+		pCamT = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY2, TEXT("Layer_Player"), TEXT("Com_CameraTransform")));
+
+	}
 	_vector vPosition = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
 
 	_vector vLook = pCamT->Get_State(CTransform::STATE_LOOK);
@@ -143,6 +163,7 @@ void CTargetCamera::Target_Renewal(_double TimeDelta)
 		m_RenderName = true;
 	}
 
+	RELEASE_INSTANCE(CLevel_Mgr);
 	RELEASE_INSTANCE(CGameInstance);
 }
 
@@ -297,10 +318,23 @@ void CTargetCamera::Target_Boss(_double TimeDelta)
 	if (m_BossOn)
 	{
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-		CGameObject* pMonster = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
+		CLevel_Mgr* L = GET_INSTANCE(CLevel_Mgr);
+		CGameObject* pMonster = nullptr;
+		CTransform* pMonsterTransform = nullptr;
 
-		CTransform* pMonsterTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Com_Transform")));
+		if (L->Get_LevelIndex() == LEVEL_GAMEPLAY)
+		{
+			pMonster = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
 
+			pMonsterTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Com_Transform")));
+		}
+		else if (L->Get_LevelIndex() == LEVEL_GAMEPLAY2)
+		{
+			pMonster = pInstance->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Monster"));
+
+			pMonsterTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY2, TEXT("Layer_Monster"), TEXT("Com_Transform")));
+		}
+		RELEASE_INSTANCE(CLevel_Mgr);
 		RELEASE_INSTANCE(CGameInstance);
 
 		_vector vPosition = pMonsterTransform->Get_State(CTransform::STATE_POSITION);

@@ -19,7 +19,7 @@ CGamePlay::CGamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 HRESULT CGamePlay::Initialize()
 {
 	//Å×½ºÆ®
-	CSoundMgr::GetInstance()->PlayBGM(L"BGM_Agit_01_B.OGG", 1.f);
+	CSoundMgr::GetInstance()->PlayBGM(L"AUDIO_Default_3334.OGG", 1.f);
 
 	if (FAILED(Ready_Light()))
 		return E_FAIL;

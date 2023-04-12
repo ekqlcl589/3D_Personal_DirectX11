@@ -13,6 +13,7 @@
 #include "GrudgeWraith.h"
 #include "TargetCamera.h"
 #include "PlayerComboReady.h"
+#include "Level_Mgr.h"
 
 CTSPlayer::CTSPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -905,7 +906,7 @@ void CTSPlayer::Attack_Special2(_double TimeDelta)
 {
 	CGameInstance* p = GET_INSTANCE(CGameInstance);
 	CGameObject* pMonster = nullptr;
-	pMonster = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
+	//pMonster = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
 	RELEASE_INSTANCE(CGameInstance);
 
 	if (true == m_AttackCheck)
@@ -918,7 +919,7 @@ void CTSPlayer::Attack_Special2(_double TimeDelta)
 			m_tInfo.CurrAnim = TS_BASIC_COMBO03_START;
 			m_tInfo.CurrAnim = TS_BASIC_COMBO02_LOOP; //
 			m_tInfo.SpecialAttack2 = true;
-			static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.1f);
+			//static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.1f);
 			// ±â´É ÀÛµ¿ ¾È µÊ ¤¸´ï ¤»¤»
 		}
 
@@ -935,8 +936,15 @@ void CTSPlayer::Attack_Special2(_double TimeDelta)
 void CTSPlayer::Attack_Go(_double TimeDelta)
 {
 	CGameInstance* p = GET_INSTANCE(CGameInstance);
-	CGameObject* pMonster = nullptr;
-	pMonster = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
+	CLevel_Mgr* L = GET_INSTANCE(CLevel_Mgr);
+	CGameObject* pMonster = nullptr; // gameplay1,2 ±¸ºÐ
+
+	if (L->Get_LevelIndex() == LEVEL_GAMEPLAY)
+		pMonster = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
+	else if (L->Get_LevelIndex() == LEVEL_GAMEPLAY2)
+		pMonster = p->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Camera"));
+
+	RELEASE_INSTANCE(CLevel_Mgr);
 	RELEASE_INSTANCE(CGameInstance);
 
 	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
@@ -1112,8 +1120,15 @@ void CTSPlayer::Jump(_double TimeDelta)
 void CTSPlayer::Jump_Attack(_double TimeDelta)
 {
 	CGameInstance* p = GET_INSTANCE(CGameInstance);
+	CLevel_Mgr* L = GET_INSTANCE(CLevel_Mgr);
 	CGameObject* pMonster = nullptr;
-	pMonster = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
+
+	if (L->Get_LevelIndex() == LEVEL_GAMEPLAY)
+		pMonster = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
+	else if (L->Get_LevelIndex() == LEVEL_GAMEPLAY2)
+		pMonster = p->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Camera"));
+
+	RELEASE_INSTANCE(CLevel_Mgr);
 	RELEASE_INSTANCE(CGameInstance);
 
 	m_bAttackState = true;
@@ -1193,8 +1208,13 @@ void CTSPlayer::DashAttack(_double TimeDelta)
 void CTSPlayer::CombatWait()
 {
 	CGameInstance* p = GET_INSTANCE(CGameInstance);
-	CGameObject* pMonster = nullptr;
-	pMonster = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
+	CLevel_Mgr* L = GET_INSTANCE(CLevel_Mgr);
+	CGameObject* pMonster = nullptr; // gameplay1,2 ±¸ºÐ
+
+	if (L->Get_LevelIndex() == LEVEL_GAMEPLAY)
+		pMonster = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
+	else if (L->Get_LevelIndex() == LEVEL_GAMEPLAY2)
+		pMonster = p->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Camera"));
 
 	if (m_tInfo.PrevAnim == TS_BASIC_COMBO01 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 19.0)
 	{
@@ -1337,6 +1357,7 @@ void CTSPlayer::CombatWait()
 		m_bAttackState = false;
 	}
 
+	RELEASE_INSTANCE(CLevel_Mgr);
 	RELEASE_INSTANCE(CGameInstance);
 }
 
@@ -1394,8 +1415,16 @@ void CTSPlayer::Evasion(_double TimeDelta)
 void CTSPlayer::E_Skill(_double TimeDelta)
 {
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	CLevel_Mgr* L = GET_INSTANCE(CLevel_Mgr);
+
 	CGameObject* pCamera = nullptr;
-	pCamera = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
+
+	if (L->Get_LevelIndex() == LEVEL_GAMEPLAY)
+		pCamera = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
+	else if (L->Get_LevelIndex() == LEVEL_GAMEPLAY2)
+		pCamera = pInstance->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Camera"));
+
+	RELEASE_INSTANCE(CLevel_Mgr);
 	RELEASE_INSTANCE(CGameInstance);
 
 	if (m_Eskill && m_tInfo.m_ESkill >= 10.f)
@@ -1471,7 +1500,16 @@ void CTSPlayer::E_Skill(_double TimeDelta)
 void CTSPlayer::R_Skill(_double TimeDelta)
 {
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-	CGameObject* pCamera = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
+	CLevel_Mgr* L = GET_INSTANCE(CLevel_Mgr);
+
+	CGameObject* pCamera = nullptr;
+
+	if (L->Get_LevelIndex() == LEVEL_GAMEPLAY)
+		pCamera = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
+	else if (L->Get_LevelIndex() == LEVEL_GAMEPLAY2)
+		pCamera = pInstance->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Camera"));
+
+	RELEASE_INSTANCE(CLevel_Mgr);
 	RELEASE_INSTANCE(CGameInstance);
 
 	if (m_RsKill && m_tInfo.m_RSkill >= 15.f)
@@ -1511,7 +1549,16 @@ void CTSPlayer::R_Skill(_double TimeDelta)
 void CTSPlayer::F_Skill(_double TimeDelta)
 {
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-	CGameObject* pCamera = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
+	CLevel_Mgr* L = GET_INSTANCE(CLevel_Mgr);
+
+	CGameObject* pCamera = nullptr;
+
+	if (L->Get_LevelIndex() == LEVEL_GAMEPLAY)
+		pCamera = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
+	else if (L->Get_LevelIndex() == LEVEL_GAMEPLAY2)
+		pCamera = pInstance->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Camera"));
+
+	RELEASE_INSTANCE(CLevel_Mgr);
 	RELEASE_INSTANCE(CGameInstance);
 
 	if (m_FsKill && m_tInfo.m_FSkill >= 20.f)
@@ -1540,7 +1587,16 @@ void CTSPlayer::F_Skill(_double TimeDelta)
 void CTSPlayer::Rage_Skill(_double TimeDelta)
 {
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-	CGameObject* pCamera = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
+	CLevel_Mgr* L = GET_INSTANCE(CLevel_Mgr);
+
+	CGameObject* pCamera = nullptr;
+
+	if (L->Get_LevelIndex() == LEVEL_GAMEPLAY)
+		pCamera = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
+	else if (L->Get_LevelIndex() == LEVEL_GAMEPLAY2)
+		pCamera = pInstance->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Camera"));
+
+	RELEASE_INSTANCE(CLevel_Mgr);
 	RELEASE_INSTANCE(CGameInstance);
 
 	if (m_RagesKill && m_tInfo.m_RageSkill >= 25.f)
@@ -1833,6 +1889,7 @@ HRESULT CTSPlayer::Add_Parts()
 HRESULT CTSPlayer::Add_Weapon()
 {
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	CLevel_Mgr* L = GET_INSTANCE(CLevel_Mgr);
 
 	CBone* pBonePtr = m_pModelCom->Get_BonePtr("Weapon_Hand_R"); // ÀüÅõ°¡ ¾Æ´Ò ¶§ ºÙÀÌ´Â »À == Weapon_Spine_R
 	CBone* pBonePtrWait = m_pModelCom->Get_BonePtr("Weapon_Spine_R");
@@ -1854,6 +1911,7 @@ HRESULT CTSPlayer::Add_Weapon()
 	m_vecWeapon[WEAPON_KARMA14].push_back(pWeapon);
 	m_vecWeapon[WEAPON_WAIT].push_back(pWeapon2);
 
+	RELEASE_INSTANCE(CLevel_Mgr);
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;

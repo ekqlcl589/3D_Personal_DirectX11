@@ -3,7 +3,7 @@
 
 BEGIN(Engine)
 
-class CLevel_Mgr final : public CBase
+class ENGINE_DLL CLevel_Mgr final : public CBase
 {
 	DECLARE_SINGLETON(CLevel_Mgr)
 private:

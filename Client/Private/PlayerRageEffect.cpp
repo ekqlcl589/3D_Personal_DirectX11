@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "TSPlayer.h"
 #include "TwoHandedSword.h"
+#include "Level_Mgr.h"
 
 CPlayerRageEffect::CPlayerRageEffect(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -44,8 +45,16 @@ void CPlayerRageEffect::Tick(_double TimeDelta)
 		__super::Tick(TimeDelta);
 
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-		CGameObject* pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+		CLevel_Mgr* L = GET_INSTANCE(CLevel_Mgr);
 
+		CGameObject* pPlayer = nullptr;
+
+		if (L->Get_LevelIndex() == LEVEL_GAMEPLAY)
+			pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+		else if (L->Get_LevelIndex() == LEVEL_GAMEPLAY2)
+			pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Player"));
+
+		RELEASE_INSTANCE(CLevel_Mgr);
 		RELEASE_INSTANCE(CGameInstance);
 
 		m_bActive = static_cast<CTSPlayer*>(pPlayer)->Get_RageState();

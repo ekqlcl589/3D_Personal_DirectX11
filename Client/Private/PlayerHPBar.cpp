@@ -5,6 +5,7 @@
 #include "Shader.h"
 #include "Texture.h"
 #include "Layer.h"
+#include "Level_Mgr.h"
 #include "TSPlayer.h"
 
 CPlayerHPBar::CPlayerHPBar(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -68,9 +69,13 @@ void CPlayerHPBar::LateTick(_double TimeDelta)
 	_float TexHpY = 0.f;
 
 	CGameInstance* p = GET_INSTANCE(CGameInstance);
+	CLevel_Mgr* L = GET_INSTANCE(CLevel_Mgr);
 	CGameObject* pPlayer = nullptr;
 
-	pPlayer = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+	if (L->Get_LevelIndex() == LEVEL_GAMEPLAY)
+		pPlayer = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+	else if (L->Get_LevelIndex() == LEVEL_GAMEPLAY2)
+		pPlayer = p->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Player"));
 
 	MaxHP = static_cast<CTSPlayer*>(pPlayer)->Get_Info()._MaxHp;
 	HP = static_cast<CTSPlayer*>(pPlayer)->Get_Info()._Hp;
@@ -86,6 +91,7 @@ void CPlayerHPBar::LateTick(_double TimeDelta)
 
 	//m_pVIBuffer_Rect->Set_Buffer(TexHpY, VertexHpY);
 
+	RELEASE_INSTANCE(CLevel_Mgr);
 	RELEASE_INSTANCE(CGameInstance);
 }
 

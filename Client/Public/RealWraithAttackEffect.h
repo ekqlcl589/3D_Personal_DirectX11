@@ -15,6 +15,12 @@ BEGIN(Client)
 class CRealWraithAttackEffect final :
 	public CGameObject
 {
+public:
+	typedef struct tagVector
+	{
+		_vector vPosition;
+		_vector vLook;
+	}VECTOR;
 private:
 	CRealWraithAttackEffect(ID3D11Device * pDevice, ID3D11DeviceContext * pContext);
 	CRealWraithAttackEffect(const CRealWraithAttackEffect& rhs);
@@ -42,6 +48,8 @@ private:
 	_bool m_bActive = false;
 
 	_double m_LifeTime = 0.0;
+
+	VECTOR m_vector;
 
 public:
 	static CRealWraithAttackEffect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -185,7 +185,7 @@ void CCursedWraith::OnCollision(CGameObject * pObj)
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 	CGameObject* pPlayer = nullptr;
-	pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+	pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Player"));
 	m_bHit = static_cast<CTSPlayer*>(pPlayer)->Get_Attack();
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -229,7 +229,7 @@ void CCursedWraith::EnterCollision(CGameObject * pObj)
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 	CGameObject* pPlayer = nullptr;
-	pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+	pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Player"));
 	m_bHit = static_cast<CTSPlayer*>(pPlayer)->Get_Attack();
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -250,7 +250,7 @@ void CCursedWraith::EnterCollision(CGameObject * pObj)
 		{
 			CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 			CGameObject* pTarget = nullptr;
-			pTarget = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+			pTarget = pInstance->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Player"));
 
 			_bool m_PlayerRSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rSkill;
 			_bool m_PlayerFSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().fSkill;

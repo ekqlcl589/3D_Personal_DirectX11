@@ -2,6 +2,7 @@
 #include "..\Public\SkillIconRage.h"
 
 #include "GameInstance.h"
+#include "Level_Mgr.h"
 #include "TSPlayer.h"
 
 CSkillIconRage::CSkillIconRage(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -59,10 +60,17 @@ void CSkillIconRage::Tick(_double TimeDelta)
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-	CGameObject* pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+	CLevel_Mgr* L = GET_INSTANCE(CLevel_Mgr);
+	CGameObject* pPlayer = nullptr;
+
+	if (L->Get_LevelIndex() == LEVEL_GAMEPLAY)
+		pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+	else if (L->Get_LevelIndex() == LEVEL_GAMEPLAY2)
+		pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Player"));
 
 	m_CoolTime = static_cast<CTSPlayer*>(pPlayer)->Get_Info().m_RageSkill;
 
+	RELEASE_INSTANCE(CLevel_Mgr);
 	RELEASE_INSTANCE(CGameInstance);
 
 }

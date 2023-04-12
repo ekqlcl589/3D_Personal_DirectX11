@@ -4,6 +4,8 @@
 #include "MonsterSickle.h"
 #include "TSPlayer.h"
 #include "TargetCamera.h"
+#include "RealWraithAttackEffect.h"
+#include "KeyMgr.h"
 
 CGrudgeWraith::CGrudgeWraith(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CMonster(pDevice, pContext)
@@ -92,6 +94,9 @@ void CGrudgeWraith::Tick(_double TimeDelta)
 
 		if (nullptr != m_pColliderCom)
 			m_pColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
+
+		if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_H))
+			m_bSkill5 = true;
 	}
 }
 
@@ -177,7 +182,7 @@ void CGrudgeWraith::OnCollision(CGameObject * pObj)
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 	CGameObject* pPlayer = nullptr;
-	pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+	pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Player"));
 	m_bHit = static_cast<CTSPlayer*>(pPlayer)->Get_Attack();
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -221,7 +226,7 @@ void CGrudgeWraith::EnterCollision(CGameObject * pObj)
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 	CGameObject* pPlayer = nullptr;
-	pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+	pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Player"));
 	m_bHit = static_cast<CTSPlayer*>(pPlayer)->Get_Attack();
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -242,7 +247,7 @@ void CGrudgeWraith::EnterCollision(CGameObject * pObj)
 		{
 			CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 			CGameObject* pTarget = nullptr;
-			pTarget = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+			pTarget = pInstance->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Player"));
 
 			_bool m_PlayerRSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rSkill;
 			_bool m_PlayerFSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().fSkill;
@@ -329,7 +334,11 @@ HRESULT CGrudgeWraith::Add_AttackEffect()
 {
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Effect_Wraith_Attack"), TEXT("Wraith_Attack_Effect"), &m_pTransformCom->Get_State(CTransform::STATE_POSITION))))
+	CRealWraithAttackEffect::VECTOR vec;
+	vec.vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	vec.vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Effect_Wraith_Attack"), TEXT("Wraith_Attack_Effect"), &vec)))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -359,8 +368,8 @@ void CGrudgeWraith::Animation_State(_double TimeDelta)
 	if (m_tInfo._Hp <= 250.f)
 		m_bSkill3 = true; // ÀÌÆåÆ® 
 	
-	Skill01(TimeDelta);
 	Skill05(TimeDelta);
+	Skill01(TimeDelta);
 	Skill02(TimeDelta);
 
 	Combat_Wait(TimeDelta);
@@ -498,10 +507,10 @@ void CGrudgeWraith::Use_Skill(_double TimeDelta)
 		m_bSkill1 = true;
 		break;
 	case 1:
-		m_bSkill5 = true;
+		m_bSkill2 = true;
 		break;
 	case 2:
-		m_bSkill2 = true;
+		m_bSkill5 = true;
 		break;
 	default:
 		break;
@@ -699,7 +708,7 @@ void CGrudgeWraith::Skill02(_double TimeDelta)
 	if (m_tInfo.PrevAnim == G_Skill02_3 && m_AnimTimeAcc >= 5.0 && m_AnimTimeAcc <= 6.0)
 	{
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-		CGameObject* pCamera = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
+		CGameObject* pCamera = pInstance->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Camera"));
 
 		RELEASE_INSTANCE(CGameInstance);
 		m_isParticle = false;

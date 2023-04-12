@@ -2,6 +2,7 @@
 #include "..\Public\PlayerComboReady.h"
 #include "GameInstance.h"
 #include "TSPlayer.h"
+#include "Level_Mgr.h"
 
 CPlayerComboReady::CPlayerComboReady(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -43,12 +44,21 @@ void CPlayerComboReady::Tick(_double TimeDelta)
 		__super::Tick(TimeDelta);
 
 		CGameInstance* p = GET_INSTANCE(CGameInstance);
-		CGameObject* pOwner = nullptr;
+		CLevel_Mgr* L = GET_INSTANCE(CLevel_Mgr);
 
-		pOwner = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
-		m_bActive = static_cast<CTSPlayer*>(pOwner)->Get_Info().SpecialAttack1;
+		CGameObject* pPlayer = nullptr;
+
+		if (L->Get_LevelIndex() == LEVEL_GAMEPLAY)
+			pPlayer = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+		else if (L->Get_LevelIndex() == LEVEL_GAMEPLAY2)
+			pPlayer = p->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Player"));
+
+		RELEASE_INSTANCE(CLevel_Mgr);
 
 		RELEASE_INSTANCE(CGameInstance);
+
+		m_bActive = static_cast<CTSPlayer*>(pPlayer)->Get_Info().SpecialAttack1;
+
 		if (m_ReadyDesc.eType == TYPE_1)
 			m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), 3.0 * TimeDelta);
 		if (m_ReadyDesc.eType == TYPE_2)

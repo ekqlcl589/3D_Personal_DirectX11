@@ -2,6 +2,7 @@
 #include "..\Public\WraithAttackEffect.h"
 #include "GameInstance.h"
 #include "TSPlayer.h"
+#include "Level_Mgr.h"
 
 CWraithAttackEffect::CWraithAttackEffect(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -41,9 +42,16 @@ HRESULT CWraithAttackEffect::Initialize(void * pArg)
 	m_bActive = true;
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-	CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
+	CLevel_Mgr* L = GET_INSTANCE(CLevel_Mgr);
+	CTransform* pPlayerTransform = nullptr;
+
+	if (L->Get_LevelIndex() == LEVEL_GAMEPLAY)
+		pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
+	else if (L->Get_LevelIndex() == LEVEL_GAMEPLAY2)
+		pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY2, TEXT("Layer_Player"), TEXT("Com_Transform")));
 
 	m_vPosition = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
+	RELEASE_INSTANCE(CLevel_Mgr);
 	RELEASE_INSTANCE(CGameInstance);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vPosition);
 

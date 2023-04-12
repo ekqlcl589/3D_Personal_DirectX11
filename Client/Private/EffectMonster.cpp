@@ -36,7 +36,7 @@ HRESULT CEffectMonster::Initialize(void * pArg)
 	memcpy(&m_vPosition, pArg, sizeof(_vector));
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-	CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
+	CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY2, TEXT("Layer_Player"), TEXT("Com_Transform")));
 
 	m_vPosition = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
 	RELEASE_INSTANCE(CGameInstance);

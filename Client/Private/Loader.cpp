@@ -375,7 +375,7 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 	// test player effect
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Basic"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/BasicCombo.fbx", CModel::MODEL_ANIM, Local1234 * XMMatrixRotationZ(XMConvertToRadians(180.0f))))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/BasicCombo.fbx", CModel::MODEL_ANIM, Local1234))))
 		return E_FAIL;
 
 	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_ComboReady1"),

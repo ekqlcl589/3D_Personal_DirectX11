@@ -29,13 +29,29 @@ HRESULT CRealWraithAttackEffect::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	memcpy(&m_vPosition, pArg, sizeof(_vector));
+	ZeroMemory(&m_vector, sizeof(VECTOR));
+
+	memcpy(&m_vector, pArg, sizeof(VECTOR));
 
 	m_bActive = true;
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vPosition);
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vector.vPosition);
+	//m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_vector.vLook);
 
-	//m_pTransformCom->LookAt(m_vPosition);
+	m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.0f));
+
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+	CGameObject* pTarget = static_cast<CTSPlayer*>(pInstance->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Player")));
+
+	CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY2, TEXT("Layer_Player"), TEXT("Com_Transform")));
+
+	_vector vTargetPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	m_pTransformCom->LookAt(vTargetPos);
+
 	m_LifeTime = 5.0;
 	return S_OK;
 }

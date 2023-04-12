@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "TSPlayer.h"
 #include "TwoHandedSword.h"
+#include "Level_Mgr.h"
 //
 CPlayer_Rage_Arma::CPlayer_Rage_Arma(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -42,8 +43,13 @@ void CPlayer_Rage_Arma::Tick(_double TimeDelta)
 
 	CGameInstance* p = GET_INSTANCE(CGameInstance);
 	CGameObject* pOwner = nullptr;
+	CLevel_Mgr* L = GET_INSTANCE(CLevel_Mgr);
 
-	pOwner = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+	if(L->Get_LevelIndex() == LEVEL_GAMEPLAY)
+		pOwner = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+	else if(L->Get_LevelIndex() == LEVEL_GAMEPLAY2)
+		pOwner = p->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Player"));
+
 	m_bActive = static_cast<CTSPlayer*>(pOwner)->Get_Info().fSkill;
 	m_bRage = static_cast<CTSPlayer*>(pOwner)->Get_RageState();
 
@@ -60,6 +66,7 @@ void CPlayer_Rage_Arma::Tick(_double TimeDelta)
 	//if(!m_bActive && !m_bRage)
 	//	m_fDissolveTime = 6.f;
 
+	RELEASE_INSTANCE(CLevel_Mgr);
 	RELEASE_INSTANCE(CGameInstance);
 
 }

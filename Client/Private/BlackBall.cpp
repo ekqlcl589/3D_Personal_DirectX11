@@ -79,9 +79,9 @@ HRESULT CBlackBall::Initialize(void * pArg)
 
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-		CGameObject* pTarget = static_cast<CTSPlayer*>(pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player")));
+		CGameObject* pTarget = static_cast<CTSPlayer*>(pInstance->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Player")));
 
-		CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
+		CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY2, TEXT("Layer_Player"), TEXT("Com_Transform")));
 
 		_vector vTargetPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
 
@@ -89,7 +89,7 @@ HRESULT CBlackBall::Initialize(void * pArg)
 
 		m_pTransformCom->LookAt(vTargetPos);
 
-		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Sphere2"),
+		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Model_Sphere2"),
 			TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 			return E_FAIL;
 
@@ -102,7 +102,7 @@ HRESULT CBlackBall::Initialize(void * pArg)
 	}
 	else
 	{
-		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Sphere"),
+		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Model_Sphere"),
 			TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 			return E_FAIL;
 	}
@@ -151,7 +151,7 @@ void CBlackBall::Tick(_double TimeDelta)
 			m_pTransformCom->Go_Straight(TimeDelta * 3.f);
 
 			CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-			CGameObject* pCamera = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
+			CGameObject* pCamera = pInstance->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Camera"));
 			RELEASE_INSTANCE(CGameInstance);
 
 			if(fPosition.y <= 1.f && fPosition.y >= 0.f)
@@ -159,10 +159,10 @@ void CBlackBall::Tick(_double TimeDelta)
 		}
 		else
 		{
-			//if (!m_Hit)
-			//	m_pTransformCom->Go_Straight(TimeDelta * 1.5f);
-			//else
-			//	m_pTransformCom->Go_Back(TimeDelta * 1.5f);
+			if (!m_Hit)
+				m_pTransformCom->Go_Straight(TimeDelta * 1.5f);
+			else
+				m_pTransformCom->Go_Back(TimeDelta * 1.5f);
 		}
 	}
 }
@@ -245,7 +245,7 @@ void CBlackBall::EnterCollision(CGameObject * pObj)
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 	CGameObject* pPlayer = nullptr;
-	pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+	pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Player"));
 	m_bTakeHit = static_cast<CTSPlayer*>(pPlayer)->Get_Attack();
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -306,11 +306,11 @@ HRESULT CBlackBall::Add_Components()
 	ColliderDesc.vScale = _float3(2.5f, 2.5f, 2.5f);
 	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vScale.y * 0.5f, 0.f);
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_SPHERE"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Collider_SPHERE"),
 		TEXT("Com_Collider"), (CComponent**)&m_pColliderCom, &ColliderDesc)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModel"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Shader_VtxModel"),
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 

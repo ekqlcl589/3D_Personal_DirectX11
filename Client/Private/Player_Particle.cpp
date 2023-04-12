@@ -2,6 +2,7 @@
 #include "..\Public\Player_Particle.h"
 
 #include "GameInstance.h"
+#include "Level_Mgr.h"
 #include "TSPlayer.h"
 
 CPlayer_Particle::CPlayer_Particle(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)	
@@ -51,11 +52,24 @@ void CPlayer_Particle::Tick(_double TimeDelta)
  		__super::Tick(TimeDelta);
 
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-		CGameObject* pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
-		CTransform* pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_CameraTransform")));
-		//_vector TargetPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
+		CLevel_Mgr* L = GET_INSTANCE(CLevel_Mgr);
+		CGameObject* pPlayer = nullptr;
+		CTransform* pPlayerTransform = nullptr;
+
+		if (L->Get_LevelIndex() == LEVEL_GAMEPLAY)
+		{
+			pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+			pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_CameraTransform")));
+		}
+		else if (L->Get_LevelIndex() == LEVEL_GAMEPLAY2)
+		{
+			pPlayer = pInstance->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Player"));
+			pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY2, TEXT("Layer_Player"), TEXT("Com_CameraTransform")));
+
+		}
 		m_isRageSkill = static_cast<CTSPlayer*>(pPlayer)->Get_RageState();
 
+		RELEASE_INSTANCE(CLevel_Mgr);
 		RELEASE_INSTANCE(CGameInstance);
 
 		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta);

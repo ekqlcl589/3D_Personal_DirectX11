@@ -2,6 +2,7 @@
 #include "..\Public\Monster.h"
 #include "GameInstance.h"
 #include "TSPlayer.h"
+#include "Level_Mgr.h"
 
 CMonster::CMonster(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
@@ -28,14 +29,24 @@ HRESULT CMonster::Initialize(void * pArg)
 		return E_FAIL;
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	CLevel_Mgr* L = GET_INSTANCE(CLevel_Mgr);
 
-	m_pTarget = static_cast<CTSPlayer*>(pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player")));
-	
-	m_bjump = static_cast<CTSPlayer*>(m_pTarget)->Get_JumpState();
+	if (L->Get_LevelIndex() == LEVEL_GAMEPLAY)
+	{
+		m_pTarget = static_cast<CTSPlayer*>(pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player")));
+		m_pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
+		m_bjump = static_cast<CTSPlayer*>(m_pTarget)->Get_JumpState();
 
-	m_pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
+	}
+	else if (L->Get_LevelIndex() == LEVEL_GAMEPLAY2)
+	{
+		m_pTarget = static_cast<CTSPlayer*>(pInstance->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Player")));
+		m_pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY2, TEXT("Layer_Player"), TEXT("Com_Transform")));
+		m_bjump = static_cast<CTSPlayer*>(m_pTarget)->Get_JumpState();
 
+	}
 
+	RELEASE_INSTANCE(CLevel_Mgr);
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
@@ -46,15 +57,34 @@ void CMonster::Tick(_double TimeDelta)
 	__super::Tick(TimeDelta);
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	CLevel_Mgr* L = GET_INSTANCE(CLevel_Mgr);
 
-	m_pTarget = static_cast<CTSPlayer*>(pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player")));
+	if (L->Get_LevelIndex() == LEVEL_GAMEPLAY)
+	{
+		m_pTarget = static_cast<CTSPlayer*>(pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Player")));
+		m_pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
+		m_vTargetPos = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION);// -m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		XMStoreFloat3(&m_fPlayerPos, m_vTargetPos);
+		m_bDown = static_cast<CTSPlayer*>(m_pTarget)->Get_DownAttack();
 
-	m_bDown = static_cast<CTSPlayer*>(m_pTarget)->Get_DownAttack();
+	}
+	else if (L->Get_LevelIndex() == LEVEL_GAMEPLAY2)
+	{
+		m_pTarget = static_cast<CTSPlayer*>(pInstance->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Player")));
+		m_pPlayerTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY2, TEXT("Layer_Player"), TEXT("Com_Transform")));
+		m_vTargetPos = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION);// -m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		XMStoreFloat3(&m_fPlayerPos, m_vTargetPos);
+		m_bDown = static_cast<CTSPlayer*>(m_pTarget)->Get_DownAttack();
 
+	}
+
+	//m_bDown = static_cast<CTSPlayer*>(m_pTarget)->Get_DownAttack();
+
+	RELEASE_INSTANCE(CLevel_Mgr);
 	RELEASE_INSTANCE(CGameInstance);
 
-	m_vTargetPos = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION);// -m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	XMStoreFloat3(&m_fPlayerPos, m_vTargetPos);
+	//m_vTargetPos = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION);// -m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	//XMStoreFloat3(&m_fPlayerPos, m_vTargetPos);
 
 	ChaseToPlayer(TimeDelta);
 
