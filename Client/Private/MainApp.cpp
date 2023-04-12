@@ -145,6 +145,11 @@ HRESULT CMainApp::Ready_Prototype_Component_ForStatic()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_ShaderHP"), CShader::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_VtxTexHp.hlsl"), VTXTEX_DELARATION::Element, VTXTEX_DELARATION::iNumElements))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Collider_OBB */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Collider_OBB"),
+		CCollider::Create(m_pDevice, m_pDeviceContext, CCollider::TYPE_OBB))))
+		return E_FAIL;
+
 	Safe_AddRef(m_pRenderer);
 
 	return S_OK;

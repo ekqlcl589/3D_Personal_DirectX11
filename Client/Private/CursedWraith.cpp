@@ -62,20 +62,12 @@ HRESULT CCursedWraith::Initialize(void * pArg)
 
 void CCursedWraith::Tick(_double TimeDelta)
 {
-	if (m_bDead)
-	{
-		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-
-		if (FAILED(pInstance->Dleate_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"))))
-			return;
-
-		RELEASE_INSTANCE(CGameInstance);
-	}
-	else
+	if (!m_bDead)
 	{
 		__super::Tick(TimeDelta);
 
-		m_pTransformCom->LookAt(m_vTargetPos);
+		if (!m_bjump)
+			m_pTransformCom->LookAt(m_vTargetPos);
 
 		m_vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 		//m_vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
@@ -143,40 +135,36 @@ void CCursedWraith::LateTick(_double TimeDelta)
 
 HRESULT CCursedWraith::Render()
 {
-	if (!m_bDead)
+	if (FAILED(__super::Render()))
+		return E_FAIL;
+
+	if (FAILED(SetUp_ShaderResources()))
+		return E_FAIL;
+
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < iNumMeshes; i++)
 	{
-		if (FAILED(__super::Render()))
-			return E_FAIL;
+		m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
+		/*m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);
+		m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);*/
 
-		if (FAILED(SetUp_ShaderResources()))
-			return E_FAIL;
+		m_pModelCom->SetUp_BoneMatrices(m_pShaderCom, "g_BoneMatrix", i);
 
-		_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
+		m_pShaderCom->Begin(0);
 
-		for (_uint i = 0; i < iNumMeshes; i++)
-		{
-			m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
-			/*m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);
-			m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);*/
-
-			m_pModelCom->SetUp_BoneMatrices(m_pShaderCom, "g_BoneMatrix", i);
-
-			m_pShaderCom->Begin(0);
-
-			m_pModelCom->Render(i);
-		}
-
-	#ifdef _DEBUG
-
-		if (nullptr != m_pColliderCom)
-			m_pColliderCom->Render();
-
-	#endif
-
-		return S_OK;
-
+		m_pModelCom->Render(i);
 	}
+
+#ifdef _DEBUG
+
+	if (nullptr != m_pColliderCom)
+		m_pColliderCom->Render();
+
+#endif
+
 	return S_OK;
+
 }
 
 void CCursedWraith::OnCollision(CGameObject * pObj)
@@ -748,11 +736,11 @@ HRESULT CCursedWraith::Add_Components()
 		TEXT("Com_Transform"), (CComponent**)&m_pTransformCom, &TransformDesc)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Boss3"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Model_Boss3"),
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxAnimModel"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Shader_VtxAnimModel"),
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
@@ -761,7 +749,7 @@ HRESULT CCursedWraith::Add_Components()
 
 	ColliderDesc.vScale = _float3(1.f, 2.f, 1.f);
 	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vScale.y * 0.5f, 0.f);
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_OBB"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Collider_OBB"),
 		TEXT("Com_Collider"), (CComponent**)&m_pColliderCom, &ColliderDesc)))
 		return E_FAIL;
 

@@ -35,12 +35,22 @@ HRESULT CRealWraithAttackEffect::Initialize(void * pArg)
 
 	m_bActive = true;
 
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vector.vPosition);
-	//m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_vector.vLook);
+	_float3 fPos;
 
-	m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.0f));
+	XMStoreFloat3(&fPos, m_vector.vPosition);
+
+	fPos.y = 1.5f;
+
+	//m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(180.f));
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPos));
+
+	m_eCollisionState = OBJ_MONSTER_BLADE;
+	m_iObjID = 11;
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+	pInstance->Add_Collider(m_eCollisionState, Set_ObjID(m_iObjID), this);
 
 	CGameObject* pTarget = static_cast<CTSPlayer*>(pInstance->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Player")));
 
@@ -61,9 +71,13 @@ void CRealWraithAttackEffect::Tick(_double TimeDelta)
 	if (!m_bDead)
 	{
 		__super::Tick(TimeDelta);
+
+		if (nullptr != m_pColliderCom)
+			m_pColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
+
 		m_LifeTime -= 1.0 * TimeDelta;
 
-		m_pTransformCom->Go_Straight(1.5 * TimeDelta);
+		m_pTransformCom->Go_Straight(2.5 * TimeDelta);
 
 		if (m_LifeTime <= 0.0)
 		{
@@ -139,6 +153,16 @@ HRESULT CRealWraithAttackEffect::Add_Components()
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
+	CCollider::COLLIDERDESC ColliderDesc;
+	ZeroMemory(&ColliderDesc, sizeof ColliderDesc);
+
+	ColliderDesc.vScale = _float3(3.f, 3.f, 3.f);
+	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vScale.y * 0.5f, 0.f);
+
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Collider_AABB"),
+		TEXT("Com_Collider"), (CComponent**)&m_pColliderCom, &ColliderDesc)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -196,6 +220,7 @@ void CRealWraithAttackEffect::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pColliderCom);
 	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pModelCom);

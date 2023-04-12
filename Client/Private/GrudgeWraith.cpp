@@ -705,7 +705,7 @@ void CGrudgeWraith::Skill02(_double TimeDelta)
 		m_tInfo.CurrAnim = G_Skill02_3;
 	}
 
-	if (m_tInfo.PrevAnim == G_Skill02_3 && m_AnimTimeAcc >= 5.0 && m_AnimTimeAcc <= 6.0)
+	if (m_tInfo.PrevAnim == G_Skill02_3 && m_AnimTimeAcc >= 5.0 && m_AnimTimeAcc <= 5.5)
 	{
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 		CGameObject* pCamera = pInstance->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Camera"));

@@ -9,6 +9,7 @@
 #include "GianticCreature.h"
 #include "GrudgeWraith.h"
 #include "CursedWraith.h"
+#include "Level_Mgr.h"
 
 CMonsterHPBar::CMonsterHPBar(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CUI(pDevice, pContext)
@@ -64,16 +65,7 @@ HRESULT CMonsterHPBar::Initialize(void * pArg)
 
 void CMonsterHPBar::Tick(_double TimeDelta)
 {
-	if (Dead)
-	{
-		CGameInstance* p = GET_INSTANCE(CGameInstance);
-		if (FAILED(p->Dleate_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster_UI"))))
-			return;
-
-		RELEASE_INSTANCE(CGameInstance);
-
-	}
-	else
+	if (!m_bDead)
 	{
 		__super::Tick(TimeDelta);
 
@@ -81,15 +73,22 @@ void CMonsterHPBar::Tick(_double TimeDelta)
 		_float TexHpY = 0.f;
 
 		CGameInstance* p = GET_INSTANCE(CGameInstance);
+		CLevel_Mgr* L = GET_INSTANCE(CLevel_Mgr);
+
 		CGameObject* pMonster = nullptr;
 
 		if (nullptr == p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster")))
 		{
 			Set_Dead();
+			RELEASE_INSTANCE(CLevel_Mgr);
 			return RELEASE_INSTANCE(CGameInstance);
 		}
 
-		pMonster = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
+		if(L->Get_LevelIndex() == LEVEL_GAMEPLAY)
+			pMonster = p->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
+		else  if (L->Get_LevelIndex() == LEVEL_GAMEPLAY2)
+			pMonster = p->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Monster"));
+
 		// 몬스터가 죽었으면 Find 하지 말라고 해야 함
 		if (m_eOwner == OWNER_GOLEM)
 		{
@@ -114,6 +113,7 @@ void CMonsterHPBar::Tick(_double TimeDelta)
 			HP = 0;
 		}
 
+		RELEASE_INSTANCE(CLevel_Mgr);
 		RELEASE_INSTANCE(CGameInstance);
 
 		if (Dead)
@@ -125,8 +125,8 @@ void CMonsterHPBar::Tick(_double TimeDelta)
 
 void CMonsterHPBar::LateTick(_double TimeDelta)
 {
-	__super::LateTick(TimeDelta);
-
+	if(!m_bDead)
+		__super::LateTick(TimeDelta);
 }
 
 HRESULT CMonsterHPBar::Render()
@@ -161,7 +161,7 @@ HRESULT CMonsterHPBar::Add_Components()
 		return E_FAIL;
 
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_MonsterHPBar"),
-		TEXT("Com_Texture"), (CComponent**)&m_pTexture)))
+		TEXT("Com_Texture"), (CComponent**)&m_pTexture))) // 최후의 수단 같은 클래스를 하나 더 만들어서 GAMEPLAY2에 쓴다 
 		return E_FAIL;
 
 	return S_OK;

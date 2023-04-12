@@ -302,6 +302,8 @@ void CTSPlayer::OnCollision(CGameObject * pObj)
 		break;
 	case Engine::OBJ_NO_COLL:
 		break;
+	case Engine::OBJ_MONSTER_BLADE:
+		break;
 	case Engine::OBJ_END:
 		break;
 
@@ -390,9 +392,14 @@ void CTSPlayer::EnterCollision(CGameObject * pObj)
 		Hit(15);
 		cout << "맞음 " << endl;
 		break;
+	case Engine::OBJ_MONSTER_BLADE:
+		Hit(15);
+		cout << " 처맞음 " << endl;
+		break;
 
 	case Engine::OBJ_END:
 		break;
+
 	default:
 		break;
 	}

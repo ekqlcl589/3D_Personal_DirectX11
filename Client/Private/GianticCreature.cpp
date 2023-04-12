@@ -325,7 +325,9 @@ void CGianticCreature::Run(_double TimeDelta)
 		{
 			m_bWlak = true;
 			m_tInfo.CurrAnim = C_WALK;
-			m_pTransformCom->Chase_Tatget(m_vTargetPos, 5.f, TimeDelta);
+
+			if (!m_bjump)
+				m_pTransformCom->Chase_Tatget(m_vTargetPos, 5.f, TimeDelta);
 		}
 		if (m_pTransformCom->Compute_Distance(m_vTargetPos) <= 5.f)
 		{

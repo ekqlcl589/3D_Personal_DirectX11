@@ -188,7 +188,7 @@ HRESULT CTwoHandedSword::Add_Components()
 	ColliderDesc.vScale = _float3(0.5f, 2.5f, 0.5f);
 	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vScale.y * 0.5f, 0.f);
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_OBB"),
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Collider_OBB"),
 		TEXT("Com_Collider_TS"), (CComponent**)&m_pColliderCom, &ColliderDesc)))
 		return E_FAIL;
 

@@ -47,6 +47,9 @@ HRESULT CGamePlay2::Initialize()
 	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Effect_Arma"), TEXT("Player_Effect"))))
 		return E_FAIL;
 		
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Effect_Fire"), TEXT("Fire_Effect"))))
+		return E_FAIL;
+
 	RELEASE_INSTANCE(CGameInstance);
 
 	//LoadData(L"../Data/Cube/Cube.dat");
@@ -181,13 +184,13 @@ HRESULT CGamePlay2::Ready_MonsterUI(const _tchar * pLayerTag)
 	CMonsterHPBar::OWNER Owner;
 	Owner = CMonsterHPBar::OWNER_WRAITH2;
 
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Monster_HPBar"), pLayerTag, &Owner)))
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Monster_HPBar1"), pLayerTag, &Owner)))
 		return E_FAIL;
 
 	CMonsterName::OWNER Name;
 	Name = CMonsterName::OWNER_WRAITH2;
 
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Monster_Name"), pLayerTag, &Name)))
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Monster_Name1"), pLayerTag, &Name)))
 		return E_FAIL;
 	
 	RELEASE_INSTANCE(CGameInstance);

@@ -47,7 +47,6 @@ HRESULT CBlackBall::Initialize(void * pArg)
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_fPos)); // 생성시킬 때 y에 1.5 더해줌
 
 		//Add_Effect();
-		Add_Effect();
 	}
 	else if (m_BallDesc.eType == TYPE_3)
 	{
@@ -64,8 +63,6 @@ HRESULT CBlackBall::Initialize(void * pArg)
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_fPos));
 
 		//Add_Effect();
-
-		Add_Effect();
 	}
 	else if (m_BallDesc.eType == TYPE_DDEBASI)
 	{

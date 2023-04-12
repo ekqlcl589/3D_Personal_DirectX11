@@ -855,6 +855,10 @@ HRESULT CLoader::Loading_ForGamePlay2()
 		CVIBuffer_Cube::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_VIBuffer_Point_Instance_Fire"),
+		CVIBuffer_Point_Instance::Create(m_pDevice, m_pContext, 1.f, 1.f, 1.f, 1.f, 1.f, 1))))
+		return E_FAIL;
+
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_VIBuffer_Point_Instance_Wraith"),
 		CVIBuffer_Point_Instance::Create(m_pDevice, m_pContext, 3.f, 1.f, 3.f, 3.f, 10.f, 100))))
 		return E_FAIL;
@@ -985,10 +989,10 @@ HRESULT CLoader::Loading_ForGamePlay2()
 		return E_FAIL;
 
 	_matrix Locals234 = XMMatrixIdentity();
-	Locals234 = XMMatrixScaling(0.025f, 0.025f, 0.025f) * XMMatrixRotationZ(XMConvertToRadians(90.f));
+	Locals234 = XMMatrixScaling(0.025f, 0.025f, 0.025f) * XMMatrixRotationX(XMConvertToRadians(90.f));
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Model_RealWraithAttack"),
-		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/WraithAttack.fbx", CModel::MODEL_NONANIM, Locals234))))
+		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Effect/WraithAttack.fbx", CModel::MODEL_NONANIM, Locals234 * XMMatrixRotationY(XMConvertToRadians(90.f))))))
 		return E_FAIL;
 #pragma endregion HairModel
 
@@ -1191,6 +1195,10 @@ HRESULT CLoader::Loading_ForGamePlay2()
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster_HPBar1"),
 		CMonsterHPBar::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster_Name1"),
+		CMonsterName::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	// Test Tile

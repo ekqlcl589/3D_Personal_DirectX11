@@ -28,10 +28,10 @@ HRESULT CFireEffect::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	_float3 fScale = { 5.f, 5.f, 5.f };
+	_float3 fScale = { 5.f, 1.f, 5.f };
 	m_pTransformCom->Set_Scale(fScale);
 
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fScale));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 1.f, 0.f, 0.f));
 
 	return S_OK;
 }
@@ -40,21 +40,23 @@ void CFireEffect::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 
-	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	//CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+	//
+	//CTransform* pTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY2, TEXT("Layer_Monster_Effect"), TEXT("Com_Transform")));
+	//
+	//RELEASE_INSTANCE(CGameInstance);
+	//
+	//m_vPosition = pTransform->Get_State(CTransform::STATE_POSITION);
 	
-	CTransform* pTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY2, TEXT("Layer_Monster_Effect"), TEXT("Com_Transform")));
-	
-	RELEASE_INSTANCE(CGameInstance);
-	
-	m_vPosition = pTransform->Get_State(CTransform::STATE_POSITION);
-	
-	_float3 fPos;
+	//_float3 fPos;
+	//
+	//XMStoreFloat3(&fPos, m_vPosition);
 
-	XMStoreFloat3(&fPos, m_vPosition);
+	//fPos.y = 1.5f;
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPos));
+	//m_pTransformCom->Go_Straight(TimeDelta);
 
-	fPos.y = 1.5f;
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPos));
-
+	
 	m_fFrame += 4.f * TimeDelta;
 	if (m_fFrame >= 4.0f)
 		m_fFrame = 0.f;
@@ -79,7 +81,7 @@ HRESULT CFireEffect::Render()
 		return E_FAIL;
 
 	/* Apply함수를 호출하기전에 내가 사용하고자하는 셰이더 전역변수로 필요한값을 모두 던져야하낟. */
-	m_pShaderCom->Begin(6);
+	m_pShaderCom->Begin(0);
 
 	m_pVIBufferCom->Render();
 
@@ -104,12 +106,12 @@ HRESULT CFireEffect::Add_Components()
 		return E_FAIL;
 
 	/* For.Com_VIBuffer */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_VIBuffer_Point_Instance_Fire"),
 		TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBufferCom)))
 		return E_FAIL;
 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Shader_VtxPointInstance"),
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
@@ -137,12 +139,15 @@ HRESULT CFireEffect::SetUp_ShaderResources()
 	if (FAILED(m_pShaderCom->Set_Matrix("g_ProjMatrix", &pGameInstance->Get_Transformfloat4x4(CPipeLine::TS_PROJ))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Set_ShaderRenderTargetResourceView(m_pShaderCom, TEXT("Target_Depth"), "g_DepthTexture")))
+	//if (FAILED(pGameInstance->Set_ShaderRenderTargetResourceView(m_pShaderCom, TEXT("Target_Depth"), "g_DepthTexture")))
+	//	return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Set_RawValue("g_vCamPosition", &pGameInstance->Get_CamPos(), sizeof(_float4))))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
 
-	if (FAILED(m_pTextureCom->SetUp_ShaderResource(m_pShaderCom, "g_Texture", _uint(m_fFrame))))
+	if (FAILED(m_pTextureCom->SetUp_ShaderResource(m_pShaderCom, "g_DiffuseTexture", _uint(m_fFrame))))
 		return E_FAIL;
 
 	return S_OK;

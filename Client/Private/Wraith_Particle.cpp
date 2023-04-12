@@ -59,7 +59,7 @@ void CWraith_Particle::Tick(_double TimeDelta)
 		RELEASE_INSTANCE(CGameInstance);
 
 		//m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta);
-		m_pVIBufferCom->RePosition(pPlayerTransform->Get_State(CTransform::STATE_POSITION), TimeDelta);
+		m_pVIBufferCom->Player_Flare(pPlayerTransform->Get_State(CTransform::STATE_POSITION), TimeDelta);
 		//m_pVIBufferCom->FireSparks(pPlayerTransform->Get_State(CTransform::STATE_POSITION), TimeDelta);
 
 		m_isDead = static_cast<CGrudgeWraith*>(pPlayer)->Get_IsParticle();
