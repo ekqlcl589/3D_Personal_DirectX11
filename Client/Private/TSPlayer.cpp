@@ -1666,7 +1666,7 @@ HRESULT CTSPlayer::Add_ComboEffect()
 HRESULT CTSPlayer::Add_ComboEffect2()
 {
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Effect_Wraith"), TEXT("Wraith_Effect"), &m_pTransformCom->Get_State(CTransform::STATE_POSITION))))
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Wraith"), TEXT("Wraith_Effect"), &m_pTransformCom->Get_State(CTransform::STATE_POSITION))))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);

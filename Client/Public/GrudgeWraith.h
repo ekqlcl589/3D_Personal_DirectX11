@@ -66,6 +66,7 @@ private:
 	HRESULT SetUp_ShaderResources();
 	HRESULT Add_Coll();
 	HRESULT Add_Particle();
+	HRESULT Add_AttackEffect();
 
 private:
 	WRAITHINFO m_tInfo;

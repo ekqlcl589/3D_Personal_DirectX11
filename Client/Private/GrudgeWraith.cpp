@@ -325,6 +325,18 @@ HRESULT CGrudgeWraith::Add_Particle()
 	return S_OK;
 }
 
+HRESULT CGrudgeWraith::Add_AttackEffect()
+{
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Effect_Wraith_Attack"), TEXT("Wraith_Attack_Effect"), &m_pTransformCom->Get_State(CTransform::STATE_POSITION))))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	return S_OK;
+}
+
 void CGrudgeWraith::Animation_State(_double TimeDelta)
 {
 	if (m_tInfo._Hp <= 1.f)
@@ -689,13 +701,12 @@ void CGrudgeWraith::Skill02(_double TimeDelta)
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 		CGameObject* pCamera = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
 
-		m_isParticle = false;
-		if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Effect_Wraith_Attack"), TEXT("Wraith_Effect"), &m_pTransformCom->Get_State(CTransform::STATE_POSITION))))
-			return ;
-
 		RELEASE_INSTANCE(CGameInstance);
+		m_isParticle = false;
 
 		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.7f, 0.1f);
+
+		Add_AttackEffect();
 	}
 
 	if (m_tInfo.PrevAnim == G_Skill02_3 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 33.0)

@@ -33,11 +33,10 @@ HRESULT CRealWraithAttackEffect::Initialize(void * pArg)
 
 	m_bActive = true;
 
-	RELEASE_INSTANCE(CGameInstance);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vPosition);
 
 	//m_pTransformCom->LookAt(m_vPosition);
-
+	m_LifeTime = 5.0;
 	return S_OK;
 }
 
@@ -46,8 +45,15 @@ void CRealWraithAttackEffect::Tick(_double TimeDelta)
 	if (!m_bDead)
 	{
 		__super::Tick(TimeDelta);
+		m_LifeTime -= 1.0 * TimeDelta;
 
 		m_pTransformCom->Go_Straight(1.5 * TimeDelta);
+
+		if (m_LifeTime <= 0.0)
+		{
+			m_LifeTime = 0.0;
+			Set_Dead();
+		}
 	}
 }
 
