@@ -256,6 +256,9 @@
     <Filter Include="02.GameObject\10. Effrect\Player\Basic\ㅋㅋ">
       <UniqueIdentifier>{4a7d3960-1748-44ce-a63a-a5fcd1c6e577}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\10. Effrect\Player\Rage\AddEffect\Tex">
+      <UniqueIdentifier>{f13acff3-3010-40d8-ab3f-b28e4f41727a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -463,6 +466,12 @@
     <ClInclude Include="..\Public\RealWraithAttackEffect.h">
       <Filter>02.GameObject\10. Effrect\Monster\WraithAttack</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\MonsterHPBar2.h">
+      <Filter>02.GameObject\04. UI\Monster\HpBar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PlayerRageEffectTexture.h">
+      <Filter>02.GameObject\10. Effrect\Player\Rage\AddEffect\Tex</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -657,6 +666,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\RealWraithAttackEffect.cpp">
       <Filter>02.GameObject\10. Effrect\Monster\WraithAttack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MonsterHPBar2.cpp">
+      <Filter>02.GameObject\04. UI\Monster\HpBar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PlayerRageEffectTexture.cpp">
+      <Filter>02.GameObject\10. Effrect\Player\Rage\AddEffect\Tex</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

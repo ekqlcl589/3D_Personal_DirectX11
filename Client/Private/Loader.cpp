@@ -1,8 +1,8 @@
 #include "stdafx.h"
-
 #include "..\Public\Loader.h"
 #include "Monster_Projectile_Effect.h"
 #include "VIBuffer_Point_Instance.h"
+#include "PlayerRageEffectTexture.h"
 #include "WraithAttackEffect.h"
 #include "PlayerComboReady.h"
 #include "Player_Particle.h"
@@ -49,6 +49,7 @@
 #include "MonsterWeapon.h"
 #include "BlackBall.h"
 #include "MonsterHPBar.h"
+#include "MonsterHPBar2.h"
 
 #include "TestTile.h"
 #include "Ruins.h"
@@ -169,6 +170,11 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 	//Snow
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩중입니다."));
+	
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_RageEffect"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/T_DoubleSlash_EN_003_%d.png"), 11))))
+		return E_FAIL;
+
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Show"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Snow/Snow0.png")))))
 		return E_FAIL;
@@ -290,6 +296,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CVIBuffer_Point_Instance::Create(m_pDevice, m_pContext, 3.f, 1.f, 3.f, 3.f, 10.f, 100))))
 		return E_FAIL;
 	
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Point_Instance_Rage"),
+		CVIBuffer_Point_Instance::Create(m_pDevice, m_pContext, 1.f, 1.f, 1.f, 1.f, 1.f, 1, 7.f, 7.f))))
+		return E_FAIL;
+
 	lstrcpy(m_szLoadingText, TEXT("모델를 로딩중입니다."));
 
 	_matrix		LocalMatrix = XMMatrixIdentity();
@@ -764,6 +774,10 @@ HRESULT CLoader::Loading_ForGamePlay()
 		CWraithAttackEffect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_RageTexture"),
+		PlayerRageEffectTexture::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
 	m_isFinished = true;
@@ -781,7 +795,7 @@ HRESULT CLoader::Loading_ForGamePlay2()
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩중입니다."));
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Texture_Poison"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/T_Cartoon_Fire_Particle%d.png"), 4))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/T_DoubleSlash_EN_003_%d.png"), 11))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Texture_HPBar"),
@@ -808,7 +822,7 @@ HRESULT CLoader::Loading_ForGamePlay2()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Boss_Name1.png")))))
 		return E_FAIL;
 	
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Texture_MonsterHPBar"),
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Texture_MonsterHPBar1"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/GUI_Common_gauge_Fill_01_Red_ver2.png")))))
 		return E_FAIL;
 
@@ -856,7 +870,7 @@ HRESULT CLoader::Loading_ForGamePlay2()
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_VIBuffer_Point_Instance_Fire"),
-		CVIBuffer_Point_Instance::Create(m_pDevice, m_pContext, 1.f, 1.f, 1.f, 1.f, 1.f, 1))))
+		CVIBuffer_Point_Instance::Create(m_pDevice, m_pContext, 1.f, 1.f, 1.f, 1.f, 1.f, 1, 1.f, 1.f))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_VIBuffer_Point_Instance_Wraith"),
@@ -1194,7 +1208,7 @@ HRESULT CLoader::Loading_ForGamePlay2()
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster_HPBar1"),
-		CMonsterHPBar::Create(m_pDevice, m_pContext))))
+		CMonsterHPBar2::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster_Name1"),

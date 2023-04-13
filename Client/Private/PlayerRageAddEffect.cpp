@@ -103,7 +103,7 @@ void CPlayerRageAddEffect::LateTick(_double TimeDelta)
 
 		if (nullptr != m_pRendererCom)
 		{
-			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_ALPHABLEND, this);
+			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
 		}
 	}
 }

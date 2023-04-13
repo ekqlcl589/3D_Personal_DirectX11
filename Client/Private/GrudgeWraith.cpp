@@ -350,6 +350,7 @@ void CGrudgeWraith::Animation_State(_double TimeDelta)
 {
 	if (m_tInfo._Hp <= 1.f)
 	{
+		m_isParticle = false;
 		m_tInfo._Hp = 1.f;
 		m_tInfo.CurrAnim = G_DIE;
 

@@ -1,18 +1,18 @@
 #include "stdafx.h"
-#include "..\Public\FireEffect.h"
+#include "..\Public\PlayerRageEffectTexture.h"
 #include "GameInstance.h"
-#include "BlackBall.h"
-CFireEffect::CFireEffect(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+#include "PlayerRageAddEffect.h"
+PlayerRageEffectTexture::PlayerRageEffectTexture(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CBlendObject(pDevice, pContext)
 {
 }
 
-CFireEffect::CFireEffect(const CFireEffect & rhs)
+PlayerRageEffectTexture::PlayerRageEffectTexture(const PlayerRageEffectTexture & rhs)
 	: CBlendObject(rhs)
 {
 }
 
-HRESULT CFireEffect::Initialize_Prototype()
+HRESULT PlayerRageEffectTexture::Initialize_Prototype()
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
@@ -20,7 +20,7 @@ HRESULT CFireEffect::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CFireEffect::Initialize(void * pArg)
+HRESULT PlayerRageEffectTexture::Initialize(void * pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -28,51 +28,52 @@ HRESULT CFireEffect::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	_float3 fScale = { 5.f, 1.f, 5.f };
-	m_pTransformCom->Set_Scale(fScale);
+	memcpy(&m_vPosition, pArg, sizeof(_vector));
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 1.f, 0.f, 0.f));
+	_float3 fPos;
+
+	XMStoreFloat3(&fPos, m_vPosition);
+
+	fPos.y += 2.0f;
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPos));
 
 	return S_OK;
 }
 
-void CFireEffect::Tick(_double TimeDelta)
+void PlayerRageEffectTexture::Tick(_double TimeDelta)
 {
-	__super::Tick(TimeDelta);
-
-	//CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-	//
-	//CTransform* pTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY2, TEXT("Layer_Monster_Effect"), TEXT("Com_Transform")));
-	//
-	//RELEASE_INSTANCE(CGameInstance);
-	//
-	//m_vPosition = pTransform->Get_State(CTransform::STATE_POSITION);
+	if (!m_bDead)
+	{
+		__super::Tick(TimeDelta);
 	
-	//_float3 fPos;
-	//
-	//XMStoreFloat3(&fPos, m_vPosition);
+		m_fFrame += 11.f * TimeDelta;
+		if (m_fFrame >= 11.0f)
+		{
+			m_fFrame = 0.f;
+			iCnt++;
+		}
 
-	//fPos.y = 1.5f;
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPos));
-	//m_pTransformCom->Go_Straight(TimeDelta);
+		if (iCnt >= 5)
+			Set_Dead();
 
-	
-	m_fFrame += 11.f * TimeDelta;
-	if (m_fFrame >= 11.0f)
-		m_fFrame = 0.f;
+	}
 }
 
-void CFireEffect::LateTick(_double TimeDelta)
+void PlayerRageEffectTexture::LateTick(_double TimeDelta)
 {
-	__super::LateTick(TimeDelta);
+	if (!m_bDead)
+	{
+		__super::LateTick(TimeDelta);
 
-	//Compute_CamDistance(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		//Compute_CamDistance(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-	if (nullptr != m_pRendererCom)
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
+		if (nullptr != m_pRendererCom)
+			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
+	}
 }
 
-HRESULT CFireEffect::Render()
+HRESULT PlayerRageEffectTexture::Render()
 {
 	if (FAILED(__super::Render()))
 		return E_FAIL;
@@ -88,7 +89,7 @@ HRESULT CFireEffect::Render()
 	return S_OK;
 }
 
-HRESULT CFireEffect::Add_Components()
+HRESULT PlayerRageEffectTexture::Add_Components()
 {
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"),
 		TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom)))
@@ -106,24 +107,24 @@ HRESULT CFireEffect::Add_Components()
 		return E_FAIL;
 
 	/* For.Com_VIBuffer */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_VIBuffer_Point_Instance_Fire"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Point_Instance_Rage"),
 		TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBufferCom)))
 		return E_FAIL;
 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Shader_VtxPointInstance"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxPointInstance"),
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Texture_Poison"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_RageEffect"),
 		TEXT("Com_Texture"), (CComponent**)&m_pTextureCom)))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CFireEffect::SetUp_ShaderResources()
+HRESULT PlayerRageEffectTexture::SetUp_ShaderResources()
 {
 	if (nullptr == m_pShaderCom)
 		return E_FAIL;
@@ -153,34 +154,34 @@ HRESULT CFireEffect::SetUp_ShaderResources()
 	return S_OK;
 }
 
-CFireEffect * CFireEffect::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+PlayerRageEffectTexture * PlayerRageEffectTexture::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {
-	CFireEffect*		pInstance = new CFireEffect(pDevice, pContext);
+	PlayerRageEffectTexture*		pInstance = new PlayerRageEffectTexture(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Created : CFireEffect");
+		MSG_BOX("Failed to Created : PlayerRageEffectTexture");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject * CFireEffect::Clone(void* pArg)
+CGameObject * PlayerRageEffectTexture::Clone(void* pArg)
 {
-	CFireEffect*		pInstance = new CFireEffect(*this);
+	PlayerRageEffectTexture*		pInstance = new PlayerRageEffectTexture(*this);
 
 	/* 우ㅏㅓㄴ형데이터 외에 사본에게 필요한 추가 초기화 데이터를 처리한ㄷ.,, */
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CFireEffect");
+		MSG_BOX("Failed to Cloned : PlayerRageEffectTexture");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CFireEffect::Free()
+void PlayerRageEffectTexture::Free()
 {
 	__super::Free();
 

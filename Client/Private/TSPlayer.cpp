@@ -1627,6 +1627,7 @@ void CTSPlayer::Rage_Skill(_double TimeDelta)
 		//m_tInfo.rageSkill = true; // 애니메이션 느려짐
 		Add_RageEffect();
 		Add_Add_RageEffect();
+		Add_Add_RageEffectTexture();
 		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.7f, 0.4f); 
 	}
 
@@ -1757,6 +1758,18 @@ HRESULT CTSPlayer::Add_Add_RageEffect()
 
 	RELEASE_INSTANCE(CGameInstance);
 	
+	return S_OK;
+}
+
+HRESULT CTSPlayer::Add_Add_RageEffectTexture()
+{
+	CGameInstance * pInstance = GET_INSTANCE(CGameInstance);
+
+	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_RageTexture"), TEXT("Player_Effect"), &m_pTransformCom->Get_State(CTransform::STATE_POSITION))))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(CGameInstance);
+
 	return S_OK;
 }
 

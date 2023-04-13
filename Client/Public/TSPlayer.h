@@ -89,6 +89,7 @@ private:
 	HRESULT Add_ComboEffect2();
 	HRESULT Add_RageEffect();
 	HRESULT Add_Add_RageEffect();
+	HRESULT Add_Add_RageEffectTexture();
 
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }

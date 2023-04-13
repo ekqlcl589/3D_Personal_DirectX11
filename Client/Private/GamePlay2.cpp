@@ -16,8 +16,8 @@ CGamePlay2::CGamePlay2(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 
 HRESULT CGamePlay2::Initialize()
 {
-	if (FAILED(Ready_Light()))
-		return E_FAIL;
+	//if (FAILED(Ready_Light()))
+	//	return E_FAIL;
 
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_Terrain"))))
 		return E_FAIL;
@@ -125,9 +125,9 @@ HRESULT CGamePlay2::Ready_Light()
 
 	LightDesc.eLightType = LIGHT_DESC::LIGHT_DIRECTIONAL;
 	LightDesc.vDirection = _float4(0.f, -1.f, 1.f, 0.f);//´ë°¢¼± ¾Æ·¡·Î 
-	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vDiffuse = _float4(0.5f, 0.5f, 0.5f, 0.5f);
+	LightDesc.vSpecular = _float4(0.8f, 0.8f, 0.8f, 0.8f);
+	LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 0.5f); // Á¶±Ý ´õ ³·Ãçº¸¼À
 
 	if (FAILED(pGameInstance->Add_Lights(m_pDevice, m_pContext, LightDesc)))
 		return E_FAIL;

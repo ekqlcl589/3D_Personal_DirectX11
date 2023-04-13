@@ -17,7 +17,7 @@ CVIBuffer_Point_Instance::CVIBuffer_Point_Instance(const CVIBuffer_Point_Instanc
 	Safe_AddRef(m_pVBInstance);
 }
 
-HRESULT CVIBuffer_Point_Instance::Initialize_Prototype(_float fWidth, _float fHeight, _float fDepth, _float fMinSpeed, _float fMaxSpeed, _uint iNumInstance)
+HRESULT CVIBuffer_Point_Instance::Initialize_Prototype(_float fWidth, _float fHeight, _float fDepth, _float fMinSpeed, _float fMaxSpeed, _uint iNumInstance, _float fSizeX, _float fSizeY)
 {
 	m_pSpeed = new _float[iNumInstance];
 
@@ -54,7 +54,7 @@ HRESULT CVIBuffer_Point_Instance::Initialize_Prototype(_float fWidth, _float fHe
 	ZeroMemory(pVertices, sizeof(VTXPOINT) * m_iNumVertices);
 
 	pVertices[0].vPosition = _float3(0.0f, 0.0f, 0.f);
-	pVertices[0].vPSize = _float2(1.0f, 1.f);	
+	pVertices[0].vPSize = _float2(fSizeX, fSizeY);
 
 	m_SubResourceData.pSysMem = pVertices;
 
@@ -283,11 +283,11 @@ void CVIBuffer_Point_Instance::FireSparks(_fvector vTarget, _double TimeDelta)
 }
 
 
-CVIBuffer_Point_Instance * CVIBuffer_Point_Instance::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, _float fWidth, _float fHeight, _float fDepth, _float fMinSpeed, _float fMaxSpeed, _uint iNumInstance)
+CVIBuffer_Point_Instance * CVIBuffer_Point_Instance::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, _float fWidth, _float fHeight, _float fDepth, _float fMinSpeed, _float fMaxSpeed, _uint iNumInstance, _float fSizeX, _float fSizeY)
 {
 	CVIBuffer_Point_Instance*		pInstance = new CVIBuffer_Point_Instance(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype(fWidth, fHeight, fDepth, fMinSpeed, fMaxSpeed, iNumInstance)))
+	if (FAILED(pInstance->Initialize_Prototype(fWidth, fHeight, fDepth, fMinSpeed, fMaxSpeed, iNumInstance, fSizeX, fSizeY)))
 	{
 		MSG_BOX("Failed to Created : CVIBuffer_Point_Instance");
 		Safe_Release(pInstance);

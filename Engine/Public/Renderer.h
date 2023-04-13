@@ -59,10 +59,16 @@ private:
 	void Render_Priority();
 	void Render_NonAlphaBlend();
 	void Render_Lights();
-	void Render_Blur();
-	void Render_Glow();
 
 	void Render_Blend();
+
+	void Render_BlurX();
+	void Render_BlurY();
+
+	void Render_Blur();
+
+	void Render_Glow();
+
 	void Render_NonLight();
 	void Render_AlphaBlend();
 	void Render_UI();

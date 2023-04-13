@@ -50,13 +50,18 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 
 #pragma region Test
-	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_ForBlur"), ViewportDesc.Width, ViewportDesc.Height, 
-		DXGI_FORMAT_B8G8R8A8_UNORM, _float4(1.f, 0.f, 1.f, 1.f)))) //만약 경찬이 방식이라면  백 버퍼 색이랑 맞춰야 한다 
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_BlurX"), ViewportDesc.Width, ViewportDesc.Height, 
+		DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f)))) //만약 경찬이 방식이라면  백 버퍼 색이랑 맞춰야 한다 
 		return E_FAIL;
 	// 타겟 y도 만들어서 해주ㅏㅓ얗 ㅁ
-	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_ForGlow"), ViewportDesc.Width, ViewportDesc.Height,
-		DXGI_FORMAT_B8G8R8A8_UNORM, _float4(1.f, 0.f, 1.f, 1.f))))
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_ForBlurX"), ViewportDesc.Width, ViewportDesc.Height,
+		DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Final"), ViewportDesc.Width, ViewportDesc.Height,
+		DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
 #pragma endregion Test
 
 	/* 생성 렌더타겟들을 용도에 따라 묶는다. */
@@ -67,11 +72,14 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_Deferred"), TEXT("Target_Depth"))))
 		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_Deferred"), TEXT("Target_BlurX"))))
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_Blend"), TEXT("Target_Final"))))
+		return E_FAIL;
 
 #pragma region Test
-	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_BlurEffect"), TEXT("Target_ForBlur"))))
-		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_Effect"), TEXT("Target_ForGlow"))))
+	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_BlurEffectX"), TEXT("Target_ForBlurX"))))
 		return E_FAIL;
 #pragma endregion Test
 
@@ -112,9 +120,10 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 
 #pragma region Test
-	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_ForBlur"), 500.f, 100.f, 200.f, 200.f)))
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_BlurX"), 500.f, 100.f, 200.f, 200.f)))
 		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_ForGlow"), 500.f, 300.f, 200.f, 200.f)))
+
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Final"), 700.f, 100.f, 200.f, 200.f)))
 		return E_FAIL;
 #pragma endregion Test
 
@@ -155,7 +164,8 @@ void CRenderer::Draw_Renderer()
 	// blur
 	
 	Render_Blend();
-	Render_Blur();
+	Render_BlurX();
+	//Render_BlurY();
 	Render_Glow();
 
 	Render_NonLight();
@@ -174,12 +184,13 @@ void CRenderer::Draw_Renderer()
 
 	m_pTarget_Manager->Render(TEXT("MRT_Deferred"), m_pShader, m_pVIBuffer);
 
+	m_pTarget_Manager->Render(TEXT("MRT_LightAcc"), m_pShader, m_pVIBuffer);
+
 #pragma region Test
-	m_pTarget_Manager->Render(TEXT("MRT_BlurEffect"), m_pShader, m_pVIBuffer);
-	m_pTarget_Manager->Render(TEXT("MRT_Effect"), m_pShader, m_pVIBuffer);
+	m_pTarget_Manager->Render(TEXT("MRT_BlurEffectX"), m_pShader, m_pVIBuffer);
+	m_pTarget_Manager->Render(TEXT("MRT_Blend"), m_pShader, m_pVIBuffer);
 #pragma endregion Test
 
-	m_pTarget_Manager->Render(TEXT("MRT_LightAcc"), m_pShader, m_pVIBuffer);
 #endif
 
 }
@@ -211,9 +222,6 @@ HRESULT CRenderer::Render_DebugGroup()
 
 void CRenderer::Render_Priority()
 {
-	if (FAILED(m_pTarget_Manager->NoneClerBegin(m_pContext, TEXT("MRT_BlurEffect"))))
-		return;
-
 	for (auto& pGameObject : m_RenderObject[RENDER_PRIORITY])
 	{
 		if (nullptr != pGameObject)
@@ -222,9 +230,6 @@ void CRenderer::Render_Priority()
 		Safe_Release(pGameObject);
 	}
 	m_RenderObject[RENDER_PRIORITY].clear();
-
-	if (FAILED(m_pTarget_Manager->End(m_pContext)))
-		return;
 
 }
 
@@ -288,9 +293,9 @@ void CRenderer::Render_Lights()
 
 void CRenderer::Render_Blend()
 {
-	if (FAILED(m_pTarget_Manager->NoneClerBegin(m_pContext, TEXT("MRT_BlurEffect"))))
+	// 
+	if (FAILED(m_pTarget_Manager->Begin(m_pContext, TEXT("MRT_Blend"))))
 		return;
-
 
 	if (FAILED(m_pShader->Set_Matrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
 		return;
@@ -313,17 +318,18 @@ void CRenderer::Render_Blend()
 
 	if (FAILED(m_pTarget_Manager->End(m_pContext)))
 		return;
+
 }
 
-void CRenderer::Render_Blur()
+void CRenderer::Render_BlurX()
 {
 	//Prototype_Component_Texture_Blur
-
 	// targetForYBlur 비긴 
-	//if (FAILED(m_pTarget_Manager->NoneClerBegin(m_pContext, TEXT("MRT_Effect")))) // 원래 주석
-	//	return;
+	if (FAILED(m_pTarget_Manager->Begin(m_pContext, TEXT("MRT_BlurEffectX")))) // 원래 주석
+		return;
 
-	if (FAILED( m_pTarget_Manager->Set_ShaderResourceView(m_pBlurShader, TEXT("Target_ForBlur"), "g_BlurTexture")))
+	
+	if (FAILED( m_pTarget_Manager->Set_ShaderResourceView(m_pBlurShader, TEXT("Target_BlurX"), "g_BlurTexture")))
 		return;
 
 	if (FAILED(m_pBlurShader->Set_Matrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
@@ -333,34 +339,15 @@ void CRenderer::Render_Blur()
 	if (FAILED(m_pBlurShader->Set_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return;
 
-	//_float fPixelWidth = 1280.f;
-	//_float fPixelHeight = 720.f;
-	//
-	//m_pBlurShader->Set_RawValue("g_Width", &fPixelWidth, sizeof(_float));
-	//m_pBlurShader->Set_RawValue("g_Height", &fPixelHeight, sizeof(_float));
-	//
-	//float blurPower = 0.5f;
-	//m_pBlurShader->Set_RawValue("g_BlurPower", &blurPower, sizeof(_float));
-
-	m_pBlurShader->Begin(2);
+	m_pBlurShader->Begin(0); // Xblur 값 날아감 
+	m_pVIBuffer->Render();
+	m_pBlurShader->Begin(1);
 	m_pVIBuffer->Render();
 
 	// 비긴한 거 엔드 시키고 
-	//if (FAILED(m_pTarget_Manager->End(m_pContext))) // 원래 주석
-	//	return;
 
 	// 블러 y 함수를 하나 더 파서 
-	// 	if (FAILED( m_pTarget_Manager->Set_ShaderResourceView(m_pBlurShader, TEXT("Target_ForBlurY"), "g_BlurTexture")))
-	//return;
-	if (FAILED(m_pTarget_Manager->NoneClerBegin(m_pContext, TEXT("MRT_Effect")))) // 원래 주석
-		return;
-
-	if (FAILED(m_pTarget_Manager->Set_ShaderResourceView(m_pBlurShader, TEXT("Target_ForGlow"), "g_GlowTexture")))
-		return;
-
-	m_pBlurShader->Begin(3);
-	m_pVIBuffer->Render();
-
+	//
 	if (FAILED(m_pTarget_Manager->End(m_pContext))) // 원래 주석
 		return;
 
@@ -369,38 +356,56 @@ void CRenderer::Render_Blur()
 //void CRenderer::Render_BlurY() ㅇ기는 위에서 엔드를 했으니까 백버퍼로 가 있고 
 // 
 
+void CRenderer::Render_BlurY()
+{
+
+	if (FAILED(m_pTarget_Manager->NoneClerBegin(m_pContext, TEXT("MRT_BlurEffectY")))) // 원래 주석
+		return;
+
+	if (FAILED(m_pTarget_Manager->Set_ShaderResourceView(m_pBlurShader, TEXT("Target_BlurX"), "g_BlurTexture")))
+		return;
+
+	if (FAILED(m_pBlurShader->Set_Matrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
+		return;
+	if (FAILED(m_pBlurShader->Set_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pBlurShader->Set_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	m_pBlurShader->Begin(1);
+	m_pVIBuffer->Render();
+
+	// 비긴한 거 엔드 시키고 
+	if (FAILED(m_pTarget_Manager->End(m_pContext))) // 원래 주석
+		return;
+
+}
+
+void CRenderer::Render_Blur()
+{
+	//if (FAILED(m_pTarget_Manager->Set_ShaderResourceView(m_pBlurShader, TEXT("Target_ForBlurY"), "g_BlurTexture")))
+	//	return;
+
+}
+
 void CRenderer::Render_Glow()
 {
-	//비긴	
-	//if (FAILED(m_pTarget_Manager->Begin(m_pContext, TEXT("MRT_Effect")))) 
-	//	return;
-
-	for (auto& pGameObject : m_RenderObject[RENDER_GLOW])
-	{
-		if (nullptr != pGameObject)
-			pGameObject->Render();
+	if (FAILED(m_pBlurShader->Set_Matrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
+		return;
+	if (FAILED(m_pBlurShader->Set_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pBlurShader->Set_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
 	
-		Safe_Release(pGameObject);
-	}
-	m_RenderObject[RENDER_GLOW].clear();
+	if (FAILED(m_pTarget_Manager->Set_ShaderResourceView(m_pBlurShader, TEXT("Target_BlurX"), "g_OriginTexture")))
+		return;
+	if (FAILED(m_pTarget_Manager->Set_ShaderResourceView(m_pBlurShader, TEXT("Target_Final"), "g_HDRTexture")))
+		return;
+	if (FAILED(m_pTarget_Manager->Set_ShaderResourceView(m_pBlurShader, TEXT("Target_ForBlurX"), "g_GlowTexture")))
+		return;
 
-
-	//if (FAILED(m_pTarget_Manager->End(m_pContext)))
-	//	return;
-
-	//엔드 
-	//if (FAILED(m_pTarget_Manager->Set_ShaderResourceView(m_pBlurShader, TEXT("Target_ForGlow"), "g_GlowTexture")))
-	//	return;
-	//
-	//if (FAILED(m_pBlurShader->Set_Matrix("g_WorldMatrix", &m_FullScreenWorldMatrix)))
-	//	return;
-	//if (FAILED(m_pBlurShader->Set_Matrix("g_ViewMatrix", &m_ViewMatrix)))
-	//	return;
-	//if (FAILED(m_pBlurShader->Set_Matrix("g_ProjMatrix", &m_ProjMatrix)))
-	//	return;
-
-	//m_pBlurShader->Begin(3);
-	//m_pVIBuffer->Render();
+	m_pBlurShader->Begin(3); // 글로우값 조절 
+	m_pVIBuffer->Render();
 }
 
 void CRenderer::Render_NonLight()

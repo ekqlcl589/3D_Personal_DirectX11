@@ -13,7 +13,7 @@ protected:
 	virtual ~CVIBuffer_Point_Instance() = default;
 
 public:
-	virtual	HRESULT Initialize_Prototype(_float fWidth, _float fHeight, _float fDepth, _float fMinSpeed, _float fMaxSpeed, _uint iNumInstance);
+	virtual	HRESULT Initialize_Prototype(_float fWidth, _float fHeight, _float fDepth, _float fMinSpeed, _float fMaxSpeed, _uint iNumInstance, _float fSizeX, _float fSizeY);
 	virtual	HRESULT Initialize(void* pArg);
 	virtual HRESULT Render() override;
 
@@ -36,7 +36,7 @@ private:
 	_float*	 m_pOldHeight = { nullptr };
 
 public:	
-	static CVIBuffer_Point_Instance* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, _float fWidth, _float fHeight, _float fDepth, _float fMinSpeed, _float fMaxSpeed, _uint iNumInstance = 1);
+	static CVIBuffer_Point_Instance* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, _float fWidth, _float fHeight, _float fDepth, _float fMinSpeed, _float fMaxSpeed, _uint iNumInstance = 1, _float fSizeX = 1, _float fSizeY = 1);
 	virtual CComponent* Clone(void* pArg = nullptr);
 	virtual void Free() override;
 };

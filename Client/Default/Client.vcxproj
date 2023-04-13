@@ -189,6 +189,7 @@
     <ClInclude Include="..\Public\Monster.h" />
     <ClInclude Include="..\Public\MonsterBlade.h" />
     <ClInclude Include="..\Public\MonsterHPBar.h" />
+    <ClInclude Include="..\Public\MonsterHPBar2.h" />
     <ClInclude Include="..\Public\MonsterName.h" />
     <ClInclude Include="..\Public\MonsterSickle.h" />
     <ClInclude Include="..\Public\MonsterWeapon.h" />
@@ -200,6 +201,7 @@
     <ClInclude Include="..\Public\PlayerMPBar.h" />
     <ClInclude Include="..\Public\PlayerRageAddEffect.h" />
     <ClInclude Include="..\Public\PlayerRageEffect.h" />
+    <ClInclude Include="..\Public\PlayerRageEffectTexture.h" />
     <ClInclude Include="..\Public\PlayerRageSkill.h" />
     <ClInclude Include="..\Public\PlayerSkill.h" />
     <ClInclude Include="..\Public\PlayerTop.h" />
@@ -258,6 +260,7 @@
     <ClCompile Include="..\Private\Monster.cpp" />
     <ClCompile Include="..\Private\MonsterBlade.cpp" />
     <ClCompile Include="..\Private\MonsterHPBar.cpp" />
+    <ClCompile Include="..\Private\MonsterHPBar2.cpp" />
     <ClCompile Include="..\Private\MonsterName.cpp" />
     <ClCompile Include="..\Private\MonsterSickle.cpp" />
     <ClCompile Include="..\Private\MonsterWeapon.cpp" />
@@ -269,6 +272,7 @@
     <ClCompile Include="..\Private\PlayerMPBar.cpp" />
     <ClCompile Include="..\Private\PlayerRageAddEffect.cpp" />
     <ClCompile Include="..\Private\PlayerRageEffect.cpp" />
+    <ClCompile Include="..\Private\PlayerRageEffectTexture.cpp" />
     <ClCompile Include="..\Private\PlayerRageSkill.cpp" />
     <ClCompile Include="..\Private\PlayerSkill.cpp" />
     <ClCompile Include="..\Private\PlayerTop.cpp" />
