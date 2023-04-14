@@ -1627,7 +1627,7 @@ void CTSPlayer::Rage_Skill(_double TimeDelta)
 		//m_tInfo.rageSkill = true; // 애니메이션 느려짐
 		Add_RageEffect();
 		Add_Add_RageEffect();
-		Add_Add_RageEffectTexture();
+		//Add_Add_RageEffectTexture();
 		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.7f, 0.4f); 
 	}
 

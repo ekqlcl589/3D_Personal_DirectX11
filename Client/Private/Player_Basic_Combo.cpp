@@ -67,8 +67,6 @@ void CPlayer_Basic_Combo::Tick(_double TimeDelta)
 
 		}
 
-		//FadeInOut();
-
 	}
 }
 
@@ -110,7 +108,7 @@ HRESULT CPlayer_Basic_Combo::Render()
 
 		m_pModelCom->SetUp_BoneMatrices(m_pShaderCom, "g_BoneMatrix", i);
 
-		m_pShaderCom->Begin(0);
+		m_pShaderCom->Begin(1);
 
 		m_pModelCom->Render(i);
 	}
@@ -168,7 +166,7 @@ HRESULT CPlayer_Basic_Combo::Add_Components()
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxAnimModel"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModel_Effect"),
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
@@ -194,10 +192,16 @@ HRESULT CPlayer_Basic_Combo::SetUp_ShaderResources()
 	if (FAILED(m_pShaderCom->Set_Matrix("g_ProjMatrix", &pInstance->Get_Transformfloat4x4(CPipeLine::TS_PROJ))))
 		return E_FAIL;
 
-	//if (FAILED(pInstance->Set_ShaderRenderTargetResourceView(m_pShaderCom, TEXT("Target_Depth"), "g_DepthTexture")))
-	//	return E_FAIL;
+	if (FAILED(pInstance->Set_ShaderRenderTargetResourceView(m_pShaderCom, TEXT("Target_Depth"), "g_DepthTexture")))
+		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
+
+	_float fDissolveAmount = 0.f;
+
+	if (FAILED(m_pShaderCom->Set_RawValue("g_fDissolveAmount", &fDissolveAmount, sizeof(float))))
+		return E_FAIL;
+
 	return S_OK;
 }
 

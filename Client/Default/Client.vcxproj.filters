@@ -472,6 +472,9 @@
     <ClInclude Include="..\Public\PlayerRageEffectTexture.h">
       <Filter>02.GameObject\10. Effrect\Player\Rage\AddEffect\Tex</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\MonsterName2.h">
+      <Filter>02.GameObject\04. UI\Monster\Name</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -672,6 +675,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\PlayerRageEffectTexture.cpp">
       <Filter>02.GameObject\10. Effrect\Player\Rage\AddEffect\Tex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MonsterName2.cpp">
+      <Filter>02.GameObject\04. UI\Monster\Name</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

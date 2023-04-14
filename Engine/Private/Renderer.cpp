@@ -108,22 +108,22 @@ HRESULT CRenderer::Initialize_Prototype()
 
 
 #ifdef _DEBUG
-	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Diffuse"), 100.0f, 100.f, 200.f, 200.f)))
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Diffuse"), 10.0f, 10.f, 20.f, 20.f)))
 		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Normal"), 100.0f, 300.f, 200.f, 200.f)))
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Normal"), 10.0f, 30.f, 20.f, 20.f)))
 		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Depth"), 100.0f, 500.f, 200.f, 200.f)))
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Depth"), 10.0f, 50.f, 20.f, 20.f)))
 		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Shade"), 300.f, 100.f, 200.f, 200.f)))
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Shade"), 30.f, 10.f, 20.f, 20.f)))
 		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Specular"), 300.f, 300.f, 200.f, 200.f)))
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Specular"), 30.f, 30.f, 20.f, 20.f)))
 		return E_FAIL;
 
 #pragma region Test
-	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_BlurX"), 500.f, 100.f, 200.f, 200.f)))
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_BlurX"), 50.f, 10.f, 20.f, 20.f)))
 		return E_FAIL;
 
-	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Final"), 700.f, 100.f, 200.f, 200.f)))
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Final"), 70.f, 10.f, 20.f, 20.f)))
 		return E_FAIL;
 #pragma endregion Test
 
@@ -403,7 +403,7 @@ void CRenderer::Render_Glow()
 		return;
 	if (FAILED(m_pTarget_Manager->Set_ShaderResourceView(m_pBlurShader, TEXT("Target_ForBlurX"), "g_GlowTexture")))
 		return;
-
+	
 	m_pBlurShader->Begin(3); // 글로우값 조절 
 	m_pVIBuffer->Render();
 }

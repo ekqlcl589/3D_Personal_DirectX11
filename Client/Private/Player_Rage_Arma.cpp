@@ -77,7 +77,7 @@ void CPlayer_Rage_Arma::LateTick(_double TimeDelta)
 
 	Set_Transform();
 
-	FadeInOut();
+	//FadeInOut();
 
 	if (nullptr != m_pRendererCom)
 	{

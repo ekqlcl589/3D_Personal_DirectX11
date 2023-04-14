@@ -191,6 +191,7 @@
     <ClInclude Include="..\Public\MonsterHPBar.h" />
     <ClInclude Include="..\Public\MonsterHPBar2.h" />
     <ClInclude Include="..\Public\MonsterName.h" />
+    <ClInclude Include="..\Public\MonsterName2.h" />
     <ClInclude Include="..\Public\MonsterSickle.h" />
     <ClInclude Include="..\Public\MonsterWeapon.h" />
     <ClInclude Include="..\Public\Monster_Projectile_Effect.h" />
@@ -262,6 +263,7 @@
     <ClCompile Include="..\Private\MonsterHPBar.cpp" />
     <ClCompile Include="..\Private\MonsterHPBar2.cpp" />
     <ClCompile Include="..\Private\MonsterName.cpp" />
+    <ClCompile Include="..\Private\MonsterName2.cpp" />
     <ClCompile Include="..\Private\MonsterSickle.cpp" />
     <ClCompile Include="..\Private\MonsterWeapon.cpp" />
     <ClCompile Include="..\Private\Monster_Projectile_Effect.cpp" />

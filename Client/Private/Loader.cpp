@@ -10,6 +10,7 @@
 #include "ProjectileSton.h"
 #include "TargetTextrue.h"
 #include "GameInstance.h"
+#include "MonsterName2.h"
 #include "MonsterName.h"
 #include "BackGround.h"
 #include "LoadingImg.h"
@@ -37,7 +38,6 @@
 #include "PlayerRageAddEffect.h"
 #include "RealWraithAttackEffect.h"
 #include "Player_Skill_RockBreak.h"
-
 
 #include "Ancient_StonGolem.h"
 #include "GianticCreature.h"
@@ -859,6 +859,10 @@ HRESULT CLoader::Loading_ForGamePlay2()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Eltheca_Elscope_Circle_A.png")))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Texture_MonsterName1"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Boss_Name1.png")))))
+		return E_FAIL;
+
 	lstrcpy(m_szLoadingText, TEXT("정점버퍼를 로딩중입니다."));
 	/* For.Prototype_Component_VIBuffer_Terrain */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_VIBuffer_Terrain"),
@@ -874,7 +878,7 @@ HRESULT CLoader::Loading_ForGamePlay2()
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_VIBuffer_Point_Instance_Wraith"),
-		CVIBuffer_Point_Instance::Create(m_pDevice, m_pContext, 3.f, 1.f, 3.f, 3.f, 10.f, 100))))
+		CVIBuffer_Point_Instance::Create(m_pDevice, m_pContext, 3.f, 1.f, 3.f, 3.f, 10.f, 100, 0.5f, 0.5f))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("모델를 로딩중입니다."));
@@ -1212,7 +1216,7 @@ HRESULT CLoader::Loading_ForGamePlay2()
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster_Name1"),
-		CMonsterName::Create(m_pDevice, m_pContext))))
+		CMonsterName2::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	// Test Tile

@@ -60,6 +60,12 @@ void CPlayerRageAddEffect::Tick(_double TimeDelta)
 	{
 		__super::Tick(TimeDelta);
 
+		m_UVData -= TimeDelta;
+
+
+		//if (m_UVData <= 0.f)
+		//	m_UVData = 10.f;
+
 		if (nullptr != m_pColliderCom)
 			m_pColliderCom->Update(XMLoadFloat4x4(&m_WorldMatrix));
 
@@ -78,6 +84,7 @@ void CPlayerRageAddEffect::Tick(_double TimeDelta)
 		RELEASE_INSTANCE(CGameInstance);
 
 		m_bActive = static_cast<CTSPlayer*>(pPlayer)->Get_RageState();
+		m_UVData = static_cast<CTSPlayer*>(pPlayer)->Get_Info().m_RageSkill;
 
 		if (!m_bActive)
 		{
@@ -199,6 +206,16 @@ HRESULT CPlayerRageAddEffect::SetUp_ShaderResources()
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Set_RawValue("g_fDissolveAmount", &fDissolveAmount, sizeof(float))))
+		return E_FAIL;
+
+	_bool bUVOn = true;
+
+	if (FAILED(m_pShaderCom->Set_RawValue("g_UVOn", &bUVOn, sizeof(bool))))
+		return E_FAIL;
+
+	float uiCoolTime = m_UVData * 0.04f;
+
+	if (FAILED(m_pShaderCom->Set_RawValue("g_fUVData", &uiCoolTime, sizeof(float))))
 		return E_FAIL;
 
 	return S_OK;

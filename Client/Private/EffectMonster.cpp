@@ -204,6 +204,11 @@ HRESULT CEffectMonster::SetUp_ShaderResources()
 	if (FAILED(m_pShaderCom->Set_RawValue("g_fDissolveAmount", &fDissolveAmount, sizeof(float))))
 		return E_FAIL;
 
+	_bool GlowOff = true;
+
+	if (FAILED(m_pShaderCom->Set_RawValue("g_GlowOff", &GlowOff, sizeof(bool))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
