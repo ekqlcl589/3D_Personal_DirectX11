@@ -502,6 +502,8 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 			{
 				Add_Effect();
 				static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.7f, 0.4f);
+				CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER);
+				CSoundMgr::GetInstance()->SoundPlay(L"OBJ_Beast_Roar_01_A.OGG", SOUND_GOLEM_EFFECT, 1.0f);// »Ï Ω√πﬂ;
 
 			}
 	

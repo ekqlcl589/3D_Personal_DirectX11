@@ -9,7 +9,6 @@
 #include "TestTile.h"
 #include "MonsterHPBar.h"
 #include "MonsterName.h"
-#include "SoundMgr.h"
 
 CGamePlay::CGamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	:CLevel(pDevice, pContext)
@@ -19,7 +18,7 @@ CGamePlay::CGamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 HRESULT CGamePlay::Initialize()
 {
 	//Å×½ºÆ®
-	CSoundMgr::GetInstance()->PlayBGM(L"BGM_Agit_01_B.OGG", 1.f);
+	CSoundMgr::GetInstance()->PlayBGM(L"BGM_Agit_01_B.OGG", 0.5f);
 
 	if (FAILED(Ready_Light()))
 		return E_FAIL;

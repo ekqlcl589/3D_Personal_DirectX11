@@ -14,4 +14,6 @@ namespace Client {
 extern HINSTANCE g_hInst;
 extern HWND g_hWnd;
 
+#include "SoundMgr.h"
+
 using namespace Client;

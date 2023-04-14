@@ -421,6 +421,9 @@ void CTSPlayer::Key_Input(_double TimeDelta)
 
 	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_W))
 	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER);
+		CSoundMgr::GetInstance()->SoundPlay(L"FST_CHR_Run_Heel_Stone_01_D.ogg", SOUND_PLAYER, 1.0f);// Èì ½Ã¹ß;
+
 		m_bTest = false;
 		m_Dir = FRONT;
 
@@ -966,6 +969,8 @@ void CTSPlayer::Attack_Go(_double TimeDelta)
 
 	if (m_tInfo.CurrAnim == TS_BASIC_COMBO01 && m_AnimTimeAcc >= (m_AnimDuration / 2) - 11.0 && m_AnimTimeAcc <= (m_AnimDuration / 2) - 10.0)
 	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"CHR_TSword_Slash_01_A.OGG", SOUND_PLAYER_EFFECT, 1.f);
 		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 0.1f);
 		WeaponBoneUpdate();
 	}
@@ -977,6 +982,8 @@ void CTSPlayer::Attack_Go(_double TimeDelta)
 
 	if (m_tInfo.CurrAnim == TS_BASIC_COMBO02 && m_AnimTimeAcc >= 8.0 && m_AnimTimeAcc <= 9.0)
 	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"CHR_TSword_Slash_01_B.OGG", SOUND_PLAYER_EFFECT, 1.f);
 		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 0.1f);
 		WeaponBoneUpdate();
 	}
@@ -988,6 +995,8 @@ void CTSPlayer::Attack_Go(_double TimeDelta)
 
 	if (m_tInfo.CurrAnim == TS_BASIC_COMBO03 && m_AnimTimeAcc >= (m_AnimDuration / 2) - 22.0 && m_AnimTimeAcc <= (m_AnimDuration / 2) - 21.0)
 	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"CHR_TSword_Slash_01_C.OGG", SOUND_PLAYER_EFFECT, 1.f);
 		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 0.1f);
 		WeaponBoneUpdate();
 	}

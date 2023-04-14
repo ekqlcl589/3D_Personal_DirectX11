@@ -39,6 +39,7 @@ void CLoading::Tick(_double TimeDelta)
 	if (true == m_pLoader->isFinished() &&
 		GetKeyState(VK_RETURN) & 0x8000)
 	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_BGM);
 
 		CGameInstance*			pGameInstance = CGameInstance::GetInstance();
 		Safe_AddRef(pGameInstance);

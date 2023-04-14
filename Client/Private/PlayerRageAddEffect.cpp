@@ -39,7 +39,7 @@ HRESULT CPlayerRageAddEffect::Initialize(void * pArg)
 
 	m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(270.0f));
 
-	m_fDissolveTime = 5.f;
+	m_fDissolveTime = 4.f;
 
 	m_eCollisionState = OBJ_PLAYER_RAGESKILL;
 
@@ -92,7 +92,7 @@ void CPlayerRageAddEffect::Tick(_double TimeDelta)
 		{
 			m_fDissolveTime -= TimeDelta;
 
-			fDissolveAmount = Lerp(1.f, 0.f, m_fDissolveTime / 5.f);
+			fDissolveAmount = Lerp(1.f, 0.f, m_fDissolveTime / 4.f);
 
 			if (m_fDissolveTime <= 0.f)
 				Set_Dead();
