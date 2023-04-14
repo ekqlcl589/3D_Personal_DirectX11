@@ -28,10 +28,10 @@ HRESULT CFireEffect::Initialize(void * pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	_float3 fScale = { 5.f, 1.f, 5.f };
-	m_pTransformCom->Set_Scale(fScale);
-
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 1.f, 0.f, 0.f));
+	//_float3 fScale = { 5.f, 1.f, 5.f };
+	//m_pTransformCom->Set_Scale(fScale);
+	//
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 1.f, 0.f, 0.f));
 
 	return S_OK;
 }
@@ -40,20 +40,20 @@ void CFireEffect::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 
-	//CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-	//
-	//CTransform* pTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY2, TEXT("Layer_Monster_Effect"), TEXT("Com_Transform")));
-	//
-	//RELEASE_INSTANCE(CGameInstance);
-	//
-	//m_vPosition = pTransform->Get_State(CTransform::STATE_POSITION);
+	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 	
-	//_float3 fPos;
-	//
-	//XMStoreFloat3(&fPos, m_vPosition);
+	CTransform* pTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY2, TEXT("Layer_Monster_Effect"), TEXT("Com_Transform")));
+	
+	RELEASE_INSTANCE(CGameInstance);
+	
+	m_vPosition = pTransform->Get_State(CTransform::STATE_POSITION);
+	
+	_float3 fPos;
+	
+	XMStoreFloat3(&fPos, m_vPosition);
 
-	//fPos.y = 1.5f;
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPos));
+	fPos.y = 1.5f;
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPos));
 	//m_pTransformCom->Go_Straight(TimeDelta);
 
 	
@@ -69,7 +69,7 @@ void CFireEffect::LateTick(_double TimeDelta)
 	//Compute_CamDistance(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 	if (nullptr != m_pRendererCom)
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHA, this);
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_ALPHABLEND, this);
 }
 
 HRESULT CFireEffect::Render()
@@ -81,7 +81,7 @@ HRESULT CFireEffect::Render()
 		return E_FAIL;
 
 	/* Apply함수를 호출하기전에 내가 사용하고자하는 셰이더 전역변수로 필요한값을 모두 던져야하낟. */
-	m_pShaderCom->Begin(0);
+	m_pShaderCom->Begin(1);
 
 	m_pVIBufferCom->Render();
 

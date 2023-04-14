@@ -76,7 +76,7 @@ void CWraith_Particle::LateTick(_double TimeDelta)
 		__super::LateTick(TimeDelta);
 
 		if (nullptr != m_pRendererCom)
-			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONLIGHT, this);
+			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_ALPHABLEND, this);
 	}
 }
 

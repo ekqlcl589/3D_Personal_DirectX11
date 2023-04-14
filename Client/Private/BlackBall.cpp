@@ -43,7 +43,7 @@ HRESULT CBlackBall::Initialize(void * pArg)
 		m_fPos.y = 1.5f;
 		m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVectorSet(1.0f, 0.f, 0.f, 0.f) * fScale.x);
 		m_pTransformCom->Set_State(CTransform::STATE_UP, XMVectorSet(0.0f, 1.f, 0.f, 0.f) * fScale.y);
-		m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_vLook * fScale.z);
+		m_pTransformCom->Set_State(CTransform::STATE_LOOK, XMVector3Normalize(m_vLook * fScale.z));
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_fPos)); // 생성시킬 때 y에 1.5 더해줌
 
 		//Add_Effect();
@@ -59,7 +59,7 @@ HRESULT CBlackBall::Initialize(void * pArg)
 
 		m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVectorSet(1.0f, 0.f, 0.f, 0.f)* fScale.x);
 		m_pTransformCom->Set_State(CTransform::STATE_UP, XMVectorSet(0.0f, 1.f, 0.f, 0.f)* fScale.y);
-		m_pTransformCom->Set_State(CTransform::STATE_LOOK, m_vLook * fScale.z);
+		m_pTransformCom->Set_State(CTransform::STATE_LOOK, XMVector3Normalize(m_vLook * fScale.z));
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&m_fPos));
 
 		//Add_Effect();
