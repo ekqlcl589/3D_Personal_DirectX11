@@ -310,8 +310,13 @@ HRESULT CBlackBall::Add_Components()
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Texture_Noise"),
+		TEXT("Com_Texture"), (CComponent**)&m_pTextureCom)))
+		return E_FAIL;
+
 	return S_OK;
 }
+
 
 HRESULT CBlackBall::SetUp_ShaderResources()
 {
@@ -325,16 +330,20 @@ HRESULT CBlackBall::SetUp_ShaderResources()
 
 	if (FAILED(m_pShaderCom->Set_Matrix("g_ViewMatrix", &pGameInstance->Get_Transformfloat4x4(CPipeLine::TS_VIEW))))
 		return E_FAIL;
-
+	 
 	if (FAILED(m_pShaderCom->Set_Matrix("g_ProjMatrix", &pGameInstance->Get_Transformfloat4x4(CPipeLine::TS_PROJ))))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
 
-	_float fDissolve = 1.f;
+	_float fDissolve = 0.f;
 	if (FAILED(m_pShaderCom->Set_RawValue("g_fDissolveAmount", &fDissolve, sizeof(float))))
 		return E_FAIL;
 
+	bool m_GlowOff = false;
+
+	if (m_BallDesc.eType != TYPE_DDEBASI)
+		m_GlowOff = true;
 
 	return S_OK;
 }
@@ -381,6 +390,7 @@ void CBlackBall::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pColliderCom);
 	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pModelCom);

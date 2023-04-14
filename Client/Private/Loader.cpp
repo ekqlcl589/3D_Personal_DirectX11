@@ -132,7 +132,7 @@ HRESULT CLoader::Loading_ForLogo()
 #pragma region COMPONENTS
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩중입니다."));
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, TEXT("Prototype_Component_Texture_BackGroud"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Default%d.jpg"), 2))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/GUI_LoadingImage.png")))))
 		return E_FAIL;
 	//ㅅㅂ 경로 확인 잘 합시다
 

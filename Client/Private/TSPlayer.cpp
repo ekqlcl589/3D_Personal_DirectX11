@@ -1350,7 +1350,6 @@ void CTSPlayer::CombatWait()
 	if (false == m_Eskill && m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_END && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 35.0)
 	{
 		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
-		m_tInfo.m_ESkill = 0.f;
 		m_AttackCheck = false;
 	}
 
@@ -1471,6 +1470,7 @@ void CTSPlayer::E_Skill(_double TimeDelta)
 	{
 		WeaponBoneUpdate();
 		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.2f, 0.1f);
+		m_tInfo.m_ESkill = 0.f;
 	}
 	//if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_START && m_AnimTimeAcc >= 75.0 && m_AnimTimeAcc <= 76.0)
 	//{

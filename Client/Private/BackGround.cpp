@@ -35,7 +35,7 @@ HRESULT CBackGround::Initialize(void * pArg)
 	m_fY = g_iWinSizeY >> 1;
 
 	XMStoreFloat4x4(&m_WorldMatrix,
-		XMMatrixScaling(m_fSizeX, m_fSizeY, 1.f) * XMMatrixTranslation(m_fX - g_iWinSizeX * 0.5f, -m_fY + g_iWinSizeY * 0.5f, 0.f));
+		XMMatrixScaling(m_fSizeX, m_fSizeY + 100.f, 1.f));
 
 	XMStoreFloat4x4(&m_ViewMatrix,
 		XMMatrixIdentity());
