@@ -86,6 +86,9 @@ void CTSPlayer::Tick(_double TimeDelta)
 {
 	if (m_tInfo._Hp <= 0.f)
 	{
+		//CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_VOICE); 이거 보류 
+		//CSoundMgr::GetInstance()->SoundPlay(L"Voice_HM_W_A_E_Dying_Short_03_A_KR.ogg", SOUND_PLAYER_VOICE, 1.0f);
+		
 		m_isParticleOn = false;
 		m_tInfo._Hp = 0.f;
 		m_tInfo.CurrAnim = TS_DIE;
@@ -419,10 +422,11 @@ void CTSPlayer::Key_Input(_double TimeDelta)
 	//else if(m_Dir == RIGHT)
 	//	m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta);
 
+	CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER);
+
 	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_W))
 	{
-		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER);
-		CSoundMgr::GetInstance()->SoundPlay(L"FST_CHR_Run_Heel_Stone_01_D.ogg", SOUND_PLAYER, 1.0f);// 흠 시발;
+		//CSoundMgr::GetInstance()->SoundPlay(L"FST_CHR_Run_Heel_Stone_01_D.OGG", SOUND_PLAYER, 1.0f);
 
 		m_bTest = false;
 		m_Dir = FRONT;
@@ -613,6 +617,8 @@ void CTSPlayer::Key_Input(_double TimeDelta)
 	R_Skill(TimeDelta);
 	F_Skill(TimeDelta);
 	Rage_Skill(TimeDelta);
+
+	//Set_Sound();
 }
 
 void CTSPlayer::Animation(TSPLAYERANIM eType, _double TimeDelta)
@@ -757,51 +763,37 @@ void CTSPlayer::Animation(TSPLAYERANIM eType, _double TimeDelta)
 	}
 }
 
+void CTSPlayer::Set_Sound()
+{
+	switch (m_tInfo.CurrAnim)
+	{
+	case Engine::TS_RUN_END:
+		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER);
+		CSoundMgr::GetInstance()->SoundPlay(L"FST_CHR_Run_Heel_Stone_01_D.OGG", SOUND_PLAYER, 1.0f);
+		break;
+
+	case Engine::TS_JUMP:
+		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_VOICE);
+		CSoundMgr::GetInstance()->SoundPlay(L"Player_Jump.OGG", SOUND_PLAYER_VOICE, 1.0f);
+
+		break;
+
+	//case Engine::TS_RAGESKILL_DOUBLESLASH:
+	//	CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER);
+	//	CSoundMgr::GetInstance()->SoundPlay(L"CHR_TSword_Energy_01_A.OGG", SOUND_PLAYER, 1.0f);
+	//
+	//	break;
+	default:
+		break;
+	}
+}
+
 void CTSPlayer::Hit(const _int & _Damage)
 {
 	m_tInfo._Hp -= _Damage;
 
 	if(!m_AttackCheck)
 		m_tInfo.CurrAnim = TS_STURN_LOOP;
-	//if (m_tInfo.PrevAnim == TS_STURN_LOOP && true == m_pModelCom->Get_AnimFinished())
-	//{
-	//	cout <<"상태 : " << m_tInfo.CurrAnim << endl;
-	//	m_tInfo.CurrAnim = TS_COMBAT_WAIT;
-	//}
-	//
-	//if (m_tInfo.PrevAnim == TS_COMBAT_WAIT == true == m_pModelCom->Get_AnimFinished())
-	//	m_tInfo.CurrAnim = TS_WAIT;
-
-
-	//CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
-	//
-	//CTransform* pMonsterTransform = nullptr;
-	//
-	//pMonsterTransform = static_cast<CTransform*>(pInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Com_Transform")));
-	//
-	//_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	//
-	//_vector vMonPos = pMonsterTransform->Get_State(CTransform::STATE_POSITION);
-	//
-	//_vector vDir = vMonPos - vPosition;
-	//
-	//_vector vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vDir);
-	//
-	//_vector vUp = XMVector3Cross(vDir, vRight);
-	//
-	//_float3 vScale = m_pTransformCom->Get_Scale();
-	//
-	//m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVector3Normalize(vRight) * vScale.x);
-	//m_pTransformCom->Set_State(CTransform::STATE_UP, XMVector3Normalize(vUp) * vScale.y);
-	//m_pTransformCom->Set_State(CTransform::STATE_LOOK, XMVector3Normalize(vDir) * vScale.z);
-	//
-	//// 충돌 시 밀려 나야 함 
-	//vPosition -= XMVector3Normalize(vDir) * 0.1f;
-	//
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
-
-	//RELEASE_INSTANCE(CGameInstance);
-
 }
 
 void CTSPlayer::Damage(const _int & _Damage)
@@ -921,6 +913,7 @@ void CTSPlayer::Attack_Special2(_double TimeDelta)
 
 	if (true == m_AttackCheck)
 	{
+		CSoundMgr::GetInstance()->SoundPlay(L"CHR_TSword_Slash_01_F.OGG", SOUND_PLAYER_EFFECT, 1.0f);
 		m_bAttackState = true;
 		if (m_tInfo.CurrAnim == TS_BASIC_COMBO01 && true != m_pModelCom->Get_AnimFinished())
 		{
@@ -931,6 +924,8 @@ void CTSPlayer::Attack_Special2(_double TimeDelta)
 			m_tInfo.SpecialAttack2 = true;
 			//static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.1f);
 			// 기능 작동 안 됨 ㅈ댐 ㅋㅋ
+			//CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_EFFECT);
+
 		}
 
 	}
@@ -969,8 +964,11 @@ void CTSPlayer::Attack_Go(_double TimeDelta)
 
 	if (m_tInfo.CurrAnim == TS_BASIC_COMBO01 && m_AnimTimeAcc >= (m_AnimDuration / 2) - 11.0 && m_AnimTimeAcc <= (m_AnimDuration / 2) - 10.0)
 	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_VOICE);
+		CSoundMgr::GetInstance()->SoundPlay(L"Voice_HM_W_A_E_Attack_Short_01_A_KR.ogg", SOUND_PLAYER_VOICE, 0.5f);
+		
 		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_EFFECT);
-		CSoundMgr::GetInstance()->SoundPlay(L"CHR_TSword_Slash_01_A.OGG", SOUND_PLAYER_EFFECT, 1.f);
+		CSoundMgr::GetInstance()->SoundPlay(L"CHR_TSword_Slash_01_A.OGG", SOUND_PLAYER_EFFECT, 0.6f);
 		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 0.1f);
 		WeaponBoneUpdate();
 	}
@@ -982,8 +980,11 @@ void CTSPlayer::Attack_Go(_double TimeDelta)
 
 	if (m_tInfo.CurrAnim == TS_BASIC_COMBO02 && m_AnimTimeAcc >= 8.0 && m_AnimTimeAcc <= 9.0)
 	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_VOICE);
+		CSoundMgr::GetInstance()->SoundPlay(L"Voice_HM_W_A_E_Attack_Short_02_A_KR.ogg", SOUND_PLAYER_VOICE, 0.5f);
+		
 		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_EFFECT);
-		CSoundMgr::GetInstance()->SoundPlay(L"CHR_TSword_Slash_01_B.OGG", SOUND_PLAYER_EFFECT, 1.f);
+		CSoundMgr::GetInstance()->SoundPlay(L"CHR_TSword_Slash_01_B.OGG", SOUND_PLAYER_EFFECT, 0.6f);
 		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 0.1f);
 		WeaponBoneUpdate();
 	}
@@ -993,15 +994,18 @@ void CTSPlayer::Attack_Go(_double TimeDelta)
 		m_pTransformCom->Go_Straight(TimeDelta * 0.13);
 	}
 
-	if (m_tInfo.CurrAnim == TS_BASIC_COMBO03 && m_AnimTimeAcc >= (m_AnimDuration / 2) - 22.0 && m_AnimTimeAcc <= (m_AnimDuration / 2) - 21.0)
+	if (m_tInfo.CurrAnim == TS_BASIC_COMBO03 && m_AnimTimeAcc >= 9.5 && m_AnimTimeAcc <= 10.0)
 	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_VOICE);
+		CSoundMgr::GetInstance()->SoundPlay(L"Voice_HM_W_A_E_Attack_Short_04_A_KR.ogg", SOUND_PLAYER_VOICE, 0.5f);
+		
 		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_EFFECT);
-		CSoundMgr::GetInstance()->SoundPlay(L"CHR_TSword_Slash_01_C.OGG", SOUND_PLAYER_EFFECT, 1.f);
+		CSoundMgr::GetInstance()->SoundPlay(L"CHR_TSword_Slash_01_C.OGG", SOUND_PLAYER_EFFECT, 0.6f);
 		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 0.1f);
 		WeaponBoneUpdate();
 	}
 
-	if (m_tInfo.CurrAnim == TS_BASIC_COMBO03 && m_AnimTimeAcc >= (m_AnimDuration / 2) - 10.0 && m_AnimTimeAcc <= (m_AnimDuration / 2) - 9.0)
+	if (m_tInfo.CurrAnim == TS_BASIC_COMBO03 && m_AnimTimeAcc >= 21.5 && m_AnimTimeAcc <= 22.0)
 	{
 		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.4f, 0.1f);
 		WeaponBoneUpdate();
@@ -1019,24 +1023,33 @@ void CTSPlayer::Attack_Go(_double TimeDelta)
 
 	if (m_tInfo.PrevAnim == TS_BASIC_COMBO02_END && m_AnimTimeAcc >= 9.0 && m_AnimTimeAcc <= 10.0)
 	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"CHR_TSword_Slash_08_D.ogg", SOUND_PLAYER_EFFECT, 1.0f);
+		
 		WeaponBoneUpdate();
 		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.1f);
 	}
 
 	if (m_tInfo.PrevAnim == TS_AIR_COMBO01 && m_AnimTimeAcc >= 8.0 && m_AnimTimeAcc <= 9.0)
 	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"CHR_TSword_Slash_01_A.OGG", SOUND_PLAYER_EFFECT, 1.0f);
 		WeaponBoneUpdate();
 		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 0.1f);
 	}
 
 	if (m_tInfo.PrevAnim == TS_AIR_COMBO03 && m_AnimTimeAcc >= 9.0 && m_AnimTimeAcc <= 10.0)
 	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"CHR_TSword_Slash_01_B.OGG", SOUND_PLAYER_EFFECT, 1.0f);
 		WeaponBoneUpdate();
 		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 0.1f);
 	}
 
 	if (m_tInfo.PrevAnim == TS_AIR_COMBO04 && m_AnimTimeAcc >= 20.0 && m_AnimTimeAcc <= 21.0)
 	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"CHR_TSword_Slash_01_F.OGG", SOUND_PLAYER_EFFECT, 1.0f);
 		WeaponBoneUpdate();
 		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 0.1f);
 	}
@@ -1075,6 +1088,8 @@ void CTSPlayer::Jump(_double TimeDelta)
 	{
 		if (true == m_bSIbal)
 		{
+			CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_VOICE);
+			CSoundMgr::GetInstance()->SoundPlay(L"Player_Jump.OGG", SOUND_PLAYER_VOICE, 1.0f);
 			m_tInfo.CurrAnim = TS_JUMP; // 여기도 조건 잡아줘서 넘어가게 -> 아니면 계속 이게 들어 옴
 			_double sibal = 0.02;
 			m_pModelCom->Set_AnimTick(sibal);
@@ -1091,6 +1106,7 @@ void CTSPlayer::Jump(_double TimeDelta)
 
 		if (vPos.y >= 5.f) // 공중에 있고, 공격중이 아니라면 // 여기
 		{
+
 			m_bFall = true;
 			m_tInfo.CurrAnim = TS_JUMP_LENDING;
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&vPos)); // 렌딩 끝나면 아이들 모션 적용 
@@ -1115,8 +1131,12 @@ void CTSPlayer::Jump(_double TimeDelta)
 				m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&vPos));
 
 				if (m_tInfo.PrevAnim == TS_AIR_COMBO04_LENDING && m_pModelCom->Get_AnimFinished())
-					m_tInfo.CurrAnim = TS_COMBAT_WAIT;
+				{
+					CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER);
+					CSoundMgr::GetInstance()->SoundPlay(L"Player_Jump_Landing.OGG", SOUND_PLAYER, 1.0f);
 
+					m_tInfo.CurrAnim = TS_COMBAT_WAIT;
+				}
 			}
 
 		if (vPos.y <= 0.0f) //  이 씨발 y 조절 어케 하는데 
@@ -1205,6 +1225,12 @@ void CTSPlayer::Dash(_double TimeDelta)
 
 
 	}
+	if (true == m_bDeah && m_tInfo.CurrAnim == TS_DASH && m_AnimTimeAcc >= 5.0 && m_AnimTimeAcc <= 6.0)
+	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"Player_Dash.ogg", SOUND_PLAYER_EFFECT, 1.0f);
+
+	}
 	if (m_tInfo.CurrAnim == TS_DASH && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 6.0)
 	{
 		m_bDeah = false;
@@ -1215,6 +1241,9 @@ void CTSPlayer::Dash(_double TimeDelta)
 
 void CTSPlayer::DashAttack(_double TimeDelta)
 {
+	CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_EFFECT);
+	CSoundMgr::GetInstance()->SoundPlay(L"CHR_TSword_Slash_01_F.OGG", SOUND_PLAYER_EFFECT, 1.0f);
+	
 	m_bAttackState = true;
 	m_bDeah = false;
 	m_tInfo.CurrAnim = TS_DASHCOMBO;
@@ -1257,6 +1286,9 @@ void CTSPlayer::CombatWait()
 			if (FAILED(Add_Particle()))
 				return;
 
+			CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_VOICE);
+			CSoundMgr::GetInstance()->SoundPlay(L"Voice_HM_W_A_E_Attack_Long_02_A_KR.ogg", SOUND_PLAYER_VOICE, 1.0f);
+			
 			CPlayerComboReady::READYEFFECT eType;
 			eType.eType = CPlayerComboReady::TYPE_1;
 			eType.vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
@@ -1311,12 +1343,19 @@ void CTSPlayer::CombatWait()
 
 	if (false == m_AttackCheck && m_tInfo.PrevAnim == TS_SPECIALCOMBO_CRASH && m_AnimTimeAcc >= 10.0 && m_AnimTimeAcc <= 11.0)
 	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_VOICE);
+		CSoundMgr::GetInstance()->SoundPlay(L"Voice_HM_W_A_E_Attack_Short_02_A_KR.ogg", SOUND_PLAYER_VOICE, 1.0f);
+		
 		m_DownAttack = true;
 		m_isParticleOn = false;
 		m_tInfo.SpecialAttack1 = false;
 		WeaponBoneUpdate();
 		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.7f, 0.1f);
 		Add_ComboEffect2();
+
+		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"TS_Rock.OGG", SOUND_PLAYER_EFFECT, 1.0f);
+
 	}
 	if (false == m_AttackCheck && m_tInfo.PrevAnim == TS_SPECIALCOMBO_CRASH && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 10.0) // CRASH가 두 번 들어 갔다가 끊기는 느낌 
 	{
@@ -1452,52 +1491,50 @@ void CTSPlayer::E_Skill(_double TimeDelta)
 
 	if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_START && m_AnimTimeAcc >= 14.0 && m_AnimTimeAcc <= 15.0)
 	{
+		
+		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_VOICE);
+		CSoundMgr::GetInstance()->SoundPlay(L"Voice_HM_W_A_E_SkillQuotes_Short_49_A_KR.ogg", SOUND_PLAYER_VOICE, 1.0f);
+		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"CHR_TSword_Stab_01_A.OGG", SOUND_PLAYER_EFFECT, 1.0f);
 		WeaponBoneUpdate();
 		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.2f, 0.1f);
 	}
 	if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_START && m_AnimTimeAcc >= 25.0 && m_AnimTimeAcc <= 26.0)
 	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"CHR_TSword_Stab_01_A.OGG", SOUND_PLAYER_EFFECT, 1.0f);
 		WeaponBoneUpdate();
 		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.2f, 0.1f);
 	}
 	if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_START && m_AnimTimeAcc >= 36.0 && m_AnimTimeAcc <= 37.0)
 	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"CHR_TSword_Stab_01_A.OGG", SOUND_PLAYER_EFFECT, 1.0f);
 		WeaponBoneUpdate();
 		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.2f, 0.1f);
 	}
 	if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_START && m_AnimTimeAcc >= 44.0 && m_AnimTimeAcc <= 45.0)
 	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"CHR_TSword_Stab_01_A.OGG", SOUND_PLAYER_EFFECT, 1.0f);
 		WeaponBoneUpdate();
 		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.2f, 0.1f);
 	}
 	if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_START && m_AnimTimeAcc >= 52.0 && m_AnimTimeAcc <= 53.0)
 	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"CHR_TSword_Stab_01_A.OGG", SOUND_PLAYER_EFFECT, 1.0f);
 		WeaponBoneUpdate();
 		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.2f, 0.1f);
 	}
 	if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_START && m_AnimTimeAcc >= 57.0 && m_AnimTimeAcc <= 58.0)
 	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"CHR_TSword_Stab_01_A.OGG", SOUND_PLAYER_EFFECT, 1.0f);
 		WeaponBoneUpdate();
 		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.2f, 0.1f);
 		m_tInfo.m_ESkill = 0.f;
 	}
-	//if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_START && m_AnimTimeAcc >= 75.0 && m_AnimTimeAcc <= 76.0)
-	//{
-	//	WeaponBoneUpdate();
-	//	static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.2f, 0.1f);
-	//}
-	//if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_START && m_AnimTimeAcc >= 79.0 && m_AnimTimeAcc <= 80.0)
-	//{
-	//	WeaponBoneUpdate();
-	//	static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.2f, 0.1f);
-	//}
-	//if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_START &&m_AnimTimeAcc >= (m_AnimDuration / 2) && m_AnimTimeAcc <= (m_AnimDuration / 2) + 1.0)
-	//{
-	//	for(_uint i = 0; i < 10; i++)
-	//		WeaponBoneUpdate();
-	//
-	//	static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 4.0f);
-	//}
 	if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_START &&m_AnimTimeAcc >= 65.0)
 	{
 		m_tInfo.CurrAnim = TS_SKILL_OUTRAGE_END;
@@ -1507,6 +1544,8 @@ void CTSPlayer::E_Skill(_double TimeDelta)
 
 	if (m_tInfo.PrevAnim == TS_SKILL_OUTRAGE_END && m_AnimTimeAcc >= 8.0 && m_AnimTimeAcc <= 9.0)
 	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"CHR_TSword_Slash_06_E.OGG", SOUND_PLAYER_EFFECT, 1.0f);
 		WeaponBoneUpdate();
 		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.4f, 0.1f);
 
@@ -1519,7 +1558,7 @@ void CTSPlayer::R_Skill(_double TimeDelta)
 	CLevel_Mgr* L = GET_INSTANCE(CLevel_Mgr);
 
 	CGameObject* pCamera = nullptr;
-
+	//  플레이어 보이스 
 	if (L->Get_LevelIndex() == LEVEL_GAMEPLAY)
 		pCamera = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
 	else if (L->Get_LevelIndex() == LEVEL_GAMEPLAY2)
@@ -1537,8 +1576,12 @@ void CTSPlayer::R_Skill(_double TimeDelta)
 
 	}
 
-	if (m_tInfo.PrevAnim == TS_SKILL_ROCKBREAK && m_AnimTimeAcc >= 11.0 && m_AnimTimeAcc <= 12.0)
-	{
+	if (m_tInfo.PrevAnim == TS_SKILL_ROCKBREAK && m_AnimTimeAcc >= 11.5 && m_AnimTimeAcc <= 12.0)
+	{	
+		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_VOICE);
+		CSoundMgr::GetInstance()->SoundPlay(L"Voice_HM_W_A_E_SkillQuotes_Short_53_A_KR.ogg", SOUND_PLAYER_VOICE, 1.0f);
+		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"TS_Rock.OGG", SOUND_PLAYER_EFFECT, 1.0f);
 		Add_Rock();
 		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.2f);
 
@@ -1568,7 +1611,7 @@ void CTSPlayer::F_Skill(_double TimeDelta)
 	CLevel_Mgr* L = GET_INSTANCE(CLevel_Mgr);
 
 	CGameObject* pCamera = nullptr;
-
+	//  이거 넣으셈 
 	if (L->Get_LevelIndex() == LEVEL_GAMEPLAY)
 		pCamera = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
 	else if (L->Get_LevelIndex() == LEVEL_GAMEPLAY2)
@@ -1579,15 +1622,29 @@ void CTSPlayer::F_Skill(_double TimeDelta)
 
 	if (m_FsKill && m_tInfo.m_FSkill >= 20.f)
 	{
+
 		m_bAttackState = true;
 		m_tInfo.CurrAnim = TS_RAGESKILL_ARMAGEDDONBLADE;
+
+
 		m_AttackCheck = true;
 		m_tInfo.fSkill = true;
 
 	}
+	if (m_tInfo.PrevAnim == TS_RAGESKILL_ARMAGEDDONBLADE && m_AnimTimeAcc >= 1.5 && m_AnimTimeAcc <= 2.0)
+	{
+	}
 
-	if(m_tInfo.PrevAnim == TS_RAGESKILL_ARMAGEDDONBLADE && m_AnimTimeAcc >= 15.0 && m_AnimTimeAcc <= 16.0)
+	if (m_tInfo.PrevAnim == TS_RAGESKILL_ARMAGEDDONBLADE && m_AnimTimeAcc >= 15.0 && m_AnimTimeAcc <= 16.0)
+	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_VOICE);
+		CSoundMgr::GetInstance()->SoundPlay(L"Voice_HM_W_A_E_SkillQuotes_Short_20_A_KR.ogg", SOUND_PLAYER_VOICE, 1.0f);
+
+		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"CHR_TSword_Energy_03_B.ogg", SOUND_PLAYER_EFFECT, 1.0f);
+
 		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 1.0f);
+	}
 
 	if (m_tInfo.PrevAnim == TS_RAGESKILL_ARMAGEDDONBLADE && true == m_pModelCom->Get_AnimFinished())
 	{
@@ -1625,6 +1682,11 @@ void CTSPlayer::Rage_Skill(_double TimeDelta)
 
 	if (!m_AnimInves && m_tInfo.PrevAnim == TS_RAGESKILL_DOUBLESLASH && m_AnimTimeAcc >= 13.0 && m_AnimTimeAcc <= 14.0)
 	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_VOICE);
+		CSoundMgr::GetInstance()->SoundPlay(L"TS_Rage0.OGG", SOUND_PLAYER_VOICE, 1.0f);
+		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"CHR_TSword_Energy_01_A.OGG", SOUND_PLAYER_EFFECT, 1.0f);
+
 		m_isParticleOn = true;
 		Add_Particle();
 		WeaponBoneUpdate();

@@ -17,8 +17,7 @@ CGamePlay::CGamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 
 HRESULT CGamePlay::Initialize()
 {
-	//Å×½ºÆ®
-	CSoundMgr::GetInstance()->PlayBGM(L"BGM_Agit_01_B.OGG", 0.5f);
+	//CSoundMgr::GetInstance()->PlayBGM(L"BGM_PVE_001.OGG", 0.4f);
 
 	if (FAILED(Ready_Light()))
 		return E_FAIL;
@@ -68,6 +67,8 @@ void CGamePlay::Tick(_double TimeDelta)
 
 	if (GetKeyState(VK_ESCAPE) & 0x8000)
 	{
+		CSoundMgr::GetInstance()->StopAll();
+		
 		CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 		Safe_AddRef(pGameInstance);
 
@@ -339,7 +340,6 @@ CGamePlay * CGamePlay::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pCon
 
 void CGamePlay::Free()
 {
-	//CSoundMgr::GetInstance()->StopAll();
 
 	__super::Free();
 }

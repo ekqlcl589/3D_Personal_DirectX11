@@ -43,6 +43,8 @@ public:
 
 	void Animation(TSPLAYERANIM eType, _double TimeDelta);
 
+	void Set_Sound();
+
 public:
 	PLAYERINFO& Get_Info() { return m_tInfo; }
 

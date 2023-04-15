@@ -43,7 +43,9 @@ HRESULT CProjectileSton::Initialize(void * pArg)
 
 	RELEASE_INSTANCE(CGameInstance);
 
-	m_LifeTime = 5.0;
+	m_LifeTime = 4.0;
+
+	m_bDead = false;
 
 	return S_OK;
 }
@@ -85,7 +87,6 @@ void CProjectileSton::Tick(_double TimeDelta)
 		if (m_RealThrow)
 		{
 			vPos += XMVector3Normalize(vDir) * 1.f; //  타임 델타 곱하고.. 속도 주고...
-			cout << XMVectorGetX(vPos) << " x " << XMVectorGetY(vPos) <<" y " << XMVectorGetZ(vPos) << endl;
 			vPos = XMVectorSetW(vPos, 1.f);
 
 			World = XMLoadFloat4x4(&m_matWorldMatrix);

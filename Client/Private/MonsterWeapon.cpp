@@ -6,6 +6,7 @@
 #include "GianticCreature.h"
 #include "GrudgeWraith.h"
 #include "CursedWraith.h"
+#include "Level_Mgr.h"
 
 _matrix CMonsterWeapon::WorldMatrix = XMMatrixIdentity();
 
@@ -336,22 +337,29 @@ void CMonsterWeapon::EnterCollision(CGameObject * pObj)
 		case Engine::OBJ_PLAYER_RAGESKILL:
 		{
 			CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
+			CLevel_Mgr* L = GET_INSTANCE(CLevel_Mgr);
 			CGameObject* pOwner = nullptr;
 
-			if (nullptr == pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster")))
+			if (nullptr == pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster")) || nullptr == pInstance->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Monster")))
 			{
-				Set_Dead();
+				//Set_Dead();
 				return;
 			}
 
-			pOwner = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
+			if(L->Get_LevelIndex() == LEVEL_GAMEPLAY)
+				pOwner = pInstance->Find_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
+			else if(L->Get_LevelIndex() == LEVEL_GAMEPLAY2)
+				pOwner = pInstance->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Monster"));
+
+			RELEASE_INSTANCE(CGameInstance);
+			RELEASE_INSTANCE(CLevel_Mgr);
 
 			_uint Hp = static_cast<CAncient_StonGolem*>(pOwner)->Get_Info()._Hp;
 			static_cast<CAncient_StonGolem*>(pOwner)->Set_Info(100.f);
 
 			cout << "필살기 맞음" << endl;
-		}
 			break;
+		}
 
 		default:
 			break;

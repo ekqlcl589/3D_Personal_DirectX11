@@ -37,6 +37,18 @@ HRESULT CPlayerRageAddEffect::Initialize(void * pArg)
 
 	_vector vPos = World.r[3];
 
+	_float f = 3.f;
+
+	_vector vLook = XMVector3Normalize(World.r[2]) * f;
+	
+	vPos += (vLook);
+	vPos = XMVectorSetW(vPos, 1.f);
+
+	World = XMLoadFloat4x4(&m_WorldMatrix);
+	World.r[3] = vPos;
+
+	XMStoreFloat4x4(&m_WorldMatrix, World);
+
 	m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(270.0f));
 
 	m_fDissolveTime = 4.f;

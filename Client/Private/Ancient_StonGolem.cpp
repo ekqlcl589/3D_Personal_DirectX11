@@ -42,7 +42,7 @@ HRESULT CAncient_StonGolem::Initialize(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPosition));
 
 	m_eType._MaxHp = 1000.f;
-	m_eType._Hp = 1000.f;
+	m_eType._Hp = 10.f;
 
 	m_f = m_pModelCom->Get_AnimTick();
 
@@ -455,9 +455,16 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 		m_eType._Hp = 1.f;
 		m_CurrAnim = S_SKILL10_1; // 원래는 스킬 모션인데 죽는게 따로 없어서 이걸로 대체 
 
+		if (m_PrevAnim == S_SKILL10_1 && m_AnimTimeAcc >= 2.0 && m_AnimTimeAcc <= 3.0)
+		{
+			CSoundMgr::GetInstance()->StopSound(SOUND_GOLEM_EFFECT);
+			CSoundMgr::GetInstance()->SoundPlay(L"mawlek_scream.wav", SOUND_GOLEM_EFFECT, 1.0f);
+
+		}
 		
 		if (m_PrevAnim == S_SKILL10_1 && true == m_pModelCom->Get_AnimFinished())
 		{
+
 			m_IsAnimStop = true;
 			
 			m_fDissolveTime -= TimeDelta;
@@ -467,6 +474,8 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 
 		if (m_fDissolveTime <= 0.f)
 		{
+			// 갔다 와서 사운드 확인 하셈 
+
 			m_eType._Hp = 0.f;
 			m_isParticleOn = false;
 			Set_Dead();
@@ -500,19 +509,24 @@ _uint CAncient_StonGolem::Set_State(_double TimeDelta)
 
 			if (m_pModelCom->Get_AnimTimeAcc() >= 93.0 && m_pModelCom->Get_AnimTimeAcc() <= 94.0)
 			{
+				CSoundMgr::GetInstance()->StopSound(SOUND_GOLEM_EFFECT);
+				CSoundMgr::GetInstance()->SoundPlay(L"MON_Golem_Jump_End_01_B.OGG", SOUND_GOLEM_EFFECT, 1.0f);
 				Add_Effect();
 				static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.7f, 0.4f);
-				CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER);
-				CSoundMgr::GetInstance()->SoundPlay(L"OBJ_Beast_Roar_01_A.OGG", SOUND_GOLEM_EFFECT, 1.0f);// 흠 시발;
 
 			}
-	
+
+
 		}
 	
 	}
 
-	if(m_PrevAnim == S_RESPAN && m_AnimTimeAcc >= 249.0 && m_AnimTimeAcc <= 250.0)
+	if (m_PrevAnim == S_RESPAN && m_AnimTimeAcc >= 249.0 && m_AnimTimeAcc <= 250.0)
+	{
 		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.7f, 0.4f);
+		CSoundMgr::GetInstance()->StopSound(SOUND_GOLEM_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"OBJ_Beast_Roar_01_A.OGG", SOUND_GOLEM_EFFECT, 1.0f);
+	}
 
 	if(m_eType._Hp <= 300.f && !m_bSkill5)
 		Set_Skill05(TimeDelta); // 체력이 25% 이하로 떨어지면 몸을 웅크리면서 체력 회복 패턴 사용 
@@ -576,6 +590,11 @@ void CAncient_StonGolem::Attack_Go(_double TimeDelta)
 	{
 		if (m_pModelCom->Get_AnimTimeAcc() >= 50.0 && m_pModelCom->Get_AnimTimeAcc() <= 51.0)
 		{
+			CSoundMgr::GetInstance()->StopSound(SOUND_GOLEM_VOICE);
+			CSoundMgr::GetInstance()->SoundPlay(L"VO_MON_Golem_Attack_01_A.ogg", SOUND_GOLEM_VOICE, 1.0f);
+
+			CSoundMgr::GetInstance()->StopSound(SOUND_GOLEM_EFFECT);
+			CSoundMgr::GetInstance()->SoundPlay(L"MON_Golem_Attack_02_A.OGG", SOUND_GOLEM_EFFECT, 1.0f);
 			Add_Effect2();
 			static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.1f);
 		}
@@ -592,6 +611,11 @@ void CAncient_StonGolem::Attack_Go(_double TimeDelta)
 
 		if (m_pModelCom->Get_AnimTimeAcc() >= 88.0 && m_pModelCom->Get_AnimTimeAcc() <= 89.0)
 		{
+			CSoundMgr::GetInstance()->StopSound(SOUND_GOLEM_VOICE);
+			CSoundMgr::GetInstance()->SoundPlay(L"VO_MON_Golem_Attack_01_A.ogg", SOUND_GOLEM_VOICE, 1.0f);
+			
+			CSoundMgr::GetInstance()->StopSound(SOUND_GOLEM_EFFECT);
+			CSoundMgr::GetInstance()->SoundPlay(L"MON_Golem_Attack_02_A.OGG", SOUND_GOLEM_EFFECT, 1.0f);
 			Add_Effect2();
 			static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.1f);
 		}
@@ -600,18 +624,28 @@ void CAncient_StonGolem::Attack_Go(_double TimeDelta)
 
 	if (m_PrevAnim == S_SKILL02 && m_AnimTimeAcc >= 30.5 && m_AnimTimeAcc <= 31.0) // 그리고 1번 애님 끝나면 바로 2번 실행 
 	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_GOLEM_VOICE);
+		CSoundMgr::GetInstance()->SoundPlay(L"VO_MON_Golem_Growl_01_A.ogg", SOUND_GOLEM_VOICE, 1.0f);
+		
 		Add_Projectile();
 	}
 
 	if (true == m_bAttack && m_PrevAnim == S_SKILL07)
 	{
-		if (m_pModelCom->Get_AnimTimeAcc() >= 10.0 && m_pModelCom->Get_AnimTimeAcc() <= 11.0)
+		if (m_pModelCom->Get_AnimTimeAcc() >= 10.5 && m_pModelCom->Get_AnimTimeAcc() <= 11.0)
 		{
+			CSoundMgr::GetInstance()->StopSound(SOUND_GOLEM_VOICE);
+			CSoundMgr::GetInstance()->SoundPlay(L"VO_MON_Golem_Attack_02_A.ogg", SOUND_GOLEM_VOICE, 1.0f);
+			
+			CSoundMgr::GetInstance()->StopSound(SOUND_GOLEM_EFFECT);
+			CSoundMgr::GetInstance()->SoundPlay(L"MON_Golem_Attack_01_B.OGG", SOUND_GOLEM_EFFECT, 1.0f);
 			static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 0.1f);
 		}
 
-		if (m_pModelCom->Get_AnimTimeAcc() >= 19.0 && m_pModelCom->Get_AnimTimeAcc() <= 20.0)
-		{
+		if (m_pModelCom->Get_AnimTimeAcc() >= 19.5 && m_pModelCom->Get_AnimTimeAcc() <= 20.0)
+		{			
+			CSoundMgr::GetInstance()->StopSound(SOUND_GOLEM_EFFECT);
+			CSoundMgr::GetInstance()->SoundPlay(L"MON_Golem_Attack_01_B.OGG", SOUND_GOLEM_EFFECT, 1.0f);
 			static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.3f, 0.1f);
 
 		}
@@ -622,25 +656,54 @@ void CAncient_StonGolem::Attack_Go(_double TimeDelta)
 
 		if (m_pModelCom->Get_AnimTimeAcc() >= 68.0 && m_pModelCom->Get_AnimTimeAcc() <= 69.0)
 		{
+			CSoundMgr::GetInstance()->StopSound(SOUND_GOLEM_VOICE);
+			CSoundMgr::GetInstance()->SoundPlay(L"VO_MON_Golem_Attack_02_A.ogg", SOUND_GOLEM_VOICE, 1.0f);
+			
+			CSoundMgr::GetInstance()->StopSound(SOUND_GOLEM_EFFECT);
+			CSoundMgr::GetInstance()->SoundPlay(L"MON_Golem_Attack_02_A.OGG", SOUND_GOLEM_EFFECT, 1.0f);
 			Add_Effect2();
 			static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.1f);
 		}
 
-		if (m_pModelCom->Get_AnimTimeAcc() >= 80.0 && m_pModelCom->Get_AnimTimeAcc() <= 82.0)
+		if (m_pModelCom->Get_AnimTimeAcc() >= 80.5 && m_pModelCom->Get_AnimTimeAcc() <= 82.0)
 		{
 			m_pTransformCom->Go_Straight(TimeDelta * 0.1);
 		}
 
-		if (m_pModelCom->Get_AnimTimeAcc() >= 107.0 && m_pModelCom->Get_AnimTimeAcc() <= 109.0)
+		if (m_pModelCom->Get_AnimTimeAcc() >= 108.0 && m_pModelCom->Get_AnimTimeAcc() <= 109.0)
 		{
+			CSoundMgr::GetInstance()->StopSound(SOUND_GOLEM_EFFECT);
+			CSoundMgr::GetInstance()->SoundPlay(L"MON_Golem_Attack_02_A.OGG", SOUND_GOLEM_EFFECT, 1.0f);
 			Add_Effect2();
 			static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.1f);
 			vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 		}
 	}
 
-	if (m_PrevAnim == S_SKILL09 && m_AnimTimeAcc >= 48.0 && m_AnimTimeAcc <= 49.0)
+	if (m_PrevAnim == S_SKILL09 && m_AnimTimeAcc >= 48.5 && m_AnimTimeAcc <= 49.0)
+	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_GOLEM_VOICE);
+		CSoundMgr::GetInstance()->SoundPlay(L"VO_MON_Golem_Attack_02_A.ogg", SOUND_GOLEM_VOICE, 1.0f);
+
+		CSoundMgr::GetInstance()->StopSound(SOUND_GOLEM_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"MON_Golem_Attack_02_A.OGG", SOUND_GOLEM_EFFECT, 1.0f);
+
 		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.1f);
+	}
+
+	if (m_CurrAnim == S_SKILL04_2 && m_AnimTimeAcc >= 53.0 && m_AnimTimeAcc <= 54.0)
+	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_GOLEM_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"MON_Golem_Jump_01_A.ogg", SOUND_GOLEM_EFFECT, 1.0f);
+		m_bjump = true;
+	}
+
+	if (m_CurrAnim == S_RE_SKILL04_2 && m_AnimTimeAcc >= 53.0 && m_AnimTimeAcc <= 54.0)
+	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_GOLEM_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"MON_Golem_Jump_01_A.ogg", SOUND_GOLEM_EFFECT, 1.0f);
+		m_bjump = true;
+	}
 
 	//if (m_PrevAnim == S_SKILL04_1 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 10.0)//true == m_pModelCom->Get_AnimFinished())
 	//{
@@ -711,8 +774,12 @@ void CAncient_StonGolem::Set_Skill04(_double TimeDelta)
 	{
 		m_CurrAnim = S_SKILL04_2;
 
-		if (m_pModelCom->Get_AnimTimeAcc() == (m_pModelCom->Get_AnimDuration() / 2))
+		if (m_CurrAnim == S_SKILL04_1 && m_AnimTimeAcc >= 53.0 && m_AnimTimeAcc <= 54.0)
+		{
+			CSoundMgr::GetInstance()->StopSound(SOUND_GOLEM_EFFECT);
+			CSoundMgr::GetInstance()->SoundPlay(L"MON_Golem_Jump_01_A.ogg", SOUND_GOLEM_EFFECT, 1.0f);
 			m_bjump = true;
+		}
 		
 	}
 

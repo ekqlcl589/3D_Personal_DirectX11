@@ -36,6 +36,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	// TODO: 여기에 코드를 입력합니다.
 	CMainApp*			pMainApp = nullptr;
+#ifdef _DEBUG
+	ShowCursor(true);
+#else
+	ShowCursor(false);
+#endif
 
 	// 전역 문자열을 초기화합니다.
 	LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
@@ -120,7 +125,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 	wcex.cbWndExtra = 0;
 	wcex.hInstance = hInstance;
 	wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_CLIENT));
-	wcex.hCursor = LoadCursor(nullptr, IDC_NO);
+	wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
 	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 	wcex.lpszMenuName = nullptr;
 	wcex.lpszClassName = szWindowClass;

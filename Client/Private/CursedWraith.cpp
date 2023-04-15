@@ -303,6 +303,12 @@ void CCursedWraith::Animation_State(_double TimeDelta)
 		m_tInfo._Hp = 1.f;
 		m_tInfo.CurrAnim = CW_DIE;
 
+		if (m_tInfo.PrevAnim == CW_DIE && m_AnimTimeAcc >= 1.0 && m_AnimTimeAcc <= 1.0)
+		{
+			CSoundMgr::GetInstance()->StopSound(SOUND_CURSEDWRAITH_VOICE);
+			CSoundMgr::GetInstance()->SoundPlay(L"BV_Dead.wav", SOUND_CURSEDWRAITH_VOICE, 1.0f);
+		}
+
 		if (m_tInfo.PrevAnim == CW_DIE && true == m_pModelCom->Get_AnimFinished())
 		{
 			m_tInfo._Hp = 0.f;
@@ -455,6 +461,9 @@ void CCursedWraith::Skill01(_double TimeDelta)
 
 	if (m_tInfo.PrevAnim == CW_SKILL_01 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 9.0 && m_AnimTimeAcc <= (m_AnimDuration / 2) + 10.0)
 	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_CURSEDWRAITH_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"VO_MON_Wraith_Shout_01_A.ogg", SOUND_CURSEDWRAITH_EFFECT, 1.0f);
+
 		for (_uint i = 0; i < 8; i++)
 		{
 			CBlackBall::BALLDESC BallDesc;
@@ -509,6 +518,8 @@ void CCursedWraith::Skill02(_double TimeDelta)
 
 	if (m_tInfo.PrevAnim == CW_SKILL_02 && m_AnimTimeAcc >= m_AnimDuration / 2 && m_AnimTimeAcc <= (m_AnimDuration / 2) + 1.0)
 	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_CURSEDWRAITH_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"VO_MON_Wraith_Shout_01_B.ogg", SOUND_CURSEDWRAITH_EFFECT, 1.0f);
 		for (_uint i = 0; i < 3; i++)
 		{
 			CBlackBall::BALLDESC BallDesc;
@@ -557,6 +568,9 @@ void CCursedWraith::Skill03(_double TimeDelta)
 
 	if (m_tInfo.PrevAnim == CW_SKILL_03 && m_AnimTimeAcc >= 145.0)
 	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_CURSEDWRAITH_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"VO_MON_Wraith_Common_01_A.ogg", SOUND_CURSEDWRAITH_EFFECT, 1.0f);
+		
 		CBlackBall::BALLDESC BallDesc;
 		ZeroMemory(&BallDesc, sizeof(CBlackBall::BALLDESC));
 
@@ -589,6 +603,9 @@ void CCursedWraith::Summons()
 
 	if (m_tInfo.PrevAnim == CW_SKILL_04 && m_AnimTimeAcc >= 145.0)
 	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_CURSEDWRAITH_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"VO_MON_Wraith_Common_01_G-2.ogg", SOUND_CURSEDWRAITH_EFFECT, 1.0f);
+		
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
 		CGameObject* pMonster = nullptr;
@@ -613,6 +630,9 @@ HRESULT CCursedWraith::SummonsEffectMonster()
 
 	if (m_tInfo.PrevAnim == CW_SKILL_07 && m_AnimTimeAcc >= 98.5 && m_AnimTimeAcc <= 99.0)
 	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_CURSEDWRAITH_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"VO_MON_Wraith_Shout_02_C-2.ogg", SOUND_CURSEDWRAITH_EFFECT, 1.0f);
+		
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
 		if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY2, TEXT("Prototype_GameObject_Monster_Effect_Monster"), TEXT("Effect_Monster"), &m_pTransformCom->Get_State(CTransform::STATE_POSITION))))

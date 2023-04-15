@@ -16,8 +16,10 @@ CGamePlay2::CGamePlay2(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 
 HRESULT CGamePlay2::Initialize()
 {
-	//if (FAILED(Ready_Light()))
-	//	return E_FAIL;
+	CSoundMgr::GetInstance()->PlayBGM(L"BGM_PVE_002.OGG", 0.4f);
+	
+	if (FAILED(Ready_Light()))
+		return E_FAIL;
 
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_Terrain"))))
 		return E_FAIL;

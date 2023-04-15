@@ -13,7 +13,7 @@ HRESULT CLogo::Initialize()
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
 
-	CSoundMgr::GetInstance()->PlayBGM(L"BGM_IntroCinematic_01_A.OGG", 1.f);
+	//CSoundMgr::GetInstance()->PlayBGM(L"BGM_IntroCinematic_01_A.OGG", 1.f);
 
 	return S_OK;
 }

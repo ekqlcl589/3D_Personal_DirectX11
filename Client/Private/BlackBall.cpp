@@ -145,7 +145,7 @@ void CBlackBall::Tick(_double TimeDelta)
 		if (m_BallDesc.eType == TYPE_DDEBASI)
 		{	
 
-			m_pTransformCom->Go_Straight(TimeDelta * 3.f);
+			m_pTransformCom->Go_Straight(TimeDelta * 4.f);
 
 			CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 			CGameObject* pCamera = pInstance->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Camera"));

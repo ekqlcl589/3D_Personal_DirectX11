@@ -99,8 +99,8 @@ HRESULT CGameInstance::Tick_Engine(_double TimeDelta)
 		m_pCollision_Mgr->Check_Collision(OBJ_PLAYER, OBJ_NO_COLL);
 		m_pCollision_Mgr->Check_Collision(OBJ_PLAYER, OBJ_MONSTER_BLADE);
 
-		m_pCollision_Mgr->Check_Collision(OBJ_BOSS1, OBJ_PLAYER_RAGESKILL);
-		m_pCollision_Mgr->Check_Collision(OBJ_BOSS2, OBJ_PLAYER_RAGESKILL);
+		//m_pCollision_Mgr->Check_Collision(OBJ_BOSS1, OBJ_PLAYER_RAGESKILL);
+		//m_pCollision_Mgr->Check_Collision(OBJ_BOSS2, OBJ_PLAYER_RAGESKILL);
 
 		m_pCollision_Mgr->Check_Collision(OBJ_BOSS1, OBJ_WEAPON_KARMA14); // 칼, Cursed 충돌
 		m_pCollision_Mgr->Check_Collision(OBJ_BOSS2, OBJ_WEAPON_KARMA14); //칼, Grudge 충돌 인데 왜 터지냐 시발
