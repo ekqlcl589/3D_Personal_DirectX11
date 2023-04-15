@@ -654,6 +654,7 @@ void CGrudgeWraith::Hit(const _int & _Damage)
 	//m_bAttack = false;
 }
 
+
 void CGrudgeWraith::Skill01(_double TimeDelta)
 {
 	if (m_bSkill1)
@@ -708,6 +709,9 @@ void CGrudgeWraith::Skill02(_double TimeDelta)
 
 	if (m_tInfo.PrevAnim == G_Skill02_3 && m_AnimTimeAcc >= 5.0 && m_AnimTimeAcc <= 5.5)
 	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_GRUDGEWRAITH_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"VO_MON_Wraith_Common_02_B.ogg", SOUND_GRUDGEWRAITH_EFFECT, 1.0f);
+		
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 		CGameObject* pCamera = pInstance->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Camera"));
 
@@ -778,6 +782,9 @@ void CGrudgeWraith::Skill05(_double TimeDelta)
 
 	if (m_tInfo.PrevAnim == G_Skill05_1 && m_AnimTimeAcc >= 42.0 && m_AnimTimeAcc <= 43.0)
 	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_GRUDGEWRAITH_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"VO_MON_Wraith_Common_02_B.ogg", SOUND_GRUDGEWRAITH_EFFECT, 1.0f);
+		
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
 		CGameObject* pBlade = nullptr;
