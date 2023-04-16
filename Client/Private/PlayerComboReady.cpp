@@ -100,6 +100,7 @@ HRESULT CPlayerComboReady::Render()
 	for (_uint i = 0; i < iNumMeshes; i++)
 	{
 		m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
+		m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_DepthTexture", i, aiTextureType_DIFFUSE);
 		//m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_NoiseTexture", i, aiTextureType_NORMALS);
 		/*m_pModelCom->SetUp_ShaderMaterialResource(m_pShaderCom, "g_AmbientTexture", i, aiTextureType_AMBIENT);*/
 
@@ -155,7 +156,7 @@ HRESULT CPlayerComboReady::Add_Components()
 			return E_FAIL;
 	}
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModel"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModel_Effect"),
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
@@ -182,6 +183,11 @@ HRESULT CPlayerComboReady::SetUp_ShaderResources()
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
+
+	_float fDissolveAmount = 0.f;
+
+	if (FAILED(m_pShaderCom->Set_RawValue("g_fDissolveAmount", &fDissolveAmount, sizeof(float))))
+		return E_FAIL;
 
 	return S_OK;
 }

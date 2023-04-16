@@ -847,6 +847,7 @@ void CGrudgeWraith::Skill07(_double TimeDelta)
 
 }
 
+
 HRESULT CGrudgeWraith::Add_Components()
 {
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"),

@@ -913,7 +913,6 @@ void CTSPlayer::Attack_Special2(_double TimeDelta)
 
 	if (true == m_AttackCheck)
 	{
-		CSoundMgr::GetInstance()->SoundPlay(L"CHR_TSword_Slash_01_F.OGG", SOUND_PLAYER_EFFECT, 1.0f);
 		m_bAttackState = true;
 		if (m_tInfo.CurrAnim == TS_BASIC_COMBO01 && true != m_pModelCom->Get_AnimFinished())
 		{
@@ -1011,6 +1010,15 @@ void CTSPlayer::Attack_Go(_double TimeDelta)
 		WeaponBoneUpdate();
 	}
 
+	if (m_tInfo.CurrAnim == TS_BASIC_COMBO02_LOOP)
+	{
+		if (m_AnimTimeAcc >= 5.0 && m_AnimTimeAcc <= 6.0)
+		{
+			CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_EFFECT);
+			CSoundMgr::GetInstance()->SoundPlay(L"CHR_TSword_Slash_01_F.OGG", SOUND_PLAYER_EFFECT, 0.3f);
+
+		}
+	}
 	if (m_tInfo.CurrAnim == TS_BASIC_COMBO02_END)
 	{
 		if (m_pModelCom->Get_AnimTimeAcc() >= 8.0 && m_pModelCom->Get_AnimTimeAcc() <= 10.0)

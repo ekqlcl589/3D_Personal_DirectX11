@@ -63,8 +63,8 @@ void CPlayer_Rage_Arma::Tick(_double TimeDelta)
 	else
 		m_fDissolveTime = 6.f;
 
-	//if(!m_bActive && !m_bRage)
-	//	m_fDissolveTime = 6.f;
+	if(m_bRage)
+		fDissolveAmount = 0.f;
 
 	RELEASE_INSTANCE(CLevel_Mgr);
 	RELEASE_INSTANCE(CGameInstance);
