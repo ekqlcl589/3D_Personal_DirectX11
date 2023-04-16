@@ -607,6 +607,12 @@ void CGrudgeWraith::Attack_Go(_double TimeDelta)
 		m_pTransformCom->Go_Straight(0.3 * TimeDelta);
 	}
 
+	if (m_tInfo.PrevAnim == G_Skill01_1 && m_AnimTimeAcc >= 47.0 && m_AnimTimeAcc <= 48.0)
+	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_GRUDGEWRAITH_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"MON_DarkKnight_Sword_Attack_01_A.ogg", SOUND_GRUDGEWRAITH_EFFECT, 1.0f);
+		//1Ÿ
+	}
 	if (m_tInfo.PrevAnim == G_Skill01_1 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 1.5)
 		vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
@@ -616,11 +622,26 @@ void CGrudgeWraith::Attack_Go(_double TimeDelta)
 
 	}
 
+	if (m_tInfo.PrevAnim == G_Skill01_1 && m_AnimTimeAcc >= 74.0 && m_AnimTimeAcc <= 75.0)
+	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_GRUDGEWRAITH_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"MON_DarkKnight_Sword_Attack_01_B.ogg", SOUND_GRUDGEWRAITH_EFFECT, 1.0f);
+		//2Ÿ
+	}
+
 	if (m_tInfo.PrevAnim == G_Skill01_1 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 31.0)
 		vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
 	if(m_tInfo.PrevAnim == G_Skill01_3 && m_AnimTimeAcc >= 19.0)
 		m_pTransformCom->Go_Straight(0.5 * TimeDelta);
+
+	if (m_tInfo.PrevAnim == G_Skill01_2 && m_AnimTimeAcc >= 13.0 && m_AnimTimeAcc <= 14.0)
+	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_GRUDGEWRAITH_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"MON_DarkKnight_Sword_Attack_02_A.ogg", SOUND_GRUDGEWRAITH_EFFECT, 1.0f);
+		//3Ÿ
+
+	}
 
 	if (m_tInfo.PrevAnim == G_Skill01_3 && m_AnimTimeAcc >= 40.0)
 		vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
@@ -697,6 +718,13 @@ void CGrudgeWraith::Skill02(_double TimeDelta)
 		Add_Particle();
 	}
 
+	if (m_tInfo.PrevAnim == G_Skill02_1 && m_AnimTimeAcc >= 19.0 && m_AnimTimeAcc <= 20.0)
+	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_GRUDGEWRAITH_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"VO_MON_Wraith_Common_02_B.ogg", SOUND_GRUDGEWRAITH_EFFECT, 1.0f);
+
+	}
+
 	if (m_tInfo.PrevAnim == G_Skill02_1 && m_AnimTimeAcc >= (m_AnimDuration / 2) + 19.0)
 	{
 		m_tInfo.CurrAnim = G_Skill02_2;
@@ -710,8 +738,8 @@ void CGrudgeWraith::Skill02(_double TimeDelta)
 	if (m_tInfo.PrevAnim == G_Skill02_3 && m_AnimTimeAcc >= 5.0 && m_AnimTimeAcc <= 5.5)
 	{
 		CSoundMgr::GetInstance()->StopSound(SOUND_GRUDGEWRAITH_EFFECT);
-		CSoundMgr::GetInstance()->SoundPlay(L"VO_MON_Wraith_Common_02_B.ogg", SOUND_GRUDGEWRAITH_EFFECT, 1.0f);
-		
+		CSoundMgr::GetInstance()->SoundPlay(L"MON_DarkKnight_Sword_Attack_02_A.ogg", SOUND_GRUDGEWRAITH_EFFECT, 1.0f);
+
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 		CGameObject* pCamera = pInstance->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Camera"));
 
@@ -780,10 +808,16 @@ void CGrudgeWraith::Skill05(_double TimeDelta)
 		m_bGod = true;
 	}
 
+	if (m_tInfo.PrevAnim == G_Skill05_1 && m_AnimTimeAcc >= 17.0 && m_AnimTimeAcc <= 18.0)
+	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_GRUDGEWRAITH_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"MON_DarkKnight_Sword_Charge_01_A.ogg", SOUND_GRUDGEWRAITH_EFFECT, 1.0f);
+
+	}
 	if (m_tInfo.PrevAnim == G_Skill05_1 && m_AnimTimeAcc >= 42.0 && m_AnimTimeAcc <= 43.0)
 	{
 		CSoundMgr::GetInstance()->StopSound(SOUND_GRUDGEWRAITH_EFFECT);
-		CSoundMgr::GetInstance()->SoundPlay(L"VO_MON_Wraith_Common_02_B.ogg", SOUND_GRUDGEWRAITH_EFFECT, 1.0f);
+		CSoundMgr::GetInstance()->SoundPlay(L"MON_DarkKnight_Sword_Combo_Attack_01_A.ogg", SOUND_GRUDGEWRAITH_EFFECT, 1.0f);
 		
 		CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 

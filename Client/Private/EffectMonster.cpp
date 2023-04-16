@@ -77,6 +77,12 @@ void CEffectMonster::Tick(_double TimeDelta)
 			}
 		}
 
+		if (m_pModelCom->Get_AnimTimeAcc() >= 31.0 && m_pModelCom->Get_AnimTimeAcc() <= 32.0)
+		{
+			CSoundMgr::GetInstance()->StopSound(SOUND_CURSEDWRAITH_EFFECT);
+			CSoundMgr::GetInstance()->SoundPlay(L"MON_CHAOS_Attack_01_A.ogg", SOUND_CURSEDWRAITH_EFFECT, 1.0f);
+
+		}
 
 		if (true == m_pModelCom->Get_AnimFinished())
 		{

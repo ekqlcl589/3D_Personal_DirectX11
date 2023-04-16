@@ -42,7 +42,7 @@ HRESULT CAncient_StonGolem::Initialize(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat3(&fPosition));
 
 	m_eType._MaxHp = 1000.f;
-	m_eType._Hp = 10.f;
+	m_eType._Hp = 1000.f;
 
 	m_f = m_pModelCom->Get_AnimTick();
 
@@ -376,6 +376,20 @@ void CAncient_StonGolem::Use_Skill(_double TimeDelta)
 
 void CAncient_StonGolem::Combat_Wait(_double TimeDelta)
 {
+	if (m_PrevAnim == S_RUN && m_AnimTimeAcc >= 41.0 && m_AnimTimeAcc <= 42.0)// || m_AnimTimeAcc >= 79.0)
+	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_GOLEM_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"FST_MON_Golem_Walk_Stone_01_A.ogg", SOUND_GOLEM_EFFECT, 1.0f);
+
+	}
+
+	if (m_PrevAnim == S_RUN && m_AnimTimeAcc >= 79.0)// && m_AnimTimeAcc <= 42.0)// || m_AnimTimeAcc >= 79.0)
+	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_GOLEM_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"FST_MON_Golem_Walk_Stone_01_A.ogg", SOUND_GOLEM_EFFECT, 1.0f);
+
+	}
+
 	if (m_PrevAnim == S_SKILL01 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 67.0) // 그리고 1번 애님 끝나면 바로 2번 실행 
 	{
 		m_CurrAnim = S_WAIT;
@@ -726,8 +740,7 @@ void CAncient_StonGolem::Run(_double TimeDelta)
 		{
 			m_bRun = true;
 			m_CurrAnim = S_RUN; // 여기
-			if(!m_bjump)
-				m_pTransformCom->Chase_Tatget(m_vTargetPos, 5.f, TimeDelta);
+			m_pTransformCom->Chase_Tatget(m_vTargetPos, 5.f, TimeDelta);
 		}
 		if (m_pTransformCom->Compute_Distance(m_vTargetPos) <= 5.f)
 		{

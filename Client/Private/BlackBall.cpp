@@ -90,6 +90,9 @@ HRESULT CBlackBall::Initialize(void * pArg)
 			TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 			return E_FAIL;
 
+		CSoundMgr::GetInstance()->StopSound(SOUND_MONSTER_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"EFF_MON_Attack_DarkMagic_03_A.ogg", SOUND_MONSTER_EFFECT, 0.5f);
+
 	}
 
 
@@ -248,8 +251,17 @@ void CBlackBall::EnterCollision(CGameObject * pObj)
 	switch (eType)
 	{
 	case Engine::OBJ_PLAYER:
-		Dead = true;
+	{
+		if (m_BallDesc.eType == TYPE_DDEBASI)
+		{
+			CSoundMgr::GetInstance()->StopSound(SOUND_MONSTER_EFFECT);
+			CSoundMgr::GetInstance()->SoundPlay(L"EFF_MON_Big_Fireball_01_A.ogg", SOUND_MONSTER_EFFECT, 0.5f);
+		}
+		
+		Set_Dead();
+
 		break;
+	}
 	case Engine::OBJ_WEAPON_SS:
 		break;
 	case Engine::OBJ_WEAPON_SS1:

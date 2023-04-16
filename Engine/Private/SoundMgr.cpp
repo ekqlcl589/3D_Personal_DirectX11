@@ -39,7 +39,12 @@ void CSoundMgr::SoundPlay(wstring pSoundKey, CHANNELID eID, float fVolume)
 	});
 
 	if (iter == m_mapSound.end())
+	{
+		_tchar text[MAX_PATH] = TEXT("No Sound : ");
+		lstrcat(text, pSoundKey.c_str());
+		MessageBox(NULL, text, L"System Message", MB_OK);
 		return;
+	}
 
 	_bool bPlay = FALSE;
 

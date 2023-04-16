@@ -1261,6 +1261,25 @@ void CTSPlayer::CombatWait()
 	else if (L->Get_LevelIndex() == LEVEL_GAMEPLAY2)
 		pMonster = p->Find_GameObject(LEVEL_GAMEPLAY2, TEXT("Layer_Camera"));
 
+	if (m_tInfo.PrevAnim == TS_RUN_END && m_AnimTimeAcc >= 1.5 && m_AnimTimeAcc <= 2.0)
+	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER);
+		CSoundMgr::GetInstance()->SoundPlay(L"FST_CHR_Run_Heel_Stone_01_D.OGG", SOUND_PLAYER, 1.0f);
+
+	}
+	if (m_tInfo.PrevAnim == TS_RUN_END && m_AnimTimeAcc >= 15.5 && m_AnimTimeAcc <= 16.0)
+	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER);
+		CSoundMgr::GetInstance()->SoundPlay(L"FST_CHR_Run_Heel_Stone_01_D.OGG", SOUND_PLAYER, 1.0f);
+
+	}
+	//if (m_tInfo.PrevAnim == TS_RUN_END && m_AnimTimeAcc >= 29.5)
+	//{
+	//	CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER);
+	//	CSoundMgr::GetInstance()->SoundPlay(L"FST_CHR_Run_Heel_Stone_01_D.OGG", SOUND_PLAYER, 1.0f);
+	//
+	//}
+
 	if (m_tInfo.PrevAnim == TS_BASIC_COMBO01 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 19.0)
 	{
 		m_AttackCheck = false;
@@ -1289,6 +1308,9 @@ void CTSPlayer::CombatWait()
 			CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_VOICE);
 			CSoundMgr::GetInstance()->SoundPlay(L"Voice_HM_W_A_E_Attack_Long_02_A_KR.ogg", SOUND_PLAYER_VOICE, 1.0f);
 			
+			CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_EFFECT);
+			CSoundMgr::GetInstance()->SoundPlay(L"CHR_TSword_Energy_02_A.ogg", SOUND_PLAYER_EFFECT, 1.0f);
+
 			CPlayerComboReady::READYEFFECT eType;
 			eType.eType = CPlayerComboReady::TYPE_1;
 			eType.vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
@@ -1317,6 +1339,9 @@ void CTSPlayer::CombatWait()
 	{
 		if (m_isParticleOn)
 		{
+			CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_EFFECT);
+			CSoundMgr::GetInstance()->SoundPlay(L"CHR_TSword_Energy_03_A.ogg", SOUND_PLAYER_EFFECT, 1.0f);
+			
 			CPlayerComboReady::READYEFFECT eType;
 			eType.eType = CPlayerComboReady::TYPE_3;
 			eType.vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
