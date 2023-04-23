@@ -13,14 +13,14 @@ CNavigation::CNavigation(const CNavigation & rhs)
 	: CComponent(rhs)
 	, m_Cells(rhs.m_Cells)
 #ifdef _DEBUG
-	, m_pShader(rhs.m_pShader)
+	//, m_pShader(rhs.m_pShader)
 #endif // _DEBUG
 {
 	for (auto& pCell : m_Cells)
 		Safe_AddRef(pCell);
 
 #ifdef _DEBUG
-	Safe_AddRef(m_pShader);
+	//Safe_AddRef(m_pShader);
 #endif // _DEBUG
 }
 
@@ -54,9 +54,9 @@ HRESULT CNavigation::Initialize_Prototype(const _tchar * pNavigationDataFilePath
 
 
 #ifdef _DEBUG
-	m_pShader = CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Cell.hlsl"), VTXPOS_DECLARATION::Elements, VTXPOS_DECLARATION::iNumElements);
-	if (nullptr == m_pShader)
-		return E_FAIL;
+	//m_pShader = CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Cell.hlsl"), VTXPOS_DECLARATION::Elements, VTXPOS_DECLARATION::iNumElements);
+	//if (nullptr == m_pShader)
+	//	return E_FAIL;
 #endif // _DEBUG
 
 	return S_OK;
@@ -71,79 +71,79 @@ HRESULT CNavigation::Initialize(void * pArg)
 }
 
 #ifdef _DEBUG
-_bool CNavigation::Move_OnNavigation(_fvector vPosition)
-{
-	if (-1 == m_NaviDesc.iCurrentIndex)
-		return false;
-
-	_int		iNeighborIndex = -1;
-
-	if (true == m_Cells[m_NaviDesc.iCurrentIndex]->isIn(vPosition, &iNeighborIndex))
-		return true;
-	else /* 움직이고 난 결과위치가 셀 밖으로 나갔다. */
-	{
-		// if (나간 선분을 공유하는  이웃이 있다면.)
-		if (-1 != iNeighborIndex)
-		{
-			while (true)
-			{
-				if (-1 == iNeighborIndex)
-				{
-					return false;
-				}
-
-				if (true == m_Cells[iNeighborIndex]->isIn(vPosition, &iNeighborIndex))
-					break;
-				
-			}
-
-			m_NaviDesc.iCurrentIndex = iNeighborIndex;
-			return true;
-		}	
-		else
-			return false;
-	}
-}
-HRESULT CNavigation::Render()
-{
-	_float4x4		Identity;
-	
-
-	CPipeLine*	pPipeLine = GET_INSTANCE(CPipeLine);
-
-	
-	if (FAILED(m_pShader->Set_Matrix("g_ViewMatrix", &pPipeLine->Get_Transformfloat4x4(CPipeLine::TS_VIEW))))
-		return E_FAIL;
-	if (FAILED(m_pShader->Set_Matrix("g_ProjMatrix", &pPipeLine->Get_Transformfloat4x4(CPipeLine::TS_PROJ))))
-		return E_FAIL;
-
-	RELEASE_INSTANCE(CPipeLine);
-
-	if (-1 == m_NaviDesc.iCurrentIndex)
-	{
-		XMStoreFloat4x4(&Identity, XMMatrixIdentity());
-		if (FAILED(m_pShader->Set_Matrix("g_WorldMatrix", &Identity)))
-			return E_FAIL;
-
-		for (auto& pCell : m_Cells)
-		{
-			if (nullptr != pCell)
-				pCell->Render(m_pShader, _float4(0.f, 1.f, 0.f, 1.f));
-		}
-	}
-	else
-	{
-		XMStoreFloat4x4(&Identity, XMMatrixIdentity());
-		Identity._42 = 0.1f;
-		if (FAILED(m_pShader->Set_Matrix("g_WorldMatrix", &Identity)))
-			return E_FAIL;
-
-		m_Cells[m_NaviDesc.iCurrentIndex]->Render(m_pShader, _float4(1.f, 0.f, 0.f, 1.f));
-
-	}
-
-	return S_OK;
-}
+//_bool CNavigation::Move_OnNavigation(_fvector vPosition)
+//{
+//	if (-1 == m_NaviDesc.iCurrentIndex)
+//		return false;
+//
+//	_int		iNeighborIndex = -1;
+//
+//	if (true == m_Cells[m_NaviDesc.iCurrentIndex]->isIn(vPosition, &iNeighborIndex))
+//		return true;
+//	else /* 움직이고 난 결과위치가 셀 밖으로 나갔다. */
+//	{
+//		// if (나간 선분을 공유하는  이웃이 있다면.)
+//		if (-1 != iNeighborIndex)
+//		{
+//			while (true)
+//			{
+//				if (-1 == iNeighborIndex)
+//				{
+//					return false;
+//				}
+//
+//				if (true == m_Cells[iNeighborIndex]->isIn(vPosition, &iNeighborIndex))
+//					break;
+//				
+//			}
+//
+//			m_NaviDesc.iCurrentIndex = iNeighborIndex;
+//			return true;
+//		}	
+//		else
+//			return false;
+//	}
+//}
+//HRESULT CNavigation::Render()
+//{
+//	_float4x4		Identity;
+//	
+//
+//	CPipeLine*	pPipeLine = GET_INSTANCE(CPipeLine);
+//
+//	
+//	if (FAILED(m_pShader->Set_Matrix("g_ViewMatrix", &pPipeLine->Get_Transformfloat4x4(CPipeLine::TS_VIEW))))
+//		return E_FAIL;
+//	if (FAILED(m_pShader->Set_Matrix("g_ProjMatrix", &pPipeLine->Get_Transformfloat4x4(CPipeLine::TS_PROJ))))
+//		return E_FAIL;
+//
+//	RELEASE_INSTANCE(CPipeLine);
+//
+//	if (-1 == m_NaviDesc.iCurrentIndex)
+//	{
+//		XMStoreFloat4x4(&Identity, XMMatrixIdentity());
+//		if (FAILED(m_pShader->Set_Matrix("g_WorldMatrix", &Identity)))
+//			return E_FAIL;
+//
+//		for (auto& pCell : m_Cells)
+//		{
+//			if (nullptr != pCell)
+//				pCell->Render(m_pShader, _float4(0.f, 1.f, 0.f, 1.f));
+//		}
+//	}
+//	else
+//	{
+//		XMStoreFloat4x4(&Identity, XMMatrixIdentity());
+//		Identity._42 = 0.1f;
+//		if (FAILED(m_pShader->Set_Matrix("g_WorldMatrix", &Identity)))
+//			return E_FAIL;
+//
+//		m_Cells[m_NaviDesc.iCurrentIndex]->Render(m_pShader, _float4(1.f, 0.f, 0.f, 1.f));
+//
+//	}
+//
+//	return S_OK;
+//}
 #endif // _DEBUG
 
 HRESULT CNavigation::SetUp_Neighbor()
@@ -210,6 +210,6 @@ void CNavigation::Free()
 		Safe_Release(pCell);
 
 #ifdef _DEBUG
-	Safe_Release(m_pShader);
+	//Safe_Release(m_pShader);
 #endif // _DEBUG
 }

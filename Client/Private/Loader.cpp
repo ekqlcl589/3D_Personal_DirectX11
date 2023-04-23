@@ -91,6 +91,10 @@ unsigned int APIENTRY ThreadEntry(void* pArg) //전역함수는 지역함수의 변수를 받�
 		pLoader->Loading_ForLogo();
 		break;
 
+	case LEVEL_LOBBY:
+		pLoader->Loading_ForLobby();
+		break;
+
 	case LEVEL_GAMEPLAY:
 		pLoader->Loading_ForGamePlay();
 		break;
@@ -159,6 +163,89 @@ HRESULT CLoader::Loading_ForLogo()
 	m_isFinished = true;
 
 	Safe_Release(pGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_ForLobby()
+{
+	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOBBY, TEXT("Prototype_Component_Texture_HPBar0"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/GUI_Common_gauge_Fill_01_White_ver2.png")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOBBY, TEXT("Prototype_Component_Texture_MPBar0"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/GUI_Common_gauge_Fill_01_Blue_ver2.png")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOBBY, TEXT("Prototype_Component_Texture_RageSkill0"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/GUI_Slot_Big_RageSkill_ver2.png")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOBBY, TEXT("Prototype_Component_Texture_Skill0"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/GUI_Slot_Skill_ver2.png")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOBBY, TEXT("Prototype_Component_Texture_Round0"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/GUI_Round_BG_ver2.png")))))
+		return E_FAIL;
+
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOBBY, TEXT("Prototype_Component_Texture_ESkill0"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/SkillIcon/Icon_NormalSkill_TS_OutRage.png")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOBBY, TEXT("Prototype_Component_Texture_RSkill0"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/SkillIcon/Icon_NormalSkill_TS_RockBreak.png")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOBBY, TEXT("Prototype_Component_Texture_FSkill0"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/SkillIcon/Icon_RageSkill_TS_ArmageddonBlade.png")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOBBY, TEXT("Prototype_Component_Texture_Rage_Skill0"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/SkillIcon/Icon_RageSkill_TS_DoubleSlash.png")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Sky */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOBBY, TEXT("Prototype_Component_Texture_Sky0"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/SkyBox/TrainigRoom.dds"), 4))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOBBY, TEXT("Prototype_Component_Texture_Particle0"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Particle/flare.png")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOBBY, TEXT("Prototype_Component_Texture_Player_Particle0"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Particle/flare1.png")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOBBY, TEXT("Prototype_Component_Texture_Player_Particle20"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Particle/flare2.png")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOBBY, TEXT("Prototype_Component_Texture_Noise0"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/Dissolve0.png")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOBBY, TEXT("Prototype_Component_VIBuffer_Cube0"),
+		CVIBuffer_Cube::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOBBY, TEXT("Prototype_Component_VIBuffer_Point_Instance0"),
+		CVIBuffer_Point_Instance::Create(m_pDevice, m_pContext, 15.f, 6.f, 15.f, 3.f, 10.f, 100))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOBBY, TEXT("Prototype_Component_VIBuffer_Point_Instance_Up0"),
+		CVIBuffer_Point_Instance::Create(m_pDevice, m_pContext, 3.f, 1.f, 3.f, 3.f, 10.f, 100))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOBBY, TEXT("Prototype_Component_VIBuffer_Point_Instance_Rage0"),
+		CVIBuffer_Point_Instance::Create(m_pDevice, m_pContext, 1.f, 1.f, 1.f, 1.f, 1.f, 1, 7.f, 7.f))))
+		return E_FAIL;
+
+	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
 }
@@ -914,13 +1001,13 @@ HRESULT CLoader::Loading_ForGamePlay2()
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Weapon/SS/Shield.fbx", CModel::MODEL_NONANIM, LocalMatrix6))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Model_Weapon_TS"),
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Model_Weapon_TS1"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Weapon/TS/TS.fbx", CModel::MODEL_NONANIM, LocalMatrix6))))
 		return E_FAIL;
 
 	_matrix		LocalMatrix654 = XMMatrixIdentity();
 	LocalMatrix654 = XMMatrixScaling(0.01f, 0.01f, 0.01f)* XMMatrixRotationZ(XMConvertToRadians(-30.0f));
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Model_Weapon_TSWait"),
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Model_Weapon_TSWait1"),
 		CModel::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Player/Weapon/TS/TSWait.fbx", CModel::MODEL_NONANIM, LocalMatrix654))))
 		return E_FAIL;
 

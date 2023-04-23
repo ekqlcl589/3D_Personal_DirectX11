@@ -35,7 +35,7 @@ HRESULT CLoadingImg::Initialize(void * pArg)
 	m_fY = g_iWinSizeY >> 1;
 
 	XMStoreFloat4x4(&m_WorldMatrix,
-		XMMatrixScaling(m_fSizeX, m_fSizeY, 1.f) * XMMatrixTranslation(m_fX - g_iWinSizeX * 0.5f, -m_fY + g_iWinSizeY * 0.5f, 0.f));
+		XMMatrixScaling(m_fSizeX, m_fSizeY, 1.f));
 
 	XMStoreFloat4x4(&m_ViewMatrix,
 		XMMatrixIdentity());
@@ -114,7 +114,7 @@ HRESULT CLoadingImg::Add_Components()
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_LOADING, TEXT("Prototype_Component_Texture_Loading"),
+	if (FAILED(__super::Add_Component(LEVEL_LOGO, TEXT("Prototype_Component_Texture_BackGroud"),
 		TEXT("Com_Texture"), (CComponent**)&m_pTextureCom)))
 		return E_FAIL;
 

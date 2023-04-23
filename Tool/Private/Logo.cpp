@@ -19,9 +19,9 @@ HRESULT CLogo::Initialize()
 void CLogo::Tick(_double TimeDelta)
 {
 #ifdef _DEBUG
-	_tchar			szWindowText[MAX_PATH] = TEXT("");
-	lstrcpy(szWindowText, TEXT("Tool_Ready"));
-	SetWindowText(g_hWnd, szWindowText);
+	//_tchar			szWindowText[MAX_PATH] = TEXT("");
+	//lstrcpy(szWindowText, TEXT("Tool_Ready"));
+	//SetWindowText(g_hWnd, szWindowText);
 #endif
 
 	if (GetKeyState(VK_SPACE) & 0x8000)

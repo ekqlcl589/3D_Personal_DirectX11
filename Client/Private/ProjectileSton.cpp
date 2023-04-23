@@ -143,8 +143,8 @@ HRESULT CProjectileSton::Render()
 
 #ifdef _DEBUG
 
-	if (nullptr != m_pColliderCom)
-		m_pColliderCom->Render();
+	//if (nullptr != m_pColliderCom)
+	//	m_pColliderCom->Render();
 
 #endif
 
@@ -198,7 +198,12 @@ void CProjectileSton::EnterCollision(CGameObject * pObj)
 	switch (eType)
 	{
 	case Engine::OBJ_PLAYER:
+	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_MONSTER_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"EFF_MON_Common_Attack_01_B.ogg", SOUND_MONSTER_EFFECT, 1.0f);
+
 		Set_Dead();
+	}
 		break;
 	case Engine::OBJ_WEAPON_SS:
 		break;

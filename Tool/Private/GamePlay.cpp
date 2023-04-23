@@ -29,9 +29,9 @@ HRESULT CGamePlay::Initialize()
 void CGamePlay::Tick(_double TimeDelta)
 {
 #ifdef _DEBUG
-	_tchar			szWindowText[MAX_PATH] = TEXT("");
-	lstrcpy(szWindowText, TEXT("스테이지"));
-	SetWindowText(g_hWnd, szWindowText);
+	//_tchar			szWindowText[MAX_PATH] = TEXT("");
+	//lstrcpy(szWindowText, TEXT("스테이지"));
+	//SetWindowText(g_hWnd, szWindowText);
 #endif
 
 }

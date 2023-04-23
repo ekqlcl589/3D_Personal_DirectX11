@@ -28,9 +28,9 @@ HRESULT CCell::Initialize(const _float3 * pPoints, _int iIndex)
 
 
 #ifdef _DEBUG
-	m_pVIBuffer = CVIBuffer_Cell::Create(m_pDevice, m_pContext, m_vPoints);
-	if (nullptr == m_pVIBuffer)
-		return E_FAIL;
+	//m_pVIBuffer = CVIBuffer_Cell::Create(m_pDevice, m_pContext, m_vPoints);
+	//if (nullptr == m_pVIBuffer)
+	//	return E_FAIL;
 #endif // _DEBUG
 
 	return S_OK;
@@ -84,17 +84,17 @@ _bool CCell::isIn(_fvector vPosition, _int * pNeighborIndex)
 }
 
 #ifdef _DEBUG
-void CCell::Render(CShader* pShader, _float4 vColor)
-{
-	if (FAILED(pShader->Set_RawValue("g_vColor", &vColor, sizeof(_float4))))
-		return;
+//void CCell::Render(CShader* pShader, _float4 vColor)
+//{
+	//if (FAILED(pShader->Set_RawValue("g_vColor", &vColor, sizeof(_float4))))
+	//	return;
+	//
+	//pShader->Begin(0);
+	//
+	//m_pVIBuffer->Render();
 
-	pShader->Begin(0);
 
-	m_pVIBuffer->Render();
-
-
-}
+//}
 #endif // _DEBUG
 
 
@@ -120,7 +120,7 @@ void CCell::Free()
 
 #ifdef _DEBUG
 
-	Safe_Release(m_pVIBuffer);
+	//Safe_Release(m_pVIBuffer);
 #endif // _DEBUG
 
 }

@@ -50,8 +50,8 @@ HRESULT CWeapon::Render()
 
 #ifdef _DEBUG
 
-	if (nullptr != m_pColliderCom)
-		m_pColliderCom->Render();
+	//if (nullptr != m_pColliderCom)
+	//	m_pColliderCom->Render();
 
 #endif
 

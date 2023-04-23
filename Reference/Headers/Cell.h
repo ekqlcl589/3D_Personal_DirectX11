@@ -32,7 +32,7 @@ public:
 
 #ifdef _DEBUG
 public:
-	void Render(class CShader* pShader, _float4 vColor);
+	//void Render(class CShader* pShader, _float4 vColor);
 #endif // _DEBUG
 
 
@@ -49,7 +49,7 @@ private:
 
 #ifdef _DEBUG
 private:
-	class CVIBuffer_Cell*			m_pVIBuffer = nullptr;
+//	class CVIBuffer_Cell*			m_pVIBuffer = nullptr;
 #endif
 
 public:

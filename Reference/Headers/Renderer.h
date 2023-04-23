@@ -32,8 +32,8 @@ public:
 	
 #ifdef _DEBUG
 public:
-	HRESULT Add_DebugGroup(class CComponent* pComponent); // 객체에 추가되어 있는 컴포넌트들을 빛 연산을 하지 않고 그리기 위해 추가 
-	HRESULT Render_DebugGroup();
+	//HRESULT Add_DebugGroup(class CComponent* pComponent); // 객체에 추가되어 있는 컴포넌트들을 빛 연산을 하지 않고 그리기 위해 추가 
+	//HRESULT Render_DebugGroup();
 #endif // _DEBUG
 
 private:
@@ -42,7 +42,7 @@ private:
 
 #ifdef _DEBUG
 private:
-	list<class CComponent*> m_DebugRenderObjects;
+	//list<class CComponent*> m_DebugRenderObjects;
 #endif // _DEBUG
 
 private:

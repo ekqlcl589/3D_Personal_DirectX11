@@ -59,37 +59,37 @@ HRESULT CRenderTarget::Set_ShaderResourceView(CShader * pShader, const char * pC
 }
 
 #ifdef _DEBUG
-HRESULT CRenderTarget::Ready_Debug(_float fX, _float fY, _float fSizeX, _float fSizeY)
-{
-	m_fX = fX;
-	m_fY = fY;
-	m_fSizeX = fSizeX; 
-	m_fSizeY = fSizeY;
-
-	_uint		iNumViewport = 1;
-
-	D3D11_VIEWPORT		ViewportDesc;
-	m_pContext->RSGetViewports(&iNumViewport, &ViewportDesc);
-
-	XMStoreFloat4x4(&m_WorldMatrix,
-		XMMatrixScaling(m_fSizeX, m_fSizeY, 1.f) *
-		XMMatrixTranslation(m_fX - ViewportDesc.Width * 0.5f, -m_fY + ViewportDesc.Height * 0.5f, 0.f));
-
-	return S_OK;
-}
-HRESULT CRenderTarget::Render(CShader * pShader, CVIBuffer_Rect * pVIBuffer)
-{
-	if (FAILED(pShader->Set_Matrix("g_WorldMatrix", &m_WorldMatrix)))
-		return E_FAIL;
-
-	if (FAILED(pShader->Set_ShaderResourceView("g_DiffuseTexture", m_pSRV)))
-		return E_FAIL;
-
-	if (FAILED(pShader->Begin(0)))
-		return E_FAIL;
-
-	return pVIBuffer->Render();	
-}
+//HRESULT CRenderTarget::Ready_Debug(_float fX, _float fY, _float fSizeX, _float fSizeY)
+//{
+//	m_fX = fX;
+//	m_fY = fY;
+//	m_fSizeX = fSizeX; 
+//	m_fSizeY = fSizeY;
+//
+//	_uint		iNumViewport = 1;
+//
+//	D3D11_VIEWPORT		ViewportDesc;
+//	m_pContext->RSGetViewports(&iNumViewport, &ViewportDesc);
+//
+//	XMStoreFloat4x4(&m_WorldMatrix,
+//		XMMatrixScaling(m_fSizeX, m_fSizeY, 1.f) *
+//		XMMatrixTranslation(m_fX - ViewportDesc.Width * 0.5f, -m_fY + ViewportDesc.Height * 0.5f, 0.f));
+//
+//	return S_OK;
+//}
+//HRESULT CRenderTarget::Render(CShader * pShader, CVIBuffer_Rect * pVIBuffer)
+//{
+//	if (FAILED(pShader->Set_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+//		return E_FAIL;
+//
+//	if (FAILED(pShader->Set_ShaderResourceView("g_DiffuseTexture", m_pSRV)))
+//		return E_FAIL;
+//
+//	if (FAILED(pShader->Begin(0)))
+//		return E_FAIL;
+//
+//	return pVIBuffer->Render();	
+//}
 #endif // _DEBUG
 
 CRenderTarget * CRenderTarget::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, _uint iWidth, _uint iHeight, DXGI_FORMAT eFormat, _float4 vColor)

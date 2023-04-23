@@ -100,6 +100,8 @@ public:
 
 	_bool Get_IsParticle() { return m_isParticleOn; }
 
+	_bool Get_RageDamageOn() { return RageDamageOn; }
+
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CRenderer* m_pRendererCom = { nullptr };
@@ -186,7 +188,7 @@ private:
 	_bool m_RsKill = false;
 	_bool m_FsKill = false;
 	_bool m_RagesKill = false;
-
+	_bool RageDamageOn = false;
 public:
 	static CTSPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

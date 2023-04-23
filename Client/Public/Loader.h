@@ -32,6 +32,7 @@ public:
 	HRESULT Initialize(LEVELID eNextLevelID);
 
 	HRESULT Loading_ForLogo();
+	HRESULT Loading_ForLobby();
 	HRESULT Loading_ForGamePlay();
 	HRESULT Loading_ForGamePlay2();
 

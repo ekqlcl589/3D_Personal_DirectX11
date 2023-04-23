@@ -66,6 +66,7 @@ HRESULT CTSPlayer::Initialize(void * pArg)
 		return	E_FAIL;
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-1.1f, 0.f, -44.0f, 0.f));
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.0f, 0.f));
 
 	m_eCollisionState = OBJ_PLAYER;
 
@@ -266,8 +267,8 @@ HRESULT CTSPlayer::Render()
 
 #ifdef _DEBUG
 	
-	if (nullptr != m_pColliderCom)
-		m_pColliderCom->Render();
+	//if (nullptr != m_pColliderCom)
+	//	m_pColliderCom->Render();
 
 #endif
 	return S_OK;
@@ -422,7 +423,10 @@ void CTSPlayer::Key_Input(_double TimeDelta)
 	//else if(m_Dir == RIGHT)
 	//	m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), TimeDelta);
 
-	CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER);
+	//CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER);
+
+	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_C))
+		m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(0.0f));
 
 	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_W))
 	{
@@ -465,7 +469,7 @@ void CTSPlayer::Key_Input(_double TimeDelta)
 
 	}
 
-	if (CKeyMgr::GetInstance()->Key_Pressing(DIKEYBOARD_LSHIFT))
+	if (CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_LSHIFT))
 	{
 		m_tInfo.CurrAnim = TS_DASH;
 
@@ -955,6 +959,13 @@ void CTSPlayer::Attack_Go(_double TimeDelta)
 	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 	_float3 fPos;
 
+	if (m_tInfo.PrevAnim == TS_DASH && m_AnimTimeAcc >= 5.0 && m_AnimTimeAcc <= 6.0)
+	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"Player_Dash.ogg", SOUND_PLAYER_EFFECT, 1.0f);
+
+	}
+
 	if (true == m_AttackCheck &&  m_tInfo.CurrAnim == TS_BASIC_COMBO01 && m_AnimTimeAcc >= 0.0 && m_AnimTimeAcc <= 2.0)
 	{
 		m_pTransformCom->Go_Straight(TimeDelta * 0.09);
@@ -993,7 +1004,7 @@ void CTSPlayer::Attack_Go(_double TimeDelta)
 		m_pTransformCom->Go_Straight(TimeDelta * 0.13);
 	}
 
-	if (m_tInfo.CurrAnim == TS_BASIC_COMBO03 && m_AnimTimeAcc >= 9.5 && m_AnimTimeAcc <= 10.0)
+	if (m_tInfo.CurrAnim == TS_BASIC_COMBO03 && m_AnimTimeAcc >= 9.0 && m_AnimTimeAcc <= 10.0)
 	{
 		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_VOICE);
 		CSoundMgr::GetInstance()->SoundPlay(L"Voice_HM_W_A_E_Attack_Short_04_A_KR.ogg", SOUND_PLAYER_VOICE, 0.5f);
@@ -1004,7 +1015,7 @@ void CTSPlayer::Attack_Go(_double TimeDelta)
 		WeaponBoneUpdate();
 	}
 
-	if (m_tInfo.CurrAnim == TS_BASIC_COMBO03 && m_AnimTimeAcc >= 21.5 && m_AnimTimeAcc <= 22.0)
+	if (m_tInfo.CurrAnim == TS_BASIC_COMBO03 && m_AnimTimeAcc >= 21.0 && m_AnimTimeAcc <= 22.0)
 	{
 		static_cast<CTargetCamera*>(pMonster)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.4f, 0.1f);
 		WeaponBoneUpdate();
@@ -1233,12 +1244,7 @@ void CTSPlayer::Dash(_double TimeDelta)
 
 
 	}
-	if (true == m_bDeah && m_tInfo.CurrAnim == TS_DASH && m_AnimTimeAcc >= 5.0 && m_AnimTimeAcc <= 6.0)
-	{
-		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_EFFECT);
-		CSoundMgr::GetInstance()->SoundPlay(L"Player_Dash.ogg", SOUND_PLAYER_EFFECT, 1.0f);
 
-	}
 	if (m_tInfo.CurrAnim == TS_DASH && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 6.0)
 	{
 		m_bDeah = false;
@@ -1417,6 +1423,19 @@ void CTSPlayer::CombatWait()
 		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
 	}
 
+	if (m_tInfo.PrevAnim == TS_FRONT_EVASION && m_AnimTimeAcc >= 10.0 && m_AnimTimeAcc <= 11.0)
+	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"FST_CHR_Walk_Meat_Stone_01_A.ogg", SOUND_PLAYER_EFFECT, 1.0f);
+
+	}
+
+	if (m_tInfo.PrevAnim == TS_BACK_EVASION && m_AnimTimeAcc >= 8.0 && m_AnimTimeAcc <= 9.0)
+	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"FST_CHR_Walk_Meat_Stone_01_A.ogg", SOUND_PLAYER_EFFECT, 1.0f);
+
+	}
 	if (m_tInfo.PrevAnim == TS_FRONT_EVASION && true == m_pModelCom->Get_AnimFinished())
 	{
 		m_tInfo.CurrAnim = TS_COMBAT_WAIT;
@@ -1609,7 +1628,7 @@ void CTSPlayer::R_Skill(_double TimeDelta)
 
 	}
 
-	if (m_tInfo.PrevAnim == TS_SKILL_ROCKBREAK && m_AnimTimeAcc >= 11.5 && m_AnimTimeAcc <= 12.0)
+	if (m_tInfo.PrevAnim == TS_SKILL_ROCKBREAK && m_AnimTimeAcc >= 11.0 && m_AnimTimeAcc <= 12.0)
 	{	
 		CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_VOICE);
 		CSoundMgr::GetInstance()->SoundPlay(L"Voice_HM_W_A_E_SkillQuotes_Short_53_A_KR.ogg", SOUND_PLAYER_VOICE, 1.0f);
@@ -1664,9 +1683,6 @@ void CTSPlayer::F_Skill(_double TimeDelta)
 		m_tInfo.fSkill = true;
 
 	}
-	if (m_tInfo.PrevAnim == TS_RAGESKILL_ARMAGEDDONBLADE && m_AnimTimeAcc >= 1.5 && m_AnimTimeAcc <= 2.0)
-	{
-	}
 
 	if (m_tInfo.PrevAnim == TS_RAGESKILL_ARMAGEDDONBLADE && m_AnimTimeAcc >= 15.0 && m_AnimTimeAcc <= 16.0)
 	{
@@ -1710,7 +1726,7 @@ void CTSPlayer::Rage_Skill(_double TimeDelta)
 		m_bAttackState = true;
 		m_tInfo.CurrAnim = TS_RAGESKILL_DOUBLESLASH;
 		m_AttackCheck = true;
-
+		RageDamageOn = true;
 	}
 
 	if (!m_AnimInves && m_tInfo.PrevAnim == TS_RAGESKILL_DOUBLESLASH && m_AnimTimeAcc >= 13.0 && m_AnimTimeAcc <= 14.0)
@@ -1775,6 +1791,8 @@ void CTSPlayer::Rage_Skill(_double TimeDelta)
 		m_RagesKill = false;
 		m_AttackCheck = false;
 		m_InvesCheck = true;
+		RageDamageOn = false;
+
 		m_tInfo.m_RageSkill = 0.f;
 
 	}
@@ -2023,11 +2041,23 @@ HRESULT CTSPlayer::Add_Weapon()
 	CWeapon::WEAPONDESC WeaponDesc = { pBonePtr, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CWeapon::WEAPON_TS, OBJ_WEAPON_KARMA14 };
 	Safe_AddRef(pBonePtr);
 
-	CWeapon::WEAPONDESC WeaponDesc2 = { pBonePtrWait, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CWeapon::WEAPON_WAIT, OBJ_NO_COLL };
+	CWeapon::WEAPONDESC WeaponDesc2 = { pBonePtrWait, m_pModelCom->Get_LocalMatrix(), m_pTransformCom, CWeapon::WEAPON_WAIT, OBJ_NO_COLLISION };
 	Safe_AddRef(pBonePtrWait);
 
-	CGameObject* pWeapon = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Weapon_TS"), &WeaponDesc);
-	CGameObject* pWeapon2 = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Weapon_TS_Wait"), &WeaponDesc2);
+	CGameObject* pWeapon = nullptr;
+	CGameObject* pWeapon2 = nullptr;
+	
+	pWeapon = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Weapon_TS"), &WeaponDesc);
+	pWeapon2 = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Weapon_TS_Wait"), &WeaponDesc2);
+	//if (L->Get_LevelIndex() == LEVEL_GAMEPLAY)
+	//{
+	//}
+	//else if (L->Get_LevelIndex() == LEVEL_GAMEPLAY2)
+	//{
+	//	pWeapon = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Weapon_TS1"), &WeaponDesc);
+	//	pWeapon2 = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Weapon_TS_Wait1"), &WeaponDesc2);
+	//
+	//}
 
 	if (nullptr == pWeapon || nullptr == pWeapon2)
 		return E_FAIL;

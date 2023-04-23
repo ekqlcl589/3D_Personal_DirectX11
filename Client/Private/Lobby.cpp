@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "..\Public\GamePlay.h"
+#include "..\Public\Lobby.h"
 #include "GameInstance.h"
 #include "DynamicCamera.h"
 #include "Loading.h"
@@ -10,14 +10,14 @@
 #include "MonsterHPBar.h"
 #include "MonsterName.h"
 
-CGamePlay::CGamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CLobby::CLobby(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	:CLevel(pDevice, pContext)
 {
 }
 
-HRESULT CGamePlay::Initialize()
+HRESULT CLobby::Initialize()
 {
-	CSoundMgr::GetInstance()->PlayBGM(L"BGM_TrainingRoom_01_A.OGG", 0.4f);
+	CSoundMgr::GetInstance()->PlayBGM(L"BGM_Agit_01_B.OGG", 0.4f);
 
 	if (FAILED(Ready_Light()))
 		return E_FAIL;
@@ -36,18 +36,18 @@ HRESULT CGamePlay::Initialize()
 	//LoadMonster(L"../Data/Monster.dat");
 
 
-	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
-		return E_FAIL;
+	//if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
+	//	return E_FAIL;
 
 	if (FAILED(Ready_UI(TEXT("Layer_UI"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_MonsterUI(TEXT("Layer_Monster_UI"))))
-		return E_FAIL;
+	//if (FAILED(Ready_MonsterUI(TEXT("Layer_Monster_UI"))))
+	//	return E_FAIL;
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Effect_Arma"), TEXT("Player_Effect"))))
+	if (FAILED(pInstance->Add_GameObject(LEVEL_LOBBY, TEXT("Prototype_GameObject_Effect_Arma"), TEXT("Player_Effect"))))
 		return E_FAIL;
 		
 	RELEASE_INSTANCE(CGameInstance);
@@ -57,7 +57,7 @@ HRESULT CGamePlay::Initialize()
 	return S_OK;
 }
 
-void CGamePlay::Tick(_double TimeDelta)
+void CLobby::Tick(_double TimeDelta)
 {
 #ifdef _DEBUG
 	//_tchar			szWindowText[MAX_PATH] = TEXT("");
@@ -72,7 +72,7 @@ void CGamePlay::Tick(_double TimeDelta)
 		CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 		Safe_AddRef(pGameInstance);
 
-		if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLoading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY2))))
+		if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLoading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY))))
 			return;
 
 		Safe_Release(pGameInstance);
@@ -80,21 +80,18 @@ void CGamePlay::Tick(_double TimeDelta)
 	}
 }
 
-HRESULT CGamePlay::Ready_Layer_BackGround(const _tchar * pLayerTag)
+HRESULT CLobby::Ready_Layer_BackGround(const _tchar * pLayerTag)
 {
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Terrain"), pLayerTag)))
+	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOBBY, TEXT("Prototype_GameObject_Terrain"), pLayerTag)))
 	//	return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Ruins"), pLayerTag)))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOBBY, TEXT("Prototype_GameObject_Ruins"), pLayerTag)))
 		return E_FAIL;
 
-	//if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_TestTile"), pLayerTag)))
-	//	return E_FAIL;
-	
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_SkyBox"), pLayerTag)))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOBBY, TEXT("Prototype_GameObject_SkyBox"), pLayerTag)))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);
@@ -102,7 +99,7 @@ HRESULT CGamePlay::Ready_Layer_BackGround(const _tchar * pLayerTag)
 	return S_OK;
 }
 
-HRESULT CGamePlay::Ready_Layer_Camera(const _tchar * pLayerTag)
+HRESULT CLobby::Ready_Layer_Camera(const _tchar * pLayerTag)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
@@ -122,7 +119,7 @@ HRESULT CGamePlay::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CameraDesc.Transform_Desc.fSpeed = 10.f;
 	CameraDesc.Transform_Desc.fRotation = XMConvertToRadians(90.f);
 
-	if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Camera"), pLayerTag, &CameraDesc)))
+	if (FAILED(pGameInstance->Add_GameObject(LEVEL_LOBBY, TEXT("Prototype_GameObject_Camera"), pLayerTag, &CameraDesc)))
 		return E_FAIL;
 	
 	Safe_Release(pGameInstance);
@@ -130,7 +127,7 @@ HRESULT CGamePlay::Ready_Layer_Camera(const _tchar * pLayerTag)
 	return S_OK;
 }
 
-HRESULT CGamePlay::Ready_Light()
+HRESULT CLobby::Ready_Light()
 {
 	CGameInstance* pGameInstance = GET_INSTANCE(CGameInstance);
 
@@ -151,38 +148,38 @@ HRESULT CGamePlay::Ready_Light()
 	return S_OK;
 }
 
-HRESULT CGamePlay::Ready_UI(const _tchar * pLayerTag)
+HRESULT CLobby::Ready_UI(const _tchar * pLayerTag)
 {
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-	//if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Mouse"), pLayerTag)))
+	//if (FAILED(pInstance->Add_GameObject(LEVEL_LOBBY, TEXT("Prototype_GameObject_Mouse"), pLayerTag)))
 	//	return E_FAIL;
 
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_HPBar"), pLayerTag)))
+	if (FAILED(pInstance->Add_GameObject(LEVEL_LOBBY, TEXT("Prototype_GameObject_HPBar"), pLayerTag)))
 		return E_FAIL;
 	
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_MPBar"), pLayerTag)))
+	if (FAILED(pInstance->Add_GameObject(LEVEL_LOBBY, TEXT("Prototype_GameObject_MPBar"), pLayerTag)))
 		return E_FAIL;
 
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Skill_E"), pLayerTag)))
+	if (FAILED(pInstance->Add_GameObject(LEVEL_LOBBY, TEXT("Prototype_GameObject_Skill_E"), pLayerTag)))
 		return E_FAIL;
 
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Skill_R"), pLayerTag)))
+	if (FAILED(pInstance->Add_GameObject(LEVEL_LOBBY, TEXT("Prototype_GameObject_Skill_R"), pLayerTag)))
 		return E_FAIL;
 
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Skill_F"), pLayerTag)))
+	if (FAILED(pInstance->Add_GameObject(LEVEL_LOBBY, TEXT("Prototype_GameObject_Skill_F"), pLayerTag)))
 		return E_FAIL;
 
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_RageSkill"), pLayerTag)))
+	if (FAILED(pInstance->Add_GameObject(LEVEL_LOBBY, TEXT("Prototype_GameObject_RageSkill"), pLayerTag)))
 		return E_FAIL;
 
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Player_Skill_Icon"), pLayerTag)))
+	if (FAILED(pInstance->Add_GameObject(LEVEL_LOBBY, TEXT("Prototype_GameObject_Player_Skill_Icon"), pLayerTag)))
 		return E_FAIL;
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Player_Skill_IconR"), pLayerTag)))
+	if (FAILED(pInstance->Add_GameObject(LEVEL_LOBBY, TEXT("Prototype_GameObject_Player_Skill_IconR"), pLayerTag)))
 		return E_FAIL;
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Player_Skill_IconF"), pLayerTag)))
+	if (FAILED(pInstance->Add_GameObject(LEVEL_LOBBY, TEXT("Prototype_GameObject_Player_Skill_IconF"), pLayerTag)))
 		return E_FAIL;
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Player_Skill_IconRage"), pLayerTag)))
+	if (FAILED(pInstance->Add_GameObject(LEVEL_LOBBY, TEXT("Prototype_GameObject_Player_Skill_IconRage"), pLayerTag)))
 		return E_FAIL;
 	
 
@@ -191,20 +188,20 @@ HRESULT CGamePlay::Ready_UI(const _tchar * pLayerTag)
 	return S_OK;
 }
 
-HRESULT CGamePlay::Ready_MonsterUI(const _tchar * pLayerTag)
+HRESULT CLobby::Ready_MonsterUI(const _tchar * pLayerTag)
 {
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
 	CMonsterHPBar::OWNER Owner;
 	Owner = CMonsterHPBar::OWNER_GOLEM;
 
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_HPBar"), pLayerTag, &Owner)))
+	if (FAILED(pInstance->Add_GameObject(LEVEL_LOBBY, TEXT("Prototype_GameObject_Monster_HPBar"), pLayerTag, &Owner)))
 		return E_FAIL;
 
 	CMonsterName::OWNER Name;
 	Name = CMonsterName::OWNER_GOLEM;
 
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster_Name"), pLayerTag, &Name)))
+	if (FAILED(pInstance->Add_GameObject(LEVEL_LOBBY, TEXT("Prototype_GameObject_Monster_Name"), pLayerTag, &Name)))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -212,11 +209,11 @@ HRESULT CGamePlay::Ready_MonsterUI(const _tchar * pLayerTag)
 	return S_OK;
 }
 
-HRESULT CGamePlay::Ready_Layer_Player(const _tchar * pLayerTag)
+HRESULT CLobby::Ready_Layer_Player(const _tchar * pLayerTag)
 {
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Player_Body"), pLayerTag)))
+	if (FAILED(pInstance->Add_GameObject(LEVEL_LOBBY, TEXT("Prototype_GameObject_Player_Body"), pLayerTag)))
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -224,17 +221,17 @@ HRESULT CGamePlay::Ready_Layer_Player(const _tchar * pLayerTag)
 	return S_OK;
 }
 
-HRESULT CGamePlay::Ready_Layer_Monster(const _tchar * pLayerTag)
+HRESULT CLobby::Ready_Layer_Monster(const _tchar * pLayerTag)
 {
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 
-	if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster"), pLayerTag)))
+	if (FAILED(pInstance->Add_GameObject(LEVEL_LOBBY, TEXT("Prototype_GameObject_Monster"), pLayerTag)))
 		return E_FAIL;
 
-	//if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster1"), pLayerTag)))
+	//if (FAILED(pInstance->Add_GameObject(LEVEL_LOBBY, TEXT("Prototype_GameObject_Monster1"), pLayerTag)))
 	//	return E_FAIL;
 
-	//if (FAILED(pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster3"), pLayerTag)))
+	//if (FAILED(pInstance->Add_GameObject(LEVEL_LOBBY, TEXT("Prototype_GameObject_Monster3"), pLayerTag)))
 	//	return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
@@ -242,7 +239,7 @@ HRESULT CGamePlay::Ready_Layer_Monster(const _tchar * pLayerTag)
 	return S_OK;
 }
 
-void CGamePlay::LoadData(_tchar * szFilePath)
+void CLobby::LoadData(_tchar * szFilePath)
 {
 	HANDLE        hFile = CreateFile(szFilePath, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
@@ -263,7 +260,7 @@ void CGamePlay::LoadData(_tchar * szFilePath)
 		if (0 == dwByte)
 			break;
 
-		pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Cube"), TEXT("Layer_Cube"), &DataFile);
+		pInstance->Add_GameObject(LEVEL_LOBBY, TEXT("Prototype_GameObject_Cube"), TEXT("Layer_Cube"), &DataFile);
 
 	}
 	RELEASE_INSTANCE(CGameInstance);
@@ -271,7 +268,7 @@ void CGamePlay::LoadData(_tchar * szFilePath)
 	CloseHandle(hFile);
 }
 
-void CGamePlay::LoadMonster(_tchar * szFilePath)
+void CLobby::LoadMonster(_tchar * szFilePath)
 {
 	HANDLE        hFile = CreateFile(szFilePath, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
@@ -292,7 +289,7 @@ void CGamePlay::LoadMonster(_tchar * szFilePath)
 		if (0 == dwByte)
 			break;
 
-		pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Monster"), TEXT("Layer_Player"), &DataFile);
+		pInstance->Add_GameObject(LEVEL_LOBBY, TEXT("Prototype_GameObject_Monster"), TEXT("Layer_Player"), &DataFile);
 
 	}
 	RELEASE_INSTANCE(CGameInstance);
@@ -300,7 +297,7 @@ void CGamePlay::LoadMonster(_tchar * szFilePath)
 	CloseHandle(hFile);
 }
 
-void CGamePlay::LoadMeshTile(_tchar * szFilePath)
+void CLobby::LoadMeshTile(_tchar * szFilePath)
 {
 	HANDLE        hFile = CreateFile(szFilePath, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
@@ -321,7 +318,7 @@ void CGamePlay::LoadMeshTile(_tchar * szFilePath)
 		if (0 == dwByte)
 			break;
 
-		pInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_TestTile"), TEXT("Layer_Tile"), &DataFile);
+		pInstance->Add_GameObject(LEVEL_LOBBY, TEXT("Prototype_GameObject_TestTile"), TEXT("Layer_Tile"), &DataFile);
 
 	}
 	RELEASE_INSTANCE(CGameInstance);
@@ -329,19 +326,19 @@ void CGamePlay::LoadMeshTile(_tchar * szFilePath)
 	CloseHandle(hFile);
 }
 
-CGamePlay * CGamePlay::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CLobby * CLobby::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {
-	CGamePlay * pInstance = new CGamePlay(pDevice, pContext);
+	CLobby * pInstance = new CLobby(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize()))
 	{
-		MSG_BOX("Create Fail GamePlay");
+		MSG_BOX("Create Fail LOBBY");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CGamePlay::Free()
+void CLobby::Free()
 {
 
 	__super::Free();

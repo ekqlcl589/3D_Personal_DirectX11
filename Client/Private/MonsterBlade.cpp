@@ -48,9 +48,14 @@ HRESULT CMonsterBlade::Initialize(void * pArg)
 
 	_vector vTargetPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
 
+	_float3 fPos;
+
+	XMStoreFloat3(&fPos, vTargetPos);
+
+	fPos.y = 1.5f;
 	RELEASE_INSTANCE(CGameInstance);
 
-	m_pTransformCom->LookAt(vTargetPos);
+	m_pTransformCom->LookAt(XMLoadFloat3(&fPos));
 
 	return S_OK;
 }
@@ -62,7 +67,7 @@ void CMonsterBlade::Tick(_double TimeDelta)
 	if (nullptr != m_pColliderCom)
 		m_pColliderCom->Update(m_pTransformCom->Get_WorldMatrix());
 
-	m_pTransformCom->Go_Straight(1.5 * TimeDelta);
+	m_pTransformCom->Go_Straight(3.0 * TimeDelta);
 
 }
 
@@ -83,8 +88,8 @@ HRESULT CMonsterBlade::Render()
 
 #ifdef _DEBUG
 
-	if (nullptr != m_pColliderCom)
-		m_pColliderCom->Render();
+	//if (nullptr != m_pColliderCom)
+	//	m_pColliderCom->Render();
 
 #endif
 
@@ -210,7 +215,7 @@ HRESULT CMonsterBlade::Add_Components()
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Shader_VtxModel"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY2, TEXT("Prototype_Component_Shader_VtxModel_Effect"),
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
@@ -247,6 +252,10 @@ HRESULT CMonsterBlade::SetUp_ShaderResources()
 		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
+
+	if (FAILED(m_pShaderCom->Set_RawValue("g_fDissolveAmount", &fDissolveAmount, sizeof(float))))
+		return E_FAIL;
+
 	return S_OK;
 }
 

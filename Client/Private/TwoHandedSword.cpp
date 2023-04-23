@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\TwoHandedSword.h"
 #include "GameInstance.h"
+#include "Level_Mgr.h"
 
 _matrix CTwoHandedSword::WorldMatrix = XMMatrixIdentity();
 
@@ -176,10 +177,15 @@ HRESULT CTwoHandedSword::Add_Components()
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Transform"),
 		TEXT("Com_Effect_Transform"), (CComponent**)&m_EffectTransfrom, &TransformDesc)))
 		return E_FAIL;
+	CLevel_Mgr* L = GET_INSTANCE(CLevel_Mgr);
 
 	/* For.Com_Model */
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Weapon_TS"),
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModel"),
+		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
 	CCollider::COLLIDERDESC ColliderDesc;
@@ -193,9 +199,6 @@ HRESULT CTwoHandedSword::Add_Components()
 		return E_FAIL;
 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModel"),
-		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
-		return E_FAIL;
 
 	return S_OK;
 }

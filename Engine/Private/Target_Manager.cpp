@@ -113,28 +113,28 @@ HRESULT CTarget_Manager::Set_ShaderResourceView(CShader * pShader, const _tchar 
 }
 
 #ifdef _DEBUG
-HRESULT CTarget_Manager::Ready_Debug(const _tchar * pTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY)
-{
-	CRenderTarget*		pTarget = Find_Target(pTargetTag);
-	if (nullptr == pTarget)
-		return E_FAIL;
-
-	return pTarget->Ready_Debug(fX, fY, fSizeX, fSizeY);	
-}
-
-HRESULT CTarget_Manager::Render(const _tchar * pMRTTag, CShader * pShader, CVIBuffer_Rect * pVIBuffer)
-{
-
-
-	list<CRenderTarget*>*		pMRTList = Find_MRT(pMRTTag);
-	if (nullptr == pMRTList)
-		return E_FAIL;
-
-	for (auto& pTarget : *pMRTList)	
-		pTarget->Render(pShader, pVIBuffer);	
-
-	return S_OK;
-}
+//HRESULT CTarget_Manager::Ready_Debug(const _tchar * pTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY)
+//{
+//	CRenderTarget*		pTarget = Find_Target(pTargetTag);
+//	if (nullptr == pTarget)
+//		return E_FAIL;
+//
+//	return pTarget->Ready_Debug(fX, fY, fSizeX, fSizeY);	
+//}
+//
+//HRESULT CTarget_Manager::Render(const _tchar * pMRTTag, CShader * pShader, CVIBuffer_Rect * pVIBuffer)
+//{
+//
+//
+//	list<CRenderTarget*>*		pMRTList = Find_MRT(pMRTTag);
+//	if (nullptr == pMRTList)
+//		return E_FAIL;
+//
+//	for (auto& pTarget : *pMRTList)	
+//		pTarget->Render(pShader, pVIBuffer);	
+//
+//	return S_OK;
+//}
 #endif // _DEBUG
 
 CRenderTarget * CTarget_Manager::Find_Target(const _tchar * pTargetTag)

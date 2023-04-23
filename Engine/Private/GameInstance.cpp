@@ -9,6 +9,7 @@
 #include "Font_Mgr.h"
 #include "Frustum.h"
 #include "Target_Manager.h"
+#include "KeyMgr.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -92,14 +93,14 @@ HRESULT CGameInstance::Tick_Engine(_double TimeDelta)
 		m_pCollision_Mgr->Check_Collision(OBJ_PLAYER, OBJ_MONSTER_PROJECTILE);
 	}
 
-	if (4 == m_pLevel_Manager->Get_LevelIndex())
+	if (4 == m_pLevel_Manager->Get_LevelIndex())// && CKeyMgr::GetInstance()->Key_Down(DIKEYBOARD_O))
 	{
 		m_pCollision_Mgr->Check_Collision(OBJ_PLAYER, OBJ_MONSTER_BALL); // 플레이어, 공 충돌
 		m_pCollision_Mgr->Check_Collision(OBJ_PLAYER, OBJ_MONSTER_SICKLE);
 		m_pCollision_Mgr->Check_Collision(OBJ_PLAYER, OBJ_NO_COLL);
 		m_pCollision_Mgr->Check_Collision(OBJ_PLAYER, OBJ_MONSTER_BLADE);
 
-		//m_pCollision_Mgr->Check_Collision(OBJ_BOSS1, OBJ_PLAYER_RAGESKILL);
+		//m_pCollision_Mgr->Check_Collision(OBJ_BOSS1, OBJ_PLAYER_RAGESKILL); 시발 이건 걍 버려 무조건 칼로만 데미지 준다 생각하고 넘어가자 
 		//m_pCollision_Mgr->Check_Collision(OBJ_BOSS2, OBJ_PLAYER_RAGESKILL);
 
 		m_pCollision_Mgr->Check_Collision(OBJ_BOSS1, OBJ_WEAPON_KARMA14); // 칼, Cursed 충돌

@@ -13,7 +13,7 @@ HRESULT CLogo::Initialize()
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
 
-	//CSoundMgr::GetInstance()->PlayBGM(L"BGM_IntroCinematic_01_A.OGG", 1.f);
+	CSoundMgr::GetInstance()->PlayBGM(L"BGM_IntroCinematic_01_A.OGG", 1.f);
 
 	return S_OK;
 }
@@ -21,9 +21,9 @@ HRESULT CLogo::Initialize()
 void CLogo::Tick(_double TimeDelta)
 {
 #ifdef _DEBUG
-	_tchar			szWindowText[MAX_PATH] = TEXT("");
-	lstrcpy(szWindowText, TEXT("로고"));
-	SetWindowText(g_hWnd, szWindowText);
+	//_tchar			szWindowText[MAX_PATH] = TEXT("");
+	//lstrcpy(szWindowText, TEXT("로고"));
+	//SetWindowText(g_hWnd, szWindowText);
 #endif
 
 	if (GetKeyState(VK_SPACE) & 0x8000)

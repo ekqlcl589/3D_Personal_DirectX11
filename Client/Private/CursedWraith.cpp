@@ -158,8 +158,8 @@ HRESULT CCursedWraith::Render()
 
 #ifdef _DEBUG
 
-	if (nullptr != m_pColliderCom)
-		m_pColliderCom->Render();
+	//if (nullptr != m_pColliderCom)
+	//	m_pColliderCom->Render();
 
 #endif
 
@@ -242,14 +242,14 @@ void CCursedWraith::EnterCollision(CGameObject * pObj)
 
 			_bool m_PlayerRSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rSkill;
 			_bool m_PlayerFSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().fSkill;
-			_bool m_PlayerRageSkill = static_cast<CTSPlayer*>(pTarget)->Get_Info().rageSkill;
+			_bool m_PlayerRageSkill = static_cast<CTSPlayer*>(pTarget)->Get_RageDamageOn();
 
 			if (true == m_PlayerRSkill)
 				Damage = 30.f;
 			else if (true == m_PlayerFSkill)
 				Damage = 45.f;
 			else if (true == m_PlayerRageSkill)
-				Damage = 100.f;
+				Damage = 50.f;
 			else
 				Damage = 5.f;
 

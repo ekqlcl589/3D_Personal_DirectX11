@@ -160,8 +160,8 @@ HRESULT CAncient_StonGolem::Render()
 
 #ifdef _DEBUG
 
-	if (nullptr != m_pColliderCom)
-		m_pColliderCom->Render();
+	//if (nullptr != m_pColliderCom)
+	//	m_pColliderCom->Render();
 
 #endif
 
@@ -210,7 +210,6 @@ void CAncient_StonGolem::EnterCollision(CGameObject * pObj)
 		break;
 	}
 }
-
 
 HRESULT CAncient_StonGolem::Add_Coll()
 {
@@ -421,6 +420,12 @@ void CAncient_StonGolem::Combat_Wait(_double TimeDelta)
 
 		m_ReCycle_Skill4 = false;
 		m_CurrAnim = S_WAIT;
+	}
+
+	if (m_PrevAnim == S_SKILL05_2 && m_AnimTimeAcc >= 30.0 && m_AnimTimeAcc <= 31.0)
+	{
+		CSoundMgr::GetInstance()->StopSound(SOUND_GOLEM_EFFECT);
+		CSoundMgr::GetInstance()->SoundPlay(L"CHR_Common_Recovery_03_B.ogg", SOUND_GOLEM_EFFECT, 1.0f);
 	}
 
 	if (m_PrevAnim == S_SKILL05_3 && m_pModelCom->Get_AnimTimeAcc() >= (m_pModelCom->Get_AnimDuration() / 2) + 68.0)
@@ -636,7 +641,7 @@ void CAncient_StonGolem::Attack_Go(_double TimeDelta)
 
 	}
 
-	if (m_PrevAnim == S_SKILL02 && m_AnimTimeAcc >= 30.5 && m_AnimTimeAcc <= 31.0) // 그리고 1번 애님 끝나면 바로 2번 실행 
+	if (m_PrevAnim == S_SKILL02 && m_AnimTimeAcc >= 30.0 && m_AnimTimeAcc <= 31.0) // 그리고 1번 애님 끝나면 바로 2번 실행 
 	{
 		CSoundMgr::GetInstance()->StopSound(SOUND_GOLEM_VOICE);
 		CSoundMgr::GetInstance()->SoundPlay(L"VO_MON_Golem_Growl_01_A.ogg", SOUND_GOLEM_VOICE, 1.0f);

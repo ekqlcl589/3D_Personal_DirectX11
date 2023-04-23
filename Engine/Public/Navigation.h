@@ -28,7 +28,7 @@ public:
 
 #ifdef _DEBUG
 public:
-	HRESULT Render();
+//	HRESULT Render();
 #endif // _DEBUG
 
 private:
@@ -40,7 +40,7 @@ private: /* 이 네비게이션을 이용하는 객체가 존재하는 쎌의 인덱스 */
 
 #ifdef _DEBUG
 private:
-	class CShader*			m_pShader = { nullptr };
+//	class CShader*			m_pShader = { nullptr };
 #endif // _DEBUG
 
 private:

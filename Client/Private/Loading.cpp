@@ -74,10 +74,10 @@ void CLoading::Tick(_double TimeDelta)
 
 #ifdef _DEBUG
 
-	_tchar			szWindowText[MAX_PATH] = TEXT("");
-	lstrcpy(szWindowText, TEXT("로딩레벨입니다 : "));
-	lstrcat(szWindowText, m_pLoader->Get_LoadingText());
-	SetWindowText(g_hWnd, szWindowText);
+	//_tchar			szWindowText[MAX_PATH] = TEXT("");
+	//lstrcpy(szWindowText, TEXT("로딩레벨입니다 : "));
+	//lstrcat(szWindowText, m_pLoader->Get_LoadingText());
+	//SetWindowText(g_hWnd, szWindowText);
 
 #endif
 }

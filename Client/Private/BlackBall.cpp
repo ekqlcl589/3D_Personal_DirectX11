@@ -199,8 +199,8 @@ HRESULT CBlackBall::Render()
 
 #ifdef _DEBUG
 
-	if (nullptr != m_pColliderCom)
-		m_pColliderCom->Render();
+	//if (nullptr != m_pColliderCom)
+	//	m_pColliderCom->Render();
 
 #endif
 
@@ -255,11 +255,10 @@ void CBlackBall::EnterCollision(CGameObject * pObj)
 		if (m_BallDesc.eType == TYPE_DDEBASI)
 		{
 			CSoundMgr::GetInstance()->StopSound(SOUND_MONSTER_EFFECT);
-			CSoundMgr::GetInstance()->SoundPlay(L"EFF_MON_Big_Fireball_01_A.ogg", SOUND_MONSTER_EFFECT, 0.5f);
+			CSoundMgr::GetInstance()->SoundPlay(L"EFF_MON_Big_Fireball_01_A.ogg", SOUND_MONSTER_EFFECT, 1.0f);
 		}
 		
 		Set_Dead();
-
 		break;
 	}
 	case Engine::OBJ_WEAPON_SS:

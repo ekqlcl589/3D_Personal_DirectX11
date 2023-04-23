@@ -184,6 +184,7 @@
     <ClInclude Include="..\Public\Loader.h" />
     <ClInclude Include="..\Public\Loading.h" />
     <ClInclude Include="..\Public\LoadingImg.h" />
+    <ClInclude Include="..\Public\Lobby.h" />
     <ClInclude Include="..\Public\Logo.h" />
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\Public\Monster.h" />
@@ -256,6 +257,7 @@
     <ClCompile Include="..\Private\Loader.cpp" />
     <ClCompile Include="..\Private\Loading.cpp" />
     <ClCompile Include="..\Private\LoadingImg.cpp" />
+    <ClCompile Include="..\Private\Lobby.cpp" />
     <ClCompile Include="..\Private\Logo.cpp" />
     <ClCompile Include="..\Private\MainApp.cpp" />
     <ClCompile Include="..\Private\Monster.cpp" />

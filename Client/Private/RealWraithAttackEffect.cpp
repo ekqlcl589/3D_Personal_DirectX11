@@ -58,9 +58,15 @@ HRESULT CRealWraithAttackEffect::Initialize(void * pArg)
 
 	_vector vTargetPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
 
+	_float3 fPoss;
+
+	XMStoreFloat3(&fPoss, vTargetPos);
+
+	fPoss.y = 1.5f;
+
 	RELEASE_INSTANCE(CGameInstance);
 
-	m_pTransformCom->LookAt(vTargetPos);
+	m_pTransformCom->LookAt(XMLoadFloat3(&fPoss));
 
 	m_LifeTime = 5.0;
 	return S_OK;
@@ -77,7 +83,7 @@ void CRealWraithAttackEffect::Tick(_double TimeDelta)
 
 		m_LifeTime -= 1.0 * TimeDelta;
 
-		m_pTransformCom->Go_Straight(2.5 * TimeDelta);
+		m_pTransformCom->Go_Straight(2.0 * TimeDelta);
 
 		if (m_LifeTime <= 0.0)
 		{

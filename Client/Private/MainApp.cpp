@@ -69,7 +69,7 @@ void CMainApp::Tick(_double TimeDelta)
 	//	std::ios::sync_with_stdio();
 	//}
 
-	m_TimeAcc += TimeDelta;
+	//m_TimeAcc += TimeDelta;
 
 #endif // _DEBUG
 
@@ -86,15 +86,15 @@ HRESULT CMainApp::Render()
 #ifdef _DEBUG
 
 
-	++m_iNumRender;
-
-	if (m_TimeAcc >= 1.0)
-	{
-		wsprintf(m_szFPS, TEXT("fps : %d"), m_iNumRender);
-		m_TimeAcc = 0.0;
-		m_iNumRender = 0;
-	}
-	m_pGameInstance->Render_Font(TEXT("Font_Bazzi"), m_szFPS, _float2(0.f, 0.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	//++m_iNumRender;
+	//
+	//if (m_TimeAcc >= 1.0)
+	//{
+	//	wsprintf(m_szFPS, TEXT("fps : %d"), m_iNumRender);
+	//	m_TimeAcc = 0.0;
+	//	m_iNumRender = 0;
+	//}
+	//m_pGameInstance->Render_Font(TEXT("Font_Bazzi"), m_szFPS, _float2(0.f, 0.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
 #endif // _DEBUG
 
 	m_pGameInstance->Present();

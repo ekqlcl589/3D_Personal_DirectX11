@@ -15,13 +15,13 @@ CCollider::CCollider(const CCollider & rhs)
 	, m_pOBB(rhs.m_pOBB)
 	, m_pSphere(rhs.m_pSphere)
 #ifdef _DEBUG
-	, m_pBatch(rhs.m_pBatch)
-	, m_pEffect(rhs.m_pEffect)
-	, m_pInputLayout(rhs.m_pInputLayout)
+	//, m_pBatch(rhs.m_pBatch)
+	//, m_pEffect(rhs.m_pEffect)
+	//, m_pInputLayout(rhs.m_pInputLayout)
 #endif
 {
 #ifdef _DEBUG
-	Safe_AddRef(m_pInputLayout);
+	//Safe_AddRef(m_pInputLayout);
 #endif
 }
 
@@ -30,18 +30,18 @@ HRESULT CCollider::Initialize_Prototype(TYPE eType)
 	m_eType = eType;
 
 #ifdef _DEBUG
-	m_pBatch = new PrimitiveBatch<VertexPositionColor>(m_pContext);
-	m_pEffect = new BasicEffect(m_pDevice);
-	m_pEffect->SetVertexColorEnabled(true); // ¼ÎÀÌ´õ¿¡ ´øÁü
-
-	const void* pShaderByteCode = { nullptr };
-	size_t iShaderByteCodeLength = { 0 };
-
-	m_pEffect->GetVertexShaderBytecode(&pShaderByteCode, &iShaderByteCodeLength);
-
-	if (FAILED(m_pDevice->CreateInputLayout(VertexPositionColor::InputElements, VertexPositionColor::InputElementCount, pShaderByteCode, iShaderByteCodeLength, &m_pInputLayout)))
-		return E_FAIL;
-
+//	m_pBatch = new PrimitiveBatch<VertexPositionColor>(m_pContext);
+//	m_pEffect = new BasicEffect(m_pDevice);
+//	m_pEffect->SetVertexColorEnabled(true); // ¼ÎÀÌ´õ¿¡ ´øÁü
+//
+//	const void* pShaderByteCode = { nullptr };
+//	size_t iShaderByteCodeLength = { 0 };
+//
+//	m_pEffect->GetVertexShaderBytecode(&pShaderByteCode, &iShaderByteCodeLength);
+//
+//	if (FAILED(m_pDevice->CreateInputLayout(VertexPositionColor::InputElements, VertexPositionColor::InputElementCount, pShaderByteCode, iShaderByteCodeLength, &m_pInputLayout)))
+//		return E_FAIL;
+//
 #endif // _DEBUG
 
 	return S_OK;
@@ -225,41 +225,41 @@ _bool CCollider::Collision_SPHERE(CCollider * pTargetCollider)
 
 #ifdef _DEBUG
 
-HRESULT CCollider::Render()
-{
-	m_pContext->IASetInputLayout(m_pInputLayout);
+//HRESULT CCollider::Render()
+//{
+	//m_pContext->IASetInputLayout(m_pInputLayout);
+	//
+	//CPipeLine*		pPipeLine = GET_INSTANCE(CPipeLine);
+	//
+	//m_pEffect->SetWorld(XMMatrixIdentity());
+	//m_pEffect->SetView(pPipeLine->Get_TransformMatrix(CPipeLine::TS_VIEW));
+	//m_pEffect->SetProjection(pPipeLine->Get_TransformMatrix(CPipeLine::TS_PROJ));
+	//
+	//RELEASE_INSTANCE(CPipeLine);
+	//
+	//m_pEffect->Apply(m_pContext);
+	//
+	//m_pBatch->Begin();
+	//
+	//_vector	vColor = m_isColl == true ? XMVectorSet(1.f, 0.f, 0.f, 1.f) : XMVectorSet(0.f, 1.f, 0.f, 1.f);
+	//
+	//switch (m_eType)
+	//{
+	//case CCollider::TYPE_AABB:
+	//	DX::Draw(m_pBatch, *m_pAABB, vColor);
+	//	break;
+	//case CCollider::TYPE_OBB:
+	//	DX::Draw(m_pBatch, *m_pOBB, vColor);
+	//	break;
+	//case CCollider::TYPE_SPHERE:
+	//	DX::Draw(m_pBatch, *m_pSphere, vColor);
+	//	break;
+	//}
+	//
+	//m_pBatch->End();
 
-	CPipeLine*		pPipeLine = GET_INSTANCE(CPipeLine);
-
-	m_pEffect->SetWorld(XMMatrixIdentity());
-	m_pEffect->SetView(pPipeLine->Get_TransformMatrix(CPipeLine::TS_VIEW));
-	m_pEffect->SetProjection(pPipeLine->Get_TransformMatrix(CPipeLine::TS_PROJ));
-
-	RELEASE_INSTANCE(CPipeLine);
-
-	m_pEffect->Apply(m_pContext);
-
-	m_pBatch->Begin();
-
-	_vector	vColor = m_isColl == true ? XMVectorSet(1.f, 0.f, 0.f, 1.f) : XMVectorSet(0.f, 1.f, 0.f, 1.f);
-
-	switch (m_eType)
-	{
-	case CCollider::TYPE_AABB:
-		DX::Draw(m_pBatch, *m_pAABB, vColor);
-		break;
-	case CCollider::TYPE_OBB:
-		DX::Draw(m_pBatch, *m_pOBB, vColor);
-		break;
-	case CCollider::TYPE_SPHERE:
-		DX::Draw(m_pBatch, *m_pSphere, vColor);
-		break;
-	}
-
-	m_pBatch->End();
-
-	return S_OK;
-}
+//	return S_OK;
+//}
 #endif // _DEBUG
 
 
@@ -362,12 +362,12 @@ void CCollider::Free()
 	Safe_Delete(m_pOriginSphere);
 
 #ifdef _DEBUG
-	if (false == m_isCloned)
-	{
-		Safe_Delete(m_pBatch);
-		Safe_Delete(m_pEffect);
-	}
-
-	Safe_Release(m_pInputLayout);
+	//if (false == m_isCloned)
+	//{
+	//	Safe_Delete(m_pBatch);
+	//	Safe_Delete(m_pEffect);
+	//}
+	//
+	//Safe_Release(m_pInputLayout);
 #endif
 }

@@ -42,7 +42,7 @@ public:
 
 #ifdef _DEBUG
 
-	HRESULT Render();
+	//HRESULT Render();
 
 #endif // _DEBUG
 
@@ -64,9 +64,9 @@ private:
 
 #ifdef _DEBUG
 private:
-	PrimitiveBatch<VertexPositionColor>* m_pBatch = { nullptr };
-	BasicEffect* m_pEffect = { nullptr }; // 우리가 만든 셰이더가 아니라 debugDraw에서 만든 정점들을 셰이더에 던지기 위한 Effect
-	ID3D11InputLayout* m_pInputLayout = { nullptr };
+//	PrimitiveBatch<VertexPositionColor>* m_pBatch = { nullptr };
+//	BasicEffect* m_pEffect = { nullptr }; // 우리가 만든 셰이더가 아니라 debugDraw에서 만든 정점들을 셰이더에 던지기 위한 Effect
+//	ID3D11InputLayout* m_pInputLayout = { nullptr };
 #endif // _DEBUG
 
 private:
