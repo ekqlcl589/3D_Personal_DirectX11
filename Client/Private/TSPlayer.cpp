@@ -24,7 +24,7 @@ CTSPlayer::CTSPlayer(const CTSPlayer & rhs)
 	: CGameObject(rhs)
 	, m_tInfo(rhs.m_tInfo)
 {
-}
+}	
 
 HRESULT CTSPlayer::Initialize_Prototype()
 {
@@ -87,8 +87,6 @@ void CTSPlayer::Tick(_double TimeDelta)
 {
 	if (m_tInfo._Hp <= 0.f)
 	{
-		//CSoundMgr::GetInstance()->StopSound(SOUND_PLAYER_VOICE); 이거 보류 
-		//CSoundMgr::GetInstance()->SoundPlay(L"Voice_HM_W_A_E_Dying_Short_03_A_KR.ogg", SOUND_PLAYER_VOICE, 1.0f);
 		
 		m_isParticleOn = false;
 		m_tInfo._Hp = 0.f;
@@ -1738,8 +1736,8 @@ void CTSPlayer::Rage_Skill(_double TimeDelta)
 
 		m_isParticleOn = true;
 		Add_Particle();
-		WeaponBoneUpdate();
 		static_cast<CTargetCamera*>(pCamera)->Add_Shaking(SHAKE_DIRECTION::RIGHT, 0.5f, 0.2f);
+		WeaponBoneUpdate();
 	}
 
 	if (!m_AnimInves && m_tInfo.PrevAnim == TS_RAGESKILL_DOUBLESLASH && m_AnimTimeAcc >= 72.5 && m_AnimTimeAcc <= 73.0)
@@ -2049,15 +2047,6 @@ HRESULT CTSPlayer::Add_Weapon()
 	
 	pWeapon = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Weapon_TS"), &WeaponDesc);
 	pWeapon2 = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Weapon_TS_Wait"), &WeaponDesc2);
-	//if (L->Get_LevelIndex() == LEVEL_GAMEPLAY)
-	//{
-	//}
-	//else if (L->Get_LevelIndex() == LEVEL_GAMEPLAY2)
-	//{
-	//	pWeapon = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Weapon_TS1"), &WeaponDesc);
-	//	pWeapon2 = pInstance->Clone_GameObject(TEXT("Prototype_GameObject_Weapon_TS_Wait1"), &WeaponDesc2);
-	//
-	//}
 
 	if (nullptr == pWeapon || nullptr == pWeapon2)
 		return E_FAIL;

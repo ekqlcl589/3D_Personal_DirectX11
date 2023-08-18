@@ -22,8 +22,8 @@ public:
 
 #ifdef _DEBUG
 public:
-//	HRESULT Ready_Debug(_float fX, _float fY, _float fSizeX, _float fSizeY);
-//	HRESULT Render(class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);
+	HRESULT Ready_Debug(_float fX, _float fY, _float fSizeX, _float fSizeY);
+	HRESULT Render(class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);
 #endif // _DEBUG
 
 private:
@@ -37,8 +37,8 @@ private:
 
 #ifdef _DEBUG
 private:
-	//_float4x4					m_WorldMatrix;
-	//_float						m_fX, m_fY, m_fSizeX, m_fSizeY;
+	_float4x4					m_WorldMatrix;
+	_float						m_fX, m_fY, m_fSizeX, m_fSizeY;
 #endif // _DEBUG
 
 public:

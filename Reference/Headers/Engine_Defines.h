@@ -12,8 +12,8 @@
 #include <DirectXCollision.h>
 #include <process.h>
 #include <d3dcompiler.h>
-#include <typeinfo.h>
-//#include <typeinfo>
+//#include <typeinfo.h>
+#include <typeinfo>
 
 #include "Effects11/d3dx11effect.h"
 #include "DirectXTK/DDSTextureLoader.h"

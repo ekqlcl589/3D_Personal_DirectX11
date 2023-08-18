@@ -13,7 +13,7 @@ public:
 	HRESULT Initialize(aiNodeAnim* pAIChannel, class CModel* pModel);
 	void Invalidate_Transform(_double TrackPosition, _uint* pCurrKeyFrame, const vector<class CBone*>& Bones);
 
-	void Linear_Transform(_double TrackPosition, _uint* pCurrKeyFrame, const vector<class CBone*>& Bones, vector<class CChannel*> mn_Test, _bool& bCheck, _double fAnimTick);
+	void Linear_Transform(_double TrackPosition, _uint* pCurrKeyFrame, const vector<class CBone*>& Bones, vector<class CChannel*> vecChannel, _bool& bCheck, _double fAnimTick);
 	KEYFRAME Get_KeyFrame(_uint iInext) { return m_vecKeyFrame[iInext]; }
 	//void StringCom();
 	char m_szName[MAX_PATH] = "";

@@ -14,7 +14,7 @@ public:
 	virtual HRESULT Initialize(void* pArg);
 #ifdef _DEBUG
 public:
-	//virtual HRESULT Render() { return S_OK; }
+	virtual HRESULT Render() { return S_OK; }
 #endif // _DEBUG
 
 protected:

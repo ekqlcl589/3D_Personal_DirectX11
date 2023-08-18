@@ -17,7 +17,7 @@ CGamePlay::CGamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 
 HRESULT CGamePlay::Initialize()
 {
-	CSoundMgr::GetInstance()->PlayBGM(L"BGM_TrainingRoom_01_A.OGG", 0.4f);
+	CSoundMgr::GetInstance()->PlayBGM(L"BGM_Agit_01_B.OGG", 0.4f);
 
 	if (FAILED(Ready_Light()))
 		return E_FAIL;
@@ -36,14 +36,14 @@ HRESULT CGamePlay::Initialize()
 	//LoadMonster(L"../Data/Monster.dat");
 
 
-	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
-		return E_FAIL;
+	//if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
+	//	return E_FAIL;
 
 	if (FAILED(Ready_UI(TEXT("Layer_UI"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_MonsterUI(TEXT("Layer_Monster_UI"))))
-		return E_FAIL;
+	//if (FAILED(Ready_MonsterUI(TEXT("Layer_Monster_UI"))))
+	//	return E_FAIL;
 
 	CGameInstance* pInstance = GET_INSTANCE(CGameInstance);
 

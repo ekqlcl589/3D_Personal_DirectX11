@@ -35,8 +35,6 @@ HRESULT CCrocs::Initialize(void * pArg)
 		return E_FAIL;
 
 	m_pTransformCom->Rotation(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(-40.0f));
-	//m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(180.0f));
-	//m_pTransformCom->Rotation(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(180.0f));
 
 	return S_OK;
 }

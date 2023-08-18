@@ -108,23 +108,23 @@ HRESULT CRenderer::Initialize_Prototype()
 
 
 #ifdef _DEBUG
-	//if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Diffuse"), 10.0f, 10.f, 20.f, 20.f)))
-	//	return E_FAIL;
-	//if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Normal"), 10.0f, 30.f, 20.f, 20.f)))
-	//	return E_FAIL;
-	//if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Depth"), 10.0f, 50.f, 20.f, 20.f)))
-	//	return E_FAIL;
-	//if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Shade"), 30.f, 10.f, 20.f, 20.f)))
-	//	return E_FAIL;
-	//if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Specular"), 30.f, 30.f, 20.f, 20.f)))
-	//	return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Diffuse"), 100.0f, 100.f, 200.f, 200.f)))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Normal"), 100.0f, 300.f, 200.f, 200.f)))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Depth"), 100.0f, 500.f, 200.f, 200.f)))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Shade"), 300.f, 100.f, 200.f, 200.f)))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Specular"), 300.f, 300.f, 200.f, 200.f)))
+		return E_FAIL;
 
 #pragma region Test
-	//if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_BlurX"), 50.f, 10.f, 20.f, 20.f)))
-	//	return E_FAIL;
-	//
-	//if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Final"), 70.f, 10.f, 20.f, 20.f)))
-	//	return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_BlurX"), 500.f, 100.f, 200.f, 200.f)))
+		return E_FAIL;
+	
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Final"), 700.f, 100.f, 200.f, 200.f)))
+		return E_FAIL;
 #pragma endregion Test
 
 #endif
@@ -173,51 +173,51 @@ void CRenderer::Draw_Renderer()
 	Render_UI();
 
 //#ifdef _DEBUG
-//
-//	Render_DebugGroup();
-//
-//	if (FAILED(m_pShader->Set_Matrix("g_ViewMatrix", &m_ViewMatrix)))
-//		return;
-//
-//	if (FAILED(m_pShader->Set_Matrix("g_ProjMatrix", &m_ProjMatrix)))
-//		return;
-//
-//	m_pTarget_Manager->Render(TEXT("MRT_Deferred"), m_pShader, m_pVIBuffer);
-//
-//	m_pTarget_Manager->Render(TEXT("MRT_LightAcc"), m_pShader, m_pVIBuffer);
-//
-//#pragma region Test
-//	m_pTarget_Manager->Render(TEXT("MRT_BlurEffectX"), m_pShader, m_pVIBuffer);
-//	m_pTarget_Manager->Render(TEXT("MRT_Blend"), m_pShader, m_pVIBuffer);
-//#pragma endregion Test
-//
+
+	Render_DebugGroup();
+
+	if (FAILED(m_pShader->Set_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+
+	if (FAILED(m_pShader->Set_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	m_pTarget_Manager->Render(TEXT("MRT_Deferred"), m_pShader, m_pVIBuffer);
+
+	m_pTarget_Manager->Render(TEXT("MRT_LightAcc"), m_pShader, m_pVIBuffer);
+
+#pragma region Test
+	m_pTarget_Manager->Render(TEXT("MRT_BlurEffectX"), m_pShader, m_pVIBuffer);
+	m_pTarget_Manager->Render(TEXT("MRT_Blend"), m_pShader, m_pVIBuffer);
+#pragma endregion Test
+
 //#endif
 
 }
 
 //#ifdef _DEBUG
-//HRESULT CRenderer::Add_DebugGroup(CComponent * pComponent)
-//{
-////	m_DebugRenderObjects.push_back(pComponent);
-////
-////	Safe_AddRef(pComponent);
-//
-//	return S_OK;
-//}
-//
-//HRESULT CRenderer::Render_DebugGroup()
-//{
-//	for (auto& pComponent : m_DebugRenderObjects)
-//	{
-//		pComponent->Render();
-//
-//		Safe_Release(pComponent);
-//	}
-//
-//	m_DebugRenderObjects.clear();
-//
-//	return S_OK;
-//}
+HRESULT CRenderer::Add_DebugGroup(CComponent * pComponent)
+{
+	m_DebugRenderObjects.push_back(pComponent);
+
+	Safe_AddRef(pComponent);
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_DebugGroup()
+{
+	for (auto& pComponent : m_DebugRenderObjects)
+	{
+		pComponent->Render();
+
+		Safe_Release(pComponent);
+	}
+
+	m_DebugRenderObjects.clear();
+
+	return S_OK;
+}
 //#endif
 
 void CRenderer::Render_Priority()

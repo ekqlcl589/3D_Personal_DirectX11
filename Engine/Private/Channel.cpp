@@ -107,7 +107,7 @@ void CChannel::Invalidate_Transform(_double TrackPosition, _uint* pCurrKeyFrame,
 	Bones[m_iBoneIndex]->Set_TransformationMatrix(TransformationMatrix);
 }
 
-void CChannel::Linear_Transform(_double TrackPosition, _uint* pCurrKeyFrame, const vector<class CBone*>& Bones, vector<class CChannel*> mn_Test, _bool& bCheck, _double fAnimTick)
+void CChannel::Linear_Transform(_double TrackPosition, _uint* pCurrKeyFrame, const vector<class CBone*>& Bones, vector<class CChannel*> vecChannel, _bool& bCheck, _double fAnimTick)
 {
 	_vector vScale;
 	_vector vRotation;
@@ -119,7 +119,7 @@ void CChannel::Linear_Transform(_double TrackPosition, _uint* pCurrKeyFrame, con
 		m_Ratio = 8.0;
 
 	_double Ratio = (TrackPosition / m_Ratio);
-	for (auto& iter = mn_Test.begin(); iter != mn_Test.end(); iter++)
+	for (auto& iter = vecChannel.begin(); iter != vecChannel.end(); iter++)
 	{
 
 		if (!strcmp((*iter)->m_szName, m_szName))

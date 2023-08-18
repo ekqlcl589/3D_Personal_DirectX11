@@ -103,6 +103,12 @@ public:
 	_bool Get_RageDamageOn() { return RageDamageOn; }
 
 private:
+	HRESULT Add_Components();
+	HRESULT Add_Parts();
+	HRESULT Add_Weapon();
+	HRESULT SetUp_ShaderResources();
+
+private:
 	CShader* m_pShaderCom = { nullptr };
 	CRenderer* m_pRendererCom = { nullptr };
 	CTransform*	m_pTransformCom = { nullptr };
@@ -114,15 +120,11 @@ private:
 
 private:
 	vector<CGameObject*> m_vecParts[PART_END];
+
 	vector<CGameObject*> m_vecWeapon[WEAPON_END];
+
 	DIR m_Dir;
 	_bool m_Front;
-
-private:
-	HRESULT Add_Components();
-	HRESULT Add_Parts();
-	HRESULT Add_Weapon();
-	HRESULT SetUp_ShaderResources();
 
 private:
 	PLAYERINFO m_tInfo;
